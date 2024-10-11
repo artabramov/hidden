@@ -21,12 +21,12 @@ from app.managers.entity_manager import EntityManager
 from app.managers.cache_manager import CacheManager
 
 
-async def on_time_retrieve(
+async def on_heartbeat_retrieve(
     entity_manager: EntityManager, cache_manager: CacheManager,
     current_user: None
 ):
     """
-    Executes when the current time is retrieved. Receives time data
+    Executes when heartbeat is retrieved. Receives data
     and performs any necessary post-processing actions.
     """
     ...
@@ -49,16 +49,6 @@ async def on_lock_create(
 ):
     """
     Executes when the application lock is created.
-    """
-    ...
-
-
-async def on_lock_retrieve(
-    entity_manager: EntityManager, cache_manager: CacheManager,
-    current_user: User
-):
-    """
-    Executes when the application lock is retrieved.
     """
     ...
 

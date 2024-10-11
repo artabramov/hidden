@@ -6,7 +6,7 @@ from app.hooks import Hook
 from app.helpers.lock_helper import is_locked, get_lock_time
 from app.database import get_session
 from app.cache import get_cache
-from app.constants import HOOK_ON_TIME_RETRIEVE
+from app.constants import HOOK_ON_HEARTBEAT_RETRIEVE
 
 router = APIRouter()
 
@@ -18,8 +18,8 @@ async def time_retrieve(
     session=Depends(get_session), cache=Depends(get_cache)
 ) -> HeartbeatRetrieveResponse:
 
-    # hook = Hook(session, cache)
-    # await hook.do(HOOK_ON_TIME_RETRIEVE)
+    hook = Hook(session, cache)
+    await hook.do(HOOK_ON_HEARTBEAT_RETRIEVE)
 
     return {
         "unix_timestamp": int(time.time()),

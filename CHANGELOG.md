@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.0.46 (2024-10-11)
+- **Added heartbeats**: Implemented heartbeat functionality for monitoring.
+- **Added CORS support**: Enabled Cross-Origin Resource Sharing for better API accessibility.
+
 ## Version 0.0.45 (2024-10-05)
 - **Added Sphinx Documentation**: Integrated Sphinx documentation for improved API reference.
 

@@ -67,10 +67,9 @@ ERR_SERVER_ERROR = "Internal server error"
 # datafiles, comments, revisions, favorites, etc.
 
 # service hooks
-HOOK_ON_TIME_RETRIEVE = "on_time_retrieve"
+HOOK_ON_HEARTBEAT_RETRIEVE = "on_heartbeat_retrieve"
 HOOK_ON_TELEMETRY_RETRIEVE = "on_telemetry_retrieve"
 HOOK_ON_LOCK_CREATE = "on_lock_create"
-HOOK_ON_LOCK_RETRIEVE = "on_lock_retrieve"
 HOOK_ON_LOCK_DELETE = "on_lock_delete"
 HOOK_ON_CACHE_ERASE = "on_cache_erase"
 HOOK_ON_CUSTOM_EXECUTE = "on_custom_execute"

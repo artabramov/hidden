@@ -12,7 +12,7 @@ from app.hooks import Hook
 from app.repository import Repository
 from app.config import get_config
 from app.constants import (
-    LOC_QUERY, ERR_RESOURCE_NOT_FOUND, ERR_USER_INACTIVE, ERR_VALUE_INVALID,
+    LOC_QUERY, ERR_USER_INACTIVE, ERR_VALUE_INVALID,
     HOOK_BEFORE_TOKEN_RETRIEVE, HOOK_AFTER_TOKEN_RETRIEVE)
 
 router = APIRouter()
@@ -41,7 +41,7 @@ async def token_retrieve(
 
     if not user:
         raise E([LOC_QUERY, "user_login"], schema.user_login,
-                ERR_RESOURCE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
+                ERR_VALUE_INVALID, status.HTTP_422_UNPROCESSABLE_ENTITY)
 
     admin_exists = await user_repository.exists(
         user_role__eq=UserRole.admin, is_active__eq=True)

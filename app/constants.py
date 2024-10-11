@@ -43,9 +43,6 @@ ERR_RESOURCE_FORBIDDEN = "resource_forbidden"
 # The requested resource could not be found (404).
 ERR_RESOURCE_NOT_FOUND = "resource_not_found"
 
-# The resource that is being accessed is locked (423).
-ERR_RESOURCE_LOCKED = "resource_locked"
-
 # The value provided is empty (422).
 ERR_VALUE_EMPTY = "value_empty"
 
@@ -57,6 +54,9 @@ ERR_VALUE_DUPLICATED = "value_duplicated"
 
 # The file MIME type is not supported for the operation (422).
 ERR_MIMETYPE_UNSUPPORTED = "mimetype_unsupported"
+
+# The resource that is being accessed is locked (423).
+ERR_RESOURCE_LOCKED = "resource_locked"
 
 # Internal server error (500).
 ERR_SERVER_ERROR = "Internal server error"

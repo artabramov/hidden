@@ -12,6 +12,7 @@ import time
 from fastapi import FastAPI, Request, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 from app.helpers.lock_helper import remove_lock
 from app.config import get_config
 from app.context import get_context
@@ -44,9 +45,9 @@ from app.routers import (
     option_insert_router, option_select_router, option_update_router,
     option_delete_router, option_list_router,
 
-    time_retrieve_router, telemetry_retrieve_router, lock_create_router,
-    lock_retrieve_router, lock_delete_router, cache_erase_router,
-    custom_execute_router, sphinx_router)
+    telemetry_retrieve_router, lock_create_router, lock_delete_router,
+    cache_erase_router, custom_execute_router, sphinx_router,
+    heartbeat_retrieve_router)
 from app.database import Base, sessionmanager
 from app.constants import ERR_SERVER_ERROR
 from contextlib import asynccontextmanager
@@ -80,6 +81,10 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan, title=cfg.APP_TITLE, version=__version__,
               description=load_description(), openapi_tags=openapi_tags)
+
+app.add_middleware(
+    CORSMiddleware, allow_origins=["http://localhost:3000"],
+    allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
 
 uptime = Uptime()
 
@@ -143,14 +148,13 @@ app.include_router(option_update_router.router, prefix=cfg.APP_PREFIX)
 app.include_router(option_delete_router.router, prefix=cfg.APP_PREFIX)
 app.include_router(option_list_router.router, prefix=cfg.APP_PREFIX)
 
-# system routers
-app.include_router(time_retrieve_router.router, prefix=cfg.APP_PREFIX)
+# service routers
 app.include_router(telemetry_retrieve_router.router, prefix=cfg.APP_PREFIX)
-app.include_router(lock_retrieve_router.router, prefix=cfg.APP_PREFIX)
 app.include_router(lock_create_router.router, prefix=cfg.APP_PREFIX)
 app.include_router(lock_delete_router.router, prefix=cfg.APP_PREFIX)
 app.include_router(cache_erase_router.router, prefix=cfg.APP_PREFIX)
 app.include_router(custom_execute_router.router, prefix=cfg.APP_PREFIX)
+app.include_router(heartbeat_retrieve_router.router, prefix=cfg.APP_PREFIX)
 
 # The router is necessary to handle the redirect from /sphinx to /sphinx/
 # This ensures that requests to the endpoint with or without a trailing

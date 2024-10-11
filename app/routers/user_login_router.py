@@ -12,8 +12,8 @@ from app.hooks import Hook
 from app.repository import Repository
 from app.config import get_config
 from app.constants import (
-    LOC_BODY, ERR_RESOURCE_NOT_FOUND, ERR_USER_SUSPENDED, ERR_USER_INACTIVE,
-    ERR_VALUE_INVALID, HOOK_BEFORE_USER_LOGIN, HOOK_AFTER_USER_LOGIN)
+    LOC_BODY, ERR_USER_SUSPENDED, ERR_USER_INACTIVE, ERR_VALUE_INVALID,
+    HOOK_BEFORE_USER_LOGIN, HOOK_AFTER_USER_LOGIN)
 
 router = APIRouter()
 cfg = get_config()
@@ -42,7 +42,7 @@ async def user_login(
 
     if not user:
         raise E([LOC_BODY, "user_login"], schema.user_login,
-                ERR_RESOURCE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
+                ERR_VALUE_INVALID, status.HTTP_422_UNPROCESSABLE_ENTITY)
 
     elif user.suspended_date > int(time.time()):
         raise E([LOC_BODY, "user_login"], schema.user_login,

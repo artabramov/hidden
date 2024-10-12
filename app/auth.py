@@ -20,7 +20,7 @@ from app.repository import Repository
 from app.helpers.jwt_helper import jwt_decode
 from app.errors import E
 from app.constants import (
-    LOC_HEADER, ERR_USER_REJECTED, ERR_VALUE_REQUIRED,
+    LOC_HEADER, ERR_USER_ROLE_REJECTED, ERR_TOKEN_MISSING,
     ERR_TOKEN_EXPIRED, ERR_TOKEN_INVALID, ERR_TOKEN_REJECTED,
     ERR_TOKEN_ORPHANED, ERR_USER_INACTIVE, ERR_USER_SUSPENDED)
 
@@ -61,7 +61,7 @@ async def _can_read(session: AsyncSession = Depends(get_session),
     user = await _auth(user_token, session, cache)
     if not user.can_read:
         raise E([LOC_HEADER, "user_token"], user_token,
-                ERR_USER_REJECTED, status.HTTP_403_FORBIDDEN)
+                ERR_USER_ROLE_REJECTED, status.HTTP_403_FORBIDDEN)
     return user
 
 
@@ -78,7 +78,7 @@ async def _can_write(session: AsyncSession = Depends(get_session),
     user = await _auth(user_token, session, cache)
     if not user.can_write:
         raise E([LOC_HEADER, "user_token"], user_token,
-                ERR_USER_REJECTED, status.HTTP_403_FORBIDDEN)
+                ERR_USER_ROLE_REJECTED, status.HTTP_403_FORBIDDEN)
     return user
 
 
@@ -95,7 +95,7 @@ async def _can_edit(session: AsyncSession = Depends(get_session),
     user = await _auth(user_token, session, cache)
     if not user.can_edit:
         raise E([LOC_HEADER, "user_token"], user_token,
-                ERR_USER_REJECTED, status.HTTP_403_FORBIDDEN)
+                ERR_USER_ROLE_REJECTED, status.HTTP_403_FORBIDDEN)
     return user
 
 
@@ -112,7 +112,7 @@ async def _can_admin(session: AsyncSession = Depends(get_session),
     user = await _auth(user_token, session, cache)
     if not user.can_admin:
         raise E([LOC_HEADER, "user_token"], user_token,
-                ERR_USER_REJECTED, status.HTTP_403_FORBIDDEN)
+                ERR_USER_ROLE_REJECTED, status.HTTP_403_FORBIDDEN)
     return user
 
 
@@ -129,7 +129,7 @@ async def _auth(user_token: str, session: AsyncSession, cache: Redis):
     """
     if not user_token:
         raise E([LOC_HEADER, "user_token"], user_token,
-                ERR_VALUE_REQUIRED, status.HTTP_403_FORBIDDEN)
+                ERR_TOKEN_MISSING, status.HTTP_403_FORBIDDEN)
 
     try:
         token_payload = jwt_decode(user_token)

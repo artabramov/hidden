@@ -101,7 +101,7 @@
 <span class="kn">from</span> <span class="nn">app.helpers.jwt_helper</span> <span class="kn">import</span> <span class="n">jwt_decode</span>
 <span class="kn">from</span> <span class="nn">app.errors</span> <span class="kn">import</span> <span class="n">E</span>
 <span class="kn">from</span> <span class="nn">app.constants</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">LOC_HEADER</span><span class="p">,</span> <span class="n">ERR_USER_REJECTED</span><span class="p">,</span> <span class="n">ERR_VALUE_REQUIRED</span><span class="p">,</span>
+    <span class="n">LOC_HEADER</span><span class="p">,</span> <span class="n">ERR_USER_ROLE_REJECTED</span><span class="p">,</span> <span class="n">ERR_TOKEN_MISSING</span><span class="p">,</span>
     <span class="n">ERR_TOKEN_EXPIRED</span><span class="p">,</span> <span class="n">ERR_TOKEN_INVALID</span><span class="p">,</span> <span class="n">ERR_TOKEN_REJECTED</span><span class="p">,</span>
     <span class="n">ERR_TOKEN_ORPHANED</span><span class="p">,</span> <span class="n">ERR_USER_INACTIVE</span><span class="p">,</span> <span class="n">ERR_USER_SUSPENDED</span><span class="p">)</span>
 
@@ -145,7 +145,7 @@
     <span class="n">user</span> <span class="o">=</span> <span class="k">await</span> <span class="n">_auth</span><span class="p">(</span><span class="n">user_token</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">cache</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="o">.</span><span class="n">can_read</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">E</span><span class="p">([</span><span class="n">LOC_HEADER</span><span class="p">,</span> <span class="s2">&quot;user_token&quot;</span><span class="p">],</span> <span class="n">user_token</span><span class="p">,</span>
-                <span class="n">ERR_USER_REJECTED</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_403_FORBIDDEN</span><span class="p">)</span>
+                <span class="n">ERR_USER_ROLE_REJECTED</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_403_FORBIDDEN</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">user</span>
 
 
@@ -162,7 +162,7 @@
     <span class="n">user</span> <span class="o">=</span> <span class="k">await</span> <span class="n">_auth</span><span class="p">(</span><span class="n">user_token</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">cache</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="o">.</span><span class="n">can_write</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">E</span><span class="p">([</span><span class="n">LOC_HEADER</span><span class="p">,</span> <span class="s2">&quot;user_token&quot;</span><span class="p">],</span> <span class="n">user_token</span><span class="p">,</span>
-                <span class="n">ERR_USER_REJECTED</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_403_FORBIDDEN</span><span class="p">)</span>
+                <span class="n">ERR_USER_ROLE_REJECTED</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_403_FORBIDDEN</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">user</span>
 
 
@@ -179,7 +179,7 @@
     <span class="n">user</span> <span class="o">=</span> <span class="k">await</span> <span class="n">_auth</span><span class="p">(</span><span class="n">user_token</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">cache</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="o">.</span><span class="n">can_edit</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">E</span><span class="p">([</span><span class="n">LOC_HEADER</span><span class="p">,</span> <span class="s2">&quot;user_token&quot;</span><span class="p">],</span> <span class="n">user_token</span><span class="p">,</span>
-                <span class="n">ERR_USER_REJECTED</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_403_FORBIDDEN</span><span class="p">)</span>
+                <span class="n">ERR_USER_ROLE_REJECTED</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_403_FORBIDDEN</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">user</span>
 
 
@@ -196,7 +196,7 @@
     <span class="n">user</span> <span class="o">=</span> <span class="k">await</span> <span class="n">_auth</span><span class="p">(</span><span class="n">user_token</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">cache</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="o">.</span><span class="n">can_admin</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">E</span><span class="p">([</span><span class="n">LOC_HEADER</span><span class="p">,</span> <span class="s2">&quot;user_token&quot;</span><span class="p">],</span> <span class="n">user_token</span><span class="p">,</span>
-                <span class="n">ERR_USER_REJECTED</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_403_FORBIDDEN</span><span class="p">)</span>
+                <span class="n">ERR_USER_ROLE_REJECTED</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_403_FORBIDDEN</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">user</span>
 
 
@@ -213,7 +213,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">user_token</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">E</span><span class="p">([</span><span class="n">LOC_HEADER</span><span class="p">,</span> <span class="s2">&quot;user_token&quot;</span><span class="p">],</span> <span class="n">user_token</span><span class="p">,</span>
-                <span class="n">ERR_VALUE_REQUIRED</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_403_FORBIDDEN</span><span class="p">)</span>
+                <span class="n">ERR_TOKEN_MISSING</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_403_FORBIDDEN</span><span class="p">)</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">token_payload</span> <span class="o">=</span> <span class="n">jwt_decode</span><span class="p">(</span><span class="n">user_token</span><span class="p">)</span>

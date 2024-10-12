@@ -14,7 +14,7 @@ LOC_QUERY = "query"
 LOC_BODY = "body"
 
 # The token is missing from the request headers (403).
-ERR_VALUE_REQUIRED = "token_missing"
+ERR_TOKEN_MISSING = "token_missing"
 
 # The token has expired and is no longer valid (403).
 ERR_TOKEN_EXPIRED = "token_expired"
@@ -35,7 +35,10 @@ ERR_USER_INACTIVE = "user_inactive"
 ERR_USER_SUSPENDED = "user_suspended"
 
 # The user role is insufficient for this action (403).
-ERR_USER_REJECTED = "user_rejected"
+ERR_USER_ROLE_REJECTED = "user_role_rejected"
+
+# The user password is not accepted (HTTP 403).
+ERR_USER_PASSWORD_NOT_ACCEPTED = "password_not_accepted"
 
 # The user cannot perform this action on the resource (403).
 ERR_RESOURCE_FORBIDDEN = "resource_forbidden"

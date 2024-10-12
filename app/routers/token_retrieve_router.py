@@ -13,7 +13,8 @@ from app.repository import Repository
 from app.config import get_config
 from app.constants import (
     LOC_QUERY, ERR_USER_INACTIVE, ERR_VALUE_INVALID,
-    HOOK_BEFORE_TOKEN_RETRIEVE, HOOK_AFTER_TOKEN_RETRIEVE)
+    ERR_USER_PASSWORD_NOT_ACCEPTED, HOOK_BEFORE_TOKEN_RETRIEVE,
+    HOOK_AFTER_TOKEN_RETRIEVE)
 
 router = APIRouter()
 cfg = get_config()
@@ -52,7 +53,8 @@ async def token_retrieve(
 
     elif not user.password_accepted:
         raise E([LOC_QUERY, "user_totp"], schema.user_totp,
-                ERR_VALUE_INVALID, status.HTTP_422_UNPROCESSABLE_ENTITY)
+                ERR_USER_PASSWORD_NOT_ACCEPTED,
+                status.HTTP_422_UNPROCESSABLE_ENTITY)
 
     totp_accepted = schema.user_totp == user.get_totp(user.mfa_secret)
 

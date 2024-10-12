@@ -3,7 +3,7 @@ import time
 from fastapi.responses import JSONResponse
 from app.schemas.heartbeat_schemas import HeartbeatRetrieveResponse
 from app.hooks import Hook
-from app.helpers.lock_helper import is_locked, get_lock_time
+from app.helpers.lock_helper import is_locked, get_locked_date
 from app.database import get_session
 from app.cache import get_cache
 from app.constants import HOOK_ON_HEARTBEAT_RETRIEVE
@@ -26,5 +26,5 @@ async def time_retrieve(
         "timezone_name": time.tzname[0],
         "timezone_offset": time.timezone,
         "is_locked": is_locked(),
-        "lock_time": get_lock_time(),
+        "locked_date": get_locked_date(),
     }

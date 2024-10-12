@@ -1,5 +1,4 @@
 import os
-import time
 from app.managers.file_manager import FileManager
 from app.config import get_config
 
@@ -15,12 +14,11 @@ def is_locked():
     return os.path.isfile(cfg.LOCK_FILE_PATH)
 
 
-def get_lock_time():
-    lock_time = 0
+def get_locked_date():
+    locked_date = 0
     if is_locked():
-        lock_created = os.path.getctime(cfg.LOCK_FILE_PATH)
-        lock_time = int(time.time() - lock_created)
-    return lock_time
+        locked_date = int(os.path.getctime(cfg.LOCK_FILE_PATH))
+    return locked_date
 
 
 async def create_lock():

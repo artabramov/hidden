@@ -7,4 +7,4 @@ class HeartbeatRetrieveResponse(BaseModel):
     timezone_name: str
     timezone_offset: int
     is_locked: bool
-    lock_time: int
+    locked_date: int

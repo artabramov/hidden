@@ -35,7 +35,7 @@ class MemberSelectResponse(BaseModel):
     member_name: str
     member_summary: Optional[str] = None
     member_contacts: Optional[str] = None
-    image_url: Optional[str] = None
+    emblem_url: Optional[str] = None
     member_user: UserSelectResponse
 
 
@@ -77,3 +77,11 @@ class MemberListRequest(BaseModel):
 class MemberListResponse(BaseModel):
     members: List[MemberSelectResponse]
     members_count: int
+
+
+class EmblemUploadResponse(BaseModel):
+    member_id: int
+
+
+class EmblemDeleteResponse(BaseModel):
+    member_id: int

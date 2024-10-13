@@ -122,6 +122,10 @@ HOOK_AFTER_MEMBER_UPDATE = "after_member_update"
 HOOK_BEFORE_MEMBER_DELETE = "before_member_delete"
 HOOK_AFTER_MEMBER_DELETE = "after_member_delete"
 HOOK_AFTER_MEMBER_LIST = "after_member_list"
+HOOK_BEFORE_EMBLEM_UPLOAD = "before_emblem_upload"
+HOOK_AFTER_EMBLEM_UPLOAD = "after_emblem_upload"
+HOOK_BEFORE_EMBLEM_DELETE = "before_emblem_delete"
+HOOK_AFTER_EMBLEM_DELETE = "after_emblem_delete"
 
 # document hooks
 HOOK_BEFORE_DOCUMENT_UPLOAD = "before_document_upload"

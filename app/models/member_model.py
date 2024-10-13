@@ -23,7 +23,7 @@ class Member(Base):
     member_name = Column(String(256), index=True, unique=True)
     member_summary = Column(String(512), nullable=True)
     member_contacts = Column(String(512), nullable=True)
-    image_filename = Column(String(128), nullable=True, unique=True)
+    emblem_filename = Column(String(128), nullable=True, unique=True)
 
     member_user = relationship(
         "User", back_populates="user_members", lazy="joined")
@@ -39,15 +39,15 @@ class Member(Base):
         self.member_contacts = member_contacts
 
     @property
-    def image_url(self):
-        if self.image_filename:
-            return cfg.MEMBER_IMAGE_BASE_URL + self.image_filename
+    def emblem_url(self):
+        if self.emblem_filename:
+            return cfg.EMBLEM_BASE_URL + self.emblem_filename
 
     @property
-    def image_path(self):
-        if self.image_filename:
-            return os.path.join(cfg.MEMBER_IMAGE_BASE_PATH,
-                                self.image_filename)
+    def emblem_path(self):
+        if self.emblem_filename:
+            return os.path.join(cfg.EMBLEM_BASE_PATH,
+                                self.emblem_filename)
 
     def to_dict(self):
         return {
@@ -58,6 +58,6 @@ class Member(Base):
             "member_name": self.member_name,
             "member_summary": self.member_summary,
             "member_contacts": self.member_contacts,
-            "image_url": self.image_url,
+            "emblem_url": self.emblem_url,
             "member_user": self.member_user.to_dict(),
         }

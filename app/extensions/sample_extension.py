@@ -521,6 +521,50 @@ async def after_member_list(
     ...
 
 
+async def before_emblem_upload(
+    entity_manager: EntityManager, cache_manager: CacheManager,
+    current_user: User, member: Member
+):
+    """
+    Executes before member emblem is uploaded. Receives the member
+    entity and performs any necessary pre-processing actions.
+    """
+    ...
+
+
+async def after_emblem_upload(
+    entity_manager: EntityManager, cache_manager: CacheManager,
+    current_user: User, member: Member
+):
+    """
+    Executes after member emblem is uploaded. Receives the member
+    entity and performs any necessary post-processing actions.
+    """
+    ...
+
+
+async def before_emblem_delete(
+    entity_manager: EntityManager, cache_manager: CacheManager,
+    current_user: User, member: Member
+):
+    """
+    Executes before member emblem is removed. Receives the member
+    entity and performs any necessary pre-processing actions.
+    """
+    ...
+
+
+async def after_emblem_delete(
+    entity_manager: EntityManager, cache_manager: CacheManager,
+    current_user: User, member: Member
+):
+    """
+    Executes after member emblem is removed. Receives the member
+    entity and performs any necessary post-processing actions.
+    """
+    ...
+
+
 async def before_document_upload(
     entity_manager: EntityManager, cache_manager: CacheManager,
     current_user: User, document: Document

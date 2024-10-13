@@ -30,7 +30,8 @@ from app.routers import (
     collection_list_router,
 
     member_insert_router, member_select_router, member_update_router,
-    member_delete_router, member_list_router,
+    member_delete_router, member_list_router, emblem_upload_router,
+    emblem_delete_router,
 
     document_upload_router, document_replace_router,
     document_download_router, document_select_router,
@@ -119,6 +120,8 @@ app.include_router(member_select_router.router, prefix=cfg.APP_PREFIX)
 app.include_router(member_update_router.router, prefix=cfg.APP_PREFIX)
 app.include_router(member_delete_router.router, prefix=cfg.APP_PREFIX)
 app.include_router(member_list_router.router, prefix=cfg.APP_PREFIX)
+app.include_router(emblem_upload_router.router, prefix=cfg.APP_PREFIX)
+app.include_router(emblem_delete_router.router, prefix=cfg.APP_PREFIX)
 
 # document routers
 app.include_router(document_upload_router.router, prefix=cfg.APP_PREFIX)
@@ -180,6 +183,9 @@ app.mount(cfg.USERPIC_PREFIX,
 app.mount(cfg.THUMBNAILS_PREFIX,
           StaticFiles(directory=cfg.THUMBNAILS_BASE_PATH, html=False),
           name=cfg.THUMBNAILS_BASE_PATH)
+app.mount(cfg.EMBLEM_PREFIX,
+          StaticFiles(directory=cfg.EMBLEM_BASE_PATH, html=False),
+          name=cfg.EMBLEM_BASE_PATH)
 app.mount("/", StaticFiles(directory=cfg.HTML_PATH, html=True), name="/")
 
 

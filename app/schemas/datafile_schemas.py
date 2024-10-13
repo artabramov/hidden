@@ -35,6 +35,7 @@ class DatafileSelectResponse(BaseModel):
     updated_date: int
     user_id: int
     collection_id: Optional[int]
+    member_id: Optional[int]
 
     datafile_name: str
     datafile_summary: Optional[str] = None
@@ -55,6 +56,7 @@ class DatafileUpdateRequest(BaseModel):
     optionally the datafile name, summary, and tags.
     """
     collection_id: Optional[int] = None
+    member_id: Optional[int] = None
     datafile_name: str = Field(..., min_length=1, max_length=256)
     datafile_summary: Optional[str] = Field(max_length=512, default=None)
     tags: Optional[str] = Field(max_length=256, default=None)

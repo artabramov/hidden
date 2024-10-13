@@ -5,6 +5,7 @@ from app.cache import get_cache
 from app.decorators.locked_decorator import locked
 from app.models.user_model import User, UserRole
 from app.models.collection_model import Collection
+from app.models.member_model import Member
 from app.models.datafile_model import Datafile
 from app.models.revision_model import Revision
 from app.schemas.datafile_schemas import (
@@ -17,7 +18,7 @@ from app.libraries.tag_library import TagLibrary
 from app.errors import E
 from app.constants import (
     LOC_PATH, LOC_BODY, ERR_RESOURCE_NOT_FOUND, ERR_RESOURCE_LOCKED,
-    HOOK_BEFORE_DATAFILE_UPDATE, HOOK_AFTER_DATAFILE_UPDATE)
+    ERR_VALUE_INVALID, HOOK_BEFORE_DATAFILE_UPDATE, HOOK_AFTER_DATAFILE_UPDATE)
 
 cfg = get_config()
 router = APIRouter()
@@ -51,6 +52,16 @@ async def datafile_update(
     datafile.latest_revision = await revision_repository.select(
         id=datafile.latest_revision_id)
 
+    # If a member ID is received, then validate the memeber.
+
+    if schema.member_id:
+        member_repository = Repository(session, cache, Member)
+        member = await member_repository.select(id=schema.member_id)
+
+        if not member:
+            raise E([LOC_BODY, "member_id"], schema.member_id,
+                    ERR_VALUE_INVALID, status.HTTP_422_UNPROCESSABLE_ENTITY)
+
     # If a collection ID is received, then validate the collection.
 
     collection = None
@@ -70,6 +81,7 @@ async def datafile_update(
     # Update the data of the datafile itself.
 
     datafile.collection_id = schema.collection_id
+    datafile.member_id = schema.member_id
     datafile.datafile_name = schema.datafile_name
     datafile.datafile_summary = schema.datafile_summary
     await datafile_repository.update(datafile, commit=False)

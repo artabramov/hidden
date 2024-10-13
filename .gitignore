@@ -11,5 +11,8 @@ data/revisions/*
 data/thumbnails/*
 !data/thumbnails/.gitkeep
 
+data/members/*
+!data/members/.gitkeep
+
 locks/*
 !locks/.gitkeep

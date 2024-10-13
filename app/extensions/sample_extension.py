@@ -11,6 +11,7 @@ and other related actions.
 from typing import List
 from app.models.user_model import User
 from app.models.collection_model import Collection
+from app.models.member_model import Member
 from app.models.datafile_model import Datafile
 from app.models.revision_model import Revision
 from app.models.comment_model import Comment
@@ -332,7 +333,7 @@ async def after_token_invalidate(
 
 async def after_user_list(
     entity_manager: EntityManager, cache_manager: CacheManager,
-    current_user: User, users: List[Collection]
+    current_user: User, users: List[User]
 ):
     """
     Executes after a user list is retrieved. Receives the list
@@ -426,6 +427,95 @@ async def after_collection_list(
     """
     Executes after a collection list is retrieved. Receives the list
     of collection entities and performs any necessary post-processing
+    actions.
+    """
+    ...
+
+
+async def before_member_insert(
+    entity_manager: EntityManager, cache_manager: CacheManager,
+    current_user: User, member: Member
+):
+    """
+    Executes before a member is created. Receives the member
+    entity and performs any necessary pre-processing actions.
+    """
+    ...
+
+
+async def after_member_insert(
+    entity_manager: EntityManager, cache_manager: CacheManager,
+    current_user: User, member: Member
+):
+    """
+    Executes after a member is created. Receives the member
+    entity and performs any necessary post-processing actions.
+    """
+    ...
+
+
+async def after_member_select(
+    entity_manager: EntityManager, cache_manager: CacheManager,
+    current_user: User, member: Member
+):
+    """
+    Executes after a member is selected. Receives the member
+    entity and performs any necessary post-processing actions.
+    """
+    ...
+
+
+async def before_member_update(
+    entity_manager: EntityManager, cache_manager: CacheManager,
+    current_user: User, member: Member
+):
+    """
+    Executes before a member is updated. Receives the member
+    entity and performs any necessary pre-processing actions.
+    """
+    ...
+
+
+async def after_member_update(
+    entity_manager: EntityManager, cache_manager: CacheManager,
+    current_user: User, member: Member
+):
+    """
+    Executes after a member is updated. Receives the member
+    entity and performs any necessary post-processing actions.
+    """
+    ...
+
+
+async def before_member_delete(
+    entity_manager: EntityManager, cache_manager: CacheManager,
+    current_user: User, member: Member
+):
+    """
+    Executes before a member is deleted. Receives the member
+    entity and performs any necessary pre-processing actions.
+    """
+    ...
+
+
+async def after_member_delete(
+    entity_manager: EntityManager, cache_manager: CacheManager,
+    current_user: User, member: Member
+):
+    """
+    Executes after a member is deleted. Receives the member
+    entity and performs any necessary post-processing actions.
+    """
+    ...
+
+
+async def after_member_list(
+    entity_manager: EntityManager, cache_manager: CacheManager,
+    current_user: User, members: List[Member]
+):
+    """
+    Executes after a member list is retrieved. Receives the list
+    of member entities and performs any necessary post-processing
     actions.
     """
     ...

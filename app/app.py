@@ -29,6 +29,9 @@ from app.routers import (
     collection_update_router, collection_delete_router,
     collection_list_router,
 
+    member_insert_router, member_select_router, member_update_router,
+    member_delete_router, member_list_router,
+
     datafile_upload_router, datafile_replace_router,
     datafile_download_router, datafile_select_router,
     datafile_update_router, datafile_delete_router,
@@ -109,6 +112,13 @@ app.include_router(collection_select_router.router, prefix=cfg.APP_PREFIX)
 app.include_router(collection_update_router.router, prefix=cfg.APP_PREFIX)
 app.include_router(collection_delete_router.router, prefix=cfg.APP_PREFIX)
 app.include_router(collection_list_router.router, prefix=cfg.APP_PREFIX)
+
+# member routers
+app.include_router(member_insert_router.router, prefix=cfg.APP_PREFIX)
+app.include_router(member_select_router.router, prefix=cfg.APP_PREFIX)
+app.include_router(member_update_router.router, prefix=cfg.APP_PREFIX)
+app.include_router(member_delete_router.router, prefix=cfg.APP_PREFIX)
+app.include_router(member_list_router.router, prefix=cfg.APP_PREFIX)
 
 # datafile routers
 app.include_router(datafile_upload_router.router, prefix=cfg.APP_PREFIX)

@@ -113,6 +113,16 @@ HOOK_BEFORE_COLLECTION_DELETE = "before_collection_delete"
 HOOK_AFTER_COLLECTION_DELETE = "after_collection_delete"
 HOOK_AFTER_COLLECTION_LIST = "after_collection_list"
 
+# member hooks
+HOOK_BEFORE_MEMBER_INSERT = "before_member_insert"
+HOOK_AFTER_MEMBER_INSERT = "after_member_insert"
+HOOK_AFTER_MEMBER_SELECT = "after_member_select"
+HOOK_BEFORE_MEMBER_UPDATE = "before_member_update"
+HOOK_AFTER_MEMBER_UPDATE = "after_member_update"
+HOOK_BEFORE_MEMBER_DELETE = "before_member_delete"
+HOOK_AFTER_MEMBER_DELETE = "after_member_delete"
+HOOK_AFTER_MEMBER_LIST = "after_member_list"
+
 # datafile hooks
 HOOK_BEFORE_DATAFILE_UPLOAD = "before_datafile_upload"
 HOOK_AFTER_DATAFILE_UPLOAD = "after_datafile_upload"

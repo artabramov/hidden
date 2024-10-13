@@ -17,16 +17,17 @@ class Datafile(Base):
     latest_revision = None
 
     id = Column(BigInteger, primary_key=True)
-    created_date = Column(Integer, index=True,
-                          default=lambda: int(time.time()))
-    updated_date = Column(Integer, index=True,
-                          onupdate=lambda: int(time.time()), default=0)
-    user_id = Column(BigInteger, ForeignKey("users.id"), index=True,
-                     nullable=False)
-    collection_id = Column(BigInteger, ForeignKey("collections.id"),
-                           index=True, nullable=True)
+    created_date = Column(
+        Integer, index=True, default=lambda: int(time.time()))
+    updated_date = Column(
+        Integer, index=True, onupdate=lambda: int(time.time()), default=0)
+    user_id = Column(
+        BigInteger, ForeignKey("users.id"), index=True, nullable=False)
+    collection_id = Column(
+        BigInteger, ForeignKey("collections.id"), index=True, nullable=True)
+    member_id = Column(
+        BigInteger, ForeignKey("members.id"), index=True, nullable=True)
     latest_revision_id = Column(BigInteger, index=True, nullable=True)
-
     datafile_name = Column(String(256), nullable=True)
     datafile_summary = Column(String(512), nullable=True)
 
@@ -40,6 +41,9 @@ class Datafile(Base):
 
     datafile_collection = relationship(
         "Collection", back_populates="collection_datafiles", lazy="joined")
+
+    datafile_member = relationship(
+        "Member", back_populates="member_datafiles", lazy="joined")
 
     datafile_tags = relationship(
         "Tag", back_populates="tag_datafile", lazy="joined",
@@ -94,6 +98,7 @@ class Datafile(Base):
             "updated_date": self.updated_date,
             "user_id": self.user_id,
             "collection_id": self.collection_id,
+            "member_id": self.member_id,
 
             "datafile_name": self.datafile_name,
             "datafile_summary": self.datafile_summary,

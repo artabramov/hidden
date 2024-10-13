@@ -17,7 +17,7 @@ router = APIRouter()
 
 @router.delete("/auth/token", summary="Invalidate token",
                response_class=JSONResponse, status_code=status.HTTP_200_OK,
-               response_model=TokenDeleteResponse, tags=["Auth"])
+               response_model=TokenDeleteResponse, tags=["Authentication"])
 @locked
 async def token_invalidate(
     session=Depends(get_session), cache=Depends(get_cache),

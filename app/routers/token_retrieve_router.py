@@ -22,7 +22,7 @@ cfg = get_config()
 
 @router.get("/auth/token", summary="Retrieve token",
             response_class=JSONResponse, status_code=status.HTTP_200_OK,
-            response_model=TokenRetrieveResponse, tags=["Auth"])
+            response_model=TokenRetrieveResponse, tags=["Authentication"])
 @locked
 async def token_retrieve(
     schema=Depends(TokenRetrieveRequest),

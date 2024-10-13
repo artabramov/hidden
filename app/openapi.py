@@ -1,7 +1,7 @@
 openapi_tags = [
     {
-        "name": "Auth",
-        "description": "Manage auth operations."
+        "name": "Authentication",
+        "description": "Manage authentication operations."
     },
     {
         "name": "Users",

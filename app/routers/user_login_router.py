@@ -21,7 +21,7 @@ cfg = get_config()
 
 @router.post("/auth/login", summary="Authenticate user",
              response_class=JSONResponse, status_code=status.HTTP_200_OK,
-             response_model=UserLoginResponse, tags=["Auth"])
+             response_model=UserLoginResponse, tags=["Authentication"])
 @locked
 async def user_login(
     schema: UserLoginRequest,

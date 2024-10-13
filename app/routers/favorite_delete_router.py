@@ -35,7 +35,7 @@ async def favorite_delete(
     the favorite from the repository using the provided ID, verifies
     that the favorite exists and that the current user is the owner of
     the favorite. It updates the favorites count for the associated
-    datafile, executes related hooks, and returns the ID of the deleted
+    document, executes related hooks, and returns the ID of the deleted
     favorite in a JSON response. The current user should have a reader
     role or higher. Returns a 200 response on success, a 404 error if
     the favorite is not found, and a 403 error if authentication fails

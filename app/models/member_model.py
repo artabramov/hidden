@@ -28,8 +28,8 @@ class Member(Base):
     member_user = relationship(
         "User", back_populates="user_members", lazy="joined")
 
-    member_datafiles = relationship(
-        "Datafile", back_populates="datafile_member",
+    member_documents = relationship(
+        "Document", back_populates="document_member",
         cascade="all, delete-orphan")
 
     def __init__(self, user_id: int, member_name: str,

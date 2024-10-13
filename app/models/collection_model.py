@@ -1,9 +1,9 @@
 """
-Represents a collection of datafiles in the database. Manages data
+Represents a collection of documents in the database. Manages data
 about the collection, including its name, summary, and the count and
-size of datafiles within it. Handles relationships with users and
-datafiles through SQLAlchemy, providing attributes for creation and
-modification timestamps, user association, and datafile statistics.
+size of documents within it. Handles relationships with users and
+documents through SQLAlchemy, providing attributes for creation and
+modification timestamps, user association, and document statistics.
 Includes a method to convert the collection instance to a dictionary.
 """
 
@@ -19,11 +19,11 @@ cfg = get_config()
 
 class Collection(Base):
     """
-    SQLAlchemy model for a datafile collection. Defines a collection
-    of datafiles with metadata such as creation and update dates, user
+    SQLAlchemy model for a document collection. Defines a collection
+    of documents with metadata such as creation and update dates, user
     association, and collection details including name, summary, and
-    datafile statistics. Manages relationships with users and
-    datafiles.
+    document statistics. Manages relationships with users and
+    documents.
     """
 
     __tablename__ = "collections"
@@ -40,15 +40,15 @@ class Collection(Base):
     collection_name = Column(String(256), index=True, unique=True)
     collection_summary = Column(String(512), nullable=True)
 
-    datafiles_count = Column(Integer, index=True, default=0)
+    documents_count = Column(Integer, index=True, default=0)
     revisions_count = Column(Integer, index=True, default=0)
     revisions_size = Column(BigInteger, index=True, default=0)
 
     collection_user = relationship(
         "User", back_populates="user_collections", lazy="joined")
 
-    collection_datafiles = relationship(
-        "Datafile", back_populates="datafile_collection",
+    collection_documents = relationship(
+        "Document", back_populates="document_collection",
         cascade="all, delete-orphan")
 
     def __init__(self, user_id: int, is_locked: bool, collection_name: str,
@@ -56,13 +56,13 @@ class Collection(Base):
         """
         Initializes a new Collection instance with the specified user
         ID, lock status, collection name, and optional summary. Sets the
-        initial datafile count and size to zero.
+        initial document count and size to zero.
         """
         self.user_id = user_id
         self.is_locked = is_locked
         self.collection_name = collection_name
         self.collection_summary = collection_summary
-        self.datafiles_count = 0
+        self.documents_count = 0
         self.revisions_count = 0
         self.revisions_size = 0
 
@@ -72,7 +72,7 @@ class Collection(Base):
         representation, including all its attributes and related
         objects. The resulting dictionary includes fields such as ID,
         creation and update dates, user ID, lock status, collection
-        name, summary, datafiles count, datafiles size, and details
+        name, summary, documents count, documents size, and details
         of the associated user.
         """
         return {
@@ -83,7 +83,7 @@ class Collection(Base):
             "is_locked": self.is_locked,
             "collection_name": self.collection_name,
             "collection_summary": self.collection_summary,
-            "datafiles_count": self.datafiles_count,
+            "documents_count": self.documents_count,
             "revisions_count": self.revisions_count,
             "revisions_size": self.revisions_size,
             "collection_user": self.collection_user.to_dict(),

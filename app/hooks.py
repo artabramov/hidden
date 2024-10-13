@@ -4,7 +4,7 @@ specific actions within the application. It includes the Hook class,
 which orchestrates post-event operations by interacting with
 EntityManager and CacheManager. The H enumeration specifies different
 hook types, and the Hook class manages their execution, handling actions
-related to user management, collections, datafiles, comments, downloads,
+related to user management, collections, documents, comments, downloads,
 and favorites. This setup enables asynchronous processing and integrates
 seamlessly with session and caching systems to ensure efficient state
 management and responsiveness to application events.

@@ -16,13 +16,13 @@ from app.constants import (
 router = APIRouter()
 
 
-@router.get("/datafile/{datafile_id}/revision/{revision_id}",
-            summary="Retrieve data for a specific datafile revision.",
+@router.get("/document/{document_id}/revision/{revision_id}",
+            summary="Retrieve data for a specific document revision.",
             response_class=JSONResponse, status_code=status.HTTP_200_OK,
-            response_model=RevisionSelectResponse, tags=["Datafiles"])
+            response_model=RevisionSelectResponse, tags=["Documents"])
 @locked
 async def revision_select(
-    datafile_id: int, revision_id: int,
+    document_id: int, revision_id: int,
     session=Depends(get_session), cache=Depends(get_cache),
     current_user: User = Depends(auth(UserRole.reader))
 ) -> RevisionSelectResponse:
@@ -38,7 +38,7 @@ async def revision_select(
     revision_repository = Repository(session, cache, Revision)
     revision = await revision_repository.select(id=revision_id)
 
-    if not revision or revision.datafile_id != datafile_id:
+    if not revision or revision.document_id != document_id:
         raise E([LOC_PATH, "revision_id"], revision_id,
                 ERR_RESOURCE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
 

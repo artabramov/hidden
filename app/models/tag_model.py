@@ -8,19 +8,19 @@ cfg = get_config()
 
 
 class Tag(Base):
-    __tablename__ = "datafiles_tags"
+    __tablename__ = "documents_tags"
     _cacheable = False
 
     id = Column(BigInteger, primary_key=True)
     created_date = Column(Integer, index=True,
                           default=lambda: int(time.time()))
-    datafile_id = Column(BigInteger, ForeignKey("datafiles.id"),
+    document_id = Column(BigInteger, ForeignKey("documents.id"),
                          nullable=False, index=True)
     tag_value = Column(String(256), nullable=False, index=True)
 
-    tag_datafile = relationship("Datafile", back_populates="datafile_tags",
+    tag_document = relationship("Document", back_populates="document_tags",
                                 lazy="noload")
 
-    def __init__(self, datafile_id: int, tag_value: str):
-        self.datafile_id = datafile_id
+    def __init__(self, document_id: int, tag_value: str):
+        self.document_id = document_id
         self.tag_value = tag_value

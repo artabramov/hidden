@@ -43,7 +43,7 @@ class CollectionSelectResponse(BaseModel):
     Pydantic schema for the response after retrieving a collection
     entity. Includes the collection ID, creation and update dates,
     user ID, locked status, collection name, collection summary,
-    counts for datafiles and revisions, associated with the
+    counts for documents and revisions, associated with the
     collection, and details of the user.
     """
     id: int
@@ -53,7 +53,7 @@ class CollectionSelectResponse(BaseModel):
     is_locked: bool
     collection_name: str
     collection_summary: Optional[str] = None
-    datafiles_count: int
+    documents_count: int
     revisions_count: int
     revisions_size: int
     collection_user: UserSelectResponse
@@ -103,8 +103,8 @@ class CollectionListRequest(BaseModel):
     """
     collection_name__ilike: Optional[str] = None
     is_locked__eq: Optional[bool] = None
-    datafiles_count__ge: Optional[int] = None
-    datafiles_count__le: Optional[int] = None
+    documents_count__ge: Optional[int] = None
+    documents_count__le: Optional[int] = None
     revisions_count__ge: Optional[int] = None
     revisions_count__le: Optional[int] = None
     revisions_size__ge: Optional[int] = None
@@ -112,7 +112,7 @@ class CollectionListRequest(BaseModel):
     offset: int = Field(ge=0)
     limit: int = Field(ge=1, le=200)
     order_by: Literal["id", "created_date", "updated_date", "user_id",
-                      "collection_name", "datafiles_count", "revisions_count",
+                      "collection_name", "documents_count", "revisions_count",
                       "revisions_size"]
     order: Literal["asc", "desc", "rand"]
 

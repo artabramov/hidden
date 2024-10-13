@@ -46,9 +46,9 @@ async def favorite_list(
 
     revision_repository = Repository(session, cache, Revision)
     for favorite in favorites:
-        favorite.favorite_datafile.latest_revision = (
+        favorite.favorite_document.latest_revision = (
                 await revision_repository.select(
-                    id=favorite.favorite_datafile.latest_revision_id))
+                    id=favorite.favorite_document.latest_revision_id))
 
     hook = Hook(session, cache, current_user=current_user)
     await hook.do(HOOK_AFTER_FAVORITE_LIST, favorites)

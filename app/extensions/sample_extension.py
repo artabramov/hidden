@@ -12,7 +12,7 @@ from typing import List
 from app.models.user_model import User
 from app.models.collection_model import Collection
 from app.models.member_model import Member
-from app.models.datafile_model import Datafile
+from app.models.document_model import Document
 from app.models.revision_model import Revision
 from app.models.comment_model import Comment
 from app.models.download_model import Download
@@ -521,112 +521,112 @@ async def after_member_list(
     ...
 
 
-async def before_datafile_upload(
+async def before_document_upload(
     entity_manager: EntityManager, cache_manager: CacheManager,
-    current_user: User, datafile: Datafile
+    current_user: User, document: Document
 ):
     """
-    Executes before a datafile is uploaded. Receives the datafile
+    Executes before a document is uploaded. Receives the document
     entity and performs any necessary pre-processing actions.
     """
     ...
 
 
-async def after_datafile_upload(
+async def after_document_upload(
     entity_manager: EntityManager, cache_manager: CacheManager,
-    current_user: User, datafile: Datafile
+    current_user: User, document: Document
 ):
     """
-    Executes after a datafile is uploaded. Receives the datafile
+    Executes after a document is uploaded. Receives the document
     entity and performs any necessary post-processing actions.
     """
     ...
 
 
-async def before_datafile_replace(
+async def before_document_replace(
     entity_manager: EntityManager, cache_manager: CacheManager,
-    current_user: User, datafile: Datafile
+    current_user: User, document: Document
 ):
     """
-    Executes before a datafile is replaced. Receives the datafile
+    Executes before a document is replaced. Receives the document
     entity and performs any necessary pre-processing actions.
     """
     ...
 
 
-async def after_datafile_replace(
+async def after_document_replace(
     entity_manager: EntityManager, cache_manager: CacheManager,
-    current_user: User, datafile: Datafile
+    current_user: User, document: Document
 ):
     """
-    Executes after a datafile is replaced. Receives the datafile
+    Executes after a document is replaced. Receives the document
     entity and performs any necessary post-processing actions.
     """
     ...
 
 
-async def after_datafile_select(
+async def after_document_select(
     entity_manager: EntityManager, cache_manager: CacheManager,
-    current_user: User, datafile: Datafile
+    current_user: User, document: Document
 ):
     """
-    Executes after a datafile is selected. Receives the datafile
+    Executes after a document is selected. Receives the document
     entity and performs any necessary post-processing actions.
     """
     ...
 
 
-async def before_datafile_update(
+async def before_document_update(
     entity_manager: EntityManager, cache_manager: CacheManager,
-    current_user: User, datafile: Datafile
+    current_user: User, document: Document
 ):
     """
-    Executes before a datafile is updated. Receives the datafile
+    Executes before a document is updated. Receives the document
     entity and performs any necessary pre-processing actions.
     """
     ...
 
 
-async def after_datafile_update(
+async def after_document_update(
     entity_manager: EntityManager, cache_manager: CacheManager,
-    current_user: User, datafile: Datafile
+    current_user: User, document: Document
 ):
     """
-    Executes after a datafile is updated. Receives the datafile
+    Executes after a document is updated. Receives the document
     entity and performs any necessary post-processing actions.
     """
     ...
 
 
-async def before_datafile_delete(
+async def before_document_delete(
     entity_manager: EntityManager, cache_manager: CacheManager,
-    current_user: User, datafile: Datafile
+    current_user: User, document: Document
 ):
     """
-    Executes before a datafile is deleted. Receives the datafile
+    Executes before a document is deleted. Receives the document
     entity and performs any necessary pre-processing actions.
     """
     ...
 
 
-async def after_datafile_delete(
+async def after_document_delete(
     entity_manager: EntityManager, cache_manager: CacheManager,
-    current_user: User, datafile: Datafile
+    current_user: User, document: Document
 ):
     """
-    Executes after a datafile is deleted. Receives the datafile
+    Executes after a document is deleted. Receives the document
     entity and performs any necessary post-processing actions.
     """
     ...
 
 
-async def after_datafile_list(
+async def after_document_list(
     entity_manager: EntityManager, cache_manager: CacheManager,
-    current_user: User, datafiles: List[Datafile]
+    current_user: User, documents: List[Document]
 ):
     """
-    Executes after a datafile list is retrieved. Receives the list
-    of datafile entities and performs any necessary post-processing
+    Executes after a document list is retrieved. Receives the list
+    of document entities and performs any necessary post-processing
     actions.
     """
     ...

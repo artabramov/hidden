@@ -8,7 +8,7 @@ from app.database import get_session
 from app.cache import get_cache
 from app.decorators.locked_decorator import locked
 from app.models.user_model import User, UserRole
-from app.models.datafile_model import Datafile
+from app.models.document_model import Document
 from app.models.revision_model import Revision
 from app.models.download_model import Download
 from app.hooks import Hook
@@ -23,13 +23,13 @@ from app.constants import (
 router = APIRouter()
 
 
-@router.get("/datafile/{datafile_id}/revision/{revision_id}/download",
-            summary="Download a specified revision of a datafile.",
+@router.get("/document/{document_id}/revision/{revision_id}/download",
+            summary="Download a specified revision of a document.",
             response_class=Response, status_code=status.HTTP_200_OK,
-            tags=["Datafiles"])
+            tags=["Documents"])
 @locked
 async def revision_download(
-    datafile_id: int, revision_id: int,
+    document_id: int, revision_id: int,
     session=Depends(get_session), cache=Depends(get_cache),
     current_user: User = Depends(auth(UserRole.reader))
 ) -> Response:
@@ -44,7 +44,7 @@ async def revision_download(
     """
     revision_repository = Repository(session, cache, Revision)
     revision = await revision_repository.select(id=revision_id)
-    if not revision or revision.datafile_id != datafile_id:
+    if not revision or revision.document_id != document_id:
         raise E([LOC_PATH, "revision_id"], revision_id,
                 ERR_RESOURCE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
 
@@ -53,15 +53,15 @@ async def revision_download(
 
     download_repository = Repository(session, cache, Download)
     download = Download(
-        current_user.id, revision.revision_datafile.id, revision.id)
+        current_user.id, revision.revision_document.id, revision.id)
     await download_repository.insert(download, commit=False)
 
-    datafile_repository = Repository(session, cache, Datafile)
-    revision.revision_datafile.downloads_count = (
+    document_repository = Repository(session, cache, Document)
+    revision.revision_document.downloads_count = (
         await download_repository.count_all(
-            datafile_id__eq=revision.revision_datafile.id))
-    await datafile_repository.update(
-        revision.revision_datafile, commit=False)
+            document_id__eq=revision.revision_document.id))
+    await document_repository.update(
+        revision.revision_document, commit=False)
 
     hook = Hook(session, cache, current_user=current_user)
     await hook.do(HOOK_BEFORE_REVISION_DOWNLOAD, revision)

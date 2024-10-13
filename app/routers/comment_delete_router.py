@@ -8,7 +8,7 @@ from app.database import get_session
 from app.cache import get_cache
 from app.decorators.locked_decorator import locked
 from app.models.user_model import User, UserRole
-from app.models.datafile_model import Datafile
+from app.models.document_model import Document
 from app.models.comment_model import Comment
 from app.schemas.comment_schemas import CommentDeleteResponse
 from app.repository import Repository
@@ -37,7 +37,7 @@ async def comment_delete(
     the comment from the repository using the provided ID, verifies
     that the comment exists, ensures the associated collection is not
     locked, and confirms that the current user is the creator of the
-    comment. It updates the comment count for the associated datafile,
+    comment. It updates the comment count for the associated document,
     executes related hooks, and returns the ID of the deleted comment
     in a JSON response. The current user should have an editor role or
     higher. Returns a 200 response on success, a 404 error if the
@@ -63,12 +63,12 @@ async def comment_delete(
     await comment_repository.delete(comment, commit=False)
 
     await comment_repository.lock_all()
-    comment.comment_datafile.comments_count = (
+    comment.comment_document.comments_count = (
         await comment_repository.count_all(
-            datafile_id__eq=comment.datafile_id))
+            document_id__eq=comment.document_id))
 
-    datafile_repository = Repository(session, cache, Datafile)
-    await datafile_repository.update(comment.comment_datafile, commit=False)
+    document_repository = Repository(session, cache, Document)
+    await document_repository.update(comment.comment_document, commit=False)
 
     hook = Hook(session, cache, current_user=current_user)
     await hook.do(HOOK_BEFORE_COMMENT_DELETE, comment)

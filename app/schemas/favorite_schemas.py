@@ -6,7 +6,7 @@ schemas for inserting, selecting, deleting, and listing downloads.
 from typing import Literal, List
 from pydantic import BaseModel, Field
 from app.config import get_config
-from app.schemas.datafile_schemas import DatafileSelectResponse
+from app.schemas.document_schemas import DocumentSelectResponse
 
 cfg = get_config()
 
@@ -14,9 +14,9 @@ cfg = get_config()
 class FavoriteInsertRequest(BaseModel):
     """
     Pydantic schema for request to create a new favorite entity.
-    Requires the datafile ID to be specified.
+    Requires the document ID to be specified.
     """
-    datafile_id: int
+    document_id: int
 
 
 class FavoriteInsertResponse(BaseModel):
@@ -30,14 +30,14 @@ class FavoriteInsertResponse(BaseModel):
 class FavoriteSelectResponse(BaseModel):
     """
     Pydantic schema for the response after retrieving a favorite entity.
-    Includes the favorite ID, date of creation, user ID, datafile ID,
-    and the details of the related datafile.
+    Includes the favorite ID, date of creation, user ID, document ID,
+    and the details of the related document.
     """
     id: int
     created_date: int
     user_id: int
-    datafile_id: int
-    favorite_datafile: DatafileSelectResponse
+    document_id: int
+    favorite_document: DocumentSelectResponse
 
 
 class FavoriteDeleteResponse(BaseModel):

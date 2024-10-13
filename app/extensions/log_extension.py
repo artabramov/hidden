@@ -1,7 +1,7 @@
 """
 This module contains asynchronous functions that handle post-processing
 actions for various entities, including user registrations, updates, and
-logins; collection and datafile operations; comment management; download
+logins; collection and document operations; comment management; download
 tracking; and favorite interactions. Each function logs specific actions
 performed on these entities, capturing details about the request,
 current user, and the entity involved. The log entries are inserted into
@@ -20,7 +20,7 @@ from fastapi import Request
 from app.database import Base
 from app.models.user_model import User
 from app.models.collection_model import Collection
-from app.models.datafile_model import Datafile
+from app.models.document_model import Document
 from app.models.comment_model import Comment
 from app.models.download_model import Download
 from app.models.favorite_model import Favorite
@@ -43,8 +43,8 @@ LOG_AFTER_COLLECTION_SELECT = True
 LOG_AFTER_COLLECTION_UPDATE = True
 LOG_AFTER_COLLECTION_DELETE = True
 LOG_AFTER_COLLECTION_LIST = False
-LOG_AFTER_DATAFILE_UPLOAD = True
-LOG_AFTER_DATAFILE_SELECT = True
+LOG_AFTER_DOCUMENT_UPLOAD = True
+LOG_AFTER_DOCUMENT_SELECT = True
 LOG_AFTER_COMMENT_INSERT = True
 LOG_AFTER_COMMENT_SELECT = True
 LOG_AFTER_COMMENT_UPDATE = True
@@ -422,33 +422,33 @@ async def after__insert(
     cache_manager: CacheManager,
     request: Request,
     current_user: User,
-    datafile: Datafile
-) -> Datafile:
+    document: Document
+) -> Document:
     """
-    Logs a datafile upload event, capturing details about the datafile
-    and the request. Returns the uploaded datafile.
+    Logs a document upload event, capturing details about the document
+    and the request. Returns the uploaded document.
     """
-    if LOG_AFTER_DATAFILE_UPLOAD:
-        log = Log(current_user, request, datafile, LogAction.insert)
+    if LOG_AFTER_DOCUMENT_UPLOAD:
+        log = Log(current_user, request, document, LogAction.insert)
         await entity_manager.insert(log)
-    return datafile
+    return document
 
 
-async def after_datafile_select(
+async def after_document_select(
     entity_manager: EntityManager,
     cache_manager: CacheManager,
     request: Request,
     current_user: User,
-    datafile: Datafile
-) -> Datafile:
+    document: Document
+) -> Document:
     """
-    Logs a datafile selection event, capturing details about the
-    datafile and the request. Returns the selected datafile.
+    Logs a document selection event, capturing details about the
+    document and the request. Returns the selected document.
     """
-    if LOG_AFTER_DATAFILE_SELECT:
-        log = Log(current_user, request, datafile, LogAction.select)
+    if LOG_AFTER_DOCUMENT_SELECT:
+        log = Log(current_user, request, document, LogAction.select)
         await entity_manager.insert(log)
-    return datafile
+    return document
 
 
 async def after_comment_insert(

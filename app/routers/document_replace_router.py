@@ -7,43 +7,43 @@ from app.cache import get_cache
 from app.decorators.locked_decorator import locked
 from app.models.user_model import User, UserRole
 from app.models.collection_model import Collection
-from app.models.datafile_model import Datafile
+from app.models.document_model import Document
 from app.models.revision_model import Revision
 from app.hooks import Hook
 from app.auth import auth
 from app.repository import Repository
 from app.config import get_config
-from app.schemas.datafile_schemas import DatafileReplaceResponse
+from app.schemas.document_schemas import DocumentReplaceResponse
 from app.managers.file_manager import FileManager
 from app.helpers.image_helper import thumbnail_create
 from app.errors import E
 from app.constants import (
     LOC_PATH, ERR_RESOURCE_NOT_FOUND, ERR_RESOURCE_LOCKED,
-    HOOK_BEFORE_DATAFILE_REPLACE, HOOK_AFTER_DATAFILE_REPLACE)
+    HOOK_BEFORE_DOCUMENT_REPLACE, HOOK_AFTER_DOCUMENT_REPLACE)
 
 cfg = get_config()
 router = APIRouter()
 
 
-@router.post("/datafile/{datafile_id}", summary="Replace a datafile",
+@router.post("/document/{document_id}", summary="Replace a document",
              response_class=JSONResponse, status_code=status.HTTP_201_CREATED,
-             response_model=DatafileReplaceResponse, tags=["Datafiles"])
+             response_model=DocumentReplaceResponse, tags=["Documents"])
 @locked
-async def datafile_replace(
-    datafile_id: int, file: UploadFile = File(...),
+async def document_replace(
+    document_id: int, file: UploadFile = File(...),
     session=Depends(get_session), cache=Depends(get_cache),
     current_user: User = Depends(auth(UserRole.editor))
-) -> DatafileReplaceResponse:
+) -> DocumentReplaceResponse:
 
-    datafile_repository = Repository(session, cache, Datafile)
-    datafile = await datafile_repository.select(id=datafile_id)
+    document_repository = Repository(session, cache, Document)
+    document = await document_repository.select(id=document_id)
 
-    if not datafile:
-        raise E([LOC_PATH, "datafile_id"], datafile_id,
+    if not document:
+        raise E([LOC_PATH, "document_id"], document_id,
                 ERR_RESOURCE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
 
-    elif datafile.is_locked:
-        raise E([LOC_PATH, "datafile_id"], datafile_id,
+    elif document.is_locked:
+        raise E([LOC_PATH, "document_id"], document_id,
                 ERR_RESOURCE_LOCKED, status.HTTP_423_LOCKED)
 
     # upload file
@@ -68,54 +68,54 @@ async def datafile_replace(
         # insert revision
         revision_repository = Repository(session, cache, Revision)
         revision = Revision(
-            current_user.id, datafile.id, revision_filename,
+            current_user.id, document.id, revision_filename,
             os.path.getsize(revision_path), file.filename, file.size,
             file.content_type, thumbnail_filename=thumbnail_filename)
         await revision_repository.insert(revision, commit=False)
 
         # update latest_revision_id
-        datafile.latest_revision_id = revision.id
-        await datafile_repository.update(datafile, commit=False)
+        document.latest_revision_id = revision.id
+        await document_repository.update(document, commit=False)
 
         # # update previous revision
         # revision_repository = Repository(session, cache, Revision)
-        # datafile.latest_revision.is_latest = False
+        # document.latest_revision.is_latest = False
         # await revision_repository.update(
-        #     datafile.latest_revision, commit=False)
+        #     document.latest_revision, commit=False)
 
-        # update datafile counters and name
+        # update document counters and name
         await revision_repository.lock_all()
-        datafile.revisions_count = await revision_repository.count_all(
-            datafile_id__eq=datafile.id)
-        datafile.revisions_size = await revision_repository.sum_all(
-            "revision_size", datafile_id__eq=datafile.id)
-        datafile.datafile_name = file.filename
-        await datafile_repository.update(datafile, commit=False)
+        document.revisions_count = await revision_repository.count_all(
+            document_id__eq=document.id)
+        document.revisions_size = await revision_repository.sum_all(
+            "revision_size", document_id__eq=document.id)
+        document.document_name = file.filename
+        await document_repository.update(document, commit=False)
 
         # update collection counters
-        if datafile.collection_id:
-            await datafile_repository.lock_all()
+        if document.collection_id:
+            await document_repository.lock_all()
 
-            datafile.datafile_collection.revisions_count = (
-                await datafile_repository.sum_all(
+            document.document_collection.revisions_count = (
+                await document_repository.sum_all(
                     "revisions_count",
-                    collection_id__eq=datafile.collection_id))
+                    collection_id__eq=document.collection_id))
 
-            datafile.datafile_collection.revisions_size = (
-                await datafile_repository.sum_all(
+            document.document_collection.revisions_size = (
+                await document_repository.sum_all(
                     "revisions_size",
-                    collection_id__eq=datafile.collection_id))
+                    collection_id__eq=document.collection_id))
 
             collection_repository = Repository(session, cache, Collection)
             await collection_repository.update(
-                datafile.datafile_collection, commit=False)
+                document.document_collection, commit=False)
 
         # execute hooks
         hook = Hook(session, cache, current_user=current_user)
-        await hook.do(HOOK_BEFORE_DATAFILE_REPLACE, datafile)
+        await hook.do(HOOK_BEFORE_DOCUMENT_REPLACE, document)
 
-        await datafile_repository.commit()
-        await hook.do(HOOK_AFTER_DATAFILE_REPLACE, datafile)
+        await document_repository.commit()
+        await hook.do(HOOK_AFTER_DOCUMENT_REPLACE, document)
 
     except Exception as e:
         await FileManager.delete(revision_path)
@@ -126,6 +126,6 @@ async def datafile_replace(
         raise e
 
     return {
-        "datafile_id": datafile.id,
+        "document_id": document.id,
         "revision_id": revision.id,
     }

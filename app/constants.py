@@ -67,7 +67,7 @@ ERR_SERVER_ERROR = "Internal server error"
 # Hook types used to manage various pre-event and post-event actions
 # within the app. These hooks are used to trigger corresponding funcs
 # that handle tasks related to app, users management, collections,
-# datafiles, comments, revisions, favorites, etc.
+# documents, comments, revisions, favorites, etc.
 
 # service hooks
 HOOK_ON_HEARTBEAT_RETRIEVE = "on_heartbeat_retrieve"
@@ -123,17 +123,17 @@ HOOK_BEFORE_MEMBER_DELETE = "before_member_delete"
 HOOK_AFTER_MEMBER_DELETE = "after_member_delete"
 HOOK_AFTER_MEMBER_LIST = "after_member_list"
 
-# datafile hooks
-HOOK_BEFORE_DATAFILE_UPLOAD = "before_datafile_upload"
-HOOK_AFTER_DATAFILE_UPLOAD = "after_datafile_upload"
-HOOK_BEFORE_DATAFILE_REPLACE = "before_datafile_replace"
-HOOK_AFTER_DATAFILE_REPLACE = "after_datafile_replace"
-HOOK_AFTER_DATAFILE_SELECT = "after_datafile_select"
-HOOK_BEFORE_DATAFILE_UPDATE = "before_datafile_update"
-HOOK_AFTER_DATAFILE_UPDATE = "after_datafile_update"
-HOOK_BEFORE_DATAFILE_DELETE = "before_datafile_delete"
-HOOK_AFTER_DATAFILE_DELETE = "after_datafile_delete"
-HOOK_AFTER_DATAFILE_LIST = "after_datafile_list"
+# document hooks
+HOOK_BEFORE_DOCUMENT_UPLOAD = "before_document_upload"
+HOOK_AFTER_DOCUMENT_UPLOAD = "after_document_upload"
+HOOK_BEFORE_DOCUMENT_REPLACE = "before_document_replace"
+HOOK_AFTER_DOCUMENT_REPLACE = "after_document_replace"
+HOOK_AFTER_DOCUMENT_SELECT = "after_document_select"
+HOOK_BEFORE_DOCUMENT_UPDATE = "before_document_update"
+HOOK_AFTER_DOCUMENT_UPDATE = "after_document_update"
+HOOK_BEFORE_DOCUMENT_DELETE = "before_document_delete"
+HOOK_AFTER_DOCUMENT_DELETE = "after_document_delete"
+HOOK_AFTER_DOCUMENT_LIST = "after_document_list"
 
 # comment hooks
 HOOK_BEFORE_COMMENT_INSERT = "before_comment_insert"

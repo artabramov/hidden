@@ -16,8 +16,8 @@ openapi_tags = [
         "description": "Manage members."
     },
     {
-        "name": "Datafiles",
-        "description": "Operations with datafiles."
+        "name": "Documents",
+        "description": "Operations with documents."
     },
     {
         "name": "Comments",
@@ -33,6 +33,6 @@ openapi_tags = [
     },
     {
         "name": "Services",
-        "description": "Manage revisions of datafiles."
+        "description": "Manage revisions of documents."
     }
 ]

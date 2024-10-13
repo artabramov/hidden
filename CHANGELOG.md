@@ -16,8 +16,8 @@
 - **Refactoring**: Extracted various actions into hooks for improved modularity and maintainability.
 
 ## Version 0.0.43 (2024-09-28)
-- **Fixed bug**: Resolved a bug related to the relationship between datafiles and revisions.
-- **Renamed models**: Updated the SQLAlchemy model names from `document` to `datafile` and from `upload` to `revision` for improved clarity and accuracy.
+- **Fixed bug**: Resolved a bug related to the relationship between documents and revisions.
+- **Renamed models**: Updated the SQLAlchemy model names from `document` to `document` and from `upload` to `revision` for improved clarity and accuracy.
 
 ## Version 0.0.42 (2024-09-24)
 - **Added constants**: Introduced a dedicated module for constants, improving code organization and maintainability.
@@ -67,7 +67,7 @@
   and consistency in multi-user environments.
 
 ## Version 0.0.31 (2024-08-29)
-- Added filters for datafile count and datafile size in the collections
+- Added filters for document count and document size in the collections
   list router.
 
 ## Version 0.0.30 (2024-08-27)
@@ -79,7 +79,7 @@
 ## Version 0.0.29 (2024-08-25)
 - Added an example extension for managing application hooks.
 - Added lifecycle hooks for user actions, collection operations, and
-  datafile management.
+  document management.
 
 ## Version 0.0.28 (2024-08-25)
 - Added an editable field for user signatures, allowing users to input
@@ -94,7 +94,7 @@
 
 ## Version 0.0.26 (2024-08-24)
 - Added download tracking functionality, including a counter for
-  datafile downloads and detailed record-keeping for each download event.
+  document downloads and detailed record-keeping for each download event.
 - Added endpoints and functionality to retrieve and manage download
   events, including listing and viewing individual downloads.
 
@@ -134,12 +134,12 @@
   broken relationships, ensuring data integrity.
 
 ## Version 0.0.19 (2024-08-18)
-- Added a static endpoint for retrieving datafile thumbnails.
+- Added a static endpoint for retrieving document thumbnails.
 - Refactored code structure and organization for better maintainability
   and performance.
 
 ## Version 0.0.18 (2024-08-18)
-- Implemented a route to retrieve datafile details by ID with access
+- Implemented a route to retrieve document details by ID with access
   level checks and post-retrieval actions via a hook.
 
 ## Version 0.0.17 (2024-08-18)

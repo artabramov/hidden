@@ -32,10 +32,10 @@ from app.routers import (
     member_insert_router, member_select_router, member_update_router,
     member_delete_router, member_list_router,
 
-    datafile_upload_router, datafile_replace_router,
-    datafile_download_router, datafile_select_router,
-    datafile_update_router, datafile_delete_router,
-    datafile_list_router,
+    document_upload_router, document_replace_router,
+    document_download_router, document_select_router,
+    document_update_router, document_delete_router,
+    document_list_router,
 
     comment_insert_router, comment_select_router, comment_update_router,
     comment_delete_router, comment_list_router,
@@ -120,14 +120,14 @@ app.include_router(member_update_router.router, prefix=cfg.APP_PREFIX)
 app.include_router(member_delete_router.router, prefix=cfg.APP_PREFIX)
 app.include_router(member_list_router.router, prefix=cfg.APP_PREFIX)
 
-# datafile routers
-app.include_router(datafile_upload_router.router, prefix=cfg.APP_PREFIX)
-app.include_router(datafile_replace_router.router, prefix=cfg.APP_PREFIX)
-app.include_router(datafile_select_router.router, prefix=cfg.APP_PREFIX)
-app.include_router(datafile_download_router.router, prefix=cfg.APP_PREFIX)
-app.include_router(datafile_update_router.router, prefix=cfg.APP_PREFIX)
-app.include_router(datafile_delete_router.router, prefix=cfg.APP_PREFIX)
-app.include_router(datafile_list_router.router, prefix=cfg.APP_PREFIX)
+# document routers
+app.include_router(document_upload_router.router, prefix=cfg.APP_PREFIX)
+app.include_router(document_replace_router.router, prefix=cfg.APP_PREFIX)
+app.include_router(document_select_router.router, prefix=cfg.APP_PREFIX)
+app.include_router(document_download_router.router, prefix=cfg.APP_PREFIX)
+app.include_router(document_update_router.router, prefix=cfg.APP_PREFIX)
+app.include_router(document_delete_router.router, prefix=cfg.APP_PREFIX)
+app.include_router(document_list_router.router, prefix=cfg.APP_PREFIX)
 
 # revision routers
 app.include_router(revision_select_router.router, prefix=cfg.APP_PREFIX)

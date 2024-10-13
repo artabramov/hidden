@@ -8,7 +8,7 @@ from app.database import get_session
 from app.cache import get_cache
 from app.decorators.locked_decorator import locked
 from app.models.user_model import User, UserRole
-from app.models.datafile_model import Datafile
+from app.models.document_model import Document
 from app.models.favorite_model import Favorite
 from app.schemas.favorite_schemas import (
     FavoriteInsertRequest, FavoriteInsertResponse)
@@ -34,28 +34,28 @@ async def favorite_insert(
 ) -> FavoriteInsertResponse:
     """
     FastAPI router for creating a comment entity. The router verifies
-    if the specified datafile exists, creates a favorite record if it
-    does not already exist for the current user and datafile, updates
-    the favorites count for the datafile, and executes related hooks.
+    if the specified document exists, creates a favorite record if it
+    does not already exist for the current user and document, updates
+    the favorites count for the document, and executes related hooks.
     Returns the ID of the created favorite in a JSON response. The
     current user should have a reader role or higher. Returns a 201
-    response on success, a 404 error if the datafile is not found,
+    response on success, a 404 error if the document is not found,
     and a 403 error if authentication fails or the user does not have
     the required role.
     """
-    datafile_repository = Repository(session, cache, Datafile)
-    datafile = await datafile_repository.select(id__eq=schema.datafile_id)
+    document_repository = Repository(session, cache, Document)
+    document = await document_repository.select(id__eq=schema.document_id)
 
-    if not datafile:
-        raise E([LOC_BODY, "datafile_id"], schema.datafile_id,
+    if not document:
+        raise E([LOC_BODY, "document_id"], schema.document_id,
                 ERR_RESOURCE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
 
     favorite_repository = Repository(session, cache, Favorite)
     favorite = await favorite_repository.select(
-        user_id__eq=current_user.id, datafile_id__eq=schema.datafile_id)
+        user_id__eq=current_user.id, document_id__eq=schema.document_id)
 
     if not favorite:
-        favorite = Favorite(current_user.id, datafile.id)
+        favorite = Favorite(current_user.id, document.id)
         await favorite_repository.insert(favorite, commit=False)
 
     hook = Hook(session, cache, current_user=current_user)

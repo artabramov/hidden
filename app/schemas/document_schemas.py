@@ -7,6 +7,8 @@ documents.
 from typing import Optional, Literal, List, Union
 from pydantic import BaseModel, Field, field_validator
 from app.schemas.user_schemas import UserSelectResponse
+from app.schemas.member_schemas import MemberSelectResponse
+from app.schemas.collection_schemas import CollectionSelectResponse
 from app.schemas.revision_schemas import RevisionSelectResponse
 from app.validators.document_validators import (
     validate_document_summary, validate_document_name, validate_tags)
@@ -46,6 +48,8 @@ class DocumentSelectResponse(BaseModel):
 
     document_tags: list
     document_user: UserSelectResponse
+    document_collection: Optional[CollectionSelectResponse] = None
+    document_member: Optional[MemberSelectResponse] = None
     latest_revision: RevisionSelectResponse
 
 

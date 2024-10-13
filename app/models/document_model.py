@@ -110,5 +110,11 @@ class Document(Base):
 
             "document_tags": self.tag_values,
             "document_user": self.document_user.to_dict(),
+            "document_collection": (
+                self.document_collection.to_dict() if self.document_collection
+                else None),
+            "document_member": (
+                self.document_member.to_dict() if self.document_member
+                else None),
             "latest_revision": self.latest_revision.to_dict(),
         }

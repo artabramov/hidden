@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.0.47 (2024-10-13)
+- **Added members**: Implemented member entities.
+
 ## Version 0.0.46 (2024-10-11)
 - **Added heartbeats**: Implemented heartbeat functionality for monitoring.
 - **Added CORS support**: Enabled Cross-Origin Resource Sharing for better API accessibility.

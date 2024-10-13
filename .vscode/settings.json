@@ -1,5 +1,5 @@
 {
-    "window.zoomLevel": 0,
+    "window.zoomLevel": 1,
     "editor.rulers": [72, 79],
     "editor.minimap.scale": 3,
     "python.languageServer": "Pylance",
@@ -12,5 +12,9 @@
     ],
     "flake8.args": [
         "--max-line-length=79",
-    ]
+    ],
+    "search.exclude": {
+        "**/docs/_build/**": true,
+        "**/docs/autodoc/**": true,
+    }
 }

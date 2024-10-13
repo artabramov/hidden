@@ -5,6 +5,7 @@ from app.cache import get_cache
 from app.decorators.locked_decorator import locked
 from app.models.user_model import User, UserRole
 from app.models.member_model import Member
+from app.models.document_model import Document
 from app.schemas.member_schemas import MemberDeleteResponse
 from app.repository import Repository
 from app.errors import E
@@ -34,6 +35,9 @@ async def member_delete(
                 ERR_RESOURCE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
 
     await member_repository.delete(member, commit=False)
+
+    document_repository = Repository(session, cache, Document)
+    await document_repository.delete_all_from_cache()
 
     hook = Hook(session, cache, current_user=current_user)
     await hook.do(HOOK_BEFORE_MEMBER_DELETE, member)

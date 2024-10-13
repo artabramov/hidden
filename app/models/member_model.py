@@ -29,8 +29,7 @@ class Member(Base):
         "User", back_populates="user_members", lazy="joined")
 
     member_documents = relationship(
-        "Document", back_populates="document_member",
-        cascade="all, delete-orphan")
+        "Document", back_populates="document_member")
 
     def __init__(self, user_id: int, member_name: str,
                  member_summary: str = None, member_contacts: str = None):

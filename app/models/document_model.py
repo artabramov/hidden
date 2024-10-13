@@ -26,7 +26,8 @@ class Document(Base):
     collection_id = Column(
         BigInteger, ForeignKey("collections.id"), index=True, nullable=True)
     member_id = Column(
-        BigInteger, ForeignKey("members.id"), index=True, nullable=True)
+        BigInteger, ForeignKey("members.id", ondelete="SET NULL"), index=True,
+        nullable=True)
     latest_revision_id = Column(BigInteger, index=True, nullable=True)
     document_name = Column(String(256), nullable=True)
     document_summary = Column(String(512), nullable=True)

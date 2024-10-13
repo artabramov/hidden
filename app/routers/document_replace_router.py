@@ -6,7 +6,6 @@ from app.database import get_session
 from app.cache import get_cache
 from app.decorators.locked_decorator import locked
 from app.models.user_model import User, UserRole
-from app.models.collection_model import Collection
 from app.models.document_model import Document
 from app.models.revision_model import Revision
 from app.hooks import Hook
@@ -91,24 +90,6 @@ async def document_replace(
             "revision_size", document_id__eq=document.id)
         document.document_name = file.filename
         await document_repository.update(document, commit=False)
-
-        # update collection counters
-        if document.collection_id:
-            await document_repository.lock_all()
-
-            document.document_collection.revisions_count = (
-                await document_repository.sum_all(
-                    "revisions_count",
-                    collection_id__eq=document.collection_id))
-
-            document.document_collection.revisions_size = (
-                await document_repository.sum_all(
-                    "revisions_size",
-                    collection_id__eq=document.collection_id))
-
-            collection_repository = Repository(session, cache, Collection)
-            await collection_repository.update(
-                document.document_collection, commit=False)
 
         # execute hooks
         hook = Hook(session, cache, current_user=current_user)

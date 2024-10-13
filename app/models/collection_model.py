@@ -30,19 +30,15 @@ class Collection(Base):
     _cacheable = True
 
     id = Column(BigInteger, primary_key=True)
-    created_date = Column(Integer, index=True,
-                          default=lambda: int(time.time()))
-    updated_date = Column(Integer, index=True,
-                          onupdate=lambda: int(time.time()), default=0)
+    created_date = Column(
+        Integer, index=True, default=lambda: int(time.time()))
+    updated_date = Column(
+        Integer, index=True, onupdate=lambda: int(time.time()), default=0)
     user_id = Column(BigInteger, ForeignKey("users.id"), index=True)
-
     is_locked = Column(Boolean, index=True)
     collection_name = Column(String(256), index=True, unique=True)
     collection_summary = Column(String(512), nullable=True)
-
     documents_count = Column(Integer, index=True, default=0)
-    revisions_count = Column(Integer, index=True, default=0)
-    revisions_size = Column(BigInteger, index=True, default=0)
 
     collection_user = relationship(
         "User", back_populates="user_collections", lazy="joined")
@@ -63,8 +59,6 @@ class Collection(Base):
         self.collection_name = collection_name
         self.collection_summary = collection_summary
         self.documents_count = 0
-        self.revisions_count = 0
-        self.revisions_size = 0
 
     def to_dict(self):
         """
@@ -84,7 +78,5 @@ class Collection(Base):
             "collection_name": self.collection_name,
             "collection_summary": self.collection_summary,
             "documents_count": self.documents_count,
-            "revisions_count": self.revisions_count,
-            "revisions_size": self.revisions_size,
             "collection_user": self.collection_user.to_dict(),
         }

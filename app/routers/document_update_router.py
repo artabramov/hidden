@@ -95,12 +95,6 @@ async def document_update(
         collection.documents_count = await document_repository.count_all(
             collection_id__eq=collection.id)
 
-        collection.revisions_count = await document_repository.sum_all(
-            "revisions_count", collection_id__eq=collection.id)
-
-        collection.revisions_size = await document_repository.sum_all(
-            "revisions_size", collection_id__eq=collection.id)
-
         await collection_repository.update(collection, commit=False)
 
     # If the document already has a related collection,
@@ -111,16 +105,6 @@ async def document_update(
 
         document.document_collection.documents_count = (
             await document_repository.count_all(
-                collection_id__eq=document.document_collection.id))
-
-        document.document_collection.revisions_count = (
-            await document_repository.sum_all(
-                "revisions_count",
-                collection_id__eq=document.document_collection.id))
-
-        document.document_collection.revisions_size = (
-            await document_repository.sum_all(
-                "revisions_size",
                 collection_id__eq=document.document_collection.id))
 
         await collection_repository.update(

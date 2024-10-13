@@ -54,8 +54,6 @@ class CollectionSelectResponse(BaseModel):
     collection_name: str
     collection_summary: Optional[str] = None
     documents_count: int
-    revisions_count: int
-    revisions_size: int
     collection_user: UserSelectResponse
 
 
@@ -105,15 +103,10 @@ class CollectionListRequest(BaseModel):
     is_locked__eq: Optional[bool] = None
     documents_count__ge: Optional[int] = None
     documents_count__le: Optional[int] = None
-    revisions_count__ge: Optional[int] = None
-    revisions_count__le: Optional[int] = None
-    revisions_size__ge: Optional[int] = None
-    revisions_size__le: Optional[int] = None
     offset: int = Field(ge=0)
     limit: int = Field(ge=1, le=200)
     order_by: Literal["id", "created_date", "updated_date", "user_id",
-                      "collection_name", "documents_count", "revisions_count",
-                      "revisions_size"]
+                      "collection_name", "documents_count"]
     order: Literal["asc", "desc", "rand"]
 
 

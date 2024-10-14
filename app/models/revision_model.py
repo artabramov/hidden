@@ -94,7 +94,9 @@ def after_delete_listener(mapper, connection, revision: Revision):
     SQLAlchemy's after_delete event for the revision entity.
     """
     asyncio.get_event_loop().create_task(delete_revision(revision))
-    asyncio.get_event_loop().create_task(delete_thumbnail(revision))
+
+    if revision.thumbnail_filename:
+        asyncio.get_event_loop().create_task(delete_thumbnail(revision))
 
 
 async def delete_revision(revision: Revision):

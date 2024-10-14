@@ -2,11 +2,15 @@
 import time
 import os
 from sqlalchemy.orm import relationship
-from sqlalchemy import Column, BigInteger, Integer, ForeignKey, String
+from sqlalchemy import Column, BigInteger, Integer, ForeignKey, String, event
 from app.config import get_config
 from app.database import Base
+import asyncio
+from app.log import get_log
+from app.managers.file_manager import FileManager
 
 cfg = get_config()
+log = get_log()
 
 
 class Member(Base):
@@ -61,3 +65,18 @@ class Member(Base):
             "emblem_url": self.emblem_url,
             "member_user": self.member_user.to_dict(),
         }
+
+
+@event.listens_for(Member, "after_delete")
+def after_delete_listener(mapper, connection, member: Member):
+    if member.emblem_filename:
+        asyncio.get_event_loop().create_task(delete_emblem(member))
+
+
+async def delete_emblem(member: Member):
+    try:
+        await FileManager.delete(member.emblem_path)
+
+    except Exception as e:
+        log.error("File deletion failed; module=member_model; "
+                  "function=delete_emblem; e=%s;" % str(e))

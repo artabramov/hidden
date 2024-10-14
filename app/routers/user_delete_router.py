@@ -50,12 +50,11 @@ async def user_delete(
         raise E([LOC_PATH, "user_id"], user_id,
                 ERR_RESOURCE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
 
-    try:
-        await user_repository.delete(user, commit=False)
-
-    except Exception:
+    elif user.last_login_date > 0:
         raise E([LOC_PATH, "user_id"], user_id,
                 ERR_RESOURCE_FORBIDDEN, status.HTTP_403_FORBIDDEN)
+
+    await user_repository.delete(user, commit=False)
 
     hook = Hook(session, cache, current_user=current_user)
     await hook.do(HOOK_BEFORE_USER_DELETE, user)

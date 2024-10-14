@@ -56,7 +56,6 @@ async def user_login(
                 ERR_USER_INACTIVE, status.HTTP_403_FORBIDDEN)
 
     if user.password_hash == get_hash(schema.user_password):
-        user.last_login_date = time.time()
         user.password_accepted = True
         user.password_attempts = 0
 

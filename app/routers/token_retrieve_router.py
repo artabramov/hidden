@@ -1,3 +1,4 @@
+import time
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 from app.database import get_session
@@ -59,6 +60,7 @@ async def token_retrieve(
     totp_accepted = schema.user_totp == user.get_totp(user.mfa_secret)
 
     if totp_accepted:
+        user.last_login_date = time.time()
         user.mfa_attempts = 0
         user.password_accepted = False
 

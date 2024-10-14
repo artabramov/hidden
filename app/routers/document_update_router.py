@@ -5,7 +5,7 @@ from app.cache import get_cache
 from app.decorators.locked_decorator import locked
 from app.models.user_model import User, UserRole
 from app.models.collection_model import Collection
-from app.models.member_model import Member
+from app.models.partner_model import Partner
 from app.models.document_model import Document
 from app.models.revision_model import Revision
 from app.schemas.document_schemas import (
@@ -52,14 +52,14 @@ async def document_update(
     document.latest_revision = await revision_repository.select(
         id=document.latest_revision_id)
 
-    # If a member ID is received, then validate the memeber.
+    # If a partner ID is received, then validate the memeber.
 
-    if schema.member_id:
-        member_repository = Repository(session, cache, Member)
-        member = await member_repository.select(id=schema.member_id)
+    if schema.partner_id:
+        partner_repository = Repository(session, cache, Partner)
+        partner = await partner_repository.select(id=schema.partner_id)
 
-        if not member:
-            raise E([LOC_BODY, "member_id"], schema.member_id,
+        if not partner:
+            raise E([LOC_BODY, "partner_id"], schema.partner_id,
                     ERR_VALUE_INVALID, status.HTTP_422_UNPROCESSABLE_ENTITY)
 
     # If a collection ID is received, then validate the collection.
@@ -81,7 +81,7 @@ async def document_update(
     # Update the data of the document itself.
 
     document.collection_id = schema.collection_id
-    document.member_id = schema.member_id
+    document.partner_id = schema.partner_id
     document.document_name = schema.document_name
     document.document_summary = schema.document_summary
     await document_repository.update(document, commit=False)

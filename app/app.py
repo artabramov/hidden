@@ -29,8 +29,8 @@ from app.routers import (
     collection_update_router, collection_delete_router,
     collection_list_router,
 
-    member_insert_router, member_select_router, member_update_router,
-    member_delete_router, member_list_router, emblem_upload_router,
+    partner_insert_router, partner_select_router, partner_update_router,
+    partner_delete_router, partner_list_router, emblem_upload_router,
     emblem_delete_router,
 
     document_upload_router, document_replace_router,
@@ -114,12 +114,12 @@ app.include_router(collection_update_router.router, prefix=cfg.APP_PREFIX)
 app.include_router(collection_delete_router.router, prefix=cfg.APP_PREFIX)
 app.include_router(collection_list_router.router, prefix=cfg.APP_PREFIX)
 
-# member routers
-app.include_router(member_insert_router.router, prefix=cfg.APP_PREFIX)
-app.include_router(member_select_router.router, prefix=cfg.APP_PREFIX)
-app.include_router(member_update_router.router, prefix=cfg.APP_PREFIX)
-app.include_router(member_delete_router.router, prefix=cfg.APP_PREFIX)
-app.include_router(member_list_router.router, prefix=cfg.APP_PREFIX)
+# partner routers
+app.include_router(partner_insert_router.router, prefix=cfg.APP_PREFIX)
+app.include_router(partner_select_router.router, prefix=cfg.APP_PREFIX)
+app.include_router(partner_update_router.router, prefix=cfg.APP_PREFIX)
+app.include_router(partner_delete_router.router, prefix=cfg.APP_PREFIX)
+app.include_router(partner_list_router.router, prefix=cfg.APP_PREFIX)
 app.include_router(emblem_upload_router.router, prefix=cfg.APP_PREFIX)
 app.include_router(emblem_delete_router.router, prefix=cfg.APP_PREFIX)
 

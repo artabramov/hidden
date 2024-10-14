@@ -11,7 +11,7 @@ and other related actions.
 from typing import List
 from app.models.user_model import User
 from app.models.collection_model import Collection
-from app.models.member_model import Member
+from app.models.partner_model import Partner
 from app.models.document_model import Document
 from app.models.revision_model import Revision
 from app.models.comment_model import Comment
@@ -432,90 +432,90 @@ async def after_collection_list(
     ...
 
 
-async def before_member_insert(
+async def before_partner_insert(
     entity_manager: EntityManager, cache_manager: CacheManager,
-    current_user: User, member: Member
+    current_user: User, partner: Partner
 ):
     """
-    Executes before a member is created. Receives the member
+    Executes before a partner is created. Receives the partner
     entity and performs any necessary pre-processing actions.
     """
     ...
 
 
-async def after_member_insert(
+async def after_partner_insert(
     entity_manager: EntityManager, cache_manager: CacheManager,
-    current_user: User, member: Member
+    current_user: User, partner: Partner
 ):
     """
-    Executes after a member is created. Receives the member
+    Executes after a partner is created. Receives the partner
     entity and performs any necessary post-processing actions.
     """
     ...
 
 
-async def after_member_select(
+async def after_partner_select(
     entity_manager: EntityManager, cache_manager: CacheManager,
-    current_user: User, member: Member
+    current_user: User, partner: Partner
 ):
     """
-    Executes after a member is selected. Receives the member
+    Executes after a partner is selected. Receives the partner
     entity and performs any necessary post-processing actions.
     """
     ...
 
 
-async def before_member_update(
+async def before_partner_update(
     entity_manager: EntityManager, cache_manager: CacheManager,
-    current_user: User, member: Member
+    current_user: User, partner: Partner
 ):
     """
-    Executes before a member is updated. Receives the member
+    Executes before a partner is updated. Receives the partner
     entity and performs any necessary pre-processing actions.
     """
     ...
 
 
-async def after_member_update(
+async def after_partner_update(
     entity_manager: EntityManager, cache_manager: CacheManager,
-    current_user: User, member: Member
+    current_user: User, partner: Partner
 ):
     """
-    Executes after a member is updated. Receives the member
+    Executes after a partner is updated. Receives the partner
     entity and performs any necessary post-processing actions.
     """
     ...
 
 
-async def before_member_delete(
+async def before_partner_delete(
     entity_manager: EntityManager, cache_manager: CacheManager,
-    current_user: User, member: Member
+    current_user: User, partner: Partner
 ):
     """
-    Executes before a member is deleted. Receives the member
+    Executes before a partner is deleted. Receives the partner
     entity and performs any necessary pre-processing actions.
     """
     ...
 
 
-async def after_member_delete(
+async def after_partner_delete(
     entity_manager: EntityManager, cache_manager: CacheManager,
-    current_user: User, member: Member
+    current_user: User, partner: Partner
 ):
     """
-    Executes after a member is deleted. Receives the member
+    Executes after a partner is deleted. Receives the partner
     entity and performs any necessary post-processing actions.
     """
     ...
 
 
-async def after_member_list(
+async def after_partner_list(
     entity_manager: EntityManager, cache_manager: CacheManager,
-    current_user: User, members: List[Member]
+    current_user: User, partners: List[Partner]
 ):
     """
-    Executes after a member list is retrieved. Receives the list
-    of member entities and performs any necessary post-processing
+    Executes after a partner list is retrieved. Receives the list
+    of partner entities and performs any necessary post-processing
     actions.
     """
     ...
@@ -523,10 +523,10 @@ async def after_member_list(
 
 async def before_emblem_upload(
     entity_manager: EntityManager, cache_manager: CacheManager,
-    current_user: User, member: Member
+    current_user: User, partner: Partner
 ):
     """
-    Executes before member emblem is uploaded. Receives the member
+    Executes before partner emblem is uploaded. Receives the partner
     entity and performs any necessary pre-processing actions.
     """
     ...
@@ -534,10 +534,10 @@ async def before_emblem_upload(
 
 async def after_emblem_upload(
     entity_manager: EntityManager, cache_manager: CacheManager,
-    current_user: User, member: Member
+    current_user: User, partner: Partner
 ):
     """
-    Executes after member emblem is uploaded. Receives the member
+    Executes after partner emblem is uploaded. Receives the partner
     entity and performs any necessary post-processing actions.
     """
     ...
@@ -545,10 +545,10 @@ async def after_emblem_upload(
 
 async def before_emblem_delete(
     entity_manager: EntityManager, cache_manager: CacheManager,
-    current_user: User, member: Member
+    current_user: User, partner: Partner
 ):
     """
-    Executes before member emblem is removed. Receives the member
+    Executes before partner emblem is removed. Receives the partner
     entity and performs any necessary pre-processing actions.
     """
     ...
@@ -556,10 +556,10 @@ async def before_emblem_delete(
 
 async def after_emblem_delete(
     entity_manager: EntityManager, cache_manager: CacheManager,
-    current_user: User, member: Member
+    current_user: User, partner: Partner
 ):
     """
-    Executes after member emblem is removed. Receives the member
+    Executes after partner emblem is removed. Receives the partner
     entity and performs any necessary post-processing actions.
     """
     ...

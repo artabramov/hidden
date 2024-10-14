@@ -1,10 +1,10 @@
 # Changelog
 
 ## Version 0.0.48 (2024-10-13)
-- **Added member emblems**: Implemented member emblems.
+- **Added partner emblems**: Implemented partner emblems.
 
 ## Version 0.0.47 (2024-10-13)
-- **Added members**: Implemented member entities.
+- **Added partners**: Implemented partner entities.
 
 ## Version 0.0.46 (2024-10-11)
 - **Added heartbeats**: Implemented heartbeat functionality for monitoring.

@@ -13,8 +13,8 @@ cfg = get_config()
 log = get_log()
 
 
-class Member(Base):
-    __tablename__ = "members"
+class Partner(Base):
+    __tablename__ = "partners"
     _cacheable = True
 
     id = Column(BigInteger, primary_key=True)
@@ -24,23 +24,23 @@ class Member(Base):
                           onupdate=lambda: int(time.time()), default=0)
     user_id = Column(BigInteger, ForeignKey("users.id"), index=True)
 
-    member_name = Column(String(256), index=True, unique=True)
-    member_summary = Column(String(512), nullable=True)
-    member_contacts = Column(String(512), nullable=True)
+    partner_name = Column(String(256), index=True, unique=True)
+    partner_summary = Column(String(512), nullable=True)
+    partner_contacts = Column(String(512), nullable=True)
     emblem_filename = Column(String(128), nullable=True, unique=True)
 
-    member_user = relationship(
-        "User", back_populates="user_members", lazy="joined")
+    partner_user = relationship(
+        "User", back_populates="user_partners", lazy="joined")
 
-    member_documents = relationship(
-        "Document", back_populates="document_member")
+    partner_documents = relationship(
+        "Document", back_populates="document_partner")
 
-    def __init__(self, user_id: int, member_name: str,
-                 member_summary: str = None, member_contacts: str = None):
+    def __init__(self, user_id: int, partner_name: str,
+                 partner_summary: str = None, partner_contacts: str = None):
         self.user_id = user_id
-        self.member_name = member_name
-        self.member_summary = member_summary
-        self.member_contacts = member_contacts
+        self.partner_name = partner_name
+        self.partner_summary = partner_summary
+        self.partner_contacts = partner_contacts
 
     @property
     def emblem_url(self):
@@ -59,24 +59,24 @@ class Member(Base):
             "created_date": self.created_date,
             "updated_date": self.updated_date,
             "user_id": self.user_id,
-            "member_name": self.member_name,
-            "member_summary": self.member_summary,
-            "member_contacts": self.member_contacts,
+            "partner_name": self.partner_name,
+            "partner_summary": self.partner_summary,
+            "partner_contacts": self.partner_contacts,
             "emblem_url": self.emblem_url,
-            "member_user": self.member_user.to_dict(),
+            "partner_user": self.partner_user.to_dict(),
         }
 
 
-@event.listens_for(Member, "after_delete")
-def after_delete_listener(mapper, connection, member: Member):
-    if member.emblem_filename:
-        asyncio.get_event_loop().create_task(delete_emblem(member))
+@event.listens_for(Partner, "after_delete")
+def after_delete_listener(mapper, connection, partner: Partner):
+    if partner.emblem_filename:
+        asyncio.get_event_loop().create_task(delete_emblem(partner))
 
 
-async def delete_emblem(member: Member):
+async def delete_emblem(partner: Partner):
     try:
-        await FileManager.delete(member.emblem_path)
+        await FileManager.delete(partner.emblem_path)
 
     except Exception as e:
-        log.error("File deletion failed; module=member_model; "
+        log.error("File deletion failed; module=partner_model; "
                   "function=delete_emblem; e=%s;" % str(e))

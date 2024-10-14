@@ -51,8 +51,8 @@ class User(Base, MFAMixin, FernetMixin):
 
     user_collections = relationship(
         "Collection", back_populates="collection_user", lazy="noload")
-    user_members = relationship(
-        "Member", back_populates="member_user", lazy="noload")
+    user_partners = relationship(
+        "Partner", back_populates="partner_user", lazy="noload")
     user_documents = relationship(
         "Document", back_populates="document_user", lazy="noload")
     user_revisions = relationship(

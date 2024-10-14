@@ -12,8 +12,8 @@ openapi_tags = [
         "description": "Manage collections."
     },
     {
-        "name": "Members",
-        "description": "Manage members."
+        "name": "Partners",
+        "description": "Manage partners."
     },
     {
         "name": "Documents",

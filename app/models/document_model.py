@@ -25,8 +25,8 @@ class Document(Base):
         BigInteger, ForeignKey("users.id"), index=True, nullable=False)
     collection_id = Column(
         BigInteger, ForeignKey("collections.id"), index=True, nullable=True)
-    member_id = Column(
-        BigInteger, ForeignKey("members.id", ondelete="SET NULL"), index=True,
+    partner_id = Column(
+        BigInteger, ForeignKey("partners.id", ondelete="SET NULL"), index=True,
         nullable=True)
     latest_revision_id = Column(BigInteger, index=True, nullable=True)
     document_name = Column(String(256), nullable=True)
@@ -43,8 +43,8 @@ class Document(Base):
     document_collection = relationship(
         "Collection", back_populates="collection_documents", lazy="joined")
 
-    document_member = relationship(
-        "Member", back_populates="member_documents", lazy="joined")
+    document_partner = relationship(
+        "Partner", back_populates="partner_documents", lazy="joined")
 
     document_tags = relationship(
         "Tag", back_populates="tag_document", lazy="joined",
@@ -99,7 +99,7 @@ class Document(Base):
             "updated_date": self.updated_date,
             "user_id": self.user_id,
             "collection_id": self.collection_id,
-            "member_id": self.member_id,
+            "partner_id": self.partner_id,
 
             "document_name": self.document_name,
             "document_summary": self.document_summary,
@@ -114,8 +114,8 @@ class Document(Base):
             "document_collection": (
                 self.document_collection.to_dict() if self.document_collection
                 else None),
-            "document_member": (
-                self.document_member.to_dict() if self.document_member
+            "document_partner": (
+                self.document_partner.to_dict() if self.document_partner
                 else None),
             "latest_revision": self.latest_revision.to_dict(),
         }

@@ -163,11 +163,11 @@ app.include_router(option_list_router.router, prefix=cfg.APP_PREFIX)
 
 # service routers
 app.include_router(telemetry_retrieve_router.router, prefix=cfg.APP_PREFIX)
+app.include_router(heartbeat_retrieve_router.router, prefix=cfg.APP_PREFIX)
 app.include_router(lock_create_router.router, prefix=cfg.APP_PREFIX)
 app.include_router(lock_delete_router.router, prefix=cfg.APP_PREFIX)
 app.include_router(cache_erase_router.router, prefix=cfg.APP_PREFIX)
 app.include_router(custom_execute_router.router, prefix=cfg.APP_PREFIX)
-app.include_router(heartbeat_retrieve_router.router, prefix=cfg.APP_PREFIX)
 
 # The router is necessary to handle the redirect from /sphinx to /sphinx/
 # This ensures that requests to the endpoint with or without a trailing

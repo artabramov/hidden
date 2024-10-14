@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.0.49 (2024-10-143)
+- **Added activities extension**: Included by default extension for user activities.
+
 ## Version 0.0.48 (2024-10-13)
 - **Added partner emblems**: Implemented partner emblems.
 

@@ -75,11 +75,12 @@ async def lifespan(app: FastAPI):
     it exists, initializing the database schema, and registering hooks.
     Yields control back to the application after setup is complete.
     """
+    await remove_lock()
+    await load_hooks()
+
     async with sessionmanager.async_engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
-    await remove_lock()
-    await load_hooks()
     yield
 
 

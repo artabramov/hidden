@@ -17,7 +17,7 @@ from app.errors import E
 from app.hooks import Hook
 from app.auth import auth
 from app.constants import (
-    LOC_BODY, ERR_RESOURCE_NOT_FOUND, ERR_RESOURCE_LOCKED,
+    LOC_BODY, ERR_RESOURCE_LOCKED, ERR_VALUE_INVALID,
     HOOK_BEFORE_COMMENT_INSERT, HOOK_AFTER_COMMENT_INSERT)
 
 router = APIRouter()
@@ -48,7 +48,7 @@ async def comment_insert(
 
     if not document:
         raise E([LOC_BODY, "document_id"], schema.document_id,
-                ERR_RESOURCE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
+                ERR_VALUE_INVALID, status.HTTP_422_UNPROCESSABLE_ENTITY)
 
     elif document.is_locked:
         raise E([LOC_BODY, "document_id"], schema.document_id,

@@ -72,7 +72,7 @@ async def document_update(
 
         if not collection:
             raise E([LOC_BODY, "collection_id"], schema.collection_id,
-                    ERR_RESOURCE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
+                    ERR_VALUE_INVALID, status.HTTP_422_UNPROCESSABLE_ENTITY)
 
         elif collection.is_locked:
             raise E([LOC_BODY, "collection_id"], schema.collection_id,

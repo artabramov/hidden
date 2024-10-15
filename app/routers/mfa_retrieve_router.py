@@ -10,8 +10,8 @@ from app.models.user_model import User
 from app.errors import E
 from app.hooks import Hook
 from app.constants import (
-    LOC_QUERY, ERR_RESOURCE_NOT_FOUND, ERR_RESOURCE_FORBIDDEN,
-    ERR_VALUE_INVALID, HOOK_BEFORE_MFA_SELECT, HOOK_AFTER_MFA_SELECT)
+    LOC_QUERY, ERR_RESOURCE_FORBIDDEN, ERR_VALUE_INVALID,
+    HOOK_BEFORE_MFA_SELECT, HOOK_AFTER_MFA_SELECT)
 
 router = APIRouter()
 cfg = get_config()
@@ -38,7 +38,7 @@ async def mfa_retrieve(
 
     if not user:
         raise E([LOC_QUERY, "user_id"], user_id,
-                ERR_RESOURCE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
+                ERR_VALUE_INVALID, status.HTTP_422_UNPROCESSABLE_ENTITY)
 
     elif user.is_active:
         raise E([LOC_QUERY, "user_id"], user_id,

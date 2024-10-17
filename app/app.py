@@ -202,6 +202,7 @@ async def middleware_handler(request: Request, call_next):
     """
     ctx.request_start_time = time.time()
     ctx.trace_request_uuid = str(uuid4())
+    ctx.request = request
 
     log.debug("Request received; module=app; function=middleware_handler; "
               "elapsed_time=0; method=%s; url=%s; headers=%s;" % (

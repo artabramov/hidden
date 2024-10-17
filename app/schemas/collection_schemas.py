@@ -49,6 +49,7 @@ class CollectionSelectResponse(BaseModel):
     id: int
     created_date: int
     updated_date: int
+    locked_date: int
     user_id: int
     is_locked: bool
     collection_name: str
@@ -105,8 +106,9 @@ class CollectionListRequest(BaseModel):
     documents_count__le: Optional[int] = None
     offset: int = Field(ge=0)
     limit: int = Field(ge=1, le=200)
-    order_by: Literal["id", "created_date", "updated_date", "user_id",
-                      "collection_name", "documents_count"]
+    order_by: Literal["id", "created_date", "updated_date", "locked_date",
+                      "is_locked", "user_id", "collection_name",
+                      "documents_count"]
     order: Literal["asc", "desc", "rand"]
 
 

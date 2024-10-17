@@ -1,7 +1,10 @@
 # Changelog
 
-## Version 0.0.49 (2024-10-143)
-- **Added activities extension**: Included by default extension for user activities.
+## Version 0.0.50 (2024-10-17)
+- **Added lock date**: Introduced a locked date feature for the collection model.
+
+## Version 0.0.49 (2024-10-14)
+- **Added activities extension**: Included a default extension for logging user logins.
 
 ## Version 0.0.48 (2024-10-13)
 - **Added partner emblems**: Implemented partner emblems.

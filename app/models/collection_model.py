@@ -34,6 +34,7 @@ class Collection(Base):
         Integer, index=True, default=lambda: int(time.time()))
     updated_date = Column(
         Integer, index=True, onupdate=lambda: int(time.time()), default=0)
+    locked_date = Column(Integer, nullable=False, default=0)
     user_id = Column(BigInteger, ForeignKey("users.id"), index=True)
     is_locked = Column(Boolean, index=True)
     collection_name = Column(String(256), index=True, unique=True)
@@ -56,6 +57,7 @@ class Collection(Base):
         """
         self.user_id = user_id
         self.is_locked = is_locked
+        self.locked_date = int(time.time()) if self.is_locked else 0
         self.collection_name = collection_name
         self.collection_summary = collection_summary
         self.documents_count = 0
@@ -73,6 +75,7 @@ class Collection(Base):
             "id": self.id,
             "created_date": self.created_date,
             "updated_date": self.updated_date,
+            "locked_date": self.locked_date,
             "user_id": self.user_id,
             "is_locked": self.is_locked,
             "collection_name": self.collection_name,

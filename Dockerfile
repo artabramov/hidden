@@ -19,10 +19,8 @@ RUN apt install -y postgresql
 RUN apt install -y redis
 RUN apt install -y sudo
 RUN apt install -y wget
-# RUN apt install -y ffmpeg
 RUN apt install -y git
 RUN apt install -y vim
-# RUN apt install -y cron
 
 RUN pip3 install fastapi==0.111.0
 RUN pip3 install uvicorn==0.30.1
@@ -33,14 +31,12 @@ RUN pip3 install redis==5.0.7
 RUN pip3 install pyotp==2.9.0
 RUN pip3 install qrcode==7.4.2
 RUN pip3 install pillow==10.3.0
-# RUN pip3 install ffmpeg-python==0.2.0
 RUN pip3 install cryptography==42.0.8
 RUN pip3 install PyJWT==2.8.0
 RUN pip3 install asynctest==0.13.0
 RUN pip3 install coverage==7.5.4
 RUN pip3 install flake8==7.1.0
 RUN pip3 install safety
-# RUN pip3 install python-crontab==3.2.0
 
 # sphinx
 # sphinx-quickstart docs -q -p "hidden" -a "Artem Abramov" -v "0.0.1" -r "1" --no-batchfile
@@ -48,10 +44,6 @@ RUN pip3 install safety
 # make -C /hidden/docs html
 RUN pip3 install sphinx==8.0.2
 RUN pip3 install sphinx sphinx_rtd_theme
-
-# github
-# git tag -a v1.0.0 -m "version v.0.0.14"
-# git push --tags
 
 RUN mkdir /var/log/app
 RUN chmod -R 777 /var/log/app
@@ -77,8 +69,8 @@ RUN rm -r redis_exporter-v1.18.0.linux-amd64*
 # html
 RUN mkdir /var/www
 RUN mkdir /var/www/html
-# RUN echo "Hello, world!" > /var/www/html/index.html
-# RUN chmod 777 -R /var/www
+RUN echo "Hello, world!" > /var/www/html/index.html
+RUN chmod 777 -R /var/www
 
 EXPOSE 80
 ENTRYPOINT ["/hidden/entrypoint.sh"]

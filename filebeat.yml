@@ -1,0 +1,56 @@
+filebeat.inputs:
+- type: log
+  enabled: true
+  paths:
+    - /var/log/postgresql/*.log*
+    - /var/log/redis/redis-server.log*
+    - /var/log/app/*.log*
+  processors:
+    - dissect:
+        tokenizer: "%{}; module=%{module};%{}"
+        field: "message"
+        target_prefix: "dissect"
+        ignore_failure: true
+        trim_values: true
+    - dissect:
+        tokenizer: "%{}; function=%{function};%{}"
+        field: "message"
+        target_prefix: "dissect"
+        ignore_failure: true
+        trim_values: true
+    - dissect:
+        tokenizer: "%{}; elapsed_time=%{elapsed_time};%{}"
+        field: "message"
+        target_prefix: "dissect"
+        ignore_failure: true
+        trim_values: true
+
+output.elasticsearch:
+  enabled: true
+  hosts: ["host.docker.internal:9200"]
+  username: "elastic"
+  password: "changeme"
+  indices:
+    - index: "postgres-%{+yyyy.MM.dd}"
+      when.equals:
+        event.module: "postgresql"
+    - index: "redis-%{+yyyy.MM.dd}"
+      when.equals:
+        event.module: "redis"
+    - index: "app-%{+yyyy.MM.dd}"
+      when.contains:
+        log.file.path: "/var/log/app/"
+
+filebeat.modules:
+  - module: postgresql
+    log:
+      enabled: true
+      var.paths: ["/var/log/postgresql/*.log*"]
+  - module: redis
+    log:
+      enabled: true
+      var.paths: ["/var/log/redis/redis-server.log*"]
+    slowlog:
+      enabled: true
+      var.hosts: ["host.docker.internal:6378"]
+      var.password: "admin"

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>app.helpers package &mdash; Hidden  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="app.managers package" href="app.managers.html" />
+    <link rel="prev" title="app.decorators package" href="app.decorators.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Hidden
+          </a>
+              <div class="version">
+                0.0.52
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="app.html">app package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app.decorators.html">app.decorators package</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">app.helpers package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.helpers.hash_helper">app.helpers.hash_helper module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.hash_helper.get_hash"><code class="docutils literal notranslate"><span class="pre">get_hash()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.helpers.hook_helper">app.helpers.hook_helper module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.hook_helper.load_hooks"><code class="docutils literal notranslate"><span class="pre">load_hooks()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.helpers.image_helper">app.helpers.image_helper module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.image_helper.image_resize"><code class="docutils literal notranslate"><span class="pre">image_resize()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.image_helper.is_image"><code class="docutils literal notranslate"><span class="pre">is_image()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.image_helper.thumbnail_create"><code class="docutils literal notranslate"><span class="pre">thumbnail_create()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.helpers.jwt_helper">app.helpers.jwt_helper module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.jwt_helper.jti_create"><code class="docutils literal notranslate"><span class="pre">jti_create()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.jwt_helper.jwt_decode"><code class="docutils literal notranslate"><span class="pre">jwt_decode()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.jwt_helper.jwt_encode"><code class="docutils literal notranslate"><span class="pre">jwt_encode()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.helpers.lock_helper">app.helpers.lock_helper module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.lock_helper.is_locked"><code class="docutils literal notranslate"><span class="pre">is_locked()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.lock_helper.lock_disable"><code class="docutils literal notranslate"><span class="pre">lock_disable()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.lock_helper.lock_enable"><code class="docutils literal notranslate"><span class="pre">lock_enable()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.lock_helper.locked_date"><code class="docutils literal notranslate"><span class="pre">locked_date()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#app-helpers-openapi-helper-module">app.helpers.openapi_helper module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.helpers.uptime_helper">app.helpers.uptime_helper module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.uptime_helper.Uptime"><code class="docutils literal notranslate"><span class="pre">Uptime</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#app.helpers.uptime_helper.Uptime.get_uptime"><code class="docutils literal notranslate"><span class="pre">Uptime.get_uptime()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.helpers">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="app.managers.html">app.managers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app.models.html">app.models package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app.plugins.html">app.plugins package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app.routers.html">app.routers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app.schemas.html">app.schemas package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Hidden</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="app.html">app package</a></li>
+      <li class="breadcrumb-item active">app.helpers package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/autodoc/app.helpers.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="app-helpers-package">
+<h1>app.helpers package<a class="headerlink" href="#app-helpers-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-app.helpers.hash_helper">
+<span id="app-helpers-hash-helper-module"></span><h2>app.helpers.hash_helper module<a class="headerlink" href="#module-app.helpers.hash_helper" title="Link to this heading"></a></h2>
+<p>The module provides functionality for hashing strings using SHA-512 with
+a configurable salt.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.helpers.hash_helper.get_hash">
+<span class="sig-prename descclassname"><span class="pre">app.helpers.hash_helper.</span></span><span class="sig-name descname"><span class="pre">get_hash</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/app/helpers/hash_helper.html#get_hash"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.hash_helper.get_hash" title="Link to this definition"></a></dt>
+<dd><p>Computes a SHA-512 hash of the given string concatenated with a
+configured salt, and returns the hexadecimal digest.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.helpers.hook_helper">
+<span id="app-helpers-hook-helper-module"></span><h2>app.helpers.hook_helper module<a class="headerlink" href="#module-app.helpers.hook_helper" title="Link to this heading"></a></h2>
+<p>The module provides functionality for loading and registering hooks from
+enabled plugin modules. The hooks are registered by discovering functions
+in the plugin modules and adding them to the context for later use.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.helpers.hook_helper.load_hooks">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.helpers.hook_helper.</span></span><span class="sig-name descname"><span class="pre">load_hooks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/helpers/hook_helper.html#load_hooks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.hook_helper.load_hooks" title="Link to this definition"></a></dt>
+<dd><p>Loads and registers functions from plugin modules as hooks. The
+plugin modules are specified in the configuration, and their
+functions are registered by name in the context’s hooks dictionary.
+Errors are  logged if the plugin modules fail to load.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.helpers.image_helper">
+<span id="app-helpers-image-helper-module"></span><h2>app.helpers.image_helper module<a class="headerlink" href="#module-app.helpers.image_helper" title="Link to this heading"></a></h2>
+<p>The module provides functionality for handling image files, including
+checking if a file is an image, resizing images asynchronously, and
+creating thumbnails. The module supports various image MIME types and
+allows for resizing and thumbnail creation for different image formats.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.helpers.image_helper.image_resize">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.helpers.image_helper.</span></span><span class="sig-name descname"><span class="pre">image_resize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/helpers/image_helper.html#image_resize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.image_helper.image_resize" title="Link to this definition"></a></dt>
+<dd><p>Asynchronously resizes an image to the specified width and height,
+and saves it with the given quality. The actual resizing is
+performed synchronously in a separate thread.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.helpers.image_helper.is_image">
+<span class="sig-prename descclassname"><span class="pre">app.helpers.image_helper.</span></span><span class="sig-name descname"><span class="pre">is_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mimetype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/app/helpers/image_helper.html#is_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.image_helper.is_image" title="Link to this definition"></a></dt>
+<dd><p>Determines if the given MIME type is classified as an image type
+by checking it against a predefined set of image MIME types.
+The check is case-insensitive and returns True if the MIME type
+matches any of the image types in the list, otherwise False.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.helpers.image_helper.thumbnail_create">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.helpers.image_helper.</span></span><span class="sig-name descname"><span class="pre">thumbnail_create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/app/helpers/image_helper.html#thumbnail_create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.image_helper.thumbnail_create" title="Link to this definition"></a></dt>
+<dd><p>Generates a thumbnail for the given file based on its MIME type,
+creating an image thumbnail from images or extracting a frame from
+videos, and resizing it to specified dimensions. Returns the
+filename of the created thumbnail if successful, otherwise returns
+None. Handles both image and video files, with appropriate error
+handling and logging for issues during thumbnail creation.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.helpers.jwt_helper">
+<span id="app-helpers-jwt-helper-module"></span><h2>app.helpers.jwt_helper module<a class="headerlink" href="#module-app.helpers.jwt_helper" title="Link to this heading"></a></h2>
+<p>The module pProvides utility functions for handling JSON Web Tokens
+(JWTs), including creating unique identifiers (JTI), encoding user
+information into a JWT, and decoding a JWT to retrieve the payload.
+Uses the configured secret key and algorithm for encoding and decoding.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.helpers.jwt_helper.jti_create">
+<span class="sig-prename descclassname"><span class="pre">app.helpers.jwt_helper.</span></span><span class="sig-name descname"><span class="pre">jti_create</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/app/helpers/jwt_helper.html#jti_create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.jwt_helper.jti_create" title="Link to this definition"></a></dt>
+<dd><p>Generates a JSON Web Token Identifier (JTI) by creating a random
+string consisting of alphanumeric characters with a length specified
+in the configuration.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.helpers.jwt_helper.jwt_decode">
+<span class="sig-prename descclassname"><span class="pre">app.helpers.jwt_helper.</span></span><span class="sig-name descname"><span class="pre">jwt_decode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">jwt_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="../_modules/app/helpers/jwt_helper.html#jwt_decode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.jwt_helper.jwt_decode" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.helpers.jwt_helper.jwt_encode">
+<span class="sig-prename descclassname"><span class="pre">app.helpers.jwt_helper.</span></span><span class="sig-name descname"><span class="pre">jwt_encode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token_exp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/app/helpers/jwt_helper.html#jwt_encode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.jwt_helper.jwt_encode" title="Link to this definition"></a></dt>
+<dd><p>Encodes user information into a JSON Web Token (JWT) with an
+optional expiration time. The token includes user ID, role, login,
+and a unique JTI, and is signed with a secret key.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.helpers.lock_helper">
+<span id="app-helpers-lock-helper-module"></span><h2>app.helpers.lock_helper module<a class="headerlink" href="#module-app.helpers.lock_helper" title="Link to this heading"></a></h2>
+<p>The module provides functionality for managing a lock file to control
+access to the application. It includes functions for checking the lock
+status, retrieving the locked date, enabling and disabling the lock, and
+preventing concurrent access or indicating a restricted state.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.helpers.lock_helper.is_locked">
+<span class="sig-prename descclassname"><span class="pre">app.helpers.lock_helper.</span></span><span class="sig-name descname"><span class="pre">is_locked</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/helpers/lock_helper.html#is_locked"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.lock_helper.is_locked" title="Link to this definition"></a></dt>
+<dd><p>Checks if the lock file exists at the configured path and returns
+True if it does, indicating that the system is in a locked state;
+otherwise, returns False.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.helpers.lock_helper.lock_disable">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.helpers.lock_helper.</span></span><span class="sig-name descname"><span class="pre">lock_disable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/helpers/lock_helper.html#lock_disable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.lock_helper.lock_disable" title="Link to this definition"></a></dt>
+<dd><p>Removes the lock file if it exists, thereby unlocking the system.
+The function only deletes the lock file if the system is currently
+locked. This is typically used to signal the end of a restricted
+state or maintenance period.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.helpers.lock_helper.lock_enable">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.helpers.lock_helper.</span></span><span class="sig-name descname"><span class="pre">lock_enable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/helpers/lock_helper.html#lock_enable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.lock_helper.lock_enable" title="Link to this definition"></a></dt>
+<dd><p>Creates a lock file if the system is not already locked. The lock
+file is used to prevent concurrent access or indicate a restricted
+state. The function only writes the lock file if it does not
+already exist.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.helpers.lock_helper.locked_date">
+<span class="sig-prename descclassname"><span class="pre">app.helpers.lock_helper.</span></span><span class="sig-name descname"><span class="pre">locked_date</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/helpers/lock_helper.html#locked_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.lock_helper.locked_date" title="Link to this definition"></a></dt>
+<dd><p>Retrieve locked date.</p>
+</dd></dl>
+
+</section>
+<section id="app-helpers-openapi-helper-module">
+<h2>app.helpers.openapi_helper module<a class="headerlink" href="#app-helpers-openapi-helper-module" title="Link to this heading"></a></h2>
+</section>
+<section id="module-app.helpers.uptime_helper">
+<span id="app-helpers-uptime-helper-module"></span><h2>app.helpers.uptime_helper module<a class="headerlink" href="#module-app.helpers.uptime_helper" title="Link to this heading"></a></h2>
+<p>The module provides functionality for tracking the application’s uptime.
+It records the start time and allows calculating the elapsed time since
+the start.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="app.helpers.uptime_helper.Uptime">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.helpers.uptime_helper.</span></span><span class="sig-name descname"><span class="pre">Uptime</span></span><a class="reference internal" href="../_modules/app/helpers/uptime_helper.html#Uptime"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.uptime_helper.Uptime" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Tracks the uptime of the application by recording the start time and
+providing a method to calculate the elapsed time since start.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="app.helpers.uptime_helper.Uptime.get_uptime">
+<span class="sig-name descname"><span class="pre">get_uptime</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/helpers/uptime_helper.html#Uptime.get_uptime"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.uptime_helper.Uptime.get_uptime" title="Link to this definition"></a></dt>
+<dd><p>Returns the uptime in seconds as an integer by calculating the
+difference between the current time and the recorded start time.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-app.helpers">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-app.helpers" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="app.decorators.html" class="btn btn-neutral float-left" title="app.decorators package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="app.managers.html" class="btn btn-neutral float-right" title="app.managers package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Artem Abramov.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

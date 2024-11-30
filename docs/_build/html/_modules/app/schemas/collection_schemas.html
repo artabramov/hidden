@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>app.schemas.collection_schemas &mdash; Hidden  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Hidden
+          </a>
+              <div class="version">
+                0.0.52
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.html">app package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.decorators.html">app.decorators package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.helpers.html">app.helpers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.managers.html">app.managers package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Hidden</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">app.schemas.collection_schemas</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for app.schemas.collection_schemas</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The module defines Pydantic schemas for managing collections. Includes</span>
+<span class="sd">schemas for inserting, selecting, updating, deleting, and listing</span>
+<span class="sd">collections.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span><span class="p">,</span> <span class="n">field_validator</span>
+<span class="kn">from</span> <span class="nn">app.filters.collection_filters</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">filter_collection_name</span><span class="p">,</span> <span class="n">filter_collection_summary</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="CollectionInsertRequest">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.collection_schemas.CollectionInsertRequest">[docs]</a>
+<span class="k">class</span> <span class="nc">CollectionInsertRequest</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pydantic schema for creating a new collection entity. It requires</span>
+<span class="sd">    the collection&#39;s locked status, name, and optionally a collection</span>
+<span class="sd">    summary.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">is_locked</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">collection_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
+    <span class="n">collection_summary</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CollectionInsertRequest.filter_collection_name">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.collection_schemas.CollectionInsertRequest.filter_collection_name">[docs]</a>
+    <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;collection_name&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;before&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">filter_collection_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">collection_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">filter_collection_name</span><span class="p">(</span><span class="n">collection_name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CollectionInsertRequest.filter_collection_summary">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.collection_schemas.CollectionInsertRequest.filter_collection_summary">[docs]</a>
+    <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;collection_summary&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;before&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">filter_collection_summary</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">collection_summary</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>  <span class="c1"># noqa E501</span>
+        <span class="k">return</span> <span class="n">filter_collection_summary</span><span class="p">(</span><span class="n">collection_summary</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="CollectionInsertResponse">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.collection_schemas.CollectionInsertResponse">[docs]</a>
+<span class="k">class</span> <span class="nc">CollectionInsertResponse</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pydantic schema for the response after creating a new collection</span>
+<span class="sd">    entity. It includes the ID assigned to the newly created collection.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">collection_id</span><span class="p">:</span> <span class="nb">int</span></div>
+
+
+
+<div class="viewcode-block" id="CollectionSelectResponse">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.collection_schemas.CollectionSelectResponse">[docs]</a>
+<span class="k">class</span> <span class="nc">CollectionSelectResponse</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pydantic schema for the response after retrieving a collection</span>
+<span class="sd">    entity. It includes the collection&#39;s ID, creation and update dates,</span>
+<span class="sd">    user ID, locked status, name, summary, document count, and</span>
+<span class="sd">    associated user details.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">created_date</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">updated_date</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">locked_date</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">user_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">user_name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">is_locked</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">collection_name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">collection_summary</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">documents_count</span><span class="p">:</span> <span class="nb">int</span></div>
+
+
+
+<div class="viewcode-block" id="CollectionUpdateRequest">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.collection_schemas.CollectionUpdateRequest">[docs]</a>
+<span class="k">class</span> <span class="nc">CollectionUpdateRequest</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pydantic schema for updating an existing collection entity. It</span>
+<span class="sd">    requires the locked status, collection name, and optionally a</span>
+<span class="sd">    collection summary.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">is_locked</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">collection_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
+    <span class="n">collection_summary</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CollectionUpdateRequest.filter_collection_name">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.collection_schemas.CollectionUpdateRequest.filter_collection_name">[docs]</a>
+    <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;collection_name&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;before&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">filter_collection_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">collection_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">filter_collection_name</span><span class="p">(</span><span class="n">collection_name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CollectionUpdateRequest.filter_collection_summary">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.collection_schemas.CollectionUpdateRequest.filter_collection_summary">[docs]</a>
+    <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;collection_summary&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;before&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">filter_collection_summary</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">collection_summary</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>  <span class="c1"># noqa E501</span>
+        <span class="k">return</span> <span class="n">filter_collection_summary</span><span class="p">(</span><span class="n">collection_summary</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="CollectionUpdateResponse">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.collection_schemas.CollectionUpdateResponse">[docs]</a>
+<span class="k">class</span> <span class="nc">CollectionUpdateResponse</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pydantic schema for the response after updating a collection entity.</span>
+<span class="sd">    It includes the ID assigned to the updated collection.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">collection_id</span><span class="p">:</span> <span class="nb">int</span></div>
+
+
+
+<div class="viewcode-block" id="CollectionLockUpdateRequest">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.collection_schemas.CollectionLockUpdateRequest">[docs]</a>
+<span class="k">class</span> <span class="nc">CollectionLockUpdateRequest</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pydantic schema for updating the locked status of a collection entity.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">is_locked</span><span class="p">:</span> <span class="nb">bool</span></div>
+
+
+
+<div class="viewcode-block" id="CollectionLockUpdateResponse">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.collection_schemas.CollectionLockUpdateResponse">[docs]</a>
+<span class="k">class</span> <span class="nc">CollectionLockUpdateResponse</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pydantic schema for the response after updating the locked status</span>
+<span class="sd">    of a collection entity. It includes the ID assigned to the</span>
+<span class="sd">    collection.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">collection_id</span><span class="p">:</span> <span class="nb">int</span></div>
+
+
+
+<div class="viewcode-block" id="CollectionDeleteResponse">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.collection_schemas.CollectionDeleteResponse">[docs]</a>
+<span class="k">class</span> <span class="nc">CollectionDeleteResponse</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pydantic schema for the response after deleting a collection entity.</span>
+<span class="sd">    It includes the ID assigned to the deleted collection.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">collection_id</span><span class="p">:</span> <span class="nb">int</span></div>
+
+
+
+<div class="viewcode-block" id="CollectionListRequest">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.collection_schemas.CollectionListRequest">[docs]</a>
+<span class="k">class</span> <span class="nc">CollectionListRequest</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pydantic schema for requesting a list of collection entities. It</span>
+<span class="sd">    allows optional filters for collection name, locked status, and</span>
+<span class="sd">    various counts and sizes. Also includes pagination options (offset</span>
+<span class="sd">    and limit), and ordering criteria.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">user_id__eq</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">collection_name__ilike</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">is_locked__eq</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+    <span class="n">order_by</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span>
+        <span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;created_date&quot;</span><span class="p">,</span> <span class="s2">&quot;updated_date&quot;</span><span class="p">,</span> <span class="s2">&quot;locked_date&quot;</span><span class="p">,</span> <span class="s2">&quot;is_locked&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;user_id&quot;</span><span class="p">,</span> <span class="s2">&quot;collection_name&quot;</span><span class="p">,</span> <span class="s2">&quot;documents_count&quot;</span><span class="p">]</span>
+    <span class="n">order</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;asc&quot;</span><span class="p">,</span> <span class="s2">&quot;desc&quot;</span><span class="p">,</span> <span class="s2">&quot;rand&quot;</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="CollectionListResponse">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.collection_schemas.CollectionListResponse">[docs]</a>
+<span class="k">class</span> <span class="nc">CollectionListResponse</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pydantic schema for the response when listing collection entities.</span>
+<span class="sd">    It includes a list of collection entities and the total count of</span>
+<span class="sd">    collections that match the request criteria.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">collections</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">CollectionSelectResponse</span><span class="p">]</span>
+    <span class="n">collections_count</span><span class="p">:</span> <span class="nb">int</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Artem Abramov.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

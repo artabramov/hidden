@@ -1,0 +1,108 @@
+services:
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.6.2
+    container_name: kibana
+    depends_on:
+      - elasticsearch
+    restart: unless-stopped
+    ports:
+      - 5601:5601
+    links:
+      - elasticsearch
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.2
+    container_name: elasticsearch
+    depends_on:
+      - filebeat
+    restart: unless-stopped
+    environment:
+      - discovery.type=single-node
+    ports:
+      - 9200:9200
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:7.6.2
+    container_name: filebeat
+    depends_on:
+      - hidden
+    restart: unless-stopped
+    user: root
+    volumes:
+      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - postgres_log:/var/log/postgresql:ro
+      - redis_log:/var/log/redis:ro
+      - app_log:/var/log/app:ro
+    command: ["filebeat", "-e", "-strict.perms=false"]
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+
+  grafana:
+    image: grafana/grafana-enterprise
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+      - "3030:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+
+  hidden:
+    image: hidden
+    container_name: hidden
+    restart: always
+    environment:
+      UVICORN_HOST: ${UVICORN_HOST}
+      UVICORN_PORT: ${UVICORN_PORT}
+      UVICORN_WORKERS: ${UVICORN_WORKERS}
+      DATA_SOURCE_NAME: postgres://${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@127.0.0.1:${POSTGRES_PORT}/${POSTGRES_DATABASE}?sslmode=disable
+    volumes:
+      - postgres_data:/var/lib/postgresql/14/main
+      - postgres_log:/var/log/postgresql
+      - redis_log:/var/log/redis
+      - app_log:/var/log/app
+      - app_data:/hidden/data
+      - app_html:/var/www/html
+    ports:
+      - "80:80"
+      - "5000:5000"
+      - "5432:5432"
+      - "6379:6379"
+      - "9100:9100"
+      - "9187:9187"
+      - "9121:9121"
+
+volumes:
+  elasticsearch_data:
+  prometheus_data:
+  grafana_data:
+  postgres_data:
+  postgres_log:
+  redis_log:
+  app_log:
+  app_data:
+  app_html:

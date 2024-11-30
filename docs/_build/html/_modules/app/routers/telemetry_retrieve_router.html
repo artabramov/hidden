@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>app.routers.telemetry_retrieve_router &mdash; Hidden  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Hidden
+          </a>
+              <div class="version">
+                0.0.52
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.html">app package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.decorators.html">app.decorators package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.helpers.html">app.helpers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.managers.html">app.managers package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Hidden</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">app.routers.telemetry_retrieve_router</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for app.routers.telemetry_retrieve_router</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">APIRouter</span><span class="p">,</span> <span class="n">Depends</span><span class="p">,</span> <span class="n">status</span>
+<span class="kn">from</span> <span class="nn">fastapi.responses</span> <span class="kn">import</span> <span class="n">JSONResponse</span>
+<span class="kn">from</span> <span class="nn">app.database</span> <span class="kn">import</span> <span class="n">get_session</span>
+<span class="kn">from</span> <span class="nn">app.cache</span> <span class="kn">import</span> <span class="n">get_cache</span>
+<span class="kn">from</span> <span class="nn">app.auth</span> <span class="kn">import</span> <span class="n">auth</span>
+<span class="kn">from</span> <span class="nn">app.models.user_model</span> <span class="kn">import</span> <span class="n">User</span><span class="p">,</span> <span class="n">UserRole</span>
+<span class="kn">from</span> <span class="nn">app.decorators.locked_decorator</span> <span class="kn">import</span> <span class="n">locked</span>
+<span class="kn">import</span> <span class="nn">platform</span>
+<span class="kn">import</span> <span class="nn">psutil</span>
+<span class="kn">from</span> <span class="nn">app.managers.entity_manager</span> <span class="kn">import</span> <span class="n">EntityManager</span>
+<span class="kn">from</span> <span class="nn">app.version</span> <span class="kn">import</span> <span class="n">__version__</span>
+<span class="kn">from</span> <span class="nn">app.serial</span> <span class="kn">import</span> <span class="n">__serial__</span>
+<span class="kn">from</span> <span class="nn">app.hooks</span> <span class="kn">import</span> <span class="n">Hook</span>
+<span class="kn">from</span> <span class="nn">app.constants</span> <span class="kn">import</span> <span class="n">HOOK_ON_TELEMETRY_RETRIEVE</span>
+<span class="kn">from</span> <span class="nn">app.schemas.telemetry_schemas</span> <span class="kn">import</span> <span class="n">TelemetryRetrieveResponse</span>
+
+<span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="telemetry_retrieve">
+<a class="viewcode-back" href="../../../autodoc/app.routers.html#app.routers.telemetry_retrieve_router.telemetry_retrieve">[docs]</a>
+<span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/telemetry&quot;</span><span class="p">,</span> <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;Retrieve telemetry data&quot;</span><span class="p">,</span>
+            <span class="n">response_class</span><span class="o">=</span><span class="n">JSONResponse</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_200_OK</span><span class="p">,</span>
+            <span class="n">response_model</span><span class="o">=</span><span class="n">TelemetryRetrieveResponse</span><span class="p">,</span>
+            <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Telemetry&quot;</span><span class="p">])</span>
+<span class="nd">@locked</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">telemetry_retrieve</span><span class="p">(</span>
+    <span class="n">session</span><span class="o">=</span><span class="n">Depends</span><span class="p">(</span><span class="n">get_session</span><span class="p">),</span> <span class="n">cache</span><span class="o">=</span><span class="n">Depends</span><span class="p">(</span><span class="n">get_cache</span><span class="p">),</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">auth</span><span class="p">(</span><span class="n">UserRole</span><span class="o">.</span><span class="n">admin</span><span class="p">))</span>
+<span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">app.app</span> <span class="kn">import</span> <span class="n">uptime</span>
+
+    <span class="n">entity_manager</span> <span class="o">=</span> <span class="n">EntityManager</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
+
+    <span class="n">postgres_version</span> <span class="o">=</span> <span class="k">await</span> <span class="n">entity_manager</span><span class="o">.</span><span class="n">select_rows</span><span class="p">(</span><span class="s2">&quot;SELECT version();&quot;</span><span class="p">)</span>
+    <span class="n">postgres_database_size</span> <span class="o">=</span> <span class="k">await</span> <span class="n">entity_manager</span><span class="o">.</span><span class="n">select_rows</span><span class="p">(</span>
+        <span class="s2">&quot;SELECT pg_size_pretty(pg_database_size(current_database()));&quot;</span><span class="p">)</span>
+    <span class="n">postgres_start_time</span> <span class="o">=</span> <span class="k">await</span> <span class="n">entity_manager</span><span class="o">.</span><span class="n">select_rows</span><span class="p">(</span>
+        <span class="s2">&quot;SELECT pg_postmaster_start_time();&quot;</span><span class="p">)</span>
+
+    <span class="n">hook</span> <span class="o">=</span> <span class="n">Hook</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">cache</span><span class="p">,</span> <span class="n">current_user</span><span class="o">=</span><span class="n">current_user</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">hook</span><span class="o">.</span><span class="n">do</span><span class="p">(</span><span class="n">HOOK_ON_TELEMETRY_RETRIEVE</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;unix_timestamp&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()),</span>
+        <span class="s2">&quot;timezone_name&quot;</span><span class="p">:</span> <span class="n">time</span><span class="o">.</span><span class="n">tzname</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="s2">&quot;timezone_offset&quot;</span><span class="p">:</span> <span class="n">time</span><span class="o">.</span><span class="n">timezone</span><span class="p">,</span>
+
+        <span class="s2">&quot;hidden_uptime&quot;</span><span class="p">:</span> <span class="n">uptime</span><span class="o">.</span><span class="n">get_uptime</span><span class="p">(),</span>
+        <span class="s2">&quot;hidden_version&quot;</span><span class="p">:</span> <span class="n">__version__</span><span class="p">,</span>
+        <span class="s2">&quot;hidden_serial&quot;</span><span class="p">:</span> <span class="n">__serial__</span><span class="p">,</span>
+
+        <span class="s2">&quot;postgres_version&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">postgres_version</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]),</span>
+        <span class="s2">&quot;postgres_database_size&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">postgres_database_size</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]),</span>
+        <span class="s2">&quot;postgres_start_time&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">postgres_start_time</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]),</span>
+
+        <span class="s2">&quot;platform_architecture&quot;</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">architecture</span><span class="p">()[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="s2">&quot;platform_machine&quot;</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">machine</span><span class="p">(),</span>
+        <span class="s2">&quot;platform_node&quot;</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">node</span><span class="p">(),</span>
+        <span class="s2">&quot;platform_alias&quot;</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">platform</span><span class="p">(</span><span class="n">aliased</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+        <span class="s2">&quot;platform_processor&quot;</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">processor</span><span class="p">(),</span>
+
+        <span class="s2">&quot;python_buildno&quot;</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">python_build</span><span class="p">()[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="s2">&quot;python_builddate&quot;</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">python_build</span><span class="p">()[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="s2">&quot;python_compiler&quot;</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">python_compiler</span><span class="p">(),</span>
+        <span class="s2">&quot;python_branch&quot;</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">python_branch</span><span class="p">(),</span>
+        <span class="s2">&quot;python_implementation&quot;</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">python_implementation</span><span class="p">(),</span>
+        <span class="s2">&quot;python_revision&quot;</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">python_revision</span><span class="p">(),</span>
+        <span class="s2">&quot;python_version&quot;</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">python_version</span><span class="p">(),</span>
+
+        <span class="s2">&quot;os_name&quot;</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">(),</span>
+        <span class="s2">&quot;os_release&quot;</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">release</span><span class="p">(),</span>
+        <span class="s2">&quot;os_version&quot;</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">version</span><span class="p">(),</span>
+
+        <span class="s2">&quot;disk_total&quot;</span><span class="p">:</span> <span class="n">psutil</span><span class="o">.</span><span class="n">disk_usage</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">total</span><span class="p">,</span>
+        <span class="s2">&quot;disk_used&quot;</span><span class="p">:</span> <span class="n">psutil</span><span class="o">.</span><span class="n">disk_usage</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">used</span><span class="p">,</span>
+        <span class="s2">&quot;disk_free&quot;</span><span class="p">:</span> <span class="n">psutil</span><span class="o">.</span><span class="n">disk_usage</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">free</span><span class="p">,</span>
+
+        <span class="s2">&quot;memory_total&quot;</span><span class="p">:</span> <span class="n">psutil</span><span class="o">.</span><span class="n">virtual_memory</span><span class="p">()</span><span class="o">.</span><span class="n">total</span><span class="p">,</span>
+        <span class="s2">&quot;memory_used&quot;</span><span class="p">:</span> <span class="n">psutil</span><span class="o">.</span><span class="n">virtual_memory</span><span class="p">()</span><span class="o">.</span><span class="n">used</span><span class="p">,</span>
+        <span class="s2">&quot;memory_free&quot;</span><span class="p">:</span> <span class="n">psutil</span><span class="o">.</span><span class="n">virtual_memory</span><span class="p">()</span><span class="o">.</span><span class="n">free</span><span class="p">,</span>
+
+        <span class="s2">&quot;cpu_core_count&quot;</span><span class="p">:</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">(</span><span class="n">logical</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+        <span class="s2">&quot;cpu_frequency&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">cpu_freq</span><span class="p">(</span><span class="n">percpu</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">current</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000000</span><span class="p">,</span>
+        <span class="s2">&quot;cpu_usage_percent&quot;</span><span class="p">:</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_percent</span><span class="p">(),</span>
+    <span class="p">}</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Artem Abramov.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

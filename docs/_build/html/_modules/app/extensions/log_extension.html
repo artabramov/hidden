@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>app.extensions.log_extension &mdash; Hidden  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Hidden
+          </a>
+              <div class="version">
+                0.0.45
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.html">app package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.decorators.html">app.decorators package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.extensions.html">app.extensions package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.helpers.html">app.helpers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.mixins.html">app.mixins package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.managers.html">app.managers package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Hidden</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">app.extensions.log_extension</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for app.extensions.log_extension</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module contains asynchronous functions that handle post-processing</span>
+<span class="sd">actions for various entities, including user registrations, updates, and</span>
+<span class="sd">logins; collection and datafile operations; comment management; download</span>
+<span class="sd">tracking; and favorite interactions. Each function logs specific actions</span>
+<span class="sd">performed on these entities, capturing details about the request,</span>
+<span class="sd">current user, and the entity involved. The log entries are inserted into</span>
+<span class="sd">the database for audit purposes, and the functions return the processed</span>
+<span class="sd">entity or list of entities.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">enum</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">DeclarativeBase</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="p">(</span><span class="n">Column</span><span class="p">,</span> <span class="n">BigInteger</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">,</span> <span class="n">Enum</span><span class="p">,</span>
+                        <span class="n">JSON</span><span class="p">,</span> <span class="n">String</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">Request</span>
+<span class="kn">from</span> <span class="nn">app.database</span> <span class="kn">import</span> <span class="n">Base</span>
+<span class="kn">from</span> <span class="nn">app.models.user_model</span> <span class="kn">import</span> <span class="n">User</span>
+<span class="kn">from</span> <span class="nn">app.models.collection_model</span> <span class="kn">import</span> <span class="n">Collection</span>
+<span class="kn">from</span> <span class="nn">app.models.datafile_model</span> <span class="kn">import</span> <span class="n">Datafile</span>
+<span class="kn">from</span> <span class="nn">app.models.comment_model</span> <span class="kn">import</span> <span class="n">Comment</span>
+<span class="kn">from</span> <span class="nn">app.models.download_model</span> <span class="kn">import</span> <span class="n">Download</span>
+<span class="kn">from</span> <span class="nn">app.models.favorite_model</span> <span class="kn">import</span> <span class="n">Favorite</span>
+<span class="kn">from</span> <span class="nn">app.managers.entity_manager</span> <span class="kn">import</span> <span class="n">EntityManager</span>
+<span class="kn">from</span> <span class="nn">app.managers.cache_manager</span> <span class="kn">import</span> <span class="n">CacheManager</span>
+
+<span class="n">LOG_AFTER_USER_REGISTER</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">LOG_AFTER_USER_LOGIN</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">LOG_AFTER_TOKEN_SELECT</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">LOG_AFTER_ERR_TOKEN_INVALIDATE</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">LOG_AFTER_USER_SELECT</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">LOG_AFTER_USER_UPDATE</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">LOG_AFTER_ROLE_UPDATE</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">LOG_AFTER_PASSWORD_UPDATE</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">LOG_AFTER_USERPIC_UPLOAD</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">LOG_AFTER_USERPIC_DELETE</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">LOG_AFTER_USER_LIST</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">LOG_AFTER_COLLECTION_INSERT</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">LOG_AFTER_COLLECTION_SELECT</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">LOG_AFTER_COLLECTION_UPDATE</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">LOG_AFTER_COLLECTION_DELETE</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">LOG_AFTER_COLLECTION_LIST</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">LOG_AFTER_DATAFILE_UPLOAD</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">LOG_AFTER_DATAFILE_SELECT</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">LOG_AFTER_COMMENT_INSERT</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">LOG_AFTER_COMMENT_SELECT</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">LOG_AFTER_COMMENT_UPDATE</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">LOG_AFTER_COMMENT_DELETE</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">LOG_AFTER_COMMENT_LIST</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">LOG_AFTER_DOWNLOAD_SELECT</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">LOG_AFTER_DOWNLOAD_LIST</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">LOG_AFTER_FAVORITE_INSERT</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">LOG_AFTER_FAVORITE_SELECT</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">LOG_AFTER_FAVORITE_DELETE</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">LOG_AFTER_FAVORITE_LIST</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="n">OBSCURED_KEYS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;user_password&quot;</span><span class="p">,</span> <span class="s2">&quot;current_password&quot;</span><span class="p">,</span> <span class="s2">&quot;updated_password&quot;</span><span class="p">,</span>
+                 <span class="s2">&quot;user_totp&quot;</span><span class="p">,</span> <span class="s2">&quot;password_hash&quot;</span><span class="p">,</span> <span class="s2">&quot;mfa_secret_encrypted&quot;</span><span class="p">,</span>
+                 <span class="s2">&quot;jti_encrypted&quot;</span><span class="p">]</span>
+<span class="n">OBSCURED_VALUE</span> <span class="o">=</span> <span class="s2">&quot;*&quot;</span> <span class="o">*</span> <span class="mi">6</span>
+
+
+<div class="viewcode-block" id="RequestMethod">
+<a class="viewcode-back" href="../../../autodoc/app.extensions.html#app.extensions.log_extension.RequestMethod">[docs]</a>
+<span class="k">class</span> <span class="nc">RequestMethod</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Enumeration for standard HTTP request methods: GET for retrieving</span>
+<span class="sd">    data, POST for submitting data, PUT for updating or creating</span>
+<span class="sd">    resources, and DELETE for removing resources.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">GET</span> <span class="o">=</span> <span class="s2">&quot;GET&quot;</span>
+    <span class="n">POST</span> <span class="o">=</span> <span class="s2">&quot;POST&quot;</span>
+    <span class="n">PUT</span> <span class="o">=</span> <span class="s2">&quot;PUT&quot;</span>
+    <span class="n">DELETE</span> <span class="o">=</span> <span class="s2">&quot;DELETE&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="LogAction">
+<a class="viewcode-back" href="../../../autodoc/app.extensions.html#app.extensions.log_extension.LogAction">[docs]</a>
+<span class="k">class</span> <span class="nc">LogAction</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Enumeration for CRUD operations representing actions on entities:</span>
+<span class="sd">    insert for adding new entities, select for retrieving entities,</span>
+<span class="sd">    update for modifying existing entities, and delete for removing</span>
+<span class="sd">    entities.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">insert</span> <span class="o">=</span> <span class="s2">&quot;insert&quot;</span>
+    <span class="n">select</span> <span class="o">=</span> <span class="s2">&quot;select&quot;</span>
+    <span class="n">update</span> <span class="o">=</span> <span class="s2">&quot;update&quot;</span>
+    <span class="n">delete</span> <span class="o">=</span> <span class="s2">&quot;delete&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="Log">
+<a class="viewcode-back" href="../../../autodoc/app.extensions.html#app.extensions.log_extension.Log">[docs]</a>
+<span class="k">class</span> <span class="nc">Log</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents a log entry capturing details of operations on the</span>
+<span class="sd">    application entities, including the request method, URL, request</span>
+<span class="sd">    parameters, and the action performed on the entity. The log records</span>
+<span class="sd">    the user who initiated the request and the state of the entity at</span>
+<span class="sd">    the time of the operation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;users_logs&quot;</span>
+    <span class="n">_cacheable</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">BigInteger</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">created_date</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">Integer</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                          <span class="n">default</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()))</span>
+    <span class="n">user_id</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">BigInteger</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;users.id&quot;</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">request_method</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">Enum</span><span class="p">(</span><span class="n">RequestMethod</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">request_url</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">String</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">request_params</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">JSON</span><span class="p">)</span>
+    <span class="n">log_action</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">Enum</span><span class="p">(</span><span class="n">LogAction</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">entity_tablename</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">String</span><span class="p">(</span><span class="mi">128</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">entity_id</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">BigInteger</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">entity_dict</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">JSON</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span>
+                 <span class="n">entity</span><span class="p">:</span> <span class="n">DeclarativeBase</span><span class="p">,</span> <span class="n">log_action</span><span class="p">:</span> <span class="n">LogAction</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes a Log instance with details of the request, entity,</span>
+<span class="sd">        and action performed. It sets the user ID, request method, URL,</span>
+<span class="sd">        request parameters, and entity information, including the action</span>
+<span class="sd">        performed and the entity state at the time of the request.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user_id</span> <span class="o">=</span> <span class="n">current_user</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="n">current_user</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request_method</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request_url</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">url</span><span class="o">.</span><span class="n">path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_dict</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">query_params</span><span class="o">.</span><span class="n">_dict</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_action</span> <span class="o">=</span> <span class="n">log_action</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">entity_tablename</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">__tablename__</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">entity_id</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">entity_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_dict</span><span class="p">(</span><span class="n">entity</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">json</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts a dictionary of entity attributes into a dictionary of</span>
+<span class="sd">        string representations, obscuring sensitive information based on</span>
+<span class="sd">        predefined keys. This method filters out private attributes and</span>
+<span class="sd">        returns a clean, readable representation of the entity&#39;s state.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="nb">repr</span><span class="p">(</span><span class="n">entity_dict</span><span class="p">[</span><span class="n">x</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">x</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">OBSCURED_KEYS</span> <span class="k">else</span> <span class="n">OBSCURED_VALUE</span>
+                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">entity_dict</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">x</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)}</span></div>
+
+
+
+<div class="viewcode-block" id="after_user_register">
+<a class="viewcode-back" href="../../../autodoc/app.extensions.html#app.extensions.log_extension.after_user_register">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_user_register</span><span class="p">(</span>
+    <span class="n">entity_manager</span><span class="p">:</span> <span class="n">EntityManager</span><span class="p">,</span>
+    <span class="n">cache_manager</span><span class="p">:</span> <span class="n">CacheManager</span><span class="p">,</span>
+    <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span>
+    <span class="n">user</span><span class="p">:</span> <span class="n">User</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">User</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Logs a user registration event, capturing details about the</span>
+<span class="sd">    new user and the request. Returns the registered user.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">LOG_AFTER_USER_REGISTER</span><span class="p">:</span>
+        <span class="n">log</span> <span class="o">=</span> <span class="n">Log</span><span class="p">(</span><span class="n">current_user</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">LogAction</span><span class="o">.</span><span class="n">insert</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">entity_manager</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">user</span></div>
+
+
+
+<div class="viewcode-block" id="after_user_login">
+<a class="viewcode-back" href="../../../autodoc/app.extensions.html#app.extensions.log_extension.after_user_login">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_user_login</span><span class="p">(</span>
+    <span class="n">entity_manager</span><span class="p">:</span> <span class="n">EntityManager</span><span class="p">,</span>
+    <span class="n">cache_manager</span><span class="p">:</span> <span class="n">CacheManager</span><span class="p">,</span>
+    <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span>
+    <span class="n">user</span><span class="p">:</span> <span class="n">User</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">User</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Logs a user login event, capturing details about the user</span>
+<span class="sd">    and the request. Returns the logged-in user.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">LOG_AFTER_USER_LOGIN</span><span class="p">:</span>
+        <span class="n">log</span> <span class="o">=</span> <span class="n">Log</span><span class="p">(</span><span class="n">current_user</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">LogAction</span><span class="o">.</span><span class="n">update</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">entity_manager</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">user</span></div>
+
+
+
+<div class="viewcode-block" id="after_token_select">
+<a class="viewcode-back" href="../../../autodoc/app.extensions.html#app.extensions.log_extension.after_token_select">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_token_select</span><span class="p">(</span>
+    <span class="n">entity_manager</span><span class="p">:</span> <span class="n">EntityManager</span><span class="p">,</span>
+    <span class="n">cache_manager</span><span class="p">:</span> <span class="n">CacheManager</span><span class="p">,</span>
+    <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span>
+    <span class="n">user</span><span class="p">:</span> <span class="n">User</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">User</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Logs a token retrieval event, capturing details about the user</span>
+<span class="sd">    and the request. Returns the user associated with the token.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">LOG_AFTER_TOKEN_SELECT</span><span class="p">:</span>
+        <span class="n">log</span> <span class="o">=</span> <span class="n">Log</span><span class="p">(</span><span class="n">current_user</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">LogAction</span><span class="o">.</span><span class="n">update</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">entity_manager</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">user</span></div>
+
+
+
+<div class="viewcode-block" id="after_token_invalidate">
+<a class="viewcode-back" href="../../../autodoc/app.extensions.html#app.extensions.log_extension.after_token_invalidate">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_token_invalidate</span><span class="p">(</span>
+    <span class="n">entity_manager</span><span class="p">:</span> <span class="n">EntityManager</span><span class="p">,</span>
+    <span class="n">cache_manager</span><span class="p">:</span> <span class="n">CacheManager</span><span class="p">,</span>
+    <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span>
+    <span class="n">user</span><span class="p">:</span> <span class="n">User</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">User</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Logs a token invalidation event, capturing details about the user</span>
+<span class="sd">    and the request. Returns the user associated with the invalidated</span>
+<span class="sd">    token.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">LOG_AFTER_ERR_TOKEN_INVALIDATE</span><span class="p">:</span>
+        <span class="n">log</span> <span class="o">=</span> <span class="n">Log</span><span class="p">(</span><span class="n">current_user</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">LogAction</span><span class="o">.</span><span class="n">update</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">entity_manager</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">user</span></div>
+
+
+
+<div class="viewcode-block" id="after_user_select">
+<a class="viewcode-back" href="../../../autodoc/app.extensions.html#app.extensions.log_extension.after_user_select">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_user_select</span><span class="p">(</span>
+    <span class="n">entity_manager</span><span class="p">:</span> <span class="n">EntityManager</span><span class="p">,</span>
+    <span class="n">cache_manager</span><span class="p">:</span> <span class="n">CacheManager</span><span class="p">,</span>
+    <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span>
+    <span class="n">user</span><span class="p">:</span> <span class="n">User</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">User</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Logs a user selection event, capturing details about the user</span>
+<span class="sd">    and the request. Returns the selected user.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">LOG_AFTER_USER_SELECT</span><span class="p">:</span>
+        <span class="n">log</span> <span class="o">=</span> <span class="n">Log</span><span class="p">(</span><span class="n">current_user</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">LogAction</span><span class="o">.</span><span class="n">select</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">entity_manager</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">user</span></div>
+
+
+
+<div class="viewcode-block" id="after_user_update">
+<a class="viewcode-back" href="../../../autodoc/app.extensions.html#app.extensions.log_extension.after_user_update">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_user_update</span><span class="p">(</span>
+    <span class="n">entity_manager</span><span class="p">:</span> <span class="n">EntityManager</span><span class="p">,</span>
+    <span class="n">cache_manager</span><span class="p">:</span> <span class="n">CacheManager</span><span class="p">,</span>
+    <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span>
+    <span class="n">user</span><span class="p">:</span> <span class="n">User</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">User</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Logs a user update event, capturing details about the user and</span>
+<span class="sd">    the request. Returns the updated user.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">LOG_AFTER_USER_UPDATE</span><span class="p">:</span>
+        <span class="n">log</span> <span class="o">=</span> <span class="n">Log</span><span class="p">(</span><span class="n">current_user</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">LogAction</span><span class="o">.</span><span class="n">update</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">entity_manager</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">user</span></div>
+
+
+
+<div class="viewcode-block" id="after_role_update">
+<a class="viewcode-back" href="../../../autodoc/app.extensions.html#app.extensions.log_extension.after_role_update">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_role_update</span><span class="p">(</span>
+    <span class="n">entity_manager</span><span class="p">:</span> <span class="n">EntityManager</span><span class="p">,</span>
+    <span class="n">cache_manager</span><span class="p">:</span> <span class="n">CacheManager</span><span class="p">,</span>
+    <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span>
+    <span class="n">user</span><span class="p">:</span> <span class="n">User</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">User</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Logs a user role update event, capturing details about the user and</span>
+<span class="sd">    the request. Returns the user whose role was updated.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">LOG_AFTER_ROLE_UPDATE</span><span class="p">:</span>
+        <span class="n">log</span> <span class="o">=</span> <span class="n">Log</span><span class="p">(</span><span class="n">current_user</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">LogAction</span><span class="o">.</span><span class="n">update</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">entity_manager</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">user</span></div>
+
+
+
+<div class="viewcode-block" id="after_password_update">
+<a class="viewcode-back" href="../../../autodoc/app.extensions.html#app.extensions.log_extension.after_password_update">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_password_update</span><span class="p">(</span>
+    <span class="n">entity_manager</span><span class="p">:</span> <span class="n">EntityManager</span><span class="p">,</span>
+    <span class="n">cache_manager</span><span class="p">:</span> <span class="n">CacheManager</span><span class="p">,</span>
+    <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span>
+    <span class="n">user</span><span class="p">:</span> <span class="n">User</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">User</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Logs a password update event, capturing details about the user and</span>
+<span class="sd">    the request. Returns the user whose password was updated.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">LOG_AFTER_PASSWORD_UPDATE</span><span class="p">:</span>
+        <span class="n">log</span> <span class="o">=</span> <span class="n">Log</span><span class="p">(</span><span class="n">current_user</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">LogAction</span><span class="o">.</span><span class="n">update</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">entity_manager</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">user</span></div>
+
+
+
+<div class="viewcode-block" id="after_userpic_upload">
+<a class="viewcode-back" href="../../../autodoc/app.extensions.html#app.extensions.log_extension.after_userpic_upload">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_userpic_upload</span><span class="p">(</span>
+    <span class="n">entity_manager</span><span class="p">:</span> <span class="n">EntityManager</span><span class="p">,</span>
+    <span class="n">cache_manager</span><span class="p">:</span> <span class="n">CacheManager</span><span class="p">,</span>
+    <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span>
+    <span class="n">user</span><span class="p">:</span> <span class="n">User</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">User</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Logs a user picture upload event, capturing details about the user</span>
+<span class="sd">    and the request. Returns the user whose picture was uploaded.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">LOG_AFTER_USERPIC_UPLOAD</span><span class="p">:</span>
+        <span class="n">log</span> <span class="o">=</span> <span class="n">Log</span><span class="p">(</span><span class="n">current_user</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">LogAction</span><span class="o">.</span><span class="n">update</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">entity_manager</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">user</span></div>
+
+
+
+<div class="viewcode-block" id="after_userpic_delete">
+<a class="viewcode-back" href="../../../autodoc/app.extensions.html#app.extensions.log_extension.after_userpic_delete">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_userpic_delete</span><span class="p">(</span>
+    <span class="n">entity_manager</span><span class="p">:</span> <span class="n">EntityManager</span><span class="p">,</span>
+    <span class="n">cache_manager</span><span class="p">:</span> <span class="n">CacheManager</span><span class="p">,</span>
+    <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span>
+    <span class="n">user</span><span class="p">:</span> <span class="n">User</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">User</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Logs a user picture deletion event, capturing details about the user</span>
+<span class="sd">    and the request. Returns the user whose picture was deleted.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">LOG_AFTER_USERPIC_DELETE</span><span class="p">:</span>
+        <span class="n">log</span> <span class="o">=</span> <span class="n">Log</span><span class="p">(</span><span class="n">current_user</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">LogAction</span><span class="o">.</span><span class="n">update</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">entity_manager</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">user</span></div>
+
+
+
+<div class="viewcode-block" id="after_user_list">
+<a class="viewcode-back" href="../../../autodoc/app.extensions.html#app.extensions.log_extension.after_user_list">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_user_list</span><span class="p">(</span>
+    <span class="n">entity_manager</span><span class="p">:</span> <span class="n">EntityManager</span><span class="p">,</span>
+    <span class="n">cache_manager</span><span class="p">:</span> <span class="n">CacheManager</span><span class="p">,</span>
+    <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span>
+    <span class="n">users</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Collection</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Collection</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Logs a user list retrieval event for each user in the list,</span>
+<span class="sd">    capturing details about each user and the request. Returns the</span>
+<span class="sd">    list of users.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">LOG_AFTER_USER_LIST</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">users</span><span class="p">:</span>
+            <span class="n">log</span> <span class="o">=</span> <span class="n">Log</span><span class="p">(</span><span class="n">current_user</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">LogAction</span><span class="o">.</span><span class="n">select</span><span class="p">)</span>
+            <span class="k">await</span> <span class="n">entity_manager</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">users</span></div>
+
+
+
+<div class="viewcode-block" id="after_collection_insert">
+<a class="viewcode-back" href="../../../autodoc/app.extensions.html#app.extensions.log_extension.after_collection_insert">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_collection_insert</span><span class="p">(</span>
+    <span class="n">entity_manager</span><span class="p">:</span> <span class="n">EntityManager</span><span class="p">,</span>
+    <span class="n">cache_manager</span><span class="p">:</span> <span class="n">CacheManager</span><span class="p">,</span>
+    <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span>
+    <span class="n">collection</span><span class="p">:</span> <span class="n">Collection</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Logs a collection insertion event, capturing details about the</span>
+<span class="sd">    collection and the request. Returns the newly inserted collection.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">LOG_AFTER_COLLECTION_INSERT</span><span class="p">:</span>
+        <span class="n">log</span> <span class="o">=</span> <span class="n">Log</span><span class="p">(</span><span class="n">current_user</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">collection</span><span class="p">,</span> <span class="n">LogAction</span><span class="o">.</span><span class="n">insert</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">entity_manager</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">collection</span></div>
+
+
+
+<div class="viewcode-block" id="after_collection_select">
+<a class="viewcode-back" href="../../../autodoc/app.extensions.html#app.extensions.log_extension.after_collection_select">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_collection_select</span><span class="p">(</span>
+    <span class="n">entity_manager</span><span class="p">:</span> <span class="n">EntityManager</span><span class="p">,</span>
+    <span class="n">cache_manager</span><span class="p">:</span> <span class="n">CacheManager</span><span class="p">,</span>
+    <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span>
+    <span class="n">collection</span><span class="p">:</span> <span class="n">Collection</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Logs a collection selection event, capturing details about the</span>
+<span class="sd">    collection and the request. Returns the selected collection.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">LOG_AFTER_COLLECTION_SELECT</span><span class="p">:</span>
+        <span class="n">log</span> <span class="o">=</span> <span class="n">Log</span><span class="p">(</span><span class="n">current_user</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">collection</span><span class="p">,</span> <span class="n">LogAction</span><span class="o">.</span><span class="n">select</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">entity_manager</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">collection</span></div>
+
+
+
+<div class="viewcode-block" id="after_collection_update">
+<a class="viewcode-back" href="../../../autodoc/app.extensions.html#app.extensions.log_extension.after_collection_update">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_collection_update</span><span class="p">(</span>
+    <span class="n">entity_manager</span><span class="p">:</span> <span class="n">EntityManager</span><span class="p">,</span>
+    <span class="n">cache_manager</span><span class="p">:</span> <span class="n">CacheManager</span><span class="p">,</span>
+    <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span>
+    <span class="n">collection</span><span class="p">:</span> <span class="n">Collection</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Logs a collection update event, capturing details about the</span>
+<span class="sd">    collection and the request. Returns the updated collection.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">LOG_AFTER_COLLECTION_UPDATE</span><span class="p">:</span>
+        <span class="n">log</span> <span class="o">=</span> <span class="n">Log</span><span class="p">(</span><span class="n">current_user</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">collection</span><span class="p">,</span> <span class="n">LogAction</span><span class="o">.</span><span class="n">update</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">entity_manager</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">collection</span></div>
+
+
+
+<div class="viewcode-block" id="after_collection_delete">
+<a class="viewcode-back" href="../../../autodoc/app.extensions.html#app.extensions.log_extension.after_collection_delete">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_collection_delete</span><span class="p">(</span>
+    <span class="n">entity_manager</span><span class="p">:</span> <span class="n">EntityManager</span><span class="p">,</span>
+    <span class="n">cache_manager</span><span class="p">:</span> <span class="n">CacheManager</span><span class="p">,</span>
+    <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span>
+    <span class="n">collection</span><span class="p">:</span> <span class="n">Collection</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Logs a collection deletion event, capturing details about the</span>
+<span class="sd">    collection and the request. Returns the deleted collection.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">LOG_AFTER_COLLECTION_DELETE</span><span class="p">:</span>
+        <span class="n">log</span> <span class="o">=</span> <span class="n">Log</span><span class="p">(</span><span class="n">current_user</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">collection</span><span class="p">,</span> <span class="n">LogAction</span><span class="o">.</span><span class="n">delete</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">entity_manager</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">collection</span></div>
+
+
+
+<div class="viewcode-block" id="after_collection_list">
+<a class="viewcode-back" href="../../../autodoc/app.extensions.html#app.extensions.log_extension.after_collection_list">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_collection_list</span><span class="p">(</span>
+    <span class="n">entity_manager</span><span class="p">:</span> <span class="n">EntityManager</span><span class="p">,</span>
+    <span class="n">cache_manager</span><span class="p">:</span> <span class="n">CacheManager</span><span class="p">,</span>
+    <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span>
+    <span class="n">collections</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Collection</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Collection</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Logs a collections list retrieval event for each collection in the</span>
+<span class="sd">    list, capturing details about each collection and the request.</span>
+<span class="sd">    Returns the list of collections.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">LOG_AFTER_COLLECTION_LIST</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">collection</span> <span class="ow">in</span> <span class="n">collections</span><span class="p">:</span>
+            <span class="n">log</span> <span class="o">=</span> <span class="n">Log</span><span class="p">(</span><span class="n">current_user</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">collection</span><span class="p">,</span> <span class="n">LogAction</span><span class="o">.</span><span class="n">select</span><span class="p">)</span>
+            <span class="k">await</span> <span class="n">entity_manager</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">collections</span></div>
+
+
+
+<div class="viewcode-block" id="after__insert">
+<a class="viewcode-back" href="../../../autodoc/app.extensions.html#app.extensions.log_extension.after__insert">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after__insert</span><span class="p">(</span>
+    <span class="n">entity_manager</span><span class="p">:</span> <span class="n">EntityManager</span><span class="p">,</span>
+    <span class="n">cache_manager</span><span class="p">:</span> <span class="n">CacheManager</span><span class="p">,</span>
+    <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span>
+    <span class="n">datafile</span><span class="p">:</span> <span class="n">Datafile</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Datafile</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Logs a datafile upload event, capturing details about the datafile</span>
+<span class="sd">    and the request. Returns the uploaded datafile.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">LOG_AFTER_DATAFILE_UPLOAD</span><span class="p">:</span>
+        <span class="n">log</span> <span class="o">=</span> <span class="n">Log</span><span class="p">(</span><span class="n">current_user</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">datafile</span><span class="p">,</span> <span class="n">LogAction</span><span class="o">.</span><span class="n">insert</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">entity_manager</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">datafile</span></div>
+
+
+
+<div class="viewcode-block" id="after_datafile_select">
+<a class="viewcode-back" href="../../../autodoc/app.extensions.html#app.extensions.log_extension.after_datafile_select">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_datafile_select</span><span class="p">(</span>
+    <span class="n">entity_manager</span><span class="p">:</span> <span class="n">EntityManager</span><span class="p">,</span>
+    <span class="n">cache_manager</span><span class="p">:</span> <span class="n">CacheManager</span><span class="p">,</span>
+    <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span>
+    <span class="n">datafile</span><span class="p">:</span> <span class="n">Datafile</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Datafile</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Logs a datafile selection event, capturing details about the</span>
+<span class="sd">    datafile and the request. Returns the selected datafile.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">LOG_AFTER_DATAFILE_SELECT</span><span class="p">:</span>
+        <span class="n">log</span> <span class="o">=</span> <span class="n">Log</span><span class="p">(</span><span class="n">current_user</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">datafile</span><span class="p">,</span> <span class="n">LogAction</span><span class="o">.</span><span class="n">select</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">entity_manager</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">datafile</span></div>
+
+
+
+<div class="viewcode-block" id="after_comment_insert">
+<a class="viewcode-back" href="../../../autodoc/app.extensions.html#app.extensions.log_extension.after_comment_insert">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_comment_insert</span><span class="p">(</span>
+    <span class="n">entity_manager</span><span class="p">:</span> <span class="n">EntityManager</span><span class="p">,</span>
+    <span class="n">cache_manager</span><span class="p">:</span> <span class="n">CacheManager</span><span class="p">,</span>
+    <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span>
+    <span class="n">comment</span><span class="p">:</span> <span class="n">Comment</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Comment</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Logs a comment insertion event, capturing details about the comment</span>
+<span class="sd">    and the request. Returns the inserted comment.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">LOG_AFTER_COMMENT_INSERT</span><span class="p">:</span>
+        <span class="n">log</span> <span class="o">=</span> <span class="n">Log</span><span class="p">(</span><span class="n">current_user</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">comment</span><span class="p">,</span> <span class="n">LogAction</span><span class="o">.</span><span class="n">insert</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">entity_manager</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">comment</span></div>
+
+
+
+<div class="viewcode-block" id="after_comment_select">
+<a class="viewcode-back" href="../../../autodoc/app.extensions.html#app.extensions.log_extension.after_comment_select">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_comment_select</span><span class="p">(</span>
+    <span class="n">entity_manager</span><span class="p">:</span> <span class="n">EntityManager</span><span class="p">,</span>
+    <span class="n">cache_manager</span><span class="p">:</span> <span class="n">CacheManager</span><span class="p">,</span>
+    <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span>
+    <span class="n">comment</span><span class="p">:</span> <span class="n">Comment</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Comment</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Logs a comment retrieval event, capturing details about the comment</span>
+<span class="sd">    and the request. Returns the selected comment.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">LOG_AFTER_COMMENT_SELECT</span><span class="p">:</span>
+        <span class="n">log</span> <span class="o">=</span> <span class="n">Log</span><span class="p">(</span><span class="n">current_user</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">comment</span><span class="p">,</span> <span class="n">LogAction</span><span class="o">.</span><span class="n">select</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">entity_manager</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">comment</span></div>
+
+
+
+<div class="viewcode-block" id="after_comment_update">
+<a class="viewcode-back" href="../../../autodoc/app.extensions.html#app.extensions.log_extension.after_comment_update">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_comment_update</span><span class="p">(</span>
+    <span class="n">entity_manager</span><span class="p">:</span> <span class="n">EntityManager</span><span class="p">,</span>
+    <span class="n">cache_manager</span><span class="p">:</span> <span class="n">CacheManager</span><span class="p">,</span>
+    <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span>
+    <span class="n">comment</span><span class="p">:</span> <span class="n">Comment</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Comment</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Logs a comment update event, capturing details about the updated</span>
+<span class="sd">    comment and the request. Returns the updated comment.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">LOG_AFTER_COMMENT_UPDATE</span><span class="p">:</span>
+        <span class="n">log</span> <span class="o">=</span> <span class="n">Log</span><span class="p">(</span><span class="n">current_user</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">comment</span><span class="p">,</span> <span class="n">LogAction</span><span class="o">.</span><span class="n">update</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">entity_manager</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">comment</span></div>
+
+
+
+<div class="viewcode-block" id="after_comment_delete">
+<a class="viewcode-back" href="../../../autodoc/app.extensions.html#app.extensions.log_extension.after_comment_delete">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_comment_delete</span><span class="p">(</span>
+    <span class="n">entity_manager</span><span class="p">:</span> <span class="n">EntityManager</span><span class="p">,</span>
+    <span class="n">cache_manager</span><span class="p">:</span> <span class="n">CacheManager</span><span class="p">,</span>
+    <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span>
+    <span class="n">comment</span><span class="p">:</span> <span class="n">Comment</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Comment</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Logs a comment deletion event, capturing details about the deleted</span>
+<span class="sd">    comment and the request. Returns the deleted comment.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">LOG_AFTER_COMMENT_DELETE</span><span class="p">:</span>
+        <span class="n">log</span> <span class="o">=</span> <span class="n">Log</span><span class="p">(</span><span class="n">current_user</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">comment</span><span class="p">,</span> <span class="n">LogAction</span><span class="o">.</span><span class="n">delete</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">entity_manager</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">comment</span></div>
+
+
+
+<div class="viewcode-block" id="after_comment_list">
+<a class="viewcode-back" href="../../../autodoc/app.extensions.html#app.extensions.log_extension.after_comment_list">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_comment_list</span><span class="p">(</span>
+    <span class="n">entity_manager</span><span class="p">:</span> <span class="n">EntityManager</span><span class="p">,</span>
+    <span class="n">cache_manager</span><span class="p">:</span> <span class="n">CacheManager</span><span class="p">,</span>
+    <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span>
+    <span class="n">comments</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Comment</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Comment</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Logs the retrieval of a list of comments, capturing details about</span>
+<span class="sd">    each comment and the request. Returns the list of comments.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">LOG_AFTER_COMMENT_LIST</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">comment</span> <span class="ow">in</span> <span class="n">comments</span><span class="p">:</span>
+            <span class="n">log</span> <span class="o">=</span> <span class="n">Log</span><span class="p">(</span><span class="n">current_user</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">comment</span><span class="p">,</span> <span class="n">LogAction</span><span class="o">.</span><span class="n">select</span><span class="p">)</span>
+            <span class="k">await</span> <span class="n">entity_manager</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">comments</span></div>
+
+
+
+<div class="viewcode-block" id="after_download_select">
+<a class="viewcode-back" href="../../../autodoc/app.extensions.html#app.extensions.log_extension.after_download_select">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_download_select</span><span class="p">(</span>
+    <span class="n">entity_manager</span><span class="p">:</span> <span class="n">EntityManager</span><span class="p">,</span>
+    <span class="n">cache_manager</span><span class="p">:</span> <span class="n">CacheManager</span><span class="p">,</span>
+    <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span>
+    <span class="n">download</span><span class="p">:</span> <span class="n">Download</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Download</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Logs the selection of a download event, capturing details about the</span>
+<span class="sd">    download and the request. Returns the download record.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">LOG_AFTER_DOWNLOAD_SELECT</span><span class="p">:</span>
+        <span class="n">log</span> <span class="o">=</span> <span class="n">Log</span><span class="p">(</span><span class="n">current_user</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">download</span><span class="p">,</span> <span class="n">LogAction</span><span class="o">.</span><span class="n">select</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">entity_manager</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">download</span></div>
+
+
+
+<div class="viewcode-block" id="after_download_list">
+<a class="viewcode-back" href="../../../autodoc/app.extensions.html#app.extensions.log_extension.after_download_list">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_download_list</span><span class="p">(</span>
+    <span class="n">entity_manager</span><span class="p">:</span> <span class="n">EntityManager</span><span class="p">,</span>
+    <span class="n">cache_manager</span><span class="p">:</span> <span class="n">CacheManager</span><span class="p">,</span>
+    <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span>
+    <span class="n">downloads</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Download</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Download</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Logs the retrieval of a list of downloads, capturing details about</span>
+<span class="sd">    each download and the request. Returns the list of downloads.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">LOG_AFTER_DOWNLOAD_LIST</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">download</span> <span class="ow">in</span> <span class="n">downloads</span><span class="p">:</span>
+            <span class="n">log</span> <span class="o">=</span> <span class="n">Log</span><span class="p">(</span><span class="n">current_user</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">download</span><span class="p">,</span> <span class="n">LogAction</span><span class="o">.</span><span class="n">select</span><span class="p">)</span>
+            <span class="k">await</span> <span class="n">entity_manager</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">downloads</span></div>
+
+
+
+<div class="viewcode-block" id="after_favorite_insert">
+<a class="viewcode-back" href="../../../autodoc/app.extensions.html#app.extensions.log_extension.after_favorite_insert">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_favorite_insert</span><span class="p">(</span>
+    <span class="n">entity_manager</span><span class="p">:</span> <span class="n">EntityManager</span><span class="p">,</span>
+    <span class="n">cache_manager</span><span class="p">:</span> <span class="n">CacheManager</span><span class="p">,</span>
+    <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span>
+    <span class="n">favorite</span><span class="p">:</span> <span class="n">Favorite</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Favorite</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Logs the addition of a new favorite, capturing details about the</span>
+<span class="sd">    favorite and the request. Returns the newly added favorite.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">LOG_AFTER_FAVORITE_INSERT</span><span class="p">:</span>
+        <span class="n">log</span> <span class="o">=</span> <span class="n">Log</span><span class="p">(</span><span class="n">current_user</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">favorite</span><span class="p">,</span> <span class="n">LogAction</span><span class="o">.</span><span class="n">insert</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">entity_manager</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">favorite</span></div>
+
+
+
+<div class="viewcode-block" id="after_favorite_select">
+<a class="viewcode-back" href="../../../autodoc/app.extensions.html#app.extensions.log_extension.after_favorite_select">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_favorite_select</span><span class="p">(</span>
+    <span class="n">entity_manager</span><span class="p">:</span> <span class="n">EntityManager</span><span class="p">,</span>
+    <span class="n">cache_manager</span><span class="p">:</span> <span class="n">CacheManager</span><span class="p">,</span>
+    <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span>
+    <span class="n">favorite</span><span class="p">:</span> <span class="n">Favorite</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Favorite</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Logs the retrieval of a favorite, capturing details about the</span>
+<span class="sd">    favorite and the request. Returns the favorite.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">LOG_AFTER_FAVORITE_SELECT</span><span class="p">:</span>
+        <span class="n">log</span> <span class="o">=</span> <span class="n">Log</span><span class="p">(</span><span class="n">current_user</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">favorite</span><span class="p">,</span> <span class="n">LogAction</span><span class="o">.</span><span class="n">select</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">entity_manager</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">favorite</span></div>
+
+
+
+<div class="viewcode-block" id="after_favorite_delete">
+<a class="viewcode-back" href="../../../autodoc/app.extensions.html#app.extensions.log_extension.after_favorite_delete">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_favorite_delete</span><span class="p">(</span>
+    <span class="n">entity_manager</span><span class="p">:</span> <span class="n">EntityManager</span><span class="p">,</span>
+    <span class="n">cache_manager</span><span class="p">:</span> <span class="n">CacheManager</span><span class="p">,</span>
+    <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span>
+    <span class="n">favorite</span><span class="p">:</span> <span class="n">Favorite</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Favorite</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Logs the deletion of a favorite, capturing details about the</span>
+<span class="sd">    favorite and the request. Returns the deleted favorite.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">LOG_AFTER_FAVORITE_DELETE</span><span class="p">:</span>
+        <span class="n">log</span> <span class="o">=</span> <span class="n">Log</span><span class="p">(</span><span class="n">current_user</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">favorite</span><span class="p">,</span> <span class="n">LogAction</span><span class="o">.</span><span class="n">delete</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">entity_manager</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">favorite</span></div>
+
+
+
+<div class="viewcode-block" id="after_favorite_list">
+<a class="viewcode-back" href="../../../autodoc/app.extensions.html#app.extensions.log_extension.after_favorite_list">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_favorite_list</span><span class="p">(</span>
+    <span class="n">entity_manager</span><span class="p">:</span> <span class="n">EntityManager</span><span class="p">,</span>
+    <span class="n">cache_manager</span><span class="p">:</span> <span class="n">CacheManager</span><span class="p">,</span>
+    <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span>
+    <span class="n">favorites</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Favorite</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Favorite</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Logs the retrieval of a list of favorites, capturing details about</span>
+<span class="sd">    each favorite and the request. Returns the list of retrieved</span>
+<span class="sd">    favorites.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">LOG_AFTER_FAVORITE_LIST</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">favorite</span> <span class="ow">in</span> <span class="n">favorites</span><span class="p">:</span>
+            <span class="n">log</span> <span class="o">=</span> <span class="n">Log</span><span class="p">(</span><span class="n">current_user</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">favorite</span><span class="p">,</span> <span class="n">LogAction</span><span class="o">.</span><span class="n">select</span><span class="p">)</span>
+            <span class="k">await</span> <span class="n">entity_manager</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">favorites</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Artem Abramov.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

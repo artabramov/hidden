@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>app.schemas.datafile_schemas &mdash; Hidden  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Hidden
+          </a>
+              <div class="version">
+                0.0.45
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.html">app package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.decorators.html">app.decorators package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.extensions.html">app.extensions package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.helpers.html">app.helpers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.mixins.html">app.mixins package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.managers.html">app.managers package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Hidden</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">app.schemas.datafile_schemas</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for app.schemas.datafile_schemas</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The module defines Pydantic schemas for managing datafiles. Includes</span>
+<span class="sd">schemas for inserting, selecting, updating, deleting, and listing</span>
+<span class="sd">datafiles.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span><span class="p">,</span> <span class="n">field_validator</span>
+<span class="kn">from</span> <span class="nn">app.schemas.user_schemas</span> <span class="kn">import</span> <span class="n">UserSelectResponse</span>
+<span class="kn">from</span> <span class="nn">app.schemas.revision_schemas</span> <span class="kn">import</span> <span class="n">RevisionSelectResponse</span>
+<span class="kn">from</span> <span class="nn">app.validators.datafile_validators</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">validate_datafile_summary</span><span class="p">,</span> <span class="n">validate_datafile_name</span><span class="p">,</span> <span class="n">validate_tags</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="DatafileUploadResponse">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.datafile_schemas.DatafileUploadResponse">[docs]</a>
+<span class="k">class</span> <span class="nc">DatafileUploadResponse</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">datafile_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">revision_id</span><span class="p">:</span> <span class="nb">int</span></div>
+
+
+
+<div class="viewcode-block" id="DatafileReplaceResponse">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.datafile_schemas.DatafileReplaceResponse">[docs]</a>
+<span class="k">class</span> <span class="nc">DatafileReplaceResponse</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">datafile_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">revision_id</span><span class="p">:</span> <span class="nb">int</span></div>
+
+
+
+<div class="viewcode-block" id="DatafileSelectResponse">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.datafile_schemas.DatafileSelectResponse">[docs]</a>
+<span class="k">class</span> <span class="nc">DatafileSelectResponse</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pydantic schema for the response after retrieving a datafile entity.</span>
+<span class="sd">    Includes the datafile ID, creation and update dates, user ID,</span>
+<span class="sd">    collection ID, datafile name, summary, size, and various counts</span>
+<span class="sd">    such as revisions, comments, downloads, and favorites. Also includes</span>
+<span class="sd">    the datafile tags and the latest revision details.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">created_date</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">updated_date</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">user_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">collection_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+
+    <span class="n">datafile_name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">datafile_summary</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">comments_count</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">revisions_count</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">revisions_size</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">downloads_count</span><span class="p">:</span> <span class="nb">int</span>
+
+    <span class="n">datafile_tags</span><span class="p">:</span> <span class="nb">list</span>
+    <span class="n">datafile_user</span><span class="p">:</span> <span class="n">UserSelectResponse</span>
+    <span class="n">latest_revision</span><span class="p">:</span> <span class="n">RevisionSelectResponse</span></div>
+
+
+
+<div class="viewcode-block" id="DatafileUpdateRequest">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.datafile_schemas.DatafileUpdateRequest">[docs]</a>
+<span class="k">class</span> <span class="nc">DatafileUpdateRequest</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pydantic schema for request to update an existing datafile entity.</span>
+<span class="sd">    Requires the datafile ID and collection ID to be specified, and</span>
+<span class="sd">    optionally the datafile name, summary, and tags.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">collection_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">datafile_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
+    <span class="n">datafile_summary</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">tags</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DatafileUpdateRequest.validate_datafile_summary">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.datafile_schemas.DatafileUpdateRequest.validate_datafile_summary">[docs]</a>
+    <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;datafile_summary&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;before&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">validate_datafile_summary</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">datafile_summary</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>  <span class="c1"># noqa E501</span>
+        <span class="k">return</span> <span class="n">validate_datafile_summary</span><span class="p">(</span><span class="n">datafile_summary</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DatafileUpdateRequest.validate_datafile_name">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.datafile_schemas.DatafileUpdateRequest.validate_datafile_name">[docs]</a>
+    <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;datafile_name&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;before&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">validate_datafile_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">datafile_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">validate_datafile_name</span><span class="p">(</span><span class="n">datafile_name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DatafileUpdateRequest.validate_tags">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.datafile_schemas.DatafileUpdateRequest.validate_tags">[docs]</a>
+    <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;tags&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;before&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">validate_tags</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">tags</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">validate_tags</span><span class="p">(</span><span class="n">tags</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="DatafileUpdateResponse">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.datafile_schemas.DatafileUpdateResponse">[docs]</a>
+<span class="k">class</span> <span class="nc">DatafileUpdateResponse</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pydantic schema for the response after updating a datafile entity.</span>
+<span class="sd">    Includes the ID assigned to the updated datafile.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">datafile_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">revision_id</span><span class="p">:</span> <span class="nb">int</span></div>
+
+
+
+<div class="viewcode-block" id="DatafileDeleteResponse">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.datafile_schemas.DatafileDeleteResponse">[docs]</a>
+<span class="k">class</span> <span class="nc">DatafileDeleteResponse</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pydantic schema for the response after updating a datafile entity.</span>
+<span class="sd">    Includes the ID assigned to the deleted datafile.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">datafile_id</span><span class="p">:</span> <span class="nb">int</span></div>
+
+
+
+<div class="viewcode-block" id="DatafileListRequest">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.datafile_schemas.DatafileListRequest">[docs]</a>
+<span class="k">class</span> <span class="nc">DatafileListRequest</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pydantic schema for requesting a list of datafile entities. Requires</span>
+<span class="sd">    pagination options with offset and limit, ordering criteria, and</span>
+<span class="sd">    optional filters for datafile name and tag value.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">collection_id__eq</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">datafile_name__ilike</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">comments_count__ge</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">comments_count__le</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">revisions_count__ge</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">revisions_count__le</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">revisions_size__ge</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">revisions_size__le</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">downloads_count__ge</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">downloads_count__le</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">tag_value__eq</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+    <span class="n">order_by</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;created_date&quot;</span><span class="p">,</span> <span class="s2">&quot;updated_date&quot;</span><span class="p">,</span> <span class="s2">&quot;user_id&quot;</span><span class="p">,</span>
+                      <span class="s2">&quot;collection_id&quot;</span><span class="p">,</span> <span class="s2">&quot;datafile_name&quot;</span><span class="p">,</span> <span class="s2">&quot;comments_count&quot;</span><span class="p">,</span>
+                      <span class="s2">&quot;revisions_count&quot;</span><span class="p">,</span> <span class="s2">&quot;revisions_size&quot;</span><span class="p">,</span> <span class="s2">&quot;downloads_count&quot;</span><span class="p">]</span>
+    <span class="n">order</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;asc&quot;</span><span class="p">,</span> <span class="s2">&quot;desc&quot;</span><span class="p">,</span> <span class="s2">&quot;rand&quot;</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="DatafileListResponse">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.datafile_schemas.DatafileListResponse">[docs]</a>
+<span class="k">class</span> <span class="nc">DatafileListResponse</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pydantic schema for the response when listing datafile entities.</span>
+<span class="sd">    Includes a list of datafile entities and the total count of</span>
+<span class="sd">    datafile that match the request criteria.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">datafiles</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">DatafileSelectResponse</span><span class="p">]</span>
+    <span class="n">datafiles_count</span><span class="p">:</span> <span class="nb">int</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Artem Abramov.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>app.managers package &mdash; Hidden  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="app.models package" href="app.models.html" />
+    <link rel="prev" title="app.helpers package" href="app.helpers.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Hidden
+          </a>
+              <div class="version">
+                0.0.52
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="app.html">app package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app.decorators.html">app.decorators package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app.helpers.html">app.helpers package</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">app.managers package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.managers.cache_manager">app.managers.cache_manager module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.managers.cache_manager.CacheManager"><code class="docutils literal notranslate"><span class="pre">CacheManager</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#app.managers.cache_manager.CacheManager.delete"><code class="docutils literal notranslate"><span class="pre">CacheManager.delete()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.managers.cache_manager.CacheManager.delete_all"><code class="docutils literal notranslate"><span class="pre">CacheManager.delete_all()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.managers.cache_manager.CacheManager.erase"><code class="docutils literal notranslate"><span class="pre">CacheManager.erase()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.managers.cache_manager.CacheManager.get"><code class="docutils literal notranslate"><span class="pre">CacheManager.get()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.managers.cache_manager.CacheManager.set"><code class="docutils literal notranslate"><span class="pre">CacheManager.set()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.managers.entity_manager">app.managers.entity_manager module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.managers.entity_manager.EntityManager"><code class="docutils literal notranslate"><span class="pre">EntityManager</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#app.managers.entity_manager.EntityManager.commit"><code class="docutils literal notranslate"><span class="pre">EntityManager.commit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.managers.entity_manager.EntityManager.count_all"><code class="docutils literal notranslate"><span class="pre">EntityManager.count_all()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.managers.entity_manager.EntityManager.delete"><code class="docutils literal notranslate"><span class="pre">EntityManager.delete()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.managers.entity_manager.EntityManager.delete_all"><code class="docutils literal notranslate"><span class="pre">EntityManager.delete_all()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.managers.entity_manager.EntityManager.exists"><code class="docutils literal notranslate"><span class="pre">EntityManager.exists()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.managers.entity_manager.EntityManager.flush"><code class="docutils literal notranslate"><span class="pre">EntityManager.flush()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.managers.entity_manager.EntityManager.insert"><code class="docutils literal notranslate"><span class="pre">EntityManager.insert()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.managers.entity_manager.EntityManager.rollback"><code class="docutils literal notranslate"><span class="pre">EntityManager.rollback()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.managers.entity_manager.EntityManager.select"><code class="docutils literal notranslate"><span class="pre">EntityManager.select()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.managers.entity_manager.EntityManager.select_all"><code class="docutils literal notranslate"><span class="pre">EntityManager.select_all()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.managers.entity_manager.EntityManager.select_by"><code class="docutils literal notranslate"><span class="pre">EntityManager.select_by()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.managers.entity_manager.EntityManager.select_rows"><code class="docutils literal notranslate"><span class="pre">EntityManager.select_rows()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.managers.entity_manager.EntityManager.subquery"><code class="docutils literal notranslate"><span class="pre">EntityManager.subquery()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.managers.entity_manager.EntityManager.sum_all"><code class="docutils literal notranslate"><span class="pre">EntityManager.sum_all()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.managers.entity_manager.EntityManager.update"><code class="docutils literal notranslate"><span class="pre">EntityManager.update()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.managers.file_manager">app.managers.file_manager module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.managers.file_manager.FileManager"><code class="docutils literal notranslate"><span class="pre">FileManager</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#app.managers.file_manager.FileManager.copy"><code class="docutils literal notranslate"><span class="pre">FileManager.copy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.managers.file_manager.FileManager.delete"><code class="docutils literal notranslate"><span class="pre">FileManager.delete()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.managers.file_manager.FileManager.merge"><code class="docutils literal notranslate"><span class="pre">FileManager.merge()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.managers.file_manager.FileManager.read"><code class="docutils literal notranslate"><span class="pre">FileManager.read()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.managers.file_manager.FileManager.rename"><code class="docutils literal notranslate"><span class="pre">FileManager.rename()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.managers.file_manager.FileManager.split"><code class="docutils literal notranslate"><span class="pre">FileManager.split()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.managers.file_manager.FileManager.upload"><code class="docutils literal notranslate"><span class="pre">FileManager.upload()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.managers.file_manager.FileManager.write"><code class="docutils literal notranslate"><span class="pre">FileManager.write()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.managers">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="app.models.html">app.models package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app.plugins.html">app.plugins package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app.routers.html">app.routers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app.schemas.html">app.schemas package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Hidden</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="app.html">app package</a></li>
+      <li class="breadcrumb-item active">app.managers package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/autodoc/app.managers.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="app-managers-package">
+<h1>app.managers package<a class="headerlink" href="#app-managers-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-app.managers.cache_manager">
+<span id="app-managers-cache-manager-module"></span><h2>app.managers.cache_manager module<a class="headerlink" href="#module-app.managers.cache_manager" title="Link to this heading"></a></h2>
+<p>The module provides the CacheManager class for managing caching
+operations with Redis for SQLAlchemy entities. The CacheManager class
+offers methods to set, get, delete, and delete all cached SQLAlchemy
+model instances. It leverages Redis for efficient storage and retrieval
+and supports asynchronous operations to enhance performance.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="app.managers.cache_manager.CacheManager">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.managers.cache_manager.</span></span><span class="sig-name descname"><span class="pre">CacheManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Redis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/managers/cache_manager.html#CacheManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.managers.cache_manager.CacheManager" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Manages caching operations for SQLAlchemy models using Redis. This
+class provides methods for setting, retrieving, deleting, and
+bulk-deleting cached SQLAlchemy model instances. It uses Redis for
+storage and supports asynchronous operations to handle caching
+efficiently.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="app.managers.cache_manager.CacheManager.delete">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DeclarativeBase</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/managers/cache_manager.html#CacheManager.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.managers.cache_manager.CacheManager.delete" title="Link to this definition"></a></dt>
+<dd><p>Removes an SQLAlchemy model instance from the cache by deleting
+the cache entry associated with the given model.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.managers.cache_manager.CacheManager.delete_all">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">delete_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">DeclarativeBase</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/managers/cache_manager.html#CacheManager.delete_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.managers.cache_manager.CacheManager.delete_all" title="Link to this definition"></a></dt>
+<dd><p>Removes all cached instances of a given SQLAlchemy model class
+by deleting all cache entries related to the specified class.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.managers.cache_manager.CacheManager.erase">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">erase</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/managers/cache_manager.html#CacheManager.erase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.managers.cache_manager.CacheManager.erase" title="Link to this definition"></a></dt>
+<dd><p>Clears all cache entries in Redis, effectively erasing all
+cached SQLAlchemy model instances.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.managers.cache_manager.CacheManager.get">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">DeclarativeBase</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entity_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DeclarativeBase</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/app/managers/cache_manager.html#CacheManager.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.managers.cache_manager.CacheManager.get" title="Link to this definition"></a></dt>
+<dd><p>Retrieves an SQLAlchemy model instance from the cache by
+fetching the serialized model from Redis and deserializing it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.managers.cache_manager.CacheManager.set">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DeclarativeBase</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/managers/cache_manager.html#CacheManager.set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.managers.cache_manager.CacheManager.set" title="Link to this definition"></a></dt>
+<dd><p>Caches an SQLAlchemy model instance by serializing it and
+storing it in Redis with an expiration time.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-app.managers.entity_manager">
+<span id="app-managers-entity-manager-module"></span><h2>app.managers.entity_manager module<a class="headerlink" href="#module-app.managers.entity_manager" title="Link to this heading"></a></h2>
+<p>The module defines the EntityManager class for managing database
+operations with SQLAlchemy model classes using an asynchronous
+SQLAlchemy session. It provides methods for performing CRUD operations,
+querying entities with various filters, counting records, aggregating
+data, and handling transactions. The EntityManager class supports
+operations such as inserting, updating, deleting, and selecting
+SQLAlchemy model instances, as well as summing column values and
+locking tables to prevent modifications. The class is designed to
+work efficiently with large datasets and integrates with SQLAlchemy’s
+asynchronous capabilities for non-blocking database interactions.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="app.managers.entity_manager.EntityManager">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.managers.entity_manager.</span></span><span class="sig-name descname"><span class="pre">EntityManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AsyncSession</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/managers/entity_manager.html#EntityManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.managers.entity_manager.EntityManager" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Manages database operations for SQLAlchemy model classes. Provides
+methods to perform CRUD operations, count records, aggregate data,
+and manage transactions using an asynchronous SQLAlchemy session.
+The class is designed to handle entities that are instances of
+SQLAlchemy models.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="app.managers.entity_manager.EntityManager.commit">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">commit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/managers/entity_manager.html#EntityManager.commit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.managers.entity_manager.EntityManager.commit" title="Link to this definition"></a></dt>
+<dd><p>Commit the current transaction. Commits all changes made during
+the current transaction, making them permanent in the database.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.managers.entity_manager.EntityManager.count_all">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">count_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">DeclarativeBase</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="../_modules/app/managers/entity_manager.html#EntityManager.count_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.managers.entity_manager.EntityManager.count_all" title="Link to this definition"></a></dt>
+<dd><p>Count the number of SQLAlchemy model instances of the specified
+class that match the provided filters by constructing a query
+to count all entities meeting the criteria. If a subquery is
+included, it counts only those entities whose IDs are present
+in that subquery.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.managers.entity_manager.EntityManager.delete">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DeclarativeBase</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flush</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">commit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/managers/entity_manager.html#EntityManager.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.managers.entity_manager.EntityManager.delete" title="Link to this definition"></a></dt>
+<dd><p>Delete a SQLAlchemy model instance from the database by removing
+the specified entity from the session. This marks the object for
+deletion, and changes will not be persisted until the session is
+flushed or committed. The “flush” parameter determines whether
+to immediately send changes to the database, while the “commit”
+parameter indicates whether to finalize the deletion in the
+database.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.managers.entity_manager.EntityManager.delete_all">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">delete_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">DeclarativeBase</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flush</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">commit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/managers/entity_manager.html#EntityManager.delete_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.managers.entity_manager.EntityManager.delete_all" title="Link to this definition"></a></dt>
+<dd><p>Delete all SQLAlchemy model instances of the specified class
+that match the provided filters by constructing a query for
+deletion and handling large datasets in batches. The “flush”
+parameter determines whether to immediately send changes to
+the database, while the “commit” parameter indicates whether
+to finalize the deletions in the database. The method
+processes deletions in batches.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.managers.entity_manager.EntityManager.exists">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">exists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">DeclarativeBase</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/app/managers/entity_manager.html#EntityManager.exists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.managers.entity_manager.EntityManager.exists" title="Link to this definition"></a></dt>
+<dd><p>Check if an entity of the specified SQLAlchemy model class
+exists in the database based on the provided filters by
+constructing a query that checks for at least one matching
+entity. The method returns True if a matching entity is
+found, and False otherwise.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.managers.entity_manager.EntityManager.flush">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">flush</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/managers/entity_manager.html#EntityManager.flush"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.managers.entity_manager.EntityManager.flush" title="Link to this definition"></a></dt>
+<dd><p>Flush the session to synchronize with the database. Sends all
+pending changes in the session to the database but does not
+commit the transaction.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.managers.entity_manager.EntityManager.insert">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DeclarativeBase</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flush</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">commit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/managers/entity_manager.html#EntityManager.insert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.managers.entity_manager.EntityManager.insert" title="Link to this definition"></a></dt>
+<dd><p>Insert a new SQLAlchemy model instance into the database
+by adding the given entity to the session and saving it.
+The “flush” parameter determines whether to immediately
+send changes to the database, while the “commit” parameter
+specifies whether to finalize the transaction and persist
+changes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.managers.entity_manager.EntityManager.rollback">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">rollback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/managers/entity_manager.html#EntityManager.rollback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.managers.entity_manager.EntityManager.rollback" title="Link to this definition"></a></dt>
+<dd><p>Roll back the current transaction. Reverts all changes made
+during the current transaction, undoing any modifications to
+maintain consistency.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.managers.entity_manager.EntityManager.select">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">select</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">DeclarativeBase</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DeclarativeBase</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/app/managers/entity_manager.html#EntityManager.select"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.managers.entity_manager.EntityManager.select" title="Link to this definition"></a></dt>
+<dd><p>Retrieve a SQLAlchemy model instance of the specified class by
+its ID, constructing a query to find the entity with the given
+ID. The method returns the instance if found, or None if no
+matching entity exists.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.managers.entity_manager.EntityManager.select_all">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">select_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">DeclarativeBase</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">DeclarativeBase</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/app/managers/entity_manager.html#EntityManager.select_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.managers.entity_manager.EntityManager.select_all" title="Link to this definition"></a></dt>
+<dd><p>Retrieve all SQLAlchemy model instances of the specified class
+that match the provided filters by constructing a query with
+optional ordering, pagination, and limiting. If a subquery is
+included in the filters, the results will only include entities
+whose IDs are present in that subquery. The method returns a
+list of matching entities.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.managers.entity_manager.EntityManager.select_by">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">select_by</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">DeclarativeBase</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DeclarativeBase</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/app/managers/entity_manager.html#EntityManager.select_by"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.managers.entity_manager.EntityManager.select_by" title="Link to this definition"></a></dt>
+<dd><p>Retrieve a SQLAlchemy model instance based on the provided
+filters by constructing a query to find a single entity that
+matches the criteria. The method returns the entity if found,
+or None if no matching entity exists.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.managers.entity_manager.EntityManager.select_rows">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">select_rows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sql</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="../_modules/app/managers/entity_manager.html#EntityManager.select_rows"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.managers.entity_manager.EntityManager.select_rows" title="Link to this definition"></a></dt>
+<dd><p>Asynchronously execute the provided SQL query and return all
+result rows as a list. This method allows for direct execution
+of raw SQL statements within the session.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.managers.entity_manager.EntityManager.subquery">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">subquery</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">DeclarativeBase</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">foreign_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">select</span></span></span><a class="reference internal" href="../_modules/app/managers/entity_manager.html#EntityManager.subquery"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.managers.entity_manager.EntityManager.subquery" title="Link to this definition"></a></dt>
+<dd><p>Constructs and returns a subquery for the given SQLAlchemy model
+class, selecting the values of the specified foreign key column
+and applying the provided filters. This method builds a subquery
+object that can be used to filter other queries based on the
+foreign key column values of entities that match the specified
+criteria.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.managers.entity_manager.EntityManager.sum_all">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sum_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">DeclarativeBase</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="../_modules/app/managers/entity_manager.html#EntityManager.sum_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.managers.entity_manager.EntityManager.sum_all" title="Link to this definition"></a></dt>
+<dd><p>Sum the values of a specified column for all SQLAlchemy model
+instances matching the filters. Constructs a query to calculate
+the sum of the values in the specified column for entities
+meeting the criteria. If a subquery is provided, it sums only
+those values for entities whose IDs are present in the subquery.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.managers.entity_manager.EntityManager.update">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DeclarativeBase</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flush</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">commit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/managers/entity_manager.html#EntityManager.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.managers.entity_manager.EntityManager.update" title="Link to this definition"></a></dt>
+<dd><p>Update an existing SQLAlchemy model instance in the database by
+merging the changes of the given entity with the session. The
+“flush” parameter determines whether to immediately send changes
+to the database, while the “commit” parameter specifies whether
+to finalize the transaction and persist changes.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-app.managers.file_manager">
+<span id="app-managers-file-manager-module"></span><h2>app.managers.file_manager module<a class="headerlink" href="#module-app.managers.file_manager" title="Link to this heading"></a></h2>
+<p>The module provides asynchronous methods for various file operations.
+These include uploading, deleting, writing, reading, copying, renaming,
+splitting, and merging files. It supports efficient I/O operations using
+aiofiles to handle large files and avoid blocking the event loop.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="app.managers.file_manager.FileManager">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.managers.file_manager.</span></span><span class="sig-name descname"><span class="pre">FileManager</span></span><a class="reference internal" href="../_modules/app/managers/file_manager.html#FileManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.managers.file_manager.FileManager" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Provides asynchronous methods for various file operations using
+aiofiles. This includes uploading files in chunks, deleting files if
+they exist, writing data to files, reading file contents, and
+encrypting or decrypting data with a Fernet cipher. These methods
+are designed to handle I/O operations efficiently in an asynchronous
+manner to support high-performance applications.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="app.managers.file_manager.FileManager.copy">
+<em class="property"><span class="pre">async</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dst_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/managers/file_manager.html#FileManager.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.managers.file_manager.FileManager.copy" title="Link to this definition"></a></dt>
+<dd><p>Asynchronously copies the contents of a file from src_path to
+dst_path in chunks. The method opens the source file for reading
+in binary mode and the destination file for writing in binary
+mode. It reads from the source file in chunks and writes those
+chunks to the destination file until the entire file has been
+copied. The operation is performed asynchronously to avoid
+blocking the event loop, and errors such as file not found or
+permission issues are handled gracefully.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.managers.file_manager.FileManager.delete">
+<em class="property"><span class="pre">async</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/managers/file_manager.html#FileManager.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.managers.file_manager.FileManager.delete" title="Link to this definition"></a></dt>
+<dd><p>Asynchronously deletes the file at the specified path if it
+exists, first checking for the file’s existence to avoid errors.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.managers.file_manager.FileManager.merge">
+<em class="property"><span class="pre">async</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">merge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">paths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">part_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bytes</span></span></span><a class="reference internal" href="../_modules/app/managers/file_manager.html#FileManager.merge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.managers.file_manager.FileManager.merge" title="Link to this definition"></a></dt>
+<dd><p>Merges a list of shard files into a single binary data object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.managers.file_manager.FileManager.read">
+<em class="property"><span class="pre">async</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bytes</span></span></span><a class="reference internal" href="../_modules/app/managers/file_manager.html#FileManager.read"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.managers.file_manager.FileManager.read" title="Link to this definition"></a></dt>
+<dd><p>Asynchronously reads and returns the contents of a file at the
+specified path, loading the entire file into memory.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.managers.file_manager.FileManager.rename">
+<em class="property"><span class="pre">async</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">rename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dst_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/managers/file_manager.html#FileManager.rename"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.managers.file_manager.FileManager.rename" title="Link to this definition"></a></dt>
+<dd><p>Asynchronously renames the file from src_path to dst_path.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.managers.file_manager.FileManager.split">
+<em class="property"><span class="pre">async</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">split</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">part_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="reference internal" href="../_modules/app/managers/file_manager.html#FileManager.split"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.managers.file_manager.FileManager.split" title="Link to this definition"></a></dt>
+<dd><p>Splits the provided binary data into smaller part files of a
+fixed size, ensuring that all parts have the same size.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.managers.file_manager.FileManager.upload">
+<em class="property"><span class="pre">async</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">upload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/managers/file_manager.html#FileManager.upload"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.managers.file_manager.FileManager.upload" title="Link to this definition"></a></dt>
+<dd><p>Asynchronously uploads a file to the specified path by reading
+the file in chunks and writing each chunk to the destination
+path, handling large files efficiently without loading them
+entirely into memory.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.managers.file_manager.FileManager.write">
+<em class="property"><span class="pre">async</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/managers/file_manager.html#FileManager.write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.managers.file_manager.FileManager.write" title="Link to this definition"></a></dt>
+<dd><p>Asynchronously writes the given byte data to a file at the
+specified path, overwriting the file if it already exists.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-app.managers">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-app.managers" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="app.helpers.html" class="btn btn-neutral float-left" title="app.helpers package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="app.models.html" class="btn btn-neutral float-right" title="app.models package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Artem Abramov.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

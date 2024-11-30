@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>app.auth &mdash; Hidden  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Hidden
+          </a>
+              <div class="version">
+                0.0.52
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../autodoc/app.html">app package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autodoc/app.decorators.html">app.decorators package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autodoc/app.helpers.html">app.helpers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autodoc/app.managers.html">app.managers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autodoc/app.models.html">app.models package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autodoc/app.plugins.html">app.plugins package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autodoc/app.routers.html">app.routers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autodoc/app.schemas.html">app.schemas package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Hidden</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">app.auth</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for app.auth</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The module provides utility functions for user authentication and</span>
+<span class="sd">permission checking in the application. It includes functions to</span>
+<span class="sd">validate user roles and permissions based on JWT tokens. The auth</span>
+<span class="sd">function maps user roles (reader, writer, editor, admin) to their</span>
+<span class="sd">corresponding permission-checking functions. Dependencies include</span>
+<span class="sd">database sessions, Redis cache, and JWT headers.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.ext.asyncio</span> <span class="kn">import</span> <span class="n">AsyncSession</span>
+<span class="kn">from</span> <span class="nn">redis</span> <span class="kn">import</span> <span class="n">Redis</span>
+<span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">Depends</span><span class="p">,</span> <span class="n">status</span>
+<span class="kn">from</span> <span class="nn">fastapi.security</span> <span class="kn">import</span> <span class="n">HTTPBearer</span>
+<span class="kn">from</span> <span class="nn">jwt.exceptions</span> <span class="kn">import</span> <span class="n">ExpiredSignatureError</span><span class="p">,</span> <span class="n">PyJWTError</span>
+<span class="kn">from</span> <span class="nn">app.models.user_model</span> <span class="kn">import</span> <span class="n">User</span><span class="p">,</span> <span class="n">UserRole</span>
+<span class="kn">from</span> <span class="nn">app.database</span> <span class="kn">import</span> <span class="n">get_session</span>
+<span class="kn">from</span> <span class="nn">app.cache</span> <span class="kn">import</span> <span class="n">get_cache</span>
+<span class="kn">from</span> <span class="nn">app.repository</span> <span class="kn">import</span> <span class="n">Repository</span>
+<span class="kn">from</span> <span class="nn">app.helpers.jwt_helper</span> <span class="kn">import</span> <span class="n">jwt_decode</span>
+<span class="kn">from</span> <span class="nn">app.errors</span> <span class="kn">import</span> <span class="n">E</span>
+<span class="kn">from</span> <span class="nn">app.constants</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">LOC_HEADER</span><span class="p">,</span> <span class="n">ERR_USER_ROLE_REJECTED</span><span class="p">,</span> <span class="n">ERR_TOKEN_MISSING</span><span class="p">,</span>
+    <span class="n">ERR_TOKEN_EXPIRED</span><span class="p">,</span> <span class="n">ERR_TOKEN_INVALID</span><span class="p">,</span> <span class="n">ERR_TOKEN_REJECTED</span><span class="p">,</span>
+    <span class="n">ERR_TOKEN_ORPHANED</span><span class="p">,</span> <span class="n">ERR_USER_INACTIVE</span><span class="p">,</span> <span class="n">ERR_USER_SUSPENDED</span><span class="p">)</span>
+
+<span class="n">jwt</span> <span class="o">=</span> <span class="n">HTTPBearer</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="auth">
+<a class="viewcode-back" href="../../autodoc/app.html#app.auth.auth">[docs]</a>
+<span class="k">def</span> <span class="nf">auth</span><span class="p">(</span><span class="n">user_role</span><span class="p">:</span> <span class="n">UserRole</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the appropriate permission function based on the given</span>
+<span class="sd">    user role. The function maps user roles such as reader, writer,</span>
+<span class="sd">    editor, and admin to their corresponding permission functions,</span>
+<span class="sd">    enabling role-based access control. If the role is not recognized,</span>
+<span class="sd">    it returns None.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">user_role</span> <span class="o">==</span> <span class="n">UserRole</span><span class="o">.</span><span class="n">reader</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_can_read</span>
+
+    <span class="k">elif</span> <span class="n">user_role</span> <span class="o">==</span> <span class="n">UserRole</span><span class="o">.</span><span class="n">writer</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_can_write</span>
+
+    <span class="k">elif</span> <span class="n">user_role</span> <span class="o">==</span> <span class="n">UserRole</span><span class="o">.</span><span class="n">editor</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_can_edit</span>
+
+    <span class="k">elif</span> <span class="n">user_role</span> <span class="o">==</span> <span class="n">UserRole</span><span class="o">.</span><span class="n">admin</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_can_admin</span></div>
+
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">_can_read</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">get_session</span><span class="p">),</span>
+                    <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">get_cache</span><span class="p">),</span> <span class="n">header</span><span class="o">=</span><span class="n">Depends</span><span class="p">(</span><span class="n">jwt</span><span class="p">)):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Verifies if a user has read permissions based on their JWT token.</span>
+<span class="sd">    It retrieves the user using the token and checks if the user</span>
+<span class="sd">    has the corresponding permission. If not, it raises an exception.</span>
+<span class="sd">    The function depends on the session, cache, and JWT header to</span>
+<span class="sd">    authenticate and authorize the user.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">user_token</span> <span class="o">=</span> <span class="n">header</span><span class="o">.</span><span class="n">credentials</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="k">await</span> <span class="n">_auth</span><span class="p">(</span><span class="n">user_token</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">cache</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="o">.</span><span class="n">can_read</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">E</span><span class="p">([</span><span class="n">LOC_HEADER</span><span class="p">,</span> <span class="s2">&quot;user_token&quot;</span><span class="p">],</span> <span class="n">user_token</span><span class="p">,</span>
+                <span class="n">ERR_USER_ROLE_REJECTED</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_403_FORBIDDEN</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">user</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">_can_write</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">get_session</span><span class="p">),</span>
+                     <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">get_cache</span><span class="p">),</span> <span class="n">header</span><span class="o">=</span><span class="n">Depends</span><span class="p">(</span><span class="n">jwt</span><span class="p">)):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Verifies if a user has write permissions based on their JWT token.</span>
+<span class="sd">    It retrieves the user using the token and checks if the user</span>
+<span class="sd">    has the corresponding permission. If not, it raises an exception.</span>
+<span class="sd">    The function depends on the session, cache, and JWT header to</span>
+<span class="sd">    authenticate and authorize the user.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">user_token</span> <span class="o">=</span> <span class="n">header</span><span class="o">.</span><span class="n">credentials</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="k">await</span> <span class="n">_auth</span><span class="p">(</span><span class="n">user_token</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">cache</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="o">.</span><span class="n">can_write</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">E</span><span class="p">([</span><span class="n">LOC_HEADER</span><span class="p">,</span> <span class="s2">&quot;user_token&quot;</span><span class="p">],</span> <span class="n">user_token</span><span class="p">,</span>
+                <span class="n">ERR_USER_ROLE_REJECTED</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_403_FORBIDDEN</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">user</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">_can_edit</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">get_session</span><span class="p">),</span>
+                    <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">get_cache</span><span class="p">),</span> <span class="n">header</span><span class="o">=</span><span class="n">Depends</span><span class="p">(</span><span class="n">jwt</span><span class="p">)):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Verifies if a user has edit permissions based on their JWT token.</span>
+<span class="sd">    It retrieves the user using the token and checks if the user</span>
+<span class="sd">    has the corresponding permission. If not, it raises an exception.</span>
+<span class="sd">    The function depends on the session, cache, and JWT header to</span>
+<span class="sd">    authenticate and authorize the user.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">user_token</span> <span class="o">=</span> <span class="n">header</span><span class="o">.</span><span class="n">credentials</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="k">await</span> <span class="n">_auth</span><span class="p">(</span><span class="n">user_token</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">cache</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="o">.</span><span class="n">can_edit</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">E</span><span class="p">([</span><span class="n">LOC_HEADER</span><span class="p">,</span> <span class="s2">&quot;user_token&quot;</span><span class="p">],</span> <span class="n">user_token</span><span class="p">,</span>
+                <span class="n">ERR_USER_ROLE_REJECTED</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_403_FORBIDDEN</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">user</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">_can_admin</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">get_session</span><span class="p">),</span>
+                     <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">get_cache</span><span class="p">),</span> <span class="n">header</span><span class="o">=</span><span class="n">Depends</span><span class="p">(</span><span class="n">jwt</span><span class="p">)):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Verifies if a user has admin permissions based on their JWT token.</span>
+<span class="sd">    It retrieves the user using the token and checks if the user</span>
+<span class="sd">    has the corresponding permission. If not, it raises an exception.</span>
+<span class="sd">    The function depends on the session, cache, and JWT header to</span>
+<span class="sd">    authenticate and authorize the user.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">user_token</span> <span class="o">=</span> <span class="n">header</span><span class="o">.</span><span class="n">credentials</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="k">await</span> <span class="n">_auth</span><span class="p">(</span><span class="n">user_token</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">cache</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="o">.</span><span class="n">can_admin</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">E</span><span class="p">([</span><span class="n">LOC_HEADER</span><span class="p">,</span> <span class="s2">&quot;user_token&quot;</span><span class="p">],</span> <span class="n">user_token</span><span class="p">,</span>
+                <span class="n">ERR_USER_ROLE_REJECTED</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_403_FORBIDDEN</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">user</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">_auth</span><span class="p">(</span><span class="n">user_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Authenticates a user based on the provided JWT token. The function</span>
+<span class="sd">    verifies the token, handling errors such as missing, expired, or</span>
+<span class="sd">    invalid tokens, and checks if the token is associated with a valid</span>
+<span class="sd">    and active user. It retrieves the user from the repository using the</span>
+<span class="sd">    token&#39;s user ID, validates the token&#39;s identifier, and ensures the</span>
+<span class="sd">    user is not suspended. If any check fails, an exception is raised</span>
+<span class="sd">    with an appropriate error code. Returns the authenticated user if</span>
+<span class="sd">    all checks pass.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">user_token</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">E</span><span class="p">([</span><span class="n">LOC_HEADER</span><span class="p">,</span> <span class="s2">&quot;user_token&quot;</span><span class="p">],</span> <span class="n">user_token</span><span class="p">,</span>
+                <span class="n">ERR_TOKEN_MISSING</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_403_FORBIDDEN</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">token_payload</span> <span class="o">=</span> <span class="n">jwt_decode</span><span class="p">(</span><span class="n">user_token</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="n">ExpiredSignatureError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">E</span><span class="p">([</span><span class="n">LOC_HEADER</span><span class="p">,</span> <span class="s2">&quot;user_token&quot;</span><span class="p">],</span> <span class="n">user_token</span><span class="p">,</span>
+                <span class="n">ERR_TOKEN_EXPIRED</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_403_FORBIDDEN</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="n">PyJWTError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">E</span><span class="p">([</span><span class="n">LOC_HEADER</span><span class="p">,</span> <span class="s2">&quot;user_token&quot;</span><span class="p">],</span> <span class="n">user_token</span><span class="p">,</span>
+                <span class="n">ERR_TOKEN_INVALID</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_403_FORBIDDEN</span><span class="p">)</span>
+
+    <span class="n">user_repository</span> <span class="o">=</span> <span class="n">Repository</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">cache</span><span class="p">,</span> <span class="n">User</span><span class="p">)</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="k">await</span> <span class="n">user_repository</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">token_payload</span><span class="p">[</span><span class="s2">&quot;user_id&quot;</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">token_payload</span><span class="p">[</span><span class="s2">&quot;jti&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">user</span><span class="o">.</span><span class="n">jti</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">E</span><span class="p">([</span><span class="n">LOC_HEADER</span><span class="p">,</span> <span class="s2">&quot;user_token&quot;</span><span class="p">],</span> <span class="n">user_token</span><span class="p">,</span>
+                <span class="n">ERR_TOKEN_REJECTED</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_403_FORBIDDEN</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="ow">not</span> <span class="n">user</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">E</span><span class="p">([</span><span class="n">LOC_HEADER</span><span class="p">,</span> <span class="s2">&quot;user_token&quot;</span><span class="p">],</span> <span class="n">user_token</span><span class="p">,</span>
+                <span class="n">ERR_TOKEN_ORPHANED</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_403_FORBIDDEN</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="ow">not</span> <span class="n">user</span><span class="o">.</span><span class="n">is_active</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">E</span><span class="p">([</span><span class="n">LOC_HEADER</span><span class="p">,</span> <span class="s2">&quot;user_token&quot;</span><span class="p">],</span> <span class="n">user_token</span><span class="p">,</span>
+                <span class="n">ERR_USER_INACTIVE</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_403_FORBIDDEN</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">user</span><span class="o">.</span><span class="n">suspended_date</span> <span class="o">&gt;</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()):</span>
+        <span class="k">raise</span> <span class="n">E</span><span class="p">([</span><span class="n">LOC_HEADER</span><span class="p">,</span> <span class="s2">&quot;user_token&quot;</span><span class="p">],</span> <span class="n">user_token</span><span class="p">,</span>
+                <span class="n">ERR_USER_SUSPENDED</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_403_FORBIDDEN</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">user</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Artem Abramov.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

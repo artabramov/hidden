@@ -133,7 +133,8 @@ app = FastAPI(lifespan=lifespan, title=cfg.APP_TITLE, version=__version__,
               openapi_tags=openapi_tags)
 
 app.add_middleware(
-    CORSMiddleware, allow_origins=[cfg.APP_BASE_URL, "http://localhost:3000"],
+    CORSMiddleware, allow_origins=[
+        cfg.APP_BASE_URL, "http://localhost:3000", "http://127.0.0.1:3000"],
     allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
 
 uptime = Uptime()
@@ -197,8 +198,6 @@ app.mount(
     "/sphinx", StaticFiles(directory="/hidden/docs/_build/html", html=True),
     name="sphinx")
 
-app.mount("/", StaticFiles(directory=cfg.APP_HTML_PATH, html=True), name="/")
-
 app.mount(cfg.USERPIC_PREFIX,
           StaticFiles(directory=cfg.USERPIC_BASE_PATH, html=False),
           name=cfg.USERPIC_BASE_PATH)
@@ -210,6 +209,8 @@ app.mount(cfg.THUMBNAILS_PREFIX,
 app.mount(cfg.PARTNERPIC_PREFIX,
           StaticFiles(directory=cfg.PARTNERPIC_BASE_PATH, html=False),
           name=cfg.PARTNERPIC_BASE_PATH)
+
+app.mount("/", StaticFiles(directory=cfg.APP_HTML_PATH, html=True), name="/")
 
 
 @app.middleware("http")

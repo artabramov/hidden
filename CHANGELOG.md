@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.1.1 (2024-12-01)
+- **Fixed static mounts** to ensure correct file serving and accessibility.
+
 ## Version 0.1.0 (2024-12-01)
 - **Refactored the codebase** to improve readability, maintainability, and overall structure of the application.
 - **Updated and expanded unit tests** to enhance test coverage, ensuring better stability and error detection.

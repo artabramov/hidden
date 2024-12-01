@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.1.2 (2024-12-01)
+- **Fixed Uvicorn command** by hardcoding parameters to prevent Docker execution errors.
+
 ## Version 0.1.1 (2024-12-01)
 - **Fixed static mounts** to ensure correct file serving and accessibility.
 - **Updated Sphinx documentation** to provide more detailed instructions and usage examples.

@@ -76,7 +76,7 @@ services:
     container_name: hidden
     restart: always
     environment:
-      DATA_SOURCE_NAME: postgres://${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@127.0.0.1:${POSTGRES_PORT}/${POSTGRES_DATABASE}?sslmode=disable
+      DATA_SOURCE_NAME: postgres://hidden:he7w2rLY4Y8pFk2u@127.0.0.1:5432/hidden?sslmode=disable
     volumes:
       - postgres_data:/var/lib/postgresql/14/main
       - postgres_log:/var/log/postgresql

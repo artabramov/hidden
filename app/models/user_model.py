@@ -16,6 +16,7 @@ from sqlalchemy import (Boolean, Column, BigInteger, Integer, SmallInteger,
 from sqlalchemy.ext.hybrid import hybrid_property
 from app.helpers.hash_helper import get_hash
 from sqlalchemy.orm import relationship
+from sqlalchemy.dialects.postgresql import ENUM
 from app.config import get_config
 from app.database import Base
 from app.helpers.jwt_helper import jti_create
@@ -36,6 +37,9 @@ class UserRole(enum.Enum):
     admin = "admin"
 
 
+user_role_enum = ENUM(UserRole, name="userrole", create_type=False)
+
+
 class User(Base):
     """
     The User class represents a user in the system. It stores personal
@@ -53,7 +57,7 @@ class User(Base):
                           onupdate=lambda: int(time.time()))
     last_login_date = Column(Integer, nullable=False, index=True, default=0)
     suspended_date = Column(Integer, nullable=False, default=0)
-    user_role = Column(Enum(UserRole), nullable=False, index=True,
+    user_role = Column(user_role_enum, nullable=False, index=True,
                        default=UserRole.reader)
     is_active = Column(Boolean, nullable=False, index=True)
     user_login = Column(String(40), nullable=False, index=True, unique=True)

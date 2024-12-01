@@ -17,4 +17,13 @@ if [ "$DB_EXISTS" != "1" ]; then
   sudo -u postgres psql -c "CREATE DATABASE ${POSTGRES_DATABASE};"
 fi
 
+sudo -u postgres psql -c "
+  DO $$
+  BEGIN
+      IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'userrole') THEN
+          CREATE TYPE userrole AS ENUM ('reader', 'writer', 'editor', 'admin');
+      END IF;
+  END $$;
+"
+
 uvicorn app.app:app --host ${UVICORN_HOST} --port ${UVICORN_PORT} --workers ${UVICORN_WORKERS}

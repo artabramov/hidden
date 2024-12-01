@@ -1,10 +1,5 @@
 #!/bin/sh
 
-until pg_isready -h localhost -U ${POSTGRES_USERNAME}; do
-  echo "Waiting for PostgreSQL..."
-  sleep 2
-done
-
 service postgresql start
 service redis-server start
 

@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.1.3 (2024-12-01)
+- **Added migratios** to manage some schema features.
+
 ## Version 0.1.2 (2024-12-01)
 - **Fixed Uvicorn command** by hardcoding parameters to prevent Docker execution errors.
 

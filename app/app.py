@@ -32,11 +32,11 @@ from app.cache import get_cache
 from app.context import get_context
 from app.log import get_log
 from app.scheduler import scheduler
-from app.triggers.document_triggers import DOCUMENT_TRIGGERS
-from app.triggers.comment_triggers import COMMENT_TRIGGERS
-from app.triggers.revision_triggers import REVISION_TRIGGERS
-from app.triggers.download_triggers import DOWNLOAD_TRIGGERS
-from app.triggers.user_migration import USER_MIGRATION
+from app.migrations.document_migrations import DOCUMENT_MIGRATIONS
+from app.migrations.comment_migrations import COMMENT_MIGRATIONS
+from app.migrations.revision_migrations import REVISION_MIGRATIONS
+from app.migrations.download_migrations import DOWNLOAD_MIGRATIONS
+from app.migrations.user_role_migration import USER_ROLE_MIGRATION
 from app.routers import (
     token_retrieve_router,
     token_invalidate_router,
@@ -116,12 +116,12 @@ async def lifespan(app: FastAPI):
     await load_hooks()
 
     async with sessionmanager.async_engine.begin() as conn:
-        await conn.execute(text(USER_MIGRATION))
+        await conn.execute(text(USER_ROLE_MIGRATION))
         await conn.run_sync(Base.metadata.create_all)
-        triggers = (DOCUMENT_TRIGGERS + COMMENT_TRIGGERS +
-                    REVISION_TRIGGERS + DOWNLOAD_TRIGGERS)
-        for trigger in triggers:
-            await conn.execute(text(trigger))
+        migrations = (DOCUMENT_MIGRATIONS + COMMENT_MIGRATIONS +
+                      REVISION_MIGRATIONS + DOWNLOAD_MIGRATIONS)
+        for migrations in migrations:
+            await conn.execute(text(migrations))
 
     cache_gen = get_cache()
     async for cache in cache_gen:

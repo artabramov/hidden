@@ -1,4 +1,4 @@
-DOWNLOAD_TRIGGERS = [
+DOWNLOAD_MIGRATIONS = [
     # The function that updates downloads_count for documents
     """
     CREATE OR REPLACE FUNCTION update_downloads_count()

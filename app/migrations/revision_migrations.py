@@ -1,4 +1,4 @@
-REVISION_TRIGGERS = [
+REVISION_MIGRATIONS = [
     # The function that updates revisions_count for documents
     """
     CREATE OR REPLACE FUNCTION update_revisions_count()

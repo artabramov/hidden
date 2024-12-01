@@ -1,4 +1,4 @@
-USER_MIGRATION = """
+USER_ROLE_MIGRATION = """
     DO $$ 
     BEGIN 
         IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'userrole') THEN 

@@ -1,4 +1,4 @@
-DOCUMENT_TRIGGERS = [
+DOCUMENT_MIGRATIONS = [
     # The function that updates documents_count
     """
     CREATE OR REPLACE FUNCTION update_documents_count()

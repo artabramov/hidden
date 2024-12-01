@@ -11,7 +11,7 @@ install:
 	docker exec hidden /bin/sh -c "echo \"bind 0.0.0.0\" >> /etc/redis/redis.conf"
 	docker-compose restart hidden
 
-	@echo "Make sure the container is started and press [Enter]."
+	@echo "Make sure the container is started and press [Enter] to finish."
 	@read dummy
 
 	docker exec hidden sudo -u postgres psql -c "CREATE USER $(POSTGRES_USERNAME) WITH PASSWORD '$(POSTGRES_PASSWORD)';"

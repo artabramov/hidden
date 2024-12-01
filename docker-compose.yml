@@ -76,9 +76,6 @@ services:
     container_name: hidden
     restart: always
     environment:
-      UVICORN_HOST: ${UVICORN_HOST}
-      UVICORN_PORT: ${UVICORN_PORT}
-      UVICORN_WORKERS: ${UVICORN_WORKERS}
       DATA_SOURCE_NAME: postgres://${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@127.0.0.1:${POSTGRES_PORT}/${POSTGRES_DATABASE}?sslmode=disable
     volumes:
       - postgres_data:/var/lib/postgresql/14/main

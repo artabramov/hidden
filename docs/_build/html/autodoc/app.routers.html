@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../">
 <head>
@@ -6,18 +8,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>app.routers package &mdash; Hidden  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
-        <script src="../_static/doctools.js?v=9a2dae69"></script>
-        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -36,9 +34,6 @@
           <a href="../index.html" class="icon icon-home">
             Hidden
           </a>
-              <div class="version">
-                0.0.52
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -108,22 +103,10 @@
 <li class="toctree-l2"><a class="reference internal" href="#app-routers-datafile-upload-router-module">app.routers.datafile_upload_router module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#app-routers-download-list-router-module">app.routers.download_list_router module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#app-routers-download-select-router-module">app.routers.download_select_router module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.favorite_delete_router">app.routers.favorite_delete_router module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#app.routers.favorite_delete_router.favorite_delete"><code class="docutils literal notranslate"><span class="pre">favorite_delete()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.favorite_insert_router">app.routers.favorite_insert_router module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#app.routers.favorite_insert_router.favorite_insert"><code class="docutils literal notranslate"><span class="pre">favorite_insert()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.favorite_list_router">app.routers.favorite_list_router module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#app.routers.favorite_list_router.favorite_list"><code class="docutils literal notranslate"><span class="pre">favorite_list()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.favorite_select_router">app.routers.favorite_select_router module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#app.routers.favorite_select_router.favorite_select"><code class="docutils literal notranslate"><span class="pre">favorite_select()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="#app-routers-favorite-delete-router-module">app.routers.favorite_delete_router module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#app-routers-favorite-insert-router-module">app.routers.favorite_insert_router module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#app-routers-favorite-list-router-module">app.routers.favorite_list_router module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#app-routers-favorite-select-router-module">app.routers.favorite_select_router module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#app-routers-lock-create-router-module">app.routers.lock_create_router module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#app-routers-lock-delete-router-module">app.routers.lock_delete_router module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-app.routers.lock_retrieve_router">app.routers.lock_retrieve_router module</a><ul>
@@ -433,73 +416,17 @@ the user does not have the required role.</p>
 <section id="app-routers-download-select-router-module">
 <h2>app.routers.download_select_router module<a class="headerlink" href="#app-routers-download-select-router-module" title="Link to this heading"></a></h2>
 </section>
-<section id="module-app.routers.favorite_delete_router">
-<span id="app-routers-favorite-delete-router-module"></span><h2>app.routers.favorite_delete_router module<a class="headerlink" href="#module-app.routers.favorite_delete_router" title="Link to this heading"></a></h2>
-<p>The module defines a FastAPI router for deleting favorite entities.</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="app.routers.favorite_delete_router.favorite_delete">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.favorite_delete_router.</span></span><span class="sig-name descname"><span class="pre">favorite_delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">favorite_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_read)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.favorite_schemas.FavoriteDeleteResponse" title="app.schemas.favorite_schemas.FavoriteDeleteResponse"><span class="pre">FavoriteDeleteResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/favorite_delete_router.html#favorite_delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.favorite_delete_router.favorite_delete" title="Link to this definition"></a></dt>
-<dd><p>FastAPI router for deleting a favorite entity. The router fetches
-the favorite from the repository using the provided ID, verifies
-that the favorite exists and that the current user is the owner of
-the favorite. It updates the favorites count for the associated
-document, executes related hooks, and returns the ID of the deleted
-favorite in a JSON response. The current user should have a reader
-role or higher. Returns a 200 response on success, a 404 error if
-the favorite is not found, and a 403 error if authentication fails
-or the user does not have the required role.</p>
-</dd></dl>
-
+<section id="app-routers-favorite-delete-router-module">
+<h2>app.routers.favorite_delete_router module<a class="headerlink" href="#app-routers-favorite-delete-router-module" title="Link to this heading"></a></h2>
 </section>
-<section id="module-app.routers.favorite_insert_router">
-<span id="app-routers-favorite-insert-router-module"></span><h2>app.routers.favorite_insert_router module<a class="headerlink" href="#module-app.routers.favorite_insert_router" title="Link to this heading"></a></h2>
-<p>The module defines a FastAPI router for creating favorite entities.</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="app.routers.favorite_insert_router.favorite_insert">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.favorite_insert_router.</span></span><span class="sig-name descname"><span class="pre">favorite_insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.schemas.html#app.schemas.favorite_schemas.FavoriteInsertRequest" title="app.schemas.favorite_schemas.FavoriteInsertRequest"><span class="pre">FavoriteInsertRequest</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_read)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.favorite_schemas.FavoriteInsertResponse" title="app.schemas.favorite_schemas.FavoriteInsertResponse"><span class="pre">FavoriteInsertResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/favorite_insert_router.html#favorite_insert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.favorite_insert_router.favorite_insert" title="Link to this definition"></a></dt>
-<dd><p>FastAPI router for creating a comment entity. The router verifies
-if the specified document exists, creates a favorite record if it
-does not already exist for the current user and document, updates
-the favorites count for the document, and executes related hooks.
-Returns the ID of the created favorite in a JSON response. The
-current user should have a reader role or higher. Returns a 201
-response on success, a 404 error if the document is not found,
-and a 403 error if authentication fails or the user does not have
-the required role.</p>
-</dd></dl>
-
+<section id="app-routers-favorite-insert-router-module">
+<h2>app.routers.favorite_insert_router module<a class="headerlink" href="#app-routers-favorite-insert-router-module" title="Link to this heading"></a></h2>
 </section>
-<section id="module-app.routers.favorite_list_router">
-<span id="app-routers-favorite-list-router-module"></span><h2>app.routers.favorite_list_router module<a class="headerlink" href="#module-app.routers.favorite_list_router" title="Link to this heading"></a></h2>
-<p>The module defines a FastAPI router for retrieving the favorite list.</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="app.routers.favorite_list_router.favorite_list">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.favorite_list_router.</span></span><span class="sig-name descname"><span class="pre">favorite_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(FavoriteListRequest)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_read)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.favorite_schemas.FavoriteListResponse" title="app.schemas.favorite_schemas.FavoriteListResponse"><span class="pre">FavoriteListResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/favorite_list_router.html#favorite_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.favorite_list_router.favorite_list" title="Link to this definition"></a></dt>
-<dd><p>FastAPI router for retrieving a list of favorite entities. The
-router fetches the list of favorites from the repository for the
-current user, executes related hooks, and returns the results in
-a JSON response. The current user should have a reader role or
-higher. Returns a 200 response on success and a 403 error if
-authentication fails or the user does not have the required role.</p>
-</dd></dl>
-
+<section id="app-routers-favorite-list-router-module">
+<h2>app.routers.favorite_list_router module<a class="headerlink" href="#app-routers-favorite-list-router-module" title="Link to this heading"></a></h2>
 </section>
-<section id="module-app.routers.favorite_select_router">
-<span id="app-routers-favorite-select-router-module"></span><h2>app.routers.favorite_select_router module<a class="headerlink" href="#module-app.routers.favorite_select_router" title="Link to this heading"></a></h2>
-<p>The module defines a FastAPI router for retrieving favorite entities.</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="app.routers.favorite_select_router.favorite_select">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.favorite_select_router.</span></span><span class="sig-name descname"><span class="pre">favorite_select</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">favorite_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_read)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.favorite_schemas.FavoriteSelectResponse" title="app.schemas.favorite_schemas.FavoriteSelectResponse"><span class="pre">FavoriteSelectResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/favorite_select_router.html#favorite_select"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.favorite_select_router.favorite_select" title="Link to this definition"></a></dt>
-<dd><p>FastAPI router for retrieving a favorite entity. The router fetches
-the favorite from the repository using the provided ID, verifies
-that the favorite exists, and checks that the current user is the
-owner of the favorite. It executes related hooks and returns the
-favorite details in a JSON response. The current user should have
-a reader role or higher. Returns a 200 response on success, a 404
-error if the favorite is not found, and a 403 error if
-authentication fails or the user does not have the required role.</p>
-</dd></dl>
-
+<section id="app-routers-favorite-select-router-module">
+<h2>app.routers.favorite_select_router module<a class="headerlink" href="#app-routers-favorite-select-router-module" title="Link to this heading"></a></h2>
 </section>
 <section id="app-routers-lock-create-router-module">
 <h2>app.routers.lock_create_router module<a class="headerlink" href="#app-routers-lock-create-router-module" title="Link to this heading"></a></h2>

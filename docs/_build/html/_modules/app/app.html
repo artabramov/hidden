@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../../">
 <head>
@@ -5,18 +7,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>app.app &mdash; Hidden  documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
-        <script src="../../_static/doctools.js?v=9a2dae69"></script>
-        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -33,9 +31,6 @@
           <a href="../../index.html" class="icon icon-home">
             Hidden
           </a>
-              <div class="version">
-                0.0.52
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -50,6 +45,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../autodoc/app.decorators.html">app.decorators package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../autodoc/app.helpers.html">app.helpers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../autodoc/app.managers.html">app.managers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autodoc/app.models.html">app.models package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autodoc/app.plugins.html">app.plugins package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autodoc/app.routers.html">app.routers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autodoc/app.schemas.html">app.schemas package</a></li>
 </ul>
 
         </div>
@@ -90,7 +89,6 @@
 <span class="sd">triggers during startup. Configuration settings such as the application</span>
 <span class="sd">title, version, and API prefixes are loaded from the configuration file.</span>
 <span class="sd">&quot;&quot;&quot;</span>
-
 
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">asyncio</span>
@@ -143,12 +141,13 @@
     <span class="n">collection_lock_router</span><span class="p">,</span>
     <span class="n">collection_delete_router</span><span class="p">,</span>
     <span class="n">collection_list_router</span><span class="p">,</span>
-    <span class="n">document_move_router</span><span class="p">,</span>
     <span class="n">document_upload_router</span><span class="p">,</span>
     <span class="n">document_select_router</span><span class="p">,</span>
     <span class="n">document_update_router</span><span class="p">,</span>
     <span class="n">document_delete_router</span><span class="p">,</span>
     <span class="n">document_list_router</span><span class="p">,</span>
+    <span class="n">document_move_router</span><span class="p">,</span>
+    <span class="n">document_flag_router</span><span class="p">,</span>
     <span class="n">document_replace_router</span><span class="p">,</span>
     <span class="n">document_download_router</span><span class="p">,</span>
     <span class="n">document_revisions_router</span><span class="p">,</span>
@@ -158,10 +157,6 @@
     <span class="n">comment_update_router</span><span class="p">,</span>
     <span class="n">comment_delete_router</span><span class="p">,</span>
     <span class="n">comment_list_router</span><span class="p">,</span>
-    <span class="n">favorite_insert_router</span><span class="p">,</span>
-    <span class="n">favorite_select_router</span><span class="p">,</span>
-    <span class="n">favorite_delete_router</span><span class="p">,</span>
-    <span class="n">favorite_list_router</span><span class="p">,</span>
     <span class="n">option_select_router</span><span class="p">,</span>
     <span class="n">option_update_router</span><span class="p">,</span>
     <span class="n">option_delete_router</span><span class="p">,</span>
@@ -219,7 +214,8 @@
               <span class="n">openapi_tags</span><span class="o">=</span><span class="n">openapi_tags</span><span class="p">)</span>
 
 <span class="n">app</span><span class="o">.</span><span class="n">add_middleware</span><span class="p">(</span>
-    <span class="n">CORSMiddleware</span><span class="p">,</span> <span class="n">allow_origins</span><span class="o">=</span><span class="p">[</span><span class="n">cfg</span><span class="o">.</span><span class="n">APP_BASE_URL</span><span class="p">,</span> <span class="s2">&quot;http://localhost:3000&quot;</span><span class="p">],</span>
+    <span class="n">CORSMiddleware</span><span class="p">,</span> <span class="n">allow_origins</span><span class="o">=</span><span class="p">[</span>
+        <span class="n">cfg</span><span class="o">.</span><span class="n">APP_BASE_URL</span><span class="p">,</span> <span class="s2">&quot;http://localhost:3000&quot;</span><span class="p">,</span> <span class="s2">&quot;http://127.0.0.1:3000&quot;</span><span class="p">],</span>
     <span class="n">allow_credentials</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">allow_methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">],</span> <span class="n">allow_headers</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">])</span>
 
 <span class="n">uptime</span> <span class="o">=</span> <span class="n">Uptime</span><span class="p">()</span>
@@ -250,13 +246,14 @@
 <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">partner_list_router</span><span class="o">.</span><span class="n">router</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">APP_PREFIX</span><span class="p">)</span>
 <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">partnerpic_upload_router</span><span class="o">.</span><span class="n">router</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">APP_PREFIX</span><span class="p">)</span>
 <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">partnerpic_delete_router</span><span class="o">.</span><span class="n">router</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">APP_PREFIX</span><span class="p">)</span>
-<span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">document_move_router</span><span class="o">.</span><span class="n">router</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">APP_PREFIX</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">document_upload_router</span><span class="o">.</span><span class="n">router</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">APP_PREFIX</span><span class="p">)</span>
 <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">document_select_router</span><span class="o">.</span><span class="n">router</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">APP_PREFIX</span><span class="p">)</span>
 <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">document_update_router</span><span class="o">.</span><span class="n">router</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">APP_PREFIX</span><span class="p">)</span>
 <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">document_delete_router</span><span class="o">.</span><span class="n">router</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">APP_PREFIX</span><span class="p">)</span>
 <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">document_list_router</span><span class="o">.</span><span class="n">router</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">APP_PREFIX</span><span class="p">)</span>
-<span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">document_upload_router</span><span class="o">.</span><span class="n">router</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">APP_PREFIX</span><span class="p">)</span>
 <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">document_replace_router</span><span class="o">.</span><span class="n">router</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">APP_PREFIX</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">document_move_router</span><span class="o">.</span><span class="n">router</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">APP_PREFIX</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">document_flag_router</span><span class="o">.</span><span class="n">router</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">APP_PREFIX</span><span class="p">)</span>
 <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">document_download_router</span><span class="o">.</span><span class="n">router</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">APP_PREFIX</span><span class="p">)</span>
 <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">document_revisions_router</span><span class="o">.</span><span class="n">router</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">APP_PREFIX</span><span class="p">)</span>
 <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">document_downloads_router</span><span class="o">.</span><span class="n">router</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">APP_PREFIX</span><span class="p">)</span>
@@ -265,10 +262,6 @@
 <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">comment_update_router</span><span class="o">.</span><span class="n">router</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">APP_PREFIX</span><span class="p">)</span>
 <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">comment_delete_router</span><span class="o">.</span><span class="n">router</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">APP_PREFIX</span><span class="p">)</span>
 <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">comment_list_router</span><span class="o">.</span><span class="n">router</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">APP_PREFIX</span><span class="p">)</span>
-<span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">favorite_insert_router</span><span class="o">.</span><span class="n">router</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">APP_PREFIX</span><span class="p">)</span>
-<span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">favorite_select_router</span><span class="o">.</span><span class="n">router</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">APP_PREFIX</span><span class="p">)</span>
-<span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">favorite_delete_router</span><span class="o">.</span><span class="n">router</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">APP_PREFIX</span><span class="p">)</span>
-<span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">favorite_list_router</span><span class="o">.</span><span class="n">router</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">APP_PREFIX</span><span class="p">)</span>
 <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">option_select_router</span><span class="o">.</span><span class="n">router</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">APP_PREFIX</span><span class="p">)</span>
 <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">option_update_router</span><span class="o">.</span><span class="n">router</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">APP_PREFIX</span><span class="p">)</span>
 <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">option_delete_router</span><span class="o">.</span><span class="n">router</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">APP_PREFIX</span><span class="p">)</span>
@@ -286,8 +279,6 @@
     <span class="s2">&quot;/sphinx&quot;</span><span class="p">,</span> <span class="n">StaticFiles</span><span class="p">(</span><span class="n">directory</span><span class="o">=</span><span class="s2">&quot;/hidden/docs/_build/html&quot;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
     <span class="n">name</span><span class="o">=</span><span class="s2">&quot;sphinx&quot;</span><span class="p">)</span>
 
-<span class="n">app</span><span class="o">.</span><span class="n">mount</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">StaticFiles</span><span class="p">(</span><span class="n">directory</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">APP_HTML_PATH</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
-
 <span class="n">app</span><span class="o">.</span><span class="n">mount</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">USERPIC_PREFIX</span><span class="p">,</span>
           <span class="n">StaticFiles</span><span class="p">(</span><span class="n">directory</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">USERPIC_BASE_PATH</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
           <span class="n">name</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">USERPIC_BASE_PATH</span><span class="p">)</span>
@@ -299,6 +290,8 @@
 <span class="n">app</span><span class="o">.</span><span class="n">mount</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">PARTNERPIC_PREFIX</span><span class="p">,</span>
           <span class="n">StaticFiles</span><span class="p">(</span><span class="n">directory</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">PARTNERPIC_BASE_PATH</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
           <span class="n">name</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">PARTNERPIC_BASE_PATH</span><span class="p">)</span>
+
+<span class="n">app</span><span class="o">.</span><span class="n">mount</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">StaticFiles</span><span class="p">(</span><span class="n">directory</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">APP_HTML_PATH</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="middleware_handler">

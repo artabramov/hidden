@@ -29,6 +29,10 @@ class Config:
 
     HASHLIB_SALT: str
 
+    UVICORN_HOST: str
+    UVICORN_PORT: int
+    UVICORN_WORKERS: int
+
     POSTGRES_HOST: str
     POSTGRES_PORT: int
     POSTGRES_DATABASE: str

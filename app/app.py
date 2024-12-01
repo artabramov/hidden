@@ -36,6 +36,7 @@ from app.triggers.document_triggers import DOCUMENT_TRIGGERS
 from app.triggers.comment_triggers import COMMENT_TRIGGERS
 from app.triggers.revision_triggers import REVISION_TRIGGERS
 from app.triggers.download_triggers import DOWNLOAD_TRIGGERS
+from app.triggers.user_migration import USER_MIGRATION
 from app.routers import (
     token_retrieve_router,
     token_invalidate_router,
@@ -115,6 +116,7 @@ async def lifespan(app: FastAPI):
     await load_hooks()
 
     async with sessionmanager.async_engine.begin() as conn:
+        await conn.execute(text(USER_MIGRATION))
         await conn.run_sync(Base.metadata.create_all)
         triggers = (DOCUMENT_TRIGGERS + COMMENT_TRIGGERS +
                     REVISION_TRIGGERS + DOWNLOAD_TRIGGERS)

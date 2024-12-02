@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.1.4 (2024-12-02)
+- **Added front-end** with compiled React application and initial components.
+
 ## Version 0.1.3 (2024-12-01)
 - **Added database migratios** using Alembic to manage schema changes.
 

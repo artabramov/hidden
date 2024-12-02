@@ -8,15 +8,13 @@ collections, and downloads.
 """
 
 import os
-import enum
 import time
 import pyotp
 from sqlalchemy import (Boolean, Column, BigInteger, Integer, SmallInteger,
-                        String, Enum)
+                        String)
 from sqlalchemy.ext.hybrid import hybrid_property
 from app.helpers.hash_helper import get_hash
 from sqlalchemy.orm import relationship
-from sqlalchemy.dialects.postgresql import ENUM
 from app.config import get_config
 from app.database import Base
 from app.helpers.jwt_helper import jti_create
@@ -25,7 +23,7 @@ from app.helpers.encryption_helper import encrypt_value, decrypt_value
 cfg = get_config()
 
 
-class UserRole(enum.Enum):
+class UserRole:
     """
     An enumeration representing the possible roles a user can have.
     These roles determine the level of access and permissions a user
@@ -37,7 +35,7 @@ class UserRole(enum.Enum):
     admin = "admin"
 
 
-user_role_enum = ENUM(UserRole, name="userrole", create_type=False)
+# user_role_enum = ENUM(UserRole, name="userrole", create_type=False)
 
 
 class User(Base):
@@ -57,8 +55,7 @@ class User(Base):
                           onupdate=lambda: int(time.time()))
     last_login_date = Column(Integer, nullable=False, index=True, default=0)
     suspended_date = Column(Integer, nullable=False, default=0)
-    user_role = Column(user_role_enum, nullable=False, index=True,
-                       default=UserRole.reader)
+    user_role = Column(String(40), nullable=False, index=True)
     is_active = Column(Boolean, nullable=False, index=True)
     user_login = Column(String(40), nullable=False, index=True, unique=True)
     password_hash = Column(String(128), nullable=False, index=True)
@@ -254,7 +251,7 @@ class User(Base):
             "created_date": self.created_date,
             "updated_date": self.updated_date,
             "last_login_date": self.last_login_date,
-            "user_role": self.user_role.value,
+            "user_role": self.user_role,
             "is_active": self.is_active,
             "user_login": self.user_login,
             "first_name": self.first_name,

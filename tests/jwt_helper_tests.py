@@ -30,7 +30,7 @@ class JwtHelperTestCase(asynctest.TestCase):
     def test__jwt_encode(self, encode_mock, time_mock):
         user = MagicMock()
         user.id = 123
-        user.user_role.value = "admin"
+        user.user_role = "admin"
         user.user_login = "test_user"
         user.jti = "random_jti_string"
 

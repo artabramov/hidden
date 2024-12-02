@@ -121,7 +121,7 @@ class UserSelectResponse(BaseModel):
     created_date: int
     updated_date: int
     last_login_date: int
-    user_role: UserRole
+    user_role: Literal["reader", "writer", "editor", "admin"]
     is_active: bool
     user_login: str
     first_name: str
@@ -198,7 +198,7 @@ class RoleUpdateRequest(BaseModel):
     status. Requires the user ID, new user role, and active status
     to be specified.
     """
-    user_role: UserRole
+    user_role: Literal["reader", "writer", "editor", "admin"]
     is_active: bool
 
 
@@ -235,7 +235,7 @@ class UserListRequest(BaseModel):
     optional filters for user login, first name, and last name.
     """
     is_active__eq: Optional[bool] = None
-    user_role__eq: Optional[UserRole] = None
+    user_role__eq: Optional[Literal["reader", "writer", "editor", "admin"]] = None
     user_login__ilike: Optional[str] = None
     first_name__ilike: Optional[str] = None
     last_name__ilike: Optional[str] = None

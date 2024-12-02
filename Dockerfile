@@ -26,7 +26,6 @@ RUN pip3 install fastapi==0.111.0
 RUN pip3 install uvicorn==0.30.1
 RUN pip3 install SQLAlchemy==2.0.31
 RUN pip3 install asyncpg==0.29.0
-RUN pip3 install alembic==1.14.0
 RUN pip3 install aiofiles==24.1.0
 RUN pip3 install redis==5.0.7
 RUN pip3 install pyotp==2.9.0

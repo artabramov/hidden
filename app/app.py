@@ -36,7 +36,6 @@ from app.migrations.document_migrations import DOCUMENT_MIGRATIONS
 from app.migrations.comment_migrations import COMMENT_MIGRATIONS
 from app.migrations.revision_migrations import REVISION_MIGRATIONS
 from app.migrations.download_migrations import DOWNLOAD_MIGRATIONS
-from app.migrations.user_role_migration import USER_ROLE_MIGRATION
 from app.routers import (
     token_retrieve_router,
     token_invalidate_router,
@@ -116,7 +115,6 @@ async def lifespan(app: FastAPI):
     await load_hooks()
 
     async with sessionmanager.async_engine.begin() as conn:
-        await conn.execute(text(USER_ROLE_MIGRATION))
         await conn.run_sync(Base.metadata.create_all)
         migrations = (DOCUMENT_MIGRATIONS + COMMENT_MIGRATIONS +
                       REVISION_MIGRATIONS + DOWNLOAD_MIGRATIONS)

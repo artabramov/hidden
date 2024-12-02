@@ -33,7 +33,7 @@ def jwt_encode(user, token_exp: int = None) -> str:
     current_time = int(time.time())
     token_payload = {
         "user_id": user.id,
-        "user_role": user.user_role.value,
+        "user_role": user.user_role,
         "user_login": user.user_login,
         "jti": user.jti,
         "iat": current_time,

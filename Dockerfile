@@ -69,8 +69,8 @@ RUN rm -r redis_exporter-v1.18.0.linux-amd64*
 # html
 RUN mkdir /var/www
 RUN mkdir /var/www/html
-RUN echo "Hello, world!" > /var/www/html/index.html
-RUN chmod 777 -R /var/www
+RUN chmod 755 -R /var/www
+COPY html/ /var/www/html/
 
 EXPOSE 80
 ENTRYPOINT ["/hidden/entrypoint.sh"]

@@ -1,31 +1,35 @@
 # Hidden
 
 ## How to install
+Execute the command in the console:  
 ```
 make install
 ```
 
-## Official website
-```
-http://www.joinhidden.com/
-```
-
-## Docker Hub image
-The Docker image for this project is available on [Docker Hub](https://hub.docker.com/r/artabramov/hidden). 
-
-## The application is available on
+The application is available on:  
 ```
 http://localhost
 ```
 
-## The Swagger docs are available on
+The Swagger docs are available on:  
 ```
 http://localhost/docs
 ```
 
-## The Sphinx docs are available on
+The Sphinx docs are available on:  
 ```
 http://localhost/sphinx/
+```
+
+## Resources
+Official website:  
+```
+http://www.joinhidden.com/
+```
+
+Docker Hub image:  
+```
+https://hub.docker.com/r/artabramov/hidden
 ```
 
 ## License

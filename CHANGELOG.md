@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.1.5 (2024-12-08)
+- **Updated front-end** with translation improvements.
+
 ## Version 0.1.4 (2024-12-02)
 - **Added front-end** with compiled React application and initial components.
 

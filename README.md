@@ -21,18 +21,7 @@ The Sphinx docs are available on:
 http://localhost/sphinx/
 ```
 
-## Resources
-Official website:  
-```
-http://www.joinhidden.com/
-```
-
-Docker Hub image:  
-```
-https://hub.docker.com/r/artabramov/hidden
-```
-
-## Core
+## Core mechanics
 ```mermaid
 graph LR
     AUTH[Auth<br>Decorator]
@@ -60,6 +49,17 @@ graph LR
     AUTH --> ROUTER
     LOCK --> ROUTER
     ROUTER --> HOOK
+```
+
+## Resources
+Official website:  
+```
+http://www.joinhidden.com/
+```
+
+Docker Hub image:  
+```
+https://hub.docker.com/r/artabramov/hidden
 ```
 
 ## License

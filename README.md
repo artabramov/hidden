@@ -52,14 +52,10 @@ graph LR
 
 ## Resources
 Official website:  
-```
-http://www.joinhidden.com/
-```
+[http://www.joinhidden.com/](http://www.joinhidden.com/)
 
 Docker Hub image:  
-```
-https://hub.docker.com/r/artabramov/hidden
-```
+[https://hub.docker.com/r/artabramov/hidden](http://www.joinhidden.com/)
 
 ## License
 This project is licensed under the [Creative Commons Attribution-NonCommercial 4.0 International License](https://creativecommons.org/licenses/by-nc/4.0/).

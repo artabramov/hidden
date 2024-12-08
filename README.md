@@ -52,7 +52,7 @@ graph LR
 
 ## Resources
 Official website:  
-[http://www.joinhidden.com/](http://www.joinhidden.com/)
+[http://www.joinhidden.com](http://www.joinhidden.com)
 
 Docker Hub image:  
 [https://hub.docker.com/r/artabramov/hidden](http://www.joinhidden.com/)

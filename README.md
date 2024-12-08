@@ -34,6 +34,7 @@ graph LR
     EM[Entity<br>Manager]
     CM[Cache<br>Manager]
     FM[File<br>Manager]
+    FILES[File<br>System]
     BINARY[Binary<br>Data]
     POSTGRES[PostgreSQL<br>Database]
     REDIS[Redis<br>Cache]
@@ -43,6 +44,7 @@ graph LR
     REPOSITORY --> CM
     ROUTER --> BINARY
     BINARY --> FM
+    FM --> FILES
     EM --> POSTGRES
     CM --> REDIS
     PYDANTIC --> ROUTER

@@ -7,7 +7,6 @@ management, password changes, and user listing.
 
 from typing import Optional, Literal, List, Union
 from pydantic import BaseModel, Field, field_validator
-from app.models.user_model import UserRole
 from app.filters.user_filters import (
     filter_user_login, filter_first_name, filter_last_name,
     filter_user_totp, filter_user_caption, filter_user_contacts)
@@ -235,7 +234,7 @@ class UserListRequest(BaseModel):
     optional filters for user login, first name, and last name.
     """
     is_active__eq: Optional[bool] = None
-    user_role__eq: Optional[Literal["reader", "writer", "editor", "admin"]] = None
+    user_role__eq: Optional[Literal["reader", "writer", "editor", "admin"]] = None  # noqa E501
     user_login__ilike: Optional[str] = None
     first_name__ilike: Optional[str] = None
     last_name__ilike: Optional[str] = None

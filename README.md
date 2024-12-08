@@ -28,29 +28,26 @@ graph LR
     LOCK[Lock<br>Decorator]
     PYDANTIC[Pydantic<br>Schemas]
     ROUTER[FastAPI<br>Routers]
-    HOOK[Hook<br>Triggers]
-    MODEL[SQLAlchemy<br>Models]
+    HOOK[Hooks]
     REPOSITORY[Repository]
     EM[Entity<br>Manager]
     CM[Cache<br>Manager]
     FM[File<br>Manager]
-    FILES[File<br>System]
-    BINARY[Binary<br>Data]
     POSTGRES[PostgreSQL<br>Database]
     REDIS[Redis<br>Cache]
-    ROUTER --> MODEL
-    MODEL --> REPOSITORY
+    BINARY[File<br>System]
+    ROUTER --> REPOSITORY
     REPOSITORY --> EM
     REPOSITORY --> CM
-    ROUTER --> BINARY
-    BINARY --> FM
-    FM --> FILES
+    ROUTER --> FM
+    FM --> BINARY
     EM --> POSTGRES
     CM --> REDIS
     PYDANTIC --> ROUTER
     AUTH --> ROUTER
     LOCK --> ROUTER
     ROUTER --> HOOK
+
 ```
 
 ## Resources

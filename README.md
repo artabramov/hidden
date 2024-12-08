@@ -1,5 +1,10 @@
 # Hidden
 
+## How to install
+```
+make install
+```
+
 ## Official website
 ```
 http://www.joinhidden.com/
@@ -7,11 +12,6 @@ http://www.joinhidden.com/
 
 ## Docker Hub image
 The Docker image for this project is available on [Docker Hub](https://hub.docker.com/r/artabramov/hidden). 
-
-## How to install
-```
-make install
-```
 
 ## The application is available on
 ```

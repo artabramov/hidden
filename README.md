@@ -21,22 +21,22 @@ The Sphinx docs are available on:
 http://localhost/sphinx
 ```
 
-## Core mechanics
+## Application core
 The main entity handler used across all application routers is the Repository. A concrete instance of the Repository is created for each specific entity type. It handles interactions with a PostgreSQL database through an encapsulated Entity Manager and Redis cache via a Cache Manager. The primary application entities are SQLAlchemy models, and Pydantic validation schemas are used for validation across the application.
 ```mermaid
 graph LR
-    AUTH[Auth<br>Decorator]
-    LOCK[Lock<br>Decorator]
-    PYDANTIC[Pydantic<br>Schemas]
-    ROUTER[FastAPI<br>Routers]
+    AUTH[Auth<br>decorator]
+    LOCK[Lock<br>decorator]
+    PYDANTIC[Pydantic<br>schemas]
+    ROUTER[FastAPI<br>routers]
     HOOK[Hooks]
     REPOSITORY[Repository]
     EM[Entity<br>Manager]
     CM[Cache<br>Manager]
     FM[File<br>Manager]
-    POSTGRES[PostgreSQL<br>Database]
-    REDIS[Redis<br>Cache]
-    BINARY[File<br>System]
+    POSTGRES[PostgreSQL<br>database]
+    REDIS[Redis<br>cache]
+    BINARY[File<br>system]
     ROUTER --> REPOSITORY
     REPOSITORY --> EM
     REPOSITORY --> CM
@@ -48,7 +48,21 @@ graph LR
     AUTH --> ROUTER
     LOCK --> ROUTER
     ROUTER --> HOOK
+```
 
+## Protection mechanics
+A temporary file is created for processing. Once uploaded, the file is immediately encrypted. The encrypted binary data is divided into shards, which are randomly shuffled with existing ones. The mapping and correct order of the shards are obfuscated. All operations depend on a secret key, and if it is extracted, all stored data becomes completely unusable.
+```mermaid
+graph LR
+    UPLOAD[File<br>uploading]
+    ENCRYPT[Initial<br>encryption]
+    SPLIT[Data<br>fragmentation]
+    SHUFFLE[Random<br>shuffling]
+    OBFUSCATE[Mapping<br>obfuscation]
+    UPLOAD --> ENCRYPT
+    ENCRYPT --> SPLIT
+    SPLIT --> SHUFFLE
+    SHUFFLE --> OBFUSCATE
 ```
 
 ## Resources

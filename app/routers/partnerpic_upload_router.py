@@ -35,9 +35,9 @@ async def partnerpic_upload(
     current_user: User = Depends(auth(UserRole.editor))
 ) -> PartnerpicUploadResponse:
     """
-    Upload a partner image. This router uploads an image for a partner 
-    based on the provided partner ID. The image is validated, resized, 
-    and saved to the server. The current user must have the editor role 
+    Upload a partner image. This router uploads an image for a partner
+    based on the provided partner ID. The image is validated, resized,
+    and saved to the server. The current user must have the editor role
     or higher to access this endpoint. Returns a 200 response on
     success, a 404 error if the partner is not found, a 403 error if
     authentication failed or the user does not have the required

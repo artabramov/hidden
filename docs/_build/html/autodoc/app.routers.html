@@ -225,14 +225,43 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="app.routers.collection_delete_router.collection_delete">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.collection_delete_router.</span></span><span class="sig-name descname"><span class="pre">collection_delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collection_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_admin)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.collection_schemas.CollectionDeleteResponse" title="app.schemas.collection_schemas.CollectionDeleteResponse"><span class="pre">CollectionDeleteResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/collection_delete_router.html#collection_delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.collection_delete_router.collection_delete" title="Link to this definition"></a></dt>
-<dd><p>FastAPI router for deleting a collection entity. The router
-retrieves the collection from the repository using the provided ID,
-verifies that it exists, deletes the collection and all related
-entities, executes related hooks, and returns the deleted collection
-ID in a JSON response. The current user should have an admin role.
-Returns a 200 response on success, a 404 error if the collection is
-not found, and a 403 error if authentication fails or the user does
-not have the required role.</p>
+<dd><p>Delete a collection. The router retrieves the collection from the
+repository using the provided ID, verifies that it exists, deletes
+the collection and all related entities, executes related hooks, and
+returns the deleted collection ID in a JSON response. The current
+user should have an admin role. Returns a 200 response on success,
+a 404 error if the collection is not found, a 403 error if
+authentication failed or the user does not have the required
+permissions, and a 423 error if the application is locked.</p>
+<p><strong>Args:</strong>
+- <cite>collection_id</cite>: The ID of the collection to be deleted.</p>
+<p><strong>Returns:</strong>
+- <cite>CollectionDeleteResponse</cite>: The response schema containing the ID</p>
+<blockquote>
+<div><p>of the deleted collection.</p>
+</div></blockquote>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the current user is not authenticated</p>
+<blockquote>
+<div><p>or does not have the required permissions.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><cite>404 Not Found</cite>: Raised if the collection with the specified
+ID does not exist.</p></li>
+<li><p><cite>423 Locked</cite>: Raised if the application is locked.</p></li>
+</ul>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_BEFORE_COLLECTION_DELETE</cite>: Executed before the collection is</p>
+<blockquote>
+<div><p>deleted.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><cite>HOOK_AFTER_COLLECTION_DELETE</cite>: Executed after the collection is
+deleted.</p></li>
+</ul>
+<p><strong>Auth:</strong>
+- The user must provide a valid <cite>JWT token</cite> in the request header.
+- <cite>admin</cite> user role is required to access this router.</p>
 </dd></dl>
 
 </section>
@@ -241,14 +270,50 @@ not have the required role.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="app.routers.collection_insert_router.collection_insert">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.collection_insert_router.</span></span><span class="sig-name descname"><span class="pre">collection_insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.schemas.html#app.schemas.collection_schemas.CollectionInsertRequest" title="app.schemas.collection_schemas.CollectionInsertRequest"><span class="pre">CollectionInsertRequest</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_write)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.collection_schemas.CollectionInsertResponse" title="app.schemas.collection_schemas.CollectionInsertResponse"><span class="pre">CollectionInsertResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/collection_insert_router.html#collection_insert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.collection_insert_router.collection_insert" title="Link to this definition"></a></dt>
-<dd><p>FastAPI router for creating a collection entity. The router verifies
-if a collection with the specified name already exists, inserts the
-new collection into the repository, executes related hooks, and
-returns the created collection ID in a JSON response. The current
-user should have a writer role or higher. Returns a 201 response
-on success, a 422 error if the collection name is duplicated, and
-a 403 error if authentication fails or the user does not have
-the required role.</p>
+<dd><p>Create a collection. The router verifies if a collection with the
+specified name already exists, inserts the new collection into
+the repository, executes related hooks, and returns the created
+collection ID in a JSON response. The current user should have a
+writer role or higher. Returns a 201 response on success, a 422
+error if arguments validation failed or the collection name is
+duplicated, a 403 error if authentication failed or the user does
+not have the required permissions, and a 423 error if the
+application is locked.</p>
+<p><strong>Args:</strong>
+- <cite>CollectionInsertRequest</cite>: The request schema containing the data</p>
+<blockquote>
+<div><p>for the new collection.</p>
+</div></blockquote>
+<p><strong>Returns:</strong>
+- <cite>CollectionInsertResponse</cite>: The response schema containing the ID</p>
+<blockquote>
+<div><p>of the newly created collection.</p>
+</div></blockquote>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the current user is not authenticated</p>
+<blockquote>
+<div><p>or does not have the required permissions.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><cite>422 Unprocessable Entity</cite>: Raised if arguments validation failed
+or the collection name is already exist.</p></li>
+<li><p><cite>423 Locked</cite>: Raised if the application is locked.</p></li>
+</ul>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_BEFORE_COLLECTION_INSERT</cite>: Executes before the collection is</p>
+<blockquote>
+<div><p>inserted.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><cite>HOOK_AFTER_COLLECTION_INSERT</cite>: Executes after the collection is
+inserted.</p></li>
+</ul>
+<p><strong>Auth:</strong>
+- The user must provide a valid <cite>JWT token</cite> in the request header.
+- <cite>writer</cite>, <cite>editor</cite> or <cite>admin</cite> user role is required to access this</p>
+<blockquote>
+<div><p>router.</p>
+</div></blockquote>
 </dd></dl>
 
 </section>
@@ -257,12 +322,43 @@ the required role.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="app.routers.collection_list_router.collection_list">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.collection_list_router.</span></span><span class="sig-name descname"><span class="pre">collection_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(CollectionListRequest)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_read)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.collection_schemas.CollectionListResponse" title="app.schemas.collection_schemas.CollectionListResponse"><span class="pre">CollectionListResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/collection_list_router.html#collection_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.collection_list_router.collection_list" title="Link to this definition"></a></dt>
-<dd><p>FastAPI router for retrieving a list of collection entities. The
-router fetches the list of collections from the repository, executes
-related hooks, and returns the results in a JSON response. The
-current user should have a reader role or higher. Returns a 200
-response on success and a 403 error if authentication fails or
-the user does not have the required role.</p>
+<dd><p>Retrieve a list of collections. This endpoint fetches all
+collections from the repository based on the provided filter
+criteria and executes related hooks. The current user must have
+a reader role or higher. Returns a 200 response on success, a 403
+error if authentication failed or the user does not have the
+required permissions, a 422 error if arguments validation failed,
+and a 423 error if the application is locked.</p>
+<p><strong>Args:</strong>
+- <cite>CollectionListRequest</cite>: The request schema containing filter and</p>
+<blockquote>
+<div><p>pagination details.</p>
+</div></blockquote>
+<p><strong>Returns:</strong>
+- <cite>CollectionListResponse</cite>: The response schema containing the list</p>
+<blockquote>
+<div><p>of collections and the total count.</p>
+</div></blockquote>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the current user is not authenticated</p>
+<blockquote>
+<div><p>or does not have the required <cite>reader</cite> role.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><cite>422 Unprocessable Entity</cite>:  Raised if arguments validation failed.</p></li>
+<li><p><cite>423 Locked</cite>: Raised if the application is locked.</p></li>
+</ul>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_AFTER_COLLECTION_LIST</cite>: Executes after the collections are</p>
+<blockquote>
+<div><p>retrieved.</p>
+</div></blockquote>
+<p><strong>Auth:</strong>
+- The user must provide a valid <cite>JWT token</cite> in the request header.
+- <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite>, <cite>admin</cite> user role is required to</p>
+<blockquote>
+<div><p>access this router.</p>
+</div></blockquote>
 </dd></dl>
 
 </section>
@@ -271,13 +367,41 @@ the user does not have the required role.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="app.routers.collection_select_router.collection_select">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.collection_select_router.</span></span><span class="sig-name descname"><span class="pre">collection_select</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collection_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_read)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.collection_schemas.CollectionSelectResponse" title="app.schemas.collection_schemas.CollectionSelectResponse"><span class="pre">CollectionSelectResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/collection_select_router.html#collection_select"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.collection_select_router.collection_select" title="Link to this definition"></a></dt>
-<dd><p>FastAPI router for retrieving a collection entity. The router
-fetches the collection from the repository using the provided ID,
-executes related hooks, and returns the collection details in a JSON
-response. The current user should have a reader role or higher.
-Returns a 200 response on success, a 404 error if the collection is
-not found, and a 403 error if authentication fails or the user does
-not have the required role.</p>
+<dd><p>Retrieve a collection. The router fetches the collection from the
+repository using the provided ID, executes related hooks, and
+returns the collection details in a JSON response. The current user
+should have a reader role or higher. Returns a 200 response on
+success, a 404 error if the collection is not found, a 403 error if
+authentication failed or the user does not have the required
+permissions, and a 423 error if the application is locked.</p>
+<p><strong>Args:</strong>
+- <cite>collection_id</cite>: The ID of the collection to retrieve.</p>
+<p><strong>Returns:</strong>
+- <cite>CollectionSelectResponse</cite>: The response schema containing the</p>
+<blockquote>
+<div><p>details of the selected collection.</p>
+</div></blockquote>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the current user is not authenticated</p>
+<blockquote>
+<div><p>or does not have the required permissions.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><cite>404 Not Found</cite>: Raised if the collection with the specified ID
+does not exist.</p></li>
+<li><p><cite>423 Locked</cite>: Raised if the application is locked.</p></li>
+</ul>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_AFTER_COLLECTION_SELECT</cite>: Executes after the collection is</p>
+<blockquote>
+<div><p>successfully selected.</p>
+</div></blockquote>
+<p><strong>Auth:</strong>
+- The user must provide a valid <cite>JWT token</cite> in the request header.
+- <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite> or <cite>admin</cite> user role is required to</p>
+<blockquote>
+<div><p>access this router.</p>
+</div></blockquote>
 </dd></dl>
 
 </section>
@@ -286,16 +410,50 @@ not have the required role.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="app.routers.collection_update_router.collection_update">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.collection_update_router.</span></span><span class="sig-name descname"><span class="pre">collection_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collection_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.schemas.html#app.schemas.collection_schemas.CollectionUpdateRequest" title="app.schemas.collection_schemas.CollectionUpdateRequest"><span class="pre">CollectionUpdateRequest</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_edit)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.collection_schemas.CollectionUpdateResponse" title="app.schemas.collection_schemas.CollectionUpdateResponse"><span class="pre">CollectionUpdateResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/collection_update_router.html#collection_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.collection_update_router.collection_update" title="Link to this definition"></a></dt>
-<dd><p>FastAPI router for updating a collection entity. The router
-retrieves the collection from the repository using the provided ID,
-ensures that the collection exists, and checks that the new
-collection name is unique. It updates the collection’s attributes,
-executes related hooks, and returns the updated collection ID in
-a JSON response. The current user should have an editor role or
-higher. Returns a 200 response on success, a 404 error if the
-collection is not found, a 422 error if the collection name is
-duplicated, and a 403 error if authentication fails or the user
-does not have the required role.</p>
+<dd><p>Update a collection. The router retrieves the collection from the
+repository using the provided ID, ensures that the collection exists,
+and checks that the new collection name is unique. It updates the
+collection’s attributes, executes related hooks, and returns the
+updated collection ID in a JSON response. The current user must have
+an editor role or higher. Returns a 200 response on success, a 404
+error if the collection is not found, a 422 error if validation
+failed or the collection name is duplicated, a 403 error if
+authentication failed or the user does not have the required
+permissions, and a 423 error if the application is locked.</p>
+<p><strong>Args:</strong>
+- <cite>collection_id</cite>: The ID of the collection to update.
+- <cite>CollectionUpdateRequest</cite>: The request schema containing the</p>
+<blockquote>
+<div><p>updated collection data.</p>
+</div></blockquote>
+<p><strong>Returns:</strong>
+- <cite>CollectionUpdateResponse</cite>: The response schema containing the ID</p>
+<blockquote>
+<div><p>of the updated collection.</p>
+</div></blockquote>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the current user is not authenticated</p>
+<blockquote>
+<div><p>or does not have the required permissions.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><cite>404 Not Found</cite>: Raised if the collection with the specified ID
+does not exist.</p></li>
+<li><p><cite>422 Unprocessable Entity</cite>: Raised if arguments validation failed.</p></li>
+<li><p><cite>423 Locked</cite>: Raised if the application is locked.</p></li>
+</ul>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_BEFORE_COLLECTION_UPDATE</cite>: Executes before the collection is</p>
+<blockquote>
+<div><p>updated.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><cite>HOOK_AFTER_COLLECTION_UPDATE</cite>: Executes after the collection is
+updated.</p></li>
+</ul>
+<p><strong>Auth:</strong>
+- The user must provide a valid <cite>JWT token</cite> in the request header.
+- <cite>editor</cite> or <cite>admin</cite> user role is required to access this router.</p>
 </dd></dl>
 
 </section>
@@ -305,17 +463,37 @@ does not have the required role.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="app.routers.comment_delete_router.comment_delete">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.comment_delete_router.</span></span><span class="sig-name descname"><span class="pre">comment_delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">comment_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_edit)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.comment_schemas.CommentDeleteResponse" title="app.schemas.comment_schemas.CommentDeleteResponse"><span class="pre">CommentDeleteResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/comment_delete_router.html#comment_delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.comment_delete_router.comment_delete" title="Link to this definition"></a></dt>
-<dd><p>FastAPI router for deleting a comment entity. The router fetches
-the comment from the repository using the provided ID, verifies
-that the comment exists, ensures the associated collection is not
-locked, and confirms that the current user is the creator of the
-comment. It updates the comment count for the associated document,
-executes related hooks, and returns the ID of the deleted comment
-in a JSON response. The current user should have an editor role or
-higher. Returns a 200 response on success, a 404 error if the
-comment is not found, a 423 error if the collection is locked, and
-a 403 error if authentication fails or the user does not have the
-required role.</p>
+<dd><p>Delete a comment. The router fetches the comment from the repository
+using the provided ID, verifies that the comment exists, ensures the
+associated collection is not locked, and confirms that the current
+user is the author of the comment. Deletes the comment, executes
+related hooks, and returns the ID of the deleted comment in a JSON
+response. The current user should have an editor role or higher.
+Returns a 200 response on success, a 404 error if the comment is not
+found, a 423 error if the collection or the application is locked,
+and a 403  error if authentication failed or the user does not have the
+required permissions.</p>
+<p><strong>Args:</strong>
+- <cite>comment_id</cite>: The ID of the comment to be deleted.</p>
+<p><strong>Returns:</strong>
+- <cite>CommentDeleteResponse</cite>: The response schema containing the ID of</p>
+<blockquote>
+<div><p>the deleted comment.</p>
+</div></blockquote>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the current user is not the author of</p>
+<blockquote>
+<div><p>the comment or lacks the required permissions.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><cite>404 Not Found</cite>: Raised if the comment with the specified ID does
+not exist.</p></li>
+<li><p><cite>423 Locked</cite>: Raised if the corresponding collection or the
+application is locked.</p></li>
+</ul>
+<p><strong>Auth:</strong>
+- The user must provide a valid <cite>JWT token</cite> in the request header.
+- <cite>editor</cite> or <cite>admin</cite> user role is required to access this router.</p>
 </dd></dl>
 
 </section>
@@ -325,15 +503,40 @@ required role.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="app.routers.comment_insert_router.comment_insert">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.comment_insert_router.</span></span><span class="sig-name descname"><span class="pre">comment_insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.schemas.html#app.schemas.comment_schemas.CommentInsertRequest" title="app.schemas.comment_schemas.CommentInsertRequest"><span class="pre">CommentInsertRequest</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_write)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.comment_schemas.CommentInsertResponse" title="app.schemas.comment_schemas.CommentInsertResponse"><span class="pre">CommentInsertResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/comment_insert_router.html#comment_insert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.comment_insert_router.comment_insert" title="Link to this definition"></a></dt>
-<dd><p>FastAPI router for creating a comment entity. The router validates
-that the document exists and that its collection is not locked,
-inserts the new comment into the repository, updates the comment
-count for the associated document, executes related hooks, and
-returns the created comment ID in a JSON response. The current user
-should have a writer role or higher. Returns a 201 response on
-success, a 404 error if the document is not found, a 423 error if
-the collection is locked, and a 403 error if authentication fails
-or the user does not have the required role.</p>
+<dd><p>Create a comment. The router validates that the document exists and
+that its collection is not locked, inserts the new comment into the
+repository, executes related hooks, and returns the created comment
+ID in a JSON response. The current user should have a writer role or
+higher. Returns a 201 response on success, a 404 error if the
+document is not found, a 423 error if the collection or the
+application is locked, and a 403 error if authentication failed
+or the user does not have the required permissions.</p>
+<p><strong>Args:</strong>
+- <cite>CommentInsertRequest</cite>: The request schema containing the data</p>
+<blockquote>
+<div><p>for the new comment.</p>
+</div></blockquote>
+<p><strong>Returns:</strong>
+- <cite>CommentInsertResponse</cite>: The response schema containing the ID</p>
+<blockquote>
+<div><p>of the newly created comment.</p>
+</div></blockquote>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the user does not have the required</p>
+<blockquote>
+<div><p>permissions.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><cite>422 Unprocessable Entity</cite>:  Raised if arguments validation failed.</p></li>
+<li><p><cite>423 Locked</cite>: Raised if the document’s collection or the
+application is locked.</p></li>
+</ul>
+<p><strong>Auth:</strong>
+- The user must provide a valid <cite>JWT token</cite> in the request header.
+- <cite>writer</cite>, <cite>editor</cite> or <cite>admin</cite> user role is required to access this</p>
+<blockquote>
+<div><p>router.</p>
+</div></blockquote>
 </dd></dl>
 
 </section>
@@ -343,12 +546,39 @@ or the user does not have the required role.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="app.routers.comment_list_router.comment_list">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.comment_list_router.</span></span><span class="sig-name descname"><span class="pre">comment_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(CommentListRequest)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_read)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.comment_schemas.CommentListResponse" title="app.schemas.comment_schemas.CommentListResponse"><span class="pre">CommentListResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/comment_list_router.html#comment_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.comment_list_router.comment_list" title="Link to this definition"></a></dt>
-<dd><p>FastAPI router for retrieving a list of comment entities. The router
-fetches the list of comments from the repository, executes related
-hooks, and returns the results in a JSON response. The current user
-should have a reader role or higher. Returns a 200 response on
-success and a 403 error if authentication fails or the user does
-not have the required role.</p>
+<dd><p>Retrieve a list of comments. The router fetches the list of comments
+from the repository based on the provided filter criteria, executes
+related hooks, and returns the results in a JSON response. The
+current user should have a reader role or higher. Returns a 200
+response on success, a 403 error if authentication failed or the
+user does not have the required permissions, a 422 error if
+arguments validation failed, and a 423 error if the application
+is locked.</p>
+<p><strong>Args:</strong>
+- <cite>CommentListRequest</cite>: The request schema containing the filters</p>
+<blockquote>
+<div><p>for the comment list.</p>
+</div></blockquote>
+<p><strong>Returns:</strong>
+- <cite>CommentListResponse</cite>: The response schema containing the list of</p>
+<blockquote>
+<div><p>comments and the total count.</p>
+</div></blockquote>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the user does not have the required</p>
+<blockquote>
+<div><p>permissions.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><cite>422 Unprocessable Entity</cite>: Raised if arguments validation failed.</p></li>
+<li><p><cite>423 Locked</cite>: Raised if the application is locked.</p></li>
+</ul>
+<p><strong>Auth:</strong>
+- The user must provide a valid <cite>JWT token</cite> in the request header.
+- <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite> or <cite>admin</cite> user role is required to</p>
+<blockquote>
+<div><p>access this router.</p>
+</div></blockquote>
 </dd></dl>
 
 </section>
@@ -358,13 +588,36 @@ not have the required role.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="app.routers.comment_select_router.comment_select">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.comment_select_router.</span></span><span class="sig-name descname"><span class="pre">comment_select</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">comment_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_read)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.comment_schemas.CommentSelectResponse" title="app.schemas.comment_schemas.CommentSelectResponse"><span class="pre">CommentSelectResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/comment_select_router.html#comment_select"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.comment_select_router.comment_select" title="Link to this definition"></a></dt>
-<dd><p>FastAPI router for retrieving a comment entity. The router fetches
-the comment from the repository using the provided ID, executes
-related hooks, and returns the comment details in a JSON response.
-The current user should have a reader role or higher. Returns a 200
-response on success, a 404 error if the comment is not found, and
-a 403 error if authentication fails or the user does not have the
-required role.</p>
+<dd><p>Retrieve a comment. The router fetches the comment from the
+repository using the provided ID, executes related hooks, and
+returns the comment details in a JSON response. The current user
+should have a reader role or higher. Returns a 200 response on
+success, a 404 error if the comment is not found, a 403 error if
+authentication failed or the user does not have the required
+permissions, and a 423 error if the application is locked.</p>
+<p><strong>Args:</strong>
+- <cite>comment_id</cite>: The ID of the comment to be retrieved.</p>
+<p><strong>Returns:</strong>
+- <cite>CommentSelectResponse</cite>: The response schema containing the</p>
+<blockquote>
+<div><p>comment details.</p>
+</div></blockquote>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the user does not have the required</p>
+<blockquote>
+<div><p>permissions.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><cite>404 Not Found</cite>: Raised if the comment with the specified ID does
+not exist.</p></li>
+<li><p><cite>423 Locked</cite>: Raised if the application is locked.</p></li>
+</ul>
+<p><strong>Auth:</strong>
+- The user must provide a valid <cite>JWT token</cite> in the request header.
+- <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite> or <cite>admin</cite> user role is required to</p>
+<blockquote>
+<div><p>access this router.</p>
+</div></blockquote>
 </dd></dl>
 
 </section>
@@ -374,15 +627,41 @@ required role.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="app.routers.comment_update_router.comment_update">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.comment_update_router.</span></span><span class="sig-name descname"><span class="pre">comment_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">comment_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.schemas.html#app.schemas.comment_schemas.CommentUpdateRequest" title="app.schemas.comment_schemas.CommentUpdateRequest"><span class="pre">CommentUpdateRequest</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_edit)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.comment_schemas.CommentUpdateResponse" title="app.schemas.comment_schemas.CommentUpdateResponse"><span class="pre">CommentUpdateResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/comment_update_router.html#comment_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.comment_update_router.comment_update" title="Link to this definition"></a></dt>
-<dd><p>FastAPI router for updating a comment entity. The router fetches
-the comment from the repository using the provided ID, verifies
-that the current user is the creator of the comment, checks that
-the associated collection is not locked, updates the comment content,
-and returns the updated comment ID in a JSON response. The current
-user should have an editor role or higher. Returns a 200 response
-on success, a 404 error if the comment is not found, a 423 error if
-the collection is locked, and a 403 error if authentication fails or
-the user does not have the required role.</p>
+<dd><p>Update a comment. The router fetches the comment from the repository
+using the provided ID, verifies that the current user is the author
+of the comment, checks that the associated collection is not locked,
+updates the comment content, executes related hooks, and returns the
+updated comment ID in a JSON response. The current user should have
+an editor role or higher. Returns a 200 response on success, a 404
+error if the comment is not found, a 423 error if the collection or
+the application is locked, and a 403 error if authentication failed
+or the user does not have the required permissions.</p>
+<p><strong>Args:</strong>
+- <cite>comment_id</cite>: The ID of the comment to be updated.
+- <cite>CommentUpdateRequest</cite>: The request schema containing the new</p>
+<blockquote>
+<div><p>comment content.</p>
+</div></blockquote>
+<p><strong>Returns:</strong>
+- <cite>CommentUpdateResponse</cite>: The response schema containing the ID of</p>
+<blockquote>
+<div><p>the updated comment.</p>
+</div></blockquote>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the current user is not the author of</p>
+<blockquote>
+<div><p>the comment or lacks required permissions.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><cite>404 Not Found</cite>: Raised if the comment with the specified ID does
+not exist.</p></li>
+<li><p><cite>422 Unprocessable Entity</cite>: Raised if arguments validation failed.</p></li>
+<li><p><cite>423 Locked</cite>: Raised if the collection or the application is
+locked.</p></li>
+</ul>
+<p><strong>Auth:</strong>
+- The user must provide a valid <cite>JWT token</cite> in the request header.
+- <cite>editor</cite> or <cite>admin</cite> user role are required to access this router.</p>
 </dd></dl>
 
 </section>
@@ -439,7 +718,18 @@ the user does not have the required role.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="app.routers.lock_retrieve_router.lock_retrieve">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.lock_retrieve_router.</span></span><span class="sig-name descname"><span class="pre">lock_retrieve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.lock_schemas.LockRetrieveResponse" title="app.schemas.lock_schemas.LockRetrieveResponse"><span class="pre">LockRetrieveResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/lock_retrieve_router.html#lock_retrieve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.lock_retrieve_router.lock_retrieve" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Retrieve the application lock mode. This router checks whether the
+application is locked and retrieves the date when the lock was
+applied. It executes a corresponding hook after retrieving the lock
+state.</p>
+<p><strong>Returns:</strong>
+- <cite>LockRetrieveResponse</cite>: The response schema containing the lock</p>
+<blockquote>
+<div><p>status and the date when the application was locked.</p>
+</div></blockquote>
+<p><strong>Auth:</strong>
+- No authentication is required to access this router.</p>
+</dd></dl>
 
 </section>
 <section id="app-routers-mfa-retrieve-router-module">
@@ -451,14 +741,34 @@ the user does not have the required role.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="app.routers.option_delete_router.option_delete">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.option_delete_router.</span></span><span class="sig-name descname"><span class="pre">option_delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_admin)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.option_schemas.OptionDeleteResponse" title="app.schemas.option_schemas.OptionDeleteResponse"><span class="pre">OptionDeleteResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/option_delete_router.html#option_delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.option_delete_router.option_delete" title="Link to this definition"></a></dt>
-<dd><p>FastAPI router for deleting an option entity. The router retrieves
-the option from the repository using the provided option key. If
-the option exists, it deletes it from the repository and executes
-related hooks. The router returns the option key of the deleted
-option in a JSON response. The current user should have an admin
-role. Returns a 200 response on success, a 404 error if the option
-is not found, and a 403 error if authentication fails or the user
-does not have the required role.</p>
+<dd><p>Delete an option. The router retrieves the option from the
+repository using the provided option key. If the option exists,
+it deletes it from the repository and executes related hooks. The
+router returns the option key of the deleted option in a JSON
+response. The current user should have an admin role. Returns a 200
+response on success, a 404 error if the option is not found, a 403
+error if authentication failed or the user does not have the
+required permissions, a 423 error if the the application is locked.</p>
+<p><strong>Args:</strong>
+- <cite>option_key</cite>: The key of the option to be deleted.</p>
+<p><strong>Returns:</strong>
+- <cite>OptionDeleteResponse</cite>: The response schema containing the key of</p>
+<blockquote>
+<div><p>the deleted option.</p>
+</div></blockquote>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the user does not have the required</p>
+<blockquote>
+<div><p>permissions.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><cite>404 Not Found</cite>: Raised if the option is not found in the
+repository.</p></li>
+<li><p><cite>423 Locked</cite>: Raised if the the application is locked.</p></li>
+</ul>
+<p><strong>Auth:</strong>
+- The user must provide a valid <cite>JWT token</cite> in the request header.
+- <cite>admin</cite> role is required to access this router.</p>
 </dd></dl>
 
 </section>
@@ -471,13 +781,36 @@ does not have the required role.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="app.routers.option_list_router.options_list">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.option_list_router.</span></span><span class="sig-name descname"><span class="pre">options_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(OptionListRequest)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_admin)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.option_schemas.OptionListResponse" title="app.schemas.option_schemas.OptionListResponse"><span class="pre">OptionListResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/option_list_router.html#options_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.option_list_router.options_list" title="Link to this definition"></a></dt>
-<dd><p>FastAPI router for retrieving a list of option entities. The router
-retrieves all options from the repository based on the provided
-filter criteria and executes related hooks. The router returns a
-list of options and the total count of options in a JSON response.
-The current user should have an admin role. Returns a 200 response
-on success and a 403 error if authentication fails or the user does
-not have the required role.</p>
+<dd><p>Retrieve a list of options. The router retrieves all options from
+the repository based on the provided filter criteria and executes
+related hooks. The router returns a list of options and the total
+count of options in a JSON response. The current user should have
+an admin role. Returns a 200 response on success, a 403 error if
+authentication failed or the user does not have the required role,
+a 422 error if arguments validation failed, a 423 error if the the
+application is locked.</p>
+<p><strong>Args:</strong>
+- <cite>OptionListRequest</cite>: The request schema containing filter criteria</p>
+<blockquote>
+<div><p>for retrieving the list of options.</p>
+</div></blockquote>
+<p><strong>Returns:</strong>
+- <cite>OptionListResponse</cite>: The response schema containing a list of</p>
+<blockquote>
+<div><p>options and the total count of options.</p>
+</div></blockquote>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the user does not have the required</p>
+<blockquote>
+<div><p>permissions.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><cite>422 Unprocessable Entity</cite>: Raised if arguments validation failed.</p></li>
+<li><p><cite>423 Locked</cite>: Raised if the application is locked.</p></li>
+</ul>
+<p><strong>Auth:</strong>
+- The user must provide a valid <cite>JWT token</cite> in the request header.
+- <cite>admin</cite> role is required to access this router.</p>
 </dd></dl>
 
 </section>
@@ -487,12 +820,33 @@ not have the required role.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="app.routers.option_select_router.option_select">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.option_select_router.</span></span><span class="sig-name descname"><span class="pre">option_select</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_admin)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.option_schemas.OptionSelectResponse" title="app.schemas.option_schemas.OptionSelectResponse"><span class="pre">OptionSelectResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/option_select_router.html#option_select"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.option_select_router.option_select" title="Link to this definition"></a></dt>
-<dd><p>FastAPI router for fetching an option entity. The router retrieves
-the option from the repository using the provided option key and
-executes related hooks. The current user should have an admin role.
-Returns a 200 response on success, a 404 error if the option is not
-found, and a 403 error if authentication fails or the user does
-not have the required role.</p>
+<dd><p>Retrieve an option. The router fetches the option from the
+repository using the provided option key and executes related hooks.
+The current user should have an admin role. Returns a 200 response
+on success, a 404 error if the option is not found, a 403 error if
+authentication fails or the user does not have the required role,
+a 422 error if arguments validation failed, a 423 error if the the
+application is locked.</p>
+<p><strong>Args:</strong>
+- <cite>option_key</cite>: The key of the option to retrieve.</p>
+<p><strong>Returns:</strong>
+- <cite>OptionSelectResponse</cite>: The response schema containing the</p>
+<blockquote>
+<div><p>retrieved option.</p>
+</div></blockquote>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the user does not have the required</p>
+<blockquote>
+<div><p>permissions.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><cite>404 Not Found</cite>: Raised if the option is not found.</p></li>
+<li><p><cite>422 Unprocessable Entity</cite>: Raised if arguments validation failed.</p></li>
+<li><p><cite>423 Locked</cite>: Raised if the application is locked.</p></li>
+</ul>
+<p><strong>Auth:</strong>
+- The user must provide a valid <cite>JWT token</cite> in the request header.
+- <cite>admin</cite> role is required to access this router.</p>
 </dd></dl>
 
 </section>
@@ -501,7 +855,40 @@ not have the required role.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="app.routers.option_update_router.option_update">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.option_update_router.</span></span><span class="sig-name descname"><span class="pre">option_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.schemas.html#app.schemas.option_schemas.OptionUpdateRequest" title="app.schemas.option_schemas.OptionUpdateRequest"><span class="pre">OptionUpdateRequest</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_admin)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.option_schemas.OptionUpdateResponse" title="app.schemas.option_schemas.OptionUpdateResponse"><span class="pre">OptionUpdateResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/option_update_router.html#option_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.option_update_router.option_update" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Update an option. The router retrieves the option from the
+repository using the provided option key. If the option exists, it
+updates the option value, otherwise, it creates a new option. The
+router executes related hooks before and after the option update.
+The current user should have an admin role. Returns a 200 response
+on success, a 403 error if authentication failed or the user does
+not have the required permissions, a 422 error if the provided
+option value is invalid, and a 423 error if the application is
+locked.</p>
+<p><strong>Args:</strong>
+- <cite>option_key</cite>: The key of the option to update.
+- <cite>OptionUpdateRequest</cite>: The request schema containing the updated</p>
+<blockquote>
+<div><p>option value.</p>
+</div></blockquote>
+<p><strong>Returns:</strong>
+- <cite>OptionUpdateResponse</cite>: The response schema containing the updated</p>
+<blockquote>
+<div><p>option key.</p>
+</div></blockquote>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the user does not have the required</p>
+<blockquote>
+<div><p>permissions.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><cite>422 Unprocessable Entity</cite>: Raised if the provided option value
+is invalid.</p></li>
+<li><p><cite>423 Locked</cite>: Raised if the application is locked.</p></li>
+</ul>
+<p><strong>Auth:</strong>
+- The user must provide a valid <cite>JWT token</cite> in the request header.
+- <cite>admin</cite> role is required to access this router.</p>
+</dd></dl>
 
 </section>
 <section id="app-routers-password-change-router-module">
@@ -524,7 +911,38 @@ not have the required role.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="app.routers.telemetry_retrieve_router.telemetry_retrieve">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.telemetry_retrieve_router.</span></span><span class="sig-name descname"><span class="pre">telemetry_retrieve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_admin)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/routers/telemetry_retrieve_router.html#telemetry_retrieve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.telemetry_retrieve_router.telemetry_retrieve" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Retrieve telemetry. This router aggregates system metrics and
+configuration details from the server and the database to provide
+insight into the current status of the system and database. It
+returns information such as the operating system, platform, Python
+version, disk and memory usage, CPU status, and database details
+like version and size. Executes the corresponding hook and returns
+the telemetry data in a JSON response. The current user should have
+an admin role. Returns a 200 response on success, a 403 error if
+authentication failed or the user does not have the required
+permissions, and a 423 error if the application is locked.</p>
+<p><strong>Returns:</strong>
+- <cite>TelemetryRetrieveResponse</cite>: A response schema containing the</p>
+<blockquote>
+<div><p>telemetry data.</p>
+</div></blockquote>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the current user is not authenticated</p>
+<blockquote>
+<div><p>or does not have the required permissions.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><cite>423 Locked</cite>: Raised if the application is locked.</p></li>
+</ul>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_ON_TELEMETRY_RETRIEVE</cite>: Executes after the telemetry data is</p>
+<blockquote>
+<div><p>retrieved.</p>
+</div></blockquote>
+<p><strong>Auth:</strong>
+- The user must provide a valid JWT token in the request header.
+- The <cite>admin</cite> role is required to access this endpoint.</p>
+</dd></dl>
 
 </section>
 <section id="app-routers-time-retrieve-router-module">
@@ -535,11 +953,40 @@ not have the required role.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="app.routers.token_invalidate_router.token_invalidate">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.token_invalidate_router.</span></span><span class="sig-name descname"><span class="pre">token_invalidate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_read)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.user_schemas.TokenDeleteResponse" title="app.schemas.user_schemas.TokenDeleteResponse"><span class="pre">TokenDeleteResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/token_invalidate_router.html#token_invalidate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.token_invalidate_router.token_invalidate" title="Link to this definition"></a></dt>
-<dd><p>FastAPI router for invalidating the current user’s token by updating
-their JTI. Requires the user to have the reader role or higher.
-Returns a 200 response with an empty dictionary upon successful
-invalidation. Returns a 403 error if the user’s token is invalid or
-if the user does not have the required role.</p>
+<dd><p>Invalidate a token. This router updates the JTI of the current user
+to invalidate their token. It requires the user to have any role.
+The corresponding hooks are executed, and an empty JSON response is
+returned. Returns a 200 status code on success, a 403 status code
+if authentication fails or the user does not have the required
+permissions, and a 423 status code if the application is locked.</p>
+<p><strong>Returns:</strong>
+- <cite>TokenDeleteResponse</cite>: A response schema indicating the user ID</p>
+<blockquote>
+<div><p>for which the token was invalidated.</p>
+</div></blockquote>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the user is not authenticated or does</p>
+<blockquote>
+<div><p>not have the required permissions.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><cite>423 Locked</cite>: Raised if the application is locked.</p></li>
+</ul>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_BEFORE_TOKEN_INVALIDATE</cite>: Executes before invalidating the</p>
+<blockquote>
+<div><p>token.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><cite>HOOK_AFTER_TOKEN_INVALIDATE</cite>: Executes after the token has been
+invalidated.</p></li>
+</ul>
+<p><strong>Auth:</strong>
+- The user must provide a valid <cite>JWT token</cite> in the request header.
+- The <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite> or <cite>admin</cite> role is required to</p>
+<blockquote>
+<div><p>access this router.</p>
+</div></blockquote>
 </dd></dl>
 
 </section>
@@ -548,13 +995,35 @@ if the user does not have the required role.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="app.routers.token_retrieve_router.token_retrieve">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.token_retrieve_router.</span></span><span class="sig-name descname"><span class="pre">token_retrieve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(TokenRetrieveRequest)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.user_schemas.TokenRetrieveResponse" title="app.schemas.user_schemas.TokenRetrieveResponse"><span class="pre">TokenRetrieveResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/token_retrieve_router.html#token_retrieve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.token_retrieve_router.token_retrieve" title="Link to this definition"></a></dt>
-<dd><p>FastAPI router for the second step of multi-factor authentication.
-Retrieves a JWT token by validating the provided one-time password
-(TOTP). Requires the user to be active and have accepted the
-password in the previous step. Returns a 200 response with the
-token upon success. Returns a 404 error if the user is not found,
-a 403 error if the user is inactive, and a 422 error if the TOTP is
-incorrect. Requires the user to have the reader role or higher.</p>
+<dd><p>Retrieve a token. This router retrieves a JWT token for the user
+after validating the one-time password (TOTP). The user must be
+active and have accepted the password in the previous step. Returns
+a 200 response with the token on success, a 403 error if the user
+is inactive, a 422 error if the TOTP is incorrect, and a 423 error
+if the application is locked.</p>
+<p><strong>Returns:</strong>
+- <cite>TokenRetrieveResponse</cite>: A response schema containing the</p>
+<blockquote>
+<div><p>JWT token upon success.</p>
+</div></blockquote>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the user is inactive.
+- <cite>422 Unprocessable Entity</cite>: Raised if the TOTP is incorrect or</p>
+<blockquote>
+<div><p>invalid.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><cite>423 Locked</cite>: Raised if the application is locked.</p></li>
+</ul>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_BEFORE_TOKEN_RETRIEVE</cite>: Executes before retrieving the token.
+- <cite>HOOK_AFTER_TOKEN_RETRIEVE</cite>: Executes after the token is retrieved.</p>
+<p><strong>Auth:</strong>
+- The user must provide a valid <cite>JWT token</cite> in the request header.
+- The <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite> or <cite>admin</cite> role is required to</p>
+<blockquote>
+<div><p>access this router.</p>
+</div></blockquote>
 </dd></dl>
 
 </section>
@@ -564,14 +1033,32 @@ incorrect. Requires the user to have the reader role or higher.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="app.routers.user_delete_router.user_delete">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.user_delete_router.</span></span><span class="sig-name descname"><span class="pre">user_delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_admin)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.user_schemas.UserDeleteResponse" title="app.schemas.user_schemas.UserDeleteResponse"><span class="pre">UserDeleteResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/user_delete_router.html#user_delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.user_delete_router.user_delete" title="Link to this definition"></a></dt>
-<dd><p>FastAPI router for deleting a user entity. The router checks if the
-current user  is not trying to delete their own account, retrieves
-the user from the repository using the provided ID, verifies if the
-user exists, deletes the user, and executes related hooks. The
-current user should have an admin role. Returns a 200 response on
-success, a 403 error if the current user attempts to delete their
-own account or if an exception occurs during deletion, and a 404
-error if the user is not found.</p>
+<dd><p>Delete a user. The router checks if the current user is not trying
+to delete their own account, retrieves the user from the repository
+using the provided ID, verifies if the user exists, deletes the user,
+and executes related hooks. The current user should have an admin
+role. Returns a 200 response on success, a 403 error if the current
+user attempts to delete their own account or if an exception occurs
+during deletion, a 404 error if the user is not found, and a 423
+error if the application is locked.</p>
+<p><strong>Returns:</strong>
+- <cite>UserDeleteResponse</cite>: The ID of the user to delete.</p>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the current user attempts to delete</p>
+<blockquote>
+<div><p>their own account or if the deletion is forbidden.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><cite>404 Not Found</cite>: Raised if the user with the provided ID does not
+exist.</p></li>
+<li><p><cite>423 Locked</cite>: Raised if the application is locked.</p></li>
+</ul>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_BEFORE_USER_DELETE</cite>: Executes before deleting the user.
+- <cite>HOOK_AFTER_USER_DELETE</cite>: Executes after the user has been deleted.</p>
+<p><strong>Auth:</strong>
+- The user must provide a valid <cite>JWT token</cite> in the request header.
+- The <cite>admin</cite> role is required to access this router.</p>
 </dd></dl>
 
 </section>
@@ -580,11 +1067,36 @@ error if the user is not found.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="app.routers.user_list_router.users_list">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.user_list_router.</span></span><span class="sig-name descname"><span class="pre">users_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(UserListRequest)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_read)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.user_schemas.UserListResponse" title="app.schemas.user_schemas.UserListResponse"><span class="pre">UserListResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/user_list_router.html#users_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.user_list_router.users_list" title="Link to this definition"></a></dt>
-<dd><p>FastAPI router for retrieving a list of user entities. Requires the
-user to have a reader role or higher. Returns a 200 response with
-the list of users and the total count. Raises a 403 error if the
-user’s token is invalid or if the user does not have the required
-role. Raises a 422 error if any query parameters are invalid.</p>
+<dd><p>Retrieve a list of users. This endpoint fetches all users from
+the repository based on the provided filter criteria and executes
+related hooks. The current user must have a reader role or higher.
+Returns a 200 response on success, a 403 error if authentication
+failed or the user does not have the required permissions, a 422
+error if arguments validation failed, and a 423 error if the
+application is locked.</p>
+<p><strong>Returns:</strong>
+- <cite>UserListResponse</cite>: A response schema containing the list of users</p>
+<blockquote>
+<div><p>and the total count.</p>
+</div></blockquote>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if authentication fails or the user does not</p>
+<blockquote>
+<div><p>have the required permissions.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><cite>422 Unprocessable Entity</cite>: Raised if the arguments in the request
+schema are invalid.</p></li>
+<li><p><cite>423 Locked</cite>: Raised if the application is locked.</p></li>
+</ul>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_AFTER_USER_LIST</cite>: Executes after the user list is retrieved.</p>
+<p><strong>Auth:</strong>
+- The user must provide a valid <cite>JWT token</cite> in the request header.
+- The <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite>, or <cite>admin</cite> role is required to</p>
+<blockquote>
+<div><p>access this router.</p>
+</div></blockquote>
 </dd></dl>
 
 </section>
@@ -593,14 +1105,33 @@ role. Raises a 422 error if any query parameters are invalid.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="app.routers.user_login_router.user_login">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.user_login_router.</span></span><span class="sig-name descname"><span class="pre">user_login</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.schemas.html#app.schemas.user_schemas.UserLoginRequest" title="app.schemas.user_schemas.UserLoginRequest"><span class="pre">UserLoginRequest</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.user_schemas.UserLoginResponse" title="app.schemas.user_schemas.UserLoginResponse"><span class="pre">UserLoginResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/user_login_router.html#user_login"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.user_login_router.user_login" title="Link to this definition"></a></dt>
-<dd><p>FastAPI router for the first step of multi-factor authentication.
-Authenticates a user by validating their login credentials. Returns
+<dd><p>Authenticate a user. The router for the first step of multi-factor
+authentication. Authenticates a user by validating their login
+credentials. Invalid passwords increase the attempt count and may
+lead to user suspension if the attempt limit is exceeded. Returns
 a 200 response with a confirmation of password acceptance upon
-successful authentication. Returns a 404 error if the user is not
-found, a 403 error if the user is suspended or inactive, and a 422
-error if the password is invalid. Invalid passwords increase the
-attempt count and may lead to user suspension if the attempt limit
-is exceeded.</p>
+successful authentication. Returns a 403 error if the user is
+suspended or inactive, a 422 error if the password is invalid, and
+a 423 error if the application is locked.</p>
+<p><strong>Returns:</strong>
+- <cite>UserLoginResponse</cite>: A response schema confirming whether the</p>
+<blockquote>
+<div><p>password was accepted or not.</p>
+</div></blockquote>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the user is suspended or inactive.
+- <cite>422 Unprocessable Entity</cite>: Raised if the provided password is</p>
+<blockquote>
+<div><p>invalid.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><cite>423 Locked</cite>: Raised if the application is locked.</p></li>
+</ul>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_BEFORE_USER_LOGIN</cite>: Executes before the user login process.
+- <cite>HOOK_AFTER_USER_LOGIN</cite>: Executes after the user login process.</p>
+<p><strong>Auth:</strong>
+- No authentication required for this endpoint.</p>
 </dd></dl>
 
 </section>
@@ -609,11 +1140,30 @@ is exceeded.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="app.routers.user_register_router.user_register">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.user_register_router.</span></span><span class="sig-name descname"><span class="pre">user_register</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.schemas.html#app.schemas.user_schemas.UserRegisterRequest" title="app.schemas.user_schemas.UserRegisterRequest"><span class="pre">UserRegisterRequest</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.user_schemas.UserRegisterResponse" title="app.schemas.user_schemas.UserRegisterResponse"><span class="pre">UserRegisterResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/user_register_router.html#user_register"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.user_register_router.user_register" title="Link to this definition"></a></dt>
-<dd><p>FastAPI router for registering a new user. Checks if the user login
-already exists and raises a 422 error if it does. If the login is
-unique, creates a new user with the provided details and returns
-a 201 response with the user’s ID, MFA secret, and a link to the
-MFA QR code.</p>
+<dd><p>Register a user. Checks if the user login already exists and raises
+a 422 error if it does. If the login is unique, creates a new user
+with the provided details and returns a 201 response with the user’s
+ID, MFA secret, and a link to the MFA QR code. Returns a 423 error
+if the application is locked.</p>
+<p><strong>Returns:</strong>
+- <cite>UserRegisterResponse</cite>: A response schema containing the ID of</p>
+<blockquote>
+<div><p>the newly registered user, their MFA secret, and the MFA URL for
+setting up Multi-Factor Authentication.</p>
+</div></blockquote>
+<p><strong>Raises:</strong>
+- <cite>422 Unprocessable Entity</cite>: Raised if the provided user login</p>
+<blockquote>
+<div><p>already exists (duplicate).</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><cite>423 Locked</cite>: Raised if the application is locked.</p></li>
+</ul>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_BEFORE_USER_REGISTER</cite>: Executes before the user registration.
+- <cite>HOOK_AFTER_USER_REGISTER</cite>: Executes after the user registration.</p>
+<p><strong>Auth:</strong>
+- No authentication required for this endpoint.</p>
 </dd></dl>
 
 </section>
@@ -622,11 +1172,38 @@ MFA QR code.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="app.routers.user_select_router.user_select">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.user_select_router.</span></span><span class="sig-name descname"><span class="pre">user_select</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_read)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.user_schemas.UserSelectResponse" title="app.schemas.user_schemas.UserSelectResponse"><span class="pre">UserSelectResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/user_select_router.html#user_select"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.user_select_router.user_select" title="Link to this definition"></a></dt>
-<dd><p>FastAPI router for retrieving a user entity. Returns a 200 response
-with the user’s details if found. Raises a 404 error if the user is
-not found. Requires the user to have the reader role or higher.
-Returns a 403 error if the user’s token is invalid or if the user
-does not have the required role.</p>
+<dd><p>Retrieve a user. The router fetches the user from the repository
+using the provided ID, executes related hooks, and returns the user
+details in a JSON response. Requires the user to have the reader
+role or higher. Returns a 200 response with the user’s details if
+found. Raises a 404 error if the user is not found, a 403 error if
+the user’s token is invalid or if the user does not have the
+required role, a 423 error if the application is locked.</p>
+<p><strong>Returns:</strong>
+- <cite>UserSelectResponse</cite>: A response schema containing the details of</p>
+<blockquote>
+<div><p>the retrieved user.</p>
+</div></blockquote>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the user’s token is invalid or if the</p>
+<blockquote>
+<div><p>user does not have the required <cite>reader</cite> role or higher.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><cite>404 Not Found</cite>: Raised if the user with the given ID is not found.</p></li>
+<li><p><cite>423 Locked</cite>: Raised if the application is locked.</p></li>
+</ul>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_AFTER_USER_SELECT</cite>: Executes after successfully retrieving</p>
+<blockquote>
+<div><p>the user.</p>
+</div></blockquote>
+<p><strong>Auth:</strong>
+- The user must provide a valid <cite>JWT token</cite> in the request header.
+- The <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite>, or <cite>admin</cite> role is required to</p>
+<blockquote>
+<div><p>access this router.</p>
+</div></blockquote>
 </dd></dl>
 
 </section>
@@ -635,12 +1212,46 @@ does not have the required role.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="app.routers.user_update_router.user_update">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.user_update_router.</span></span><span class="sig-name descname"><span class="pre">user_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.schemas.html#app.schemas.user_schemas.UserUpdateRequest" title="app.schemas.user_schemas.UserUpdateRequest"><span class="pre">UserUpdateRequest</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_read)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.user_schemas.UserUpdateResponse" title="app.schemas.user_schemas.UserUpdateResponse"><span class="pre">UserUpdateResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/user_update_router.html#user_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.user_update_router.user_update" title="Link to this definition"></a></dt>
-<dd><p>FastAPI router for updating a user entity. Modifies the first name,
-last name, user signature, and user contacts for the specified user.
-Requires the user to have the reader role or higher. Returns a 200
-response with the updated user’s ID. Raises a 403 error if the user
-does not have the required role or if the user is attempting to
-update a different user’s details.</p>
+<dd><p>Update a user. Modifies the first name, last name, user caption, and
+user contacts for the specified user. Requires the user to have the
+reader role or higher. Returns a 200 response with the updated user’s
+ID. Raises a 403 error if the user does not have the required role
+or if the user is attempting to update a different user’s details,
+a 422 error if arguments validation failed, a 423 error if the
+application is locked.</p>
+<p><strong>Returns:</strong>
+- <cite>UserUpdateResponse</cite>: A response schema containing the ID of the</p>
+<blockquote>
+<div><p>updated user.</p>
+</div></blockquote>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the current user does not have the</p>
+<blockquote>
+<div><p>required permissions, or if the user is trying to update another
+user’s information.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><cite>404 Not Found</cite>: Raised if the user with the provided ID is not
+found.</p></li>
+<li><p><cite>422 Unprocessable Entity</cite>: Raised if the provided data does not
+meet validation criteria.</p></li>
+<li><p><cite>423 Locked</cite>: Raised if the application is locked.</p></li>
+</ul>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_BEFORE_USER_UPDATE</cite>: Executes before updating the user</p>
+<blockquote>
+<div><p>details.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><cite>HOOK_AFTER_USER_UPDATE</cite>: Executes after the user details have
+been updated.</p></li>
+</ul>
+<p><strong>Auth:</strong>
+- The user must provide a valid <cite>JWT token</cite> in the request header.
+- The <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite>, or <cite>admin</cite> role is required to</p>
+<blockquote>
+<div><p>access this router.</p>
+</div></blockquote>
 </dd></dl>
 
 </section>
@@ -649,12 +1260,44 @@ update a different user’s details.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="app.routers.userpic_delete_router.userpic_delete">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.userpic_delete_router.</span></span><span class="sig-name descname"><span class="pre">userpic_delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_read)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.user_schemas.UserpicDeleteResponse" title="app.schemas.user_schemas.UserpicDeleteResponse"><span class="pre">UserpicDeleteResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/userpic_delete_router.html#userpic_delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.userpic_delete_router.userpic_delete" title="Link to this definition"></a></dt>
-<dd><p>FastAPI router for deleting a userpic. Deletes the userpic if it
-exists and updates the user’s data to remove the userpic. Allowed
-for the current user only. Requires the user to have a reader role
-or higher. Returns a 200 response with the user ID. Raises a 403
-error if the user attempts to delete a userpic for a different user
-or if the user’s token is invalid.</p>
+<dd><p>Remove a userpic. Deletes the userpic if it exists and updates the
+user’s data to remove the userpic. Allowed for the current user only.
+Requires the user to have a reader role or higher. Returns a 200
+response with the user ID. Raises a 403 error if the user attempts
+to delete a userpic for a different user or if the user’s token is
+invalid, a 404 error if the user is not found, a 423 error if the
+application is locked.</p>
+<p><strong>Returns:</strong>
+- <cite>UserpicDeleteResponse</cite>: A response schema containing the ID of</p>
+<blockquote>
+<div><p>the user from whom the userpic was deleted.</p>
+</div></blockquote>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the current user attempts to delete the</p>
+<blockquote>
+<div><p>userpic of another user, or if the user does not have the required
+role or if the user’s token is invalid.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><cite>404 Not Found</cite>: Raised if the user with the provided ID is not
+found.</p></li>
+<li><p><cite>423 Locked</cite>: Raised if the application is locked.</p></li>
+</ul>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_BEFORE_USERPIC_DELETE</cite>: Executes before the userpic is</p>
+<blockquote>
+<div><p>deleted.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><cite>HOOK_AFTER_USERPIC_DELETE</cite>: Executes after the userpic has been
+deleted.</p></li>
+</ul>
+<p><strong>Auth:</strong>
+- The user must provide a valid <cite>JWT token</cite> in the request header.
+- The <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite>, or <cite>admin</cite> role is required to</p>
+<blockquote>
+<div><p>access this router.</p>
+</div></blockquote>
 </dd></dl>
 
 </section>
@@ -663,14 +1306,46 @@ or if the user’s token is invalid.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="app.routers.userpic_upload_router.userpic_upload">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.userpic_upload_router.</span></span><span class="sig-name descname"><span class="pre">userpic_upload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">UploadFile</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">File(PydanticUndefined)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_read)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.user_schemas.UserpicUploadResponse" title="app.schemas.user_schemas.UserpicUploadResponse"><span class="pre">UserpicUploadResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/userpic_upload_router.html#userpic_upload"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.userpic_upload_router.userpic_upload" title="Link to this definition"></a></dt>
-<dd><p>FastAPI router for uploading a userpic. Deletes the existing
-userpic if it exists, uploads and saves a new one, resizes it to
-the specified dimensions, and updates the user’s data with the new
-userpic. Allowed for the current user only. Requires the user to
-have a reader role or higher. Returns a 200 response with the
-user ID. Raises a 403 error if the user attempts to upload a
-userpic for a different user, or if the user’s token is invalid.
-Raises a 422 error if the file’s MIME type is unsupported.</p>
+<dd><p>Upload a userpic. Deletes the existing userpic if it exists, uploads
+and saves a new one, resizes it to the specified dimensions, and
+updates the user’s data with the new userpic. Allowed for the
+current user only. Requires the user to have a reader role or higher.
+Returns a 200 response with the user ID. Raises a 403 error if the
+user attempts to upload a userpic for a different user, or if the
+user’s token is invalid. Raises a 422 error if the file’s MIME type
+is unsupported. Raises a 423 error if the application is locked.</p>
+<p><strong>Returns:</strong>
+- <cite>UserpicUploadResponse</cite>: A response schema containing the ID of</p>
+<blockquote>
+<div><p>the user with the updated userpic.</p>
+</div></blockquote>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the current user attempts to upload a</p>
+<blockquote>
+<div><p>userpic for a different user, or if the user’s token is invalid.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><cite>422 Unprocessable Entity</cite>: Raised if the file’s MIME type is
+unsupported.</p></li>
+<li><p><cite>404 Not Found</cite>: Raised if the user with the provided ID is not
+found.</p></li>
+<li><p><cite>423 Locked</cite>: Raised if the application is locked.</p></li>
+</ul>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_BEFORE_USERPIC_UPLOAD</cite>: Executes before the userpic upload</p>
+<blockquote>
+<div><p>process begins.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><cite>HOOK_AFTER_USERPIC_UPLOAD</cite>: Executes after the userpic has been
+successfully uploaded.</p></li>
+</ul>
+<p><strong>Auth:</strong>
+- The user must provide a valid <cite>JWT token</cite> in the request header.
+- The <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite>, or <cite>admin</cite> role is required to</p>
+<blockquote>
+<div><p>access this router.</p>
+</div></blockquote>
 </dd></dl>
 
 </section>

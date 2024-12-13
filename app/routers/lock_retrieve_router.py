@@ -18,7 +18,7 @@ async def lock_retrieve(
     session=Depends(get_session), cache=Depends(get_cache)
 ) -> LockRetrieveResponse:
     """
-    Retrieve the application lock mode. This router checks whether the 
+    Retrieve the application lock mode. This router checks whether the
     application is locked and retrieves the date when the lock was
     applied. It executes a corresponding hook after retrieving the lock
     state.

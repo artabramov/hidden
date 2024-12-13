@@ -53,7 +53,7 @@ async def user_password(
 
     **Auth:**
     - The user must provide a valid `JWT token` in the request header.
-    - The `reader`, `writer`, `editor`, or `admin` role is required to 
+    - The `reader`, `writer`, `editor`, or `admin` role is required to
       access this router.
     """
     user_repository = Repository(session, cache, User)

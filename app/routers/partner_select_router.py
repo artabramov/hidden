@@ -27,7 +27,7 @@ async def partner_select(
 ) -> PartnerSelectResponse:
     """
     Retrieve a partner. The router fetches the partner from the
-    repository using the provided ID, executes related hooks, and 
+    repository using the provided ID, executes related hooks, and
     returns the partner details in a JSON response. The current user
     should have a reader role or higher. Returns a 200 response on
     success, a 404 error if the partner is not found, a 403 error if

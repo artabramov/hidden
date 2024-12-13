@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.1.8 (2024-12-13)
+- **Updated formatting** across the codebase.
+- **Updated Sphinx documentation** for better clarity and structure.
+
 ## Version 0.1.7 (2024-12-13)
 - **Updated frontend** with minor fixes and translation improvements.
 

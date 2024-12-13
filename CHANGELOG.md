@@ -1,10 +1,13 @@
 # Changelog
 
+## Version 0.1.7 (2024-12-13)
+- **Updated frontend** with minor fixes and translation improvements.
+
 ## Version 0.1.6 (2024-12-13)
 - **Updated docstrings** across the application.
 
 ## Version 0.1.5 (2024-12-08)
-- **Updated front-end** with translation improvements.
+- **Updated frontend** with translation improvements.
 - **Fixed linter errors** across the codebase.
 - **Updated Sphinx documentation** for better clarity and structure.
 

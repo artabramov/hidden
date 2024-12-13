@@ -35,26 +35,26 @@ async def partner_list(
 
     **Args:**
     - `PartnerListRequest`: The request schema containing filter and
-      pagination details.
+    pagination details.
 
     **Returns:**
     - `PartnerListResponse`: The response schema containing the list
-      of partners and the total count.
+    of partners and the total count.
 
     **Raises:**
     - `403 Forbidden`: Raised if the current user is not authenticated
-      or does not have the required `reader` role.
+    or does not have the required `reader` role.
     - `422 Unprocessable Entity`:  Raised if arguments validation failed.
     - `423 Locked`: Raised if the application is locked.
 
     **Hooks:**
     - `HOOK_AFTER_PARTNER_LIST`: Executes after the partners are
-      retrieved.
+    retrieved.
 
     **Auth:**
     - The user must provide a valid `JWT token` in the request header.
     - `reader`, `writer`, `editor`, `admin` user role is required to
-      access this router.
+    access this router.
     """
     partner_repository = Repository(session, cache, Partner)
 

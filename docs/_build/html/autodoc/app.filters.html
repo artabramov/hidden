@@ -1,0 +1,357 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>app.filters package &mdash; Hidden  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="app.helpers package" href="app.helpers.html" />
+    <link rel="prev" title="app.decorators package" href="app.decorators.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Hidden
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="app.html">app package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app.decorators.html">app.decorators package</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">app.filters package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.filters.collection_filters">app.filters.collection_filters module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.filters.collection_filters.filter_collection_name"><code class="docutils literal notranslate"><span class="pre">filter_collection_name()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.filters.collection_filters.filter_collection_summary"><code class="docutils literal notranslate"><span class="pre">filter_collection_summary()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.filters.comment_filters">app.filters.comment_filters module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.filters.comment_filters.filter_comment_content"><code class="docutils literal notranslate"><span class="pre">filter_comment_content()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.filters.document_filters">app.filters.document_filters module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.filters.document_filters.filter_document_filename"><code class="docutils literal notranslate"><span class="pre">filter_document_filename()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.filters.document_filters.filter_document_summary"><code class="docutils literal notranslate"><span class="pre">filter_document_summary()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.filters.document_filters.filter_tags"><code class="docutils literal notranslate"><span class="pre">filter_tags()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.filters.option_filters">app.filters.option_filters module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.filters.option_filters.filter_option_key"><code class="docutils literal notranslate"><span class="pre">filter_option_key()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.filters.option_filters.filter_option_value"><code class="docutils literal notranslate"><span class="pre">filter_option_value()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.filters.partner_filters">app.filters.partner_filters module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.filters.partner_filters.filter_partner_contacts"><code class="docutils literal notranslate"><span class="pre">filter_partner_contacts()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.filters.partner_filters.filter_partner_name"><code class="docutils literal notranslate"><span class="pre">filter_partner_name()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.filters.partner_filters.filter_partner_region"><code class="docutils literal notranslate"><span class="pre">filter_partner_region()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.filters.partner_filters.filter_partner_summary"><code class="docutils literal notranslate"><span class="pre">filter_partner_summary()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.filters.partner_filters.filter_partner_type"><code class="docutils literal notranslate"><span class="pre">filter_partner_type()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.filters.partner_filters.filter_partner_website"><code class="docutils literal notranslate"><span class="pre">filter_partner_website()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.filters.user_filters">app.filters.user_filters module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.filters.user_filters.filter_first_name"><code class="docutils literal notranslate"><span class="pre">filter_first_name()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.filters.user_filters.filter_last_name"><code class="docutils literal notranslate"><span class="pre">filter_last_name()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.filters.user_filters.filter_user_caption"><code class="docutils literal notranslate"><span class="pre">filter_user_caption()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.filters.user_filters.filter_user_contacts"><code class="docutils literal notranslate"><span class="pre">filter_user_contacts()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.filters.user_filters.filter_user_login"><code class="docutils literal notranslate"><span class="pre">filter_user_login()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.filters.user_filters.filter_user_totp"><code class="docutils literal notranslate"><span class="pre">filter_user_totp()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.filters">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="app.helpers.html">app.helpers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app.managers.html">app.managers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app.models.html">app.models package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app.plugins.html">app.plugins package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app.routers.html">app.routers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app.schemas.html">app.schemas package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app.triggers.html">app.triggers package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Hidden</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="app.html">app package</a></li>
+      <li class="breadcrumb-item active">app.filters package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/autodoc/app.filters.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="app-filters-package">
+<h1>app.filters package<a class="headerlink" href="#app-filters-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-app.filters.collection_filters">
+<span id="app-filters-collection-filters-module"></span><h2>app.filters.collection_filters module<a class="headerlink" href="#module-app.filters.collection_filters" title="Link to this heading"></a></h2>
+<p>The module provides functions for filtering collection attributes, such
+as collection name and collection summary. These filters are used within
+Pydantic schemas.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.filters.collection_filters.filter_collection_name">
+<span class="sig-prename descclassname"><span class="pre">app.filters.collection_filters.</span></span><span class="sig-name descname"><span class="pre">filter_collection_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collection_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/app/filters/collection_filters.html#filter_collection_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.filters.collection_filters.filter_collection_name" title="Link to this definition"></a></dt>
+<dd><p>Filters a collection name by stripping leading and trailing
+whitespace. If the input is empty, it returns none. Otherwise, it
+returns the trimmed collection name.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.filters.collection_filters.filter_collection_summary">
+<span class="sig-prename descclassname"><span class="pre">app.filters.collection_filters.</span></span><span class="sig-name descname"><span class="pre">filter_collection_summary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collection_summary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/app/filters/collection_filters.html#filter_collection_summary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.filters.collection_filters.filter_collection_summary" title="Link to this definition"></a></dt>
+<dd><p>Filters a collection summary. If there is no input, or if the input
+is an empty string or consists only of whitespace, it returns none.
+Otherwise, it returns the trimmed user signature.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.filters.comment_filters">
+<span id="app-filters-comment-filters-module"></span><h2>app.filters.comment_filters module<a class="headerlink" href="#module-app.filters.comment_filters" title="Link to this heading"></a></h2>
+<p>The module provides functions for filtering comment attributes,
+such as comment content. The validator is used within Pydantic schemas.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.filters.comment_filters.filter_comment_content">
+<span class="sig-prename descclassname"><span class="pre">app.filters.comment_filters.</span></span><span class="sig-name descname"><span class="pre">filter_comment_content</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">comment_content</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/app/filters/comment_filters.html#filter_comment_content"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.filters.comment_filters.filter_comment_content" title="Link to this definition"></a></dt>
+<dd><p>Filters a comment content by stripping leading and trailing
+whitespace. If the input is empty, it returns none. Otherwise, it
+returns the trimmed comment content.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.filters.document_filters">
+<span id="app-filters-document-filters-module"></span><h2>app.filters.document_filters module<a class="headerlink" href="#module-app.filters.document_filters" title="Link to this heading"></a></h2>
+<p>The module provides functions for filtering document attributes such as
+filename, summary, and tags. These filters are used to ensure the input
+data is cleaned (trimmed and standardized) before being processed
+further.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.filters.document_filters.filter_document_filename">
+<span class="sig-prename descclassname"><span class="pre">app.filters.document_filters.</span></span><span class="sig-name descname"><span class="pre">filter_document_filename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">document_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/app/filters/document_filters.html#filter_document_filename"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.filters.document_filters.filter_document_filename" title="Link to this definition"></a></dt>
+<dd><p>Filters a document name by stripping leading and trailing whitespace.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.filters.document_filters.filter_document_summary">
+<span class="sig-prename descclassname"><span class="pre">app.filters.document_filters.</span></span><span class="sig-name descname"><span class="pre">filter_document_summary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">document_summary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/app/filters/document_filters.html#filter_document_summary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.filters.document_filters.filter_document_summary" title="Link to this definition"></a></dt>
+<dd><p>Filters a document summary. If the input is empty or consists only
+of whitespace, it returns None. Otherwise, it returns the trimmed
+document summary.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.filters.document_filters.filter_tags">
+<span class="sig-prename descclassname"><span class="pre">app.filters.document_filters.</span></span><span class="sig-name descname"><span class="pre">filter_tags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/app/filters/document_filters.html#filter_tags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.filters.document_filters.filter_tags" title="Link to this definition"></a></dt>
+<dd><p>Filters tags by stripping leading and trailing whitespace and
+converting them to lowercase. If the input is empty, it returns None.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.filters.option_filters">
+<span id="app-filters-option-filters-module"></span><h2>app.filters.option_filters module<a class="headerlink" href="#module-app.filters.option_filters" title="Link to this heading"></a></h2>
+<p>The module provides functions for filtering option keys and values.
+These filters are used within Pydantic schemas.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.filters.option_filters.filter_option_key">
+<span class="sig-prename descclassname"><span class="pre">app.filters.option_filters.</span></span><span class="sig-name descname"><span class="pre">filter_option_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/app/filters/option_filters.html#filter_option_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.filters.option_filters.filter_option_key" title="Link to this definition"></a></dt>
+<dd><p>Filters an option key by stripping leading and trailing whitespace,
+and converting it to lowercase.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.filters.option_filters.filter_option_value">
+<span class="sig-prename descclassname"><span class="pre">app.filters.option_filters.</span></span><span class="sig-name descname"><span class="pre">filter_option_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/app/filters/option_filters.html#filter_option_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.filters.option_filters.filter_option_value" title="Link to this definition"></a></dt>
+<dd><p>Filters an option value by stripping leading and trailing whitespace.
+If the value is empty or None, returns None.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.filters.partner_filters">
+<span id="app-filters-partner-filters-module"></span><h2>app.filters.partner_filters module<a class="headerlink" href="#module-app.filters.partner_filters" title="Link to this heading"></a></h2>
+<p>The module provides functions for filtering partner-related attributes.
+These filters are used within Pydantic schemas.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.filters.partner_filters.filter_partner_contacts">
+<span class="sig-prename descclassname"><span class="pre">app.filters.partner_filters.</span></span><span class="sig-name descname"><span class="pre">filter_partner_contacts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">partner_contacts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/app/filters/partner_filters.html#filter_partner_contacts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.filters.partner_filters.filter_partner_contacts" title="Link to this definition"></a></dt>
+<dd><p>Filters partner contacts by stripping leading and trailing
+whitespace. If the input is empty or consists only of whitespace,
+returns None. Otherwise, returns the trimmed contacts information.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.filters.partner_filters.filter_partner_name">
+<span class="sig-prename descclassname"><span class="pre">app.filters.partner_filters.</span></span><span class="sig-name descname"><span class="pre">filter_partner_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">partner_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/app/filters/partner_filters.html#filter_partner_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.filters.partner_filters.filter_partner_name" title="Link to this definition"></a></dt>
+<dd><p>Filters a partner name by stripping leading and trailing whitespace.
+If the input is empty, returns None. Otherwise, returns the trimmed
+partner name.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.filters.partner_filters.filter_partner_region">
+<span class="sig-prename descclassname"><span class="pre">app.filters.partner_filters.</span></span><span class="sig-name descname"><span class="pre">filter_partner_region</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">partner_region</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/app/filters/partner_filters.html#filter_partner_region"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.filters.partner_filters.filter_partner_region" title="Link to this definition"></a></dt>
+<dd><p>Filters a partner region by stripping leading and trailing
+whitespace. If the input is empty or consists only of whitespace,
+returns None. Otherwise, returns the trimmed partner region.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.filters.partner_filters.filter_partner_summary">
+<span class="sig-prename descclassname"><span class="pre">app.filters.partner_filters.</span></span><span class="sig-name descname"><span class="pre">filter_partner_summary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">partner_summary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/app/filters/partner_filters.html#filter_partner_summary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.filters.partner_filters.filter_partner_summary" title="Link to this definition"></a></dt>
+<dd><p>Filters a partner summary by stripping leading and trailing
+whitespace. If the input is empty or consists only of whitespace,
+returns None. Otherwise, returns the trimmed partner summary.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.filters.partner_filters.filter_partner_type">
+<span class="sig-prename descclassname"><span class="pre">app.filters.partner_filters.</span></span><span class="sig-name descname"><span class="pre">filter_partner_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">partner_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/app/filters/partner_filters.html#filter_partner_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.filters.partner_filters.filter_partner_type" title="Link to this definition"></a></dt>
+<dd><p>Filters a partner type by stripping leading and trailing whitespace.
+If the input is empty or consists only of whitespace, returns None.
+Otherwise, returns the trimmed partner type.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.filters.partner_filters.filter_partner_website">
+<span class="sig-prename descclassname"><span class="pre">app.filters.partner_filters.</span></span><span class="sig-name descname"><span class="pre">filter_partner_website</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">partner_website</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/app/filters/partner_filters.html#filter_partner_website"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.filters.partner_filters.filter_partner_website" title="Link to this definition"></a></dt>
+<dd><p>Filters a partner website by stripping leading and trailing
+whitespace, and converting it to lowercase. If the input is empty
+or consists only of whitespace, returns None. Otherwise, returns
+the trimmed and lowercase website.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.filters.user_filters">
+<span id="app-filters-user-filters-module"></span><h2>app.filters.user_filters module<a class="headerlink" href="#module-app.filters.user_filters" title="Link to this heading"></a></h2>
+<p>The module provides functions for filtering user entity attributes,
+such as login, password, first name, last name, TOTP (Time-based
+One-Time Password), and token expiration time. These filters are
+used within Pydantic schemas.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.filters.user_filters.filter_first_name">
+<span class="sig-prename descclassname"><span class="pre">app.filters.user_filters.</span></span><span class="sig-name descname"><span class="pre">filter_first_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">first_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/app/filters/user_filters.html#filter_first_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.filters.user_filters.filter_first_name" title="Link to this definition"></a></dt>
+<dd><p>Filters a first name by stripping leading and trailing whitespace.
+If the input is empty, returns None. Otherwise, returns the trimmed
+first name.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.filters.user_filters.filter_last_name">
+<span class="sig-prename descclassname"><span class="pre">app.filters.user_filters.</span></span><span class="sig-name descname"><span class="pre">filter_last_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">last_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/app/filters/user_filters.html#filter_last_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.filters.user_filters.filter_last_name" title="Link to this definition"></a></dt>
+<dd><p>Filters a last name by stripping leading and trailing whitespace.
+If the input is empty, returns None. Otherwise, returns the trimmed
+last name.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.filters.user_filters.filter_user_caption">
+<span class="sig-prename descclassname"><span class="pre">app.filters.user_filters.</span></span><span class="sig-name descname"><span class="pre">filter_user_caption</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_caption</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/app/filters/user_filters.html#filter_user_caption"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.filters.user_filters.filter_user_caption" title="Link to this definition"></a></dt>
+<dd><p>Filters a user caption by stripping leading and trailing whitespace.
+If the input is empty or None, returns None. Otherwise, returns the
+trimmed user caption.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.filters.user_filters.filter_user_contacts">
+<span class="sig-prename descclassname"><span class="pre">app.filters.user_filters.</span></span><span class="sig-name descname"><span class="pre">filter_user_contacts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_contacts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/app/filters/user_filters.html#filter_user_contacts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.filters.user_filters.filter_user_contacts" title="Link to this definition"></a></dt>
+<dd><p>Filters user contacts by stripping leading and trailing whitespace.
+If the input is empty or None, returns None. Otherwise, returns the
+trimmed contacts.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.filters.user_filters.filter_user_login">
+<span class="sig-prename descclassname"><span class="pre">app.filters.user_filters.</span></span><span class="sig-name descname"><span class="pre">filter_user_login</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_login</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/app/filters/user_filters.html#filter_user_login"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.filters.user_filters.filter_user_login" title="Link to this definition"></a></dt>
+<dd><p>Filters a user login by stripping leading and trailing whitespace
+and converting it to lowercase. If the input is empty, returns None.
+Otherwise, returns the trimmed and lowercase user login.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.filters.user_filters.filter_user_totp">
+<span class="sig-prename descclassname"><span class="pre">app.filters.user_filters.</span></span><span class="sig-name descname"><span class="pre">filter_user_totp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_totp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/app/filters/user_filters.html#filter_user_totp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.filters.user_filters.filter_user_totp" title="Link to this definition"></a></dt>
+<dd><p>Filters a user TOTP by checking if the input is numeric. If not,
+raises a ValueError. Otherwise, returns the original TOTP.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.filters">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-app.filters" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="app.decorators.html" class="btn btn-neutral float-left" title="app.decorators package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="app.helpers.html" class="btn btn-neutral float-right" title="app.helpers package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Artem Abramov.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

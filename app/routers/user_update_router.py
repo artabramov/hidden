@@ -36,28 +36,28 @@ async def user_update(
 
     **Returns:**
     - `UserUpdateResponse`: A response schema containing the ID of the
-      updated user.
+    updated user.
 
     **Raises:**
     - `403 Forbidden`: Raised if the current user does not have the
-      required permissions, or if the user is trying to update another
-      user's information.
+    required permissions, or if the user is trying to update another
+    user's information.
     - `404 Not Found`: Raised if the user with the provided ID is not
-      found.
+    found.
     - `422 Unprocessable Entity`: Raised if the provided data does not
-      meet validation criteria.
+    meet validation criteria.
     - `423 Locked`: Raised if the application is locked.
 
     **Hooks:**
     - `HOOK_BEFORE_USER_UPDATE`: Executes before updating the user
-      details.
+    details.
     - `HOOK_AFTER_USER_UPDATE`: Executes after the user details have
-      been updated.
+    been updated.
 
     **Auth:**
     - The user must provide a valid `JWT token` in the request header.
     - The `reader`, `writer`, `editor`, or `admin` role is required to
-      access this router.
+    access this router.
     """
     user_repository = Repository(session, cache, User)
     user = await user_repository.select(id=user_id)

@@ -43,19 +43,19 @@ async def comment_select(
 
     **Returns:**
     - `CommentSelectResponse`: The response schema containing the
-      comment details.
+    comment details.
 
     **Raises:**
     - `403 Forbidden`: Raised if the user does not have the required
-      permissions.
+    permissions.
     - `404 Not Found`: Raised if the comment with the specified ID does
-      not exist.
+    not exist.
     - `423 Locked`: Raised if the application is locked.
 
     **Auth:**
     - The user must provide a valid `JWT token` in the request header.
     - `reader`, `writer`, `editor` or `admin` user role is required to
-      access this router.
+    access this router.
     """
     comment_repository = Repository(session, cache, Comment)
     comment = await comment_repository.select(id=comment_id)

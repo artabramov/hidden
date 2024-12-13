@@ -39,12 +39,12 @@ async def token_retrieve(
 
     **Returns:**
     - `TokenRetrieveResponse`: A response schema containing the
-      JWT token upon success.
+    JWT token upon success.
 
     **Raises:**
     - `403 Forbidden`: Raised if the user is inactive.
     - `422 Unprocessable Entity`: Raised if the TOTP is incorrect or
-      invalid.
+    invalid.
     - `423 Locked`: Raised if the application is locked.
 
     **Hooks:**
@@ -54,7 +54,7 @@ async def token_retrieve(
     **Auth:**
     - The user must provide a valid `JWT token` in the request header.
     - The `reader`, `writer`, `editor` or `admin` role is required to
-      access this router.
+    access this router.
     """
     user_repository = Repository(session, cache, User)
     user = await user_repository.select(user_login__eq=schema.user_login)

@@ -49,20 +49,20 @@ async def partnerpic_upload(
 
     **Returns:**
     - `PartnerpicUploadResponse`: A response schema containing the
-      partner ID after the image has been successfully uploaded.
+    partner ID after the image has been successfully uploaded.
 
     **Raises:**
     - `403 Forbidden`: Raised if the current user is not authenticated
-      or does not have the required permissions.
+    or does not have the required permissions.
     - `404 Not Found`: Raised if the partner with the specified ID
-      does not exist.
+    does not exist.
     - `423 Locked`: Raised if the application is locked.
 
     **Hooks:**
     - `HOOK_BEFORE_PARTNERPIC_UPLOAD`: Executes before the image is
-      uploaded.
+    uploaded.
     - `HOOK_AFTER_PARTNERPIC_UPLOAD`: Executes after the image has been
-      uploaded.
+    uploaded.
 
     **Auth:**
     - The user must provide a valid JWT token in the request header.

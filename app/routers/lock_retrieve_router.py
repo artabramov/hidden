@@ -25,7 +25,7 @@ async def lock_retrieve(
 
     **Returns:**
     - `LockRetrieveResponse`: The response schema containing the lock
-      status and the date when the application was locked.
+    status and the date when the application was locked.
 
     **Auth:**
     - No authentication is required to access this router.

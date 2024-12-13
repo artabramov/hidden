@@ -43,11 +43,11 @@ async def option_select(
 
     **Returns:**
     - `OptionSelectResponse`: The response schema containing the
-      retrieved option.
+    retrieved option.
 
     **Raises:**
     - `403 Forbidden`: Raised if the user does not have the required
-      permissions.
+    permissions.
     - `404 Not Found`: Raised if the option is not found.
     - `422 Unprocessable Entity`: Raised if arguments validation failed.
     - `423 Locked`: Raised if the application is locked.

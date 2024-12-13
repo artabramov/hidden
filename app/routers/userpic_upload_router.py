@@ -44,27 +44,27 @@ async def userpic_upload(
 
     **Returns:**
     - `UserpicUploadResponse`: A response schema containing the ID of
-      the user with the updated userpic.
+    the user with the updated userpic.
 
     **Raises:**
     - `403 Forbidden`: Raised if the current user attempts to upload a
-      userpic for a different user, or if the user's token is invalid.
+    userpic for a different user, or if the user's token is invalid.
     - `422 Unprocessable Entity`: Raised if the file's MIME type is
-      unsupported.
+    unsupported.
     - `404 Not Found`: Raised if the user with the provided ID is not
-      found.
+    found.
     - `423 Locked`: Raised if the application is locked.
 
     **Hooks:**
     - `HOOK_BEFORE_USERPIC_UPLOAD`: Executes before the userpic upload
-      process begins.
+    process begins.
     - `HOOK_AFTER_USERPIC_UPLOAD`: Executes after the userpic has been
-      successfully uploaded.
+    successfully uploaded.
 
     **Auth:**
     - The user must provide a valid `JWT token` in the request header.
     - The `reader`, `writer`, `editor`, or `admin` role is required to
-      access this router.
+    access this router.
     """
     user_repository = Repository(session, cache, User)
     user = await user_repository.select(id=user_id)

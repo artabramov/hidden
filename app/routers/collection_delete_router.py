@@ -41,20 +41,20 @@ async def collection_delete(
 
     **Returns:**
     - `CollectionDeleteResponse`: The response schema containing the ID
-      of the deleted collection.
+    of the deleted collection.
 
     **Raises:**
     - `403 Forbidden`: Raised if the current user is not authenticated
-      or does not have the required permissions.
+    or does not have the required permissions.
     - `404 Not Found`: Raised if the collection with the specified
-      ID does not exist.
+    ID does not exist.
     - `423 Locked`: Raised if the application is locked.
 
     **Hooks:**
     - `HOOK_BEFORE_COLLECTION_DELETE`: Executed before the collection is
-      deleted.
+    deleted.
     - `HOOK_AFTER_COLLECTION_DELETE`: Executed after the collection is
-      deleted.
+    deleted.
 
     **Auth:**
     - The user must provide a valid `JWT token` in the request header.

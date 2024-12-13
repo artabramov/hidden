@@ -41,16 +41,16 @@ async def telemetry_retrieve(
 
     **Returns:**
     - `TelemetryRetrieveResponse`: A response schema containing the
-      telemetry data.
+    telemetry data.
 
     **Raises:**
     - `403 Forbidden`: Raised if the current user is not authenticated
-      or does not have the required permissions.
+    or does not have the required permissions.
     - `423 Locked`: Raised if the application is locked.
 
     **Hooks:**
     - `HOOK_ON_TELEMETRY_RETRIEVE`: Executes after the telemetry data is
-      retrieved.
+    retrieved.
 
     **Auth:**
     - The user must provide a valid JWT token in the request header.

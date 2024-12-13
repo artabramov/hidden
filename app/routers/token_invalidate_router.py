@@ -33,23 +33,23 @@ async def token_invalidate(
 
     **Returns:**
     - `TokenDeleteResponse`: A response schema indicating the user ID
-      for which the token was invalidated.
+    for which the token was invalidated.
 
     **Raises:**
     - `403 Forbidden`: Raised if the user is not authenticated or does
-      not have the required permissions.
+    not have the required permissions.
     - `423 Locked`: Raised if the application is locked.
 
     **Hooks:**
     - `HOOK_BEFORE_TOKEN_INVALIDATE`: Executes before invalidating the
-      token.
+    token.
     - `HOOK_AFTER_TOKEN_INVALIDATE`: Executes after the token has been
-      invalidated.
+    invalidated.
 
     **Auth:**
     - The user must provide a valid `JWT token` in the request header.
     - The `reader`, `writer`, `editor` or `admin` role is required to
-      access this router.
+    access this router.
     """
     user_repository = Repository(session, cache, User)
     current_user.jti = jti_create()

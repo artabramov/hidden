@@ -8,13 +8,14 @@ Subpackages
    :maxdepth: 4
 
    app.decorators
-   app.extensions
+   app.filters
    app.helpers
    app.managers
-   app.mixins
    app.models
+   app.plugins
    app.routers
    app.schemas
+   app.triggers
 
 Submodules
 ----------
@@ -99,14 +100,6 @@ app.log module
    :undoc-members:
    :show-inheritance:
 
-app.model module
-----------------
-
-.. automodule:: app.model
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 app.openapi module
 ------------------
 
@@ -119,6 +112,14 @@ app.repository module
 ---------------------
 
 .. automodule:: app.repository
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+app.scheduler module
+--------------------
+
+.. automodule:: app.scheduler
    :members:
    :undoc-members:
    :show-inheritance:

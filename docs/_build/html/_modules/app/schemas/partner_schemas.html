@@ -1,0 +1,349 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>app.schemas.partner_schemas &mdash; Hidden  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Hidden
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.html">app package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.decorators.html">app.decorators package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.helpers.html">app.helpers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.managers.html">app.managers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.models.html">app.models package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.plugins.html">app.plugins package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.routers.html">app.routers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.schemas.html">app.schemas package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Hidden</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">app.schemas.partner_schemas</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for app.schemas.partner_schemas</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The module defines Pydantic schemas for managing partners. Includes</span>
+<span class="sd">schemas for inserting, updating, selecting, deleting, and listing</span>
+<span class="sd">partner entities.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span><span class="p">,</span> <span class="n">field_validator</span>
+<span class="kn">from</span> <span class="nn">app.filters.partner_filters</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">filter_partner_name</span><span class="p">,</span> <span class="n">filter_partner_type</span><span class="p">,</span> <span class="n">filter_partner_region</span><span class="p">,</span>
+    <span class="n">filter_partner_contacts</span><span class="p">,</span> <span class="n">filter_partner_website</span><span class="p">,</span> <span class="n">filter_partner_summary</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="PartnerInsertRequest">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.partner_schemas.PartnerInsertRequest">[docs]</a>
+<span class="k">class</span> <span class="nc">PartnerInsertRequest</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pydantic schema for the request to insert a new partner entity.</span>
+<span class="sd">    Requires the partner name, and optionally partner type, region,</span>
+<span class="sd">    website, contacts, and summary.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">partner_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
+    <span class="n">partner_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">partner_region</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">partner_website</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">partner_contacts</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">partner_summary</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PartnerInsertRequest.filter_partner_name">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.partner_schemas.PartnerInsertRequest.filter_partner_name">[docs]</a>
+    <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;partner_name&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;before&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">filter_partner_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">partner_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">filter_partner_name</span><span class="p">(</span><span class="n">partner_name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PartnerInsertRequest.filter_partner_type">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.partner_schemas.PartnerInsertRequest.filter_partner_type">[docs]</a>
+    <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;partner_type&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;before&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">filter_partner_type</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">partner_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">filter_partner_type</span><span class="p">(</span><span class="n">partner_type</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PartnerInsertRequest.filter_partner_region">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.partner_schemas.PartnerInsertRequest.filter_partner_region">[docs]</a>
+    <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;partner_region&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;before&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">filter_partner_region</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">partner_region</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">filter_partner_region</span><span class="p">(</span><span class="n">partner_region</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PartnerInsertRequest.filter_partner_contacts">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.partner_schemas.PartnerInsertRequest.filter_partner_contacts">[docs]</a>
+    <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;partner_contacts&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;before&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">filter_partner_contacts</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">partner_contacts</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>  <span class="c1"># noqa E501</span>
+        <span class="k">return</span> <span class="n">filter_partner_contacts</span><span class="p">(</span><span class="n">partner_contacts</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PartnerInsertRequest.filter_partner_website">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.partner_schemas.PartnerInsertRequest.filter_partner_website">[docs]</a>
+    <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;partner_website&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;before&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">filter_partner_website</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">partner_website</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>  <span class="c1"># noqa E501</span>
+        <span class="k">return</span> <span class="n">filter_partner_website</span><span class="p">(</span><span class="n">partner_website</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PartnerInsertRequest.filter_partner_summary">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.partner_schemas.PartnerInsertRequest.filter_partner_summary">[docs]</a>
+    <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;partner_summary&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;before&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">filter_partner_summary</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">partner_summary</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>  <span class="c1"># noqa E501</span>
+        <span class="k">return</span> <span class="n">filter_partner_summary</span><span class="p">(</span><span class="n">partner_summary</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="PartnerInsertResponse">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.partner_schemas.PartnerInsertResponse">[docs]</a>
+<span class="k">class</span> <span class="nc">PartnerInsertResponse</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pydantic schema for the response after inserting a new partner</span>
+<span class="sd">    entity. Includes the ID of the newly created partner.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">partner_id</span><span class="p">:</span> <span class="nb">int</span></div>
+
+
+
+<div class="viewcode-block" id="PartnerSelectResponse">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.partner_schemas.PartnerSelectResponse">[docs]</a>
+<span class="k">class</span> <span class="nc">PartnerSelectResponse</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pydantic schema for the response after selecting a partner entity.</span>
+<span class="sd">    Includes the partner ID, creation and update dates, partner name,</span>
+<span class="sd">    type, region, website, contacts, summary, and logo URL.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">created_date</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">updated_date</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">user_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">user_name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">partner_name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">partner_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">partner_region</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">partner_website</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">partner_contacts</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">partner_summary</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">partnerpic_url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="PartnerUpdateRequest">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.partner_schemas.PartnerUpdateRequest">[docs]</a>
+<span class="k">class</span> <span class="nc">PartnerUpdateRequest</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pydantic schema for the request to update an existing partner entity.</span>
+<span class="sd">    Requires the updated partner name, and optionally the partner type,</span>
+<span class="sd">    region, website, contacts, and summary.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">partner_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
+    <span class="n">partner_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">partner_region</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">partner_website</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">partner_contacts</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">partner_summary</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PartnerUpdateRequest.filter_partner_name">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.partner_schemas.PartnerUpdateRequest.filter_partner_name">[docs]</a>
+    <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;partner_name&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;before&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">filter_partner_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">partner_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">filter_partner_name</span><span class="p">(</span><span class="n">partner_name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PartnerUpdateRequest.filter_partner_type">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.partner_schemas.PartnerUpdateRequest.filter_partner_type">[docs]</a>
+    <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;partner_type&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;before&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">filter_partner_type</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">partner_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">filter_partner_type</span><span class="p">(</span><span class="n">partner_type</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PartnerUpdateRequest.filter_partner_region">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.partner_schemas.PartnerUpdateRequest.filter_partner_region">[docs]</a>
+    <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;partner_region&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;before&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">filter_partner_region</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">partner_region</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">filter_partner_region</span><span class="p">(</span><span class="n">partner_region</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PartnerUpdateRequest.filter_partner_contacts">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.partner_schemas.PartnerUpdateRequest.filter_partner_contacts">[docs]</a>
+    <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;partner_contacts&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;before&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">filter_partner_contacts</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">partner_contacts</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">filter_partner_contacts</span><span class="p">(</span><span class="n">partner_contacts</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PartnerUpdateRequest.filter_partner_website">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.partner_schemas.PartnerUpdateRequest.filter_partner_website">[docs]</a>
+    <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;partner_website&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;before&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">filter_partner_website</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">partner_website</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">filter_partner_website</span><span class="p">(</span><span class="n">partner_website</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PartnerUpdateRequest.filter_partner_summary">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.partner_schemas.PartnerUpdateRequest.filter_partner_summary">[docs]</a>
+    <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;partner_summary&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;before&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">filter_partner_summary</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">partner_summary</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>  <span class="c1"># noqa E501</span>
+        <span class="k">return</span> <span class="n">filter_partner_summary</span><span class="p">(</span><span class="n">partner_summary</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="PartnerUpdateResponse">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.partner_schemas.PartnerUpdateResponse">[docs]</a>
+<span class="k">class</span> <span class="nc">PartnerUpdateResponse</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pydantic schema for the response after updating a partner entity.</span>
+<span class="sd">    Includes the ID of the updated partner.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">partner_id</span><span class="p">:</span> <span class="nb">int</span></div>
+
+
+
+<div class="viewcode-block" id="PartnerDeleteResponse">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.partner_schemas.PartnerDeleteResponse">[docs]</a>
+<span class="k">class</span> <span class="nc">PartnerDeleteResponse</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pydantic schema for the response after deleting a partner entity.</span>
+<span class="sd">    Includes the ID of the deleted partner.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">partner_id</span><span class="p">:</span> <span class="nb">int</span></div>
+
+
+
+<div class="viewcode-block" id="PartnerListRequest">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.partner_schemas.PartnerListRequest">[docs]</a>
+<span class="k">class</span> <span class="nc">PartnerListRequest</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pydantic schema for requesting a list of partner entities. Requires</span>
+<span class="sd">    pagination options with offset and limit, and ordering criteria.</span>
+<span class="sd">    Optionally filters by partner name, type, region, or contacts.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">partner_name__ilike</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">partner_type__ilike</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">partner_region__ilike</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">partner_contacts__ilike</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+    <span class="n">order_by</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span>
+        <span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;created_date&quot;</span><span class="p">,</span> <span class="s2">&quot;updated_date&quot;</span><span class="p">,</span> <span class="s2">&quot;user_id&quot;</span><span class="p">,</span> <span class="s2">&quot;partner_name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;partner_type&quot;</span><span class="p">,</span> <span class="s2">&quot;partner_region&quot;</span><span class="p">,</span> <span class="s2">&quot;partner_contacts&quot;</span><span class="p">]</span>
+    <span class="n">order</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;asc&quot;</span><span class="p">,</span> <span class="s2">&quot;desc&quot;</span><span class="p">,</span> <span class="s2">&quot;rand&quot;</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="PartnerListResponse">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.partner_schemas.PartnerListResponse">[docs]</a>
+<span class="k">class</span> <span class="nc">PartnerListResponse</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pydantic schema for the response when listing partner entities.</span>
+<span class="sd">    Includes a list of partner entities and the total count of partners</span>
+<span class="sd">    that match the request criteria.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">partners</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">PartnerSelectResponse</span><span class="p">]</span>
+    <span class="n">partners_count</span><span class="p">:</span> <span class="nb">int</span></div>
+
+
+
+<div class="viewcode-block" id="PartnerpicUploadResponse">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.partner_schemas.PartnerpicUploadResponse">[docs]</a>
+<span class="k">class</span> <span class="nc">PartnerpicUploadResponse</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pydantic schema for the response after uploading an image for</span>
+<span class="sd">    a partner. Includes the partner ID.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">partner_id</span><span class="p">:</span> <span class="nb">int</span></div>
+
+
+
+<div class="viewcode-block" id="PartnerpicDeleteResponse">
+<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.partner_schemas.PartnerpicDeleteResponse">[docs]</a>
+<span class="k">class</span> <span class="nc">PartnerpicDeleteResponse</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pydantic schema for the response after deleting an image for</span>
+<span class="sd">    a partner. Includes the partner ID.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">partner_id</span><span class="p">:</span> <span class="nb">int</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Artem Abramov.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

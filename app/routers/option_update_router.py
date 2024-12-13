@@ -42,17 +42,17 @@ async def option_update(
     **Args:**
     - `option_key`: The key of the option to update.
     - `OptionUpdateRequest`: The request schema containing the updated
-      option value.
+    option value.
 
     **Returns:**
     - `OptionUpdateResponse`: The response schema containing the updated
-      option key.
+    option key.
 
     **Raises:**
     - `403 Forbidden`: Raised if the user does not have the required
-      permissions.
+    permissions.
     - `422 Unprocessable Entity`: Raised if the provided option value
-      is invalid.
+    is invalid.
     - `423 Locked`: Raised if the application is locked.
 
     **Auth:**

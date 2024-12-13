@@ -44,23 +44,23 @@ async def comment_insert(
 
     **Args:**
     - `CommentInsertRequest`: The request schema containing the data
-      for the new comment.
+    for the new comment.
 
     **Returns:**
     - `CommentInsertResponse`: The response schema containing the ID
-      of the newly created comment.
+    of the newly created comment.
 
     **Raises:**
     - `403 Forbidden`: Raised if the user does not have the required
-      permissions.
+    permissions.
     - `422 Unprocessable Entity`:  Raised if arguments validation failed.
     - `423 Locked`: Raised if the document's collection or the
-      application is locked.
+    application is locked.
 
     **Auth:**
     - The user must provide a valid `JWT token` in the request header.
     - `writer`, `editor` or `admin` user role is required to access this
-      router.
+    router.
     """
     document_repository = Repository(session, cache, Document)
     document = await document_repository.select(id__eq=schema.document_id)

@@ -43,20 +43,20 @@ async def partnerpic_delete(
 
     **Returns:**
     - `PartnerpicDeleteResponse`: Response containing the partner ID
-      after the image is successfully removed.
+    after the image is successfully removed.
 
     **Raises:**
     - `403 Forbidden`: Raised if the current user is not authenticated
-      or does not have the required permissions.
+    or does not have the required permissions.
     - `404 Not Found`: Raised if the partner with the specified ID
-      does not exist.
+    does not exist.
     - `423 Locked`: Raised if the application is locked.
 
     **Hooks:**
     - `HOOK_BEFORE_PARTNERPIC_DELETE`: Executes before the image is
-      deleted.
+    deleted.
     - `HOOK_AFTER_PARTNERPIC_DELETE`: Executes after the image has been
-      deleted.
+    deleted.
 
     **Auth:**
     - The user must provide a valid JWT token in the request header.

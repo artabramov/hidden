@@ -40,29 +40,29 @@ async def collection_insert(
 
     **Args:**
     - `CollectionInsertRequest`: The request schema containing the data
-      for the new collection.
+    for the new collection.
 
     **Returns:**
     - `CollectionInsertResponse`: The response schema containing the ID
-      of the newly created collection.
+    of the newly created collection.
 
     **Raises:**
     - `403 Forbidden`: Raised if the current user is not authenticated
-      or does not have the required permissions.
+    or does not have the required permissions.
     - `422 Unprocessable Entity`: Raised if arguments validation failed
-      or the collection name is already exist.
+    or the collection name is already exist.
     - `423 Locked`: Raised if the application is locked.
 
     **Hooks:**
     - `HOOK_BEFORE_COLLECTION_INSERT`: Executes before the collection is
-      inserted.
+    inserted.
     - `HOOK_AFTER_COLLECTION_INSERT`: Executes after the collection is
-      inserted.
+    inserted.
 
     **Auth:**
     - The user must provide a valid `JWT token` in the request header.
     - `writer`, `editor` or `admin` user role is required to access this
-      router.
+    router.
     """
     collection_repository = Repository(session, cache, Collection)
 

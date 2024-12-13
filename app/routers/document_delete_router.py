@@ -42,13 +42,13 @@ async def document_delete(
 
     **Returns:**
     - `DocumentDeleteResponse`: The response schema containing the ID of
-      the deleted document.
+    the deleted document.
 
     **Raises:**
     - `403 Forbidden`: Raised if the user does not have the required
-      permissions.
+    permissions.
     - `404 Not Found`: Raised if the document with the specified ID does
-      not exist.
+    not exist.
     - `423 Locked`: Raised if the document or the application is locked.
 
     **Auth:**

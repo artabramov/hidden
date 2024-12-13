@@ -40,22 +40,22 @@ async def comment_list(
 
     **Args:**
     - `CommentListRequest`: The request schema containing the filters
-      for the comment list.
+    for the comment list.
 
     **Returns:**
     - `CommentListResponse`: The response schema containing the list of
-      comments and the total count.
+    comments and the total count.
 
     **Raises:**
     - `403 Forbidden`: Raised if the user does not have the required
-      permissions.
+    permissions.
     - `422 Unprocessable Entity`: Raised if arguments validation failed.
     - `423 Locked`: Raised if the application is locked.
 
     **Auth:**
     - The user must provide a valid `JWT token` in the request header.
     - `reader`, `writer`, `editor` or `admin` user role is required to
-      access this router.
+    access this router.
     """
     comment_repository = Repository(session, cache, Comment)
     comments = await comment_repository.select_all(**schema.__dict__)

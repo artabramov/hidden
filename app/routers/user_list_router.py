@@ -33,13 +33,13 @@ async def users_list(
 
     **Returns:**
     - `UserListResponse`: A response schema containing the list of users
-      and the total count.
+    and the total count.
 
     **Raises:**
     - `403 Forbidden`: Raised if authentication fails or the user does not
-      have the required permissions.
+    have the required permissions.
     - `422 Unprocessable Entity`: Raised if the arguments in the request
-      schema are invalid.
+    schema are invalid.
     - `423 Locked`: Raised if the application is locked.
 
     **Hooks:**
@@ -48,7 +48,7 @@ async def users_list(
     **Auth:**
     - The user must provide a valid `JWT token` in the request header.
     - The `reader`, `writer`, `editor`, or `admin` role is required to
-      access this router.
+    access this router.
     """
     user_repository = Repository(session, cache, User)
 

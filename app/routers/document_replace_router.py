@@ -52,15 +52,15 @@ async def document_replace(
 
     **Returns:**
     - `DocumentReplaceResponse`: The response schema containing the
-      document's ID and the revision ID of the newly added revision.
+    document's ID and the revision ID of the newly added revision.
 
     **Raises:**
     - `403 Forbidden`: Raised if the user does not have the required
-      permissions.
+    permissions.
     - `404 Not Found`: Raised if the document with the specified ID does
-      not exist.
+    not exist.
     - `422 Unprocessable Entity`: Raised if the uploaded file is invalid
-      or cannot be processed.
+    or cannot be processed.
     - `423 Locked`: Raised if the collection or the document is locked.
 
     **Auth:**

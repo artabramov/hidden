@@ -4,6 +4,14 @@ app.helpers package
 Submodules
 ----------
 
+app.helpers.encryption\_helper module
+-------------------------------------
+
+.. automodule:: app.helpers.encryption_helper
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 app.helpers.hash\_helper module
 -------------------------------
 
@@ -44,10 +52,18 @@ app.helpers.lock\_helper module
    :undoc-members:
    :show-inheritance:
 
-app.helpers.openapi\_helper module
+app.helpers.shuffle\_helper module
 ----------------------------------
 
-.. automodule:: app.helpers.openapi_helper
+.. automodule:: app.helpers.shuffle_helper
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+app.helpers.tag\_helper module
+------------------------------
+
+.. automodule:: app.helpers.tag_helper
    :members:
    :undoc-members:
    :show-inheritance:

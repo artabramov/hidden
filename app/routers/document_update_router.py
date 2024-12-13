@@ -49,20 +49,20 @@ async def document_update(
     **Args:**
     - `document_id`: The ID of the document to be updated.
     - `DocumentUpdateRequest`: The request schema containing the updated
-      document information.
+    document information.
 
     **Returns:**
     - `DocumentUpdateResponse`: The response schema containing the ID of
-      the updated document.
+    the updated document.
 
     **Raises:**
     - `403 Forbidden`: Raised if the user does not have the required
-      permissions.
+    permissions.
     - `404 Not Found`: Raised if the document with the provided ID does
     - `422 Unprocessable Entity`:  Raised if arguments validation failed.
-      not exist.
+    not exist.
     - `423 Locked`: Raised if the collection or the application is
-      locked.
+    locked.
 
     **Auth:**
     - The user must provide a valid `JWT token` in the request header.

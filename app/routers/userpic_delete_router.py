@@ -37,26 +37,26 @@ async def userpic_delete(
 
     **Returns:**
     - `UserpicDeleteResponse`: A response schema containing the ID of
-      the user from whom the userpic was deleted.
+    the user from whom the userpic was deleted.
 
     **Raises:**
     - `403 Forbidden`: Raised if the current user attempts to delete the
-      userpic of another user, or if the user does not have the required
-      role or if the user's token is invalid.
+    userpic of another user, or if the user does not have the required
+    role or if the user's token is invalid.
     - `404 Not Found`: Raised if the user with the provided ID is not
-      found.
+    found.
     - `423 Locked`: Raised if the application is locked.
 
     **Hooks:**
     - `HOOK_BEFORE_USERPIC_DELETE`: Executes before the userpic is
-      deleted.
+    deleted.
     - `HOOK_AFTER_USERPIC_DELETE`: Executes after the userpic has been
-      deleted.
+    deleted.
 
     **Auth:**
     - The user must provide a valid `JWT token` in the request header.
     - The `reader`, `writer`, `editor`, or `admin` role is required to
-      access this router.
+    access this router.
     """
     user_repository = Repository(session, cache, User)
     user = await user_repository.select(id=user_id)

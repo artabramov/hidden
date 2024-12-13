@@ -44,25 +44,25 @@ async def collection_update(
     **Args:**
     - `collection_id`: The ID of the collection to update.
     - `CollectionUpdateRequest`: The request schema containing the
-      updated collection data.
+    updated collection data.
 
     **Returns:**
     - `CollectionUpdateResponse`: The response schema containing the ID
-      of the updated collection.
+    of the updated collection.
 
     **Raises:**
     - `403 Forbidden`: Raised if the current user is not authenticated
-      or does not have the required permissions.
+    or does not have the required permissions.
     - `404 Not Found`: Raised if the collection with the specified ID
-      does not exist.
+    does not exist.
     - `422 Unprocessable Entity`: Raised if arguments validation failed.
     - `423 Locked`: Raised if the application is locked.
 
     **Hooks:**
     - `HOOK_BEFORE_COLLECTION_UPDATE`: Executes before the collection is
-      updated.
+    updated.
     - `HOOK_AFTER_COLLECTION_UPDATE`: Executes after the collection is
-      updated.
+    updated.
 
     **Auth:**
     - The user must provide a valid `JWT token` in the request header.

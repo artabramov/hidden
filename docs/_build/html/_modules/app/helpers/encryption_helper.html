@@ -1,0 +1,235 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>app.helpers.encryption_helper &mdash; Hidden  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Hidden
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.html">app package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.decorators.html">app.decorators package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.helpers.html">app.helpers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.managers.html">app.managers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.models.html">app.models package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.plugins.html">app.plugins package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.routers.html">app.routers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.schemas.html">app.schemas package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Hidden</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">app.helpers.encryption_helper</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for app.helpers.encryption_helper</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The module provides functions for encrypting and decrypting data using</span>
+<span class="sd">AES encryption with PBKDF2 key derivation. It includes utilities for</span>
+<span class="sd">generating a random salt, deriving an AES key from a password and salt,</span>
+<span class="sd">encrypting and decrypting both bytes and string values, and returning</span>
+<span class="sd">encrypted data as base64-encoded strings.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">base64</span>
+<span class="kn">from</span> <span class="nn">cryptography.hazmat.primitives.kdf.pbkdf2</span> <span class="kn">import</span> <span class="n">PBKDF2HMAC</span>
+<span class="kn">from</span> <span class="nn">cryptography.hazmat.primitives</span> <span class="kn">import</span> <span class="n">hashes</span>
+<span class="kn">from</span> <span class="nn">cryptography.hazmat.backends</span> <span class="kn">import</span> <span class="n">default_backend</span>
+<span class="kn">from</span> <span class="nn">cryptography.hazmat.primitives.ciphers</span> <span class="kn">import</span> <span class="n">Cipher</span><span class="p">,</span> <span class="n">algorithms</span><span class="p">,</span> <span class="n">modes</span>
+<span class="kn">from</span> <span class="nn">cryptography.hazmat.primitives</span> <span class="kn">import</span> <span class="n">padding</span>
+<span class="kn">from</span> <span class="nn">app.config</span> <span class="kn">import</span> <span class="n">get_config</span>
+
+<span class="n">cfg</span> <span class="o">=</span> <span class="n">get_config</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="generate_encryption_salt">
+<a class="viewcode-back" href="../../../autodoc/app.helpers.html#app.helpers.encryption_helper.generate_encryption_salt">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_encryption_salt</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generates a random salt for AES key derivation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">urandom</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">CRYPTOGRAPHY_SALT_LENGTH</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="extract_encryption_key">
+<a class="viewcode-back" href="../../../autodoc/app.helpers.html#app.helpers.encryption_helper.extract_encryption_key">[docs]</a>
+<span class="k">def</span> <span class="nf">extract_encryption_key</span><span class="p">(</span><span class="n">password</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">salt</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Derives an AES key from the given password and salt using PBKDF2</span>
+<span class="sd">    with HMAC-SHA256.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kdf</span> <span class="o">=</span> <span class="n">PBKDF2HMAC</span><span class="p">(</span>
+        <span class="n">algorithm</span><span class="o">=</span><span class="n">hashes</span><span class="o">.</span><span class="n">SHA256</span><span class="p">(),</span>
+        <span class="n">length</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">CRYPTOGRAPHY_KEY_LENGTH</span><span class="p">,</span>
+        <span class="n">salt</span><span class="o">=</span><span class="n">salt</span><span class="p">,</span>
+        <span class="n">iterations</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">CRYPTOGRAPHY_PBKDF2_ITERATIONS</span><span class="p">,</span>
+        <span class="n">backend</span><span class="o">=</span><span class="n">default_backend</span><span class="p">()</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">kdf</span><span class="o">.</span><span class="n">derive</span><span class="p">(</span><span class="n">password</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span></div>
+
+
+
+<div class="viewcode-block" id="encrypt_bytes">
+<a class="viewcode-back" href="../../../autodoc/app.helpers.html#app.helpers.encryption_helper.encrypt_bytes">[docs]</a>
+<span class="k">def</span> <span class="nf">encrypt_bytes</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Encrypts the provided data using AES encryption with CBC mode.</span>
+<span class="sd">    The salt, IV, and ciphertext are concatenated and returned as a</span>
+<span class="sd">    single encrypted value.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">salt</span> <span class="o">=</span> <span class="n">generate_encryption_salt</span><span class="p">()</span>
+    <span class="n">iv</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">urandom</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">CRYPTOGRAPHY_IV_LENGTH</span><span class="p">)</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="n">extract_encryption_key</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">CRYPTOGRAPHY_PASSWORD</span><span class="p">,</span> <span class="n">salt</span><span class="p">)</span>
+
+    <span class="n">cipher</span> <span class="o">=</span> <span class="n">Cipher</span><span class="p">(</span>
+        <span class="n">algorithms</span><span class="o">.</span><span class="n">AES</span><span class="p">(</span><span class="n">key</span><span class="p">),</span> <span class="n">modes</span><span class="o">.</span><span class="n">CBC</span><span class="p">(</span><span class="n">iv</span><span class="p">),</span> <span class="n">backend</span><span class="o">=</span><span class="n">default_backend</span><span class="p">())</span>
+    <span class="n">encryptor</span> <span class="o">=</span> <span class="n">cipher</span><span class="o">.</span><span class="n">encryptor</span><span class="p">()</span>
+
+    <span class="n">padder</span> <span class="o">=</span> <span class="n">padding</span><span class="o">.</span><span class="n">PKCS7</span><span class="p">(</span><span class="n">algorithms</span><span class="o">.</span><span class="n">AES</span><span class="o">.</span><span class="n">block_size</span><span class="p">)</span><span class="o">.</span><span class="n">padder</span><span class="p">()</span>
+    <span class="n">padded_data</span> <span class="o">=</span> <span class="n">padder</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">+</span> <span class="n">padder</span><span class="o">.</span><span class="n">finalize</span><span class="p">()</span>
+    <span class="n">ciphertext</span> <span class="o">=</span> <span class="n">encryptor</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">padded_data</span><span class="p">)</span> <span class="o">+</span> <span class="n">encryptor</span><span class="o">.</span><span class="n">finalize</span><span class="p">()</span>
+
+    <span class="n">encrypted_data</span> <span class="o">=</span> <span class="n">salt</span> <span class="o">+</span> <span class="n">iv</span> <span class="o">+</span> <span class="n">ciphertext</span>
+    <span class="k">return</span> <span class="n">encrypted_data</span></div>
+
+
+
+<div class="viewcode-block" id="encrypt_value">
+<a class="viewcode-back" href="../../../autodoc/app.helpers.html#app.helpers.encryption_helper.encrypt_value">[docs]</a>
+<span class="k">def</span> <span class="nf">encrypt_value</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Encrypts the given string value and returns the encrypted data as a</span>
+<span class="sd">    base64-encoded string.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">encrypted_data</span> <span class="o">=</span> <span class="n">encrypt_bytes</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">encrypted_data</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="decrypt_bytes">
+<a class="viewcode-back" href="../../../autodoc/app.helpers.html#app.helpers.encryption_helper.decrypt_bytes">[docs]</a>
+<span class="k">def</span> <span class="nf">decrypt_bytes</span><span class="p">(</span><span class="n">encrypted_data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Decrypts the encrypted data. The encrypted data contains the salt,</span>
+<span class="sd">    IV, and ciphertext concatenated together.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Extract the salt and IV from the encrypted data</span>
+    <span class="n">salt</span> <span class="o">=</span> <span class="n">encrypted_data</span><span class="p">[:</span><span class="n">cfg</span><span class="o">.</span><span class="n">CRYPTOGRAPHY_SALT_LENGTH</span><span class="p">]</span>
+    <span class="n">iv</span> <span class="o">=</span> <span class="n">encrypted_data</span><span class="p">[</span>
+        <span class="n">cfg</span><span class="o">.</span><span class="n">CRYPTOGRAPHY_SALT_LENGTH</span><span class="p">:</span><span class="n">cfg</span><span class="o">.</span><span class="n">CRYPTOGRAPHY_SALT_LENGTH</span> <span class="o">+</span>
+        <span class="n">cfg</span><span class="o">.</span><span class="n">CRYPTOGRAPHY_IV_LENGTH</span><span class="p">]</span>
+    <span class="n">ciphertext</span> <span class="o">=</span> <span class="n">encrypted_data</span><span class="p">[</span>
+        <span class="n">cfg</span><span class="o">.</span><span class="n">CRYPTOGRAPHY_SALT_LENGTH</span> <span class="o">+</span> <span class="n">cfg</span><span class="o">.</span><span class="n">CRYPTOGRAPHY_IV_LENGTH</span><span class="p">:]</span>
+
+    <span class="c1"># Derive the AES key using the salt</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="n">extract_encryption_key</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">CRYPTOGRAPHY_PASSWORD</span><span class="p">,</span> <span class="n">salt</span><span class="p">)</span>
+
+    <span class="n">cipher</span> <span class="o">=</span> <span class="n">Cipher</span><span class="p">(</span>
+        <span class="n">algorithms</span><span class="o">.</span><span class="n">AES</span><span class="p">(</span><span class="n">key</span><span class="p">),</span> <span class="n">modes</span><span class="o">.</span><span class="n">CBC</span><span class="p">(</span><span class="n">iv</span><span class="p">),</span> <span class="n">backend</span><span class="o">=</span><span class="n">default_backend</span><span class="p">())</span>
+    <span class="n">decryptor</span> <span class="o">=</span> <span class="n">cipher</span><span class="o">.</span><span class="n">decryptor</span><span class="p">()</span>
+
+    <span class="c1"># Decrypt and unpad the ciphertext</span>
+    <span class="n">padded_data</span> <span class="o">=</span> <span class="n">decryptor</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">ciphertext</span><span class="p">)</span> <span class="o">+</span> <span class="n">decryptor</span><span class="o">.</span><span class="n">finalize</span><span class="p">()</span>
+    <span class="n">unpadder</span> <span class="o">=</span> <span class="n">padding</span><span class="o">.</span><span class="n">PKCS7</span><span class="p">(</span><span class="n">algorithms</span><span class="o">.</span><span class="n">AES</span><span class="o">.</span><span class="n">block_size</span><span class="p">)</span><span class="o">.</span><span class="n">unpadder</span><span class="p">()</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">unpadder</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">padded_data</span><span class="p">)</span> <span class="o">+</span> <span class="n">unpadder</span><span class="o">.</span><span class="n">finalize</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">data</span></div>
+
+
+
+<div class="viewcode-block" id="decrypt_value">
+<a class="viewcode-back" href="../../../autodoc/app.helpers.html#app.helpers.encryption_helper.decrypt_value">[docs]</a>
+<span class="k">def</span> <span class="nf">decrypt_value</span><span class="p">(</span><span class="n">encrypted_data</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The function decodes the base64 string into bytes, decrypts it using</span>
+<span class="sd">    AES, and returns the decrypted string.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">encrypted_bytes</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">encrypted_data</span><span class="p">)</span>
+    <span class="n">decrypted_data</span> <span class="o">=</span> <span class="n">decrypt_bytes</span><span class="p">(</span><span class="n">encrypted_bytes</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">decrypted_data</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Artem Abramov.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

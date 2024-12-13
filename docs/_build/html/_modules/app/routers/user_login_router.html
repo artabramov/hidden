@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
@@ -5,18 +7,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>app.routers.user_login_router &mdash; Hidden  documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
-        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
-        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -33,9 +31,6 @@
           <a href="../../../index.html" class="icon icon-home">
             Hidden
           </a>
-              <div class="version">
-                0.0.52
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -50,6 +45,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.decorators.html">app.decorators package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.helpers.html">app.helpers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.managers.html">app.managers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.models.html">app.models package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.plugins.html">app.plugins package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.routers.html">app.routers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.schemas.html">app.schemas package</a></li>
 </ul>
 
         </div>
@@ -100,7 +99,7 @@
 
 <div class="viewcode-block" id="user_login">
 <a class="viewcode-back" href="../../../autodoc/app.routers.html#app.routers.user_login_router.user_login">[docs]</a>
-<span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/auth/login&quot;</span><span class="p">,</span> <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;Authenticate user&quot;</span><span class="p">,</span>
+<span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/auth/login&quot;</span><span class="p">,</span> <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;Authenticate a user.&quot;</span><span class="p">,</span>
              <span class="n">response_class</span><span class="o">=</span><span class="n">JSONResponse</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_200_OK</span><span class="p">,</span>
              <span class="n">response_model</span><span class="o">=</span><span class="n">UserLoginResponse</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Authentication&quot;</span><span class="p">])</span>
 <span class="nd">@locked</span>
@@ -109,15 +108,33 @@
     <span class="n">session</span><span class="o">=</span><span class="n">Depends</span><span class="p">(</span><span class="n">get_session</span><span class="p">),</span> <span class="n">cache</span><span class="o">=</span><span class="n">Depends</span><span class="p">(</span><span class="n">get_cache</span><span class="p">)</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">UserLoginResponse</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    FastAPI router for the first step of multi-factor authentication.</span>
-<span class="sd">    Authenticates a user by validating their login credentials. Returns</span>
+<span class="sd">    Authenticate a user. The router for the first step of multi-factor</span>
+<span class="sd">    authentication. Authenticates a user by validating their login</span>
+<span class="sd">    credentials. Invalid passwords increase the attempt count and may</span>
+<span class="sd">    lead to user suspension if the attempt limit is exceeded. Returns</span>
 <span class="sd">    a 200 response with a confirmation of password acceptance upon</span>
-<span class="sd">    successful authentication. Returns a 404 error if the user is not</span>
-<span class="sd">    found, a 403 error if the user is suspended or inactive, and a 422</span>
-<span class="sd">    error if the password is invalid. Invalid passwords increase the</span>
-<span class="sd">    attempt count and may lead to user suspension if the attempt limit</span>
-<span class="sd">    is exceeded.</span>
+<span class="sd">    successful authentication. Returns a 403 error if the user is</span>
+<span class="sd">    suspended or inactive, a 422 error if the password is invalid, and</span>
+<span class="sd">    a 423 error if the application is locked.</span>
+
+<span class="sd">    **Returns:**</span>
+<span class="sd">    - `UserLoginResponse`: A response schema confirming whether the</span>
+<span class="sd">    password was accepted or not.</span>
+
+<span class="sd">    **Raises:**</span>
+<span class="sd">    - `403 Forbidden`: Raised if the user is suspended or inactive.</span>
+<span class="sd">    - `422 Unprocessable Entity`: Raised if the provided password is</span>
+<span class="sd">    invalid.</span>
+<span class="sd">    - `423 Locked`: Raised if the application is locked.</span>
+
+<span class="sd">    **Hooks:**</span>
+<span class="sd">    - `HOOK_BEFORE_USER_LOGIN`: Executes before the user login process.</span>
+<span class="sd">    - `HOOK_AFTER_USER_LOGIN`: Executes after the user login process.</span>
+
+<span class="sd">    **Auth:**</span>
+<span class="sd">    - No authentication required for this endpoint.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">user_repository</span> <span class="o">=</span> <span class="n">Repository</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">cache</span><span class="p">,</span> <span class="n">User</span><span class="p">)</span>
     <span class="n">user</span> <span class="o">=</span> <span class="k">await</span> <span class="n">user_repository</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">user_login__eq</span><span class="o">=</span><span class="n">schema</span><span class="o">.</span><span class="n">user_login</span><span class="p">)</span>
 

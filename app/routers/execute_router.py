@@ -30,15 +30,15 @@ async def execute(
 
     **Args:**
     - `ExecuteRequest`: The request schema containing the action to be
-      executed and its parameters.
+    executed and its parameters.
 
     **Returns:**
     - `JSONResponse`: The response object containing the result of the
-      executed action.
+    executed action.
 
     **Raises:**
     - `403 Forbidden`: Raised if the user does not have the required
-      permissions.
+    permissions.
     - `423 Locked`: Raised if the the application is locked.
 
     **Auth:**

@@ -50,19 +50,19 @@ async def document_download(
 
     **Returns:**
     - `Response`: A response containing the decrypted file content as
-      an attachment.
+    an attachment.
 
     **Raises:**
     - `403 Forbidden`: Raised if the user does not have the required
-      permissions.
+    permissions.
     - `404 Not Found`: Raised if the revision or the document with the
-      specified ID does not exist.
+    specified ID does not exist.
     - `423 Locked`: Raised if the application is locked.
 
     **Auth:**
     - The user must provide a valid `JWT token` in the request header.
     - `reader`, `writer`, `editor`, or `admin` roles are required to
-      access this router.
+    access this router.
     """
     revision_repository = Repository(session, cache, Revision)
     revision = await revision_repository.select(id=revision_id)

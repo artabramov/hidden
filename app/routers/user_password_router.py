@@ -37,14 +37,14 @@ async def user_password(
 
     **Returns:**
     - `PasswordUpdateResponse`: A response schema containing the ID of
-      the updated user.
+    the updated user.
 
     **Raises:**
     - `403 Forbidden`: Raised if the user's token is invalid or if the
-      user does not have the required role, or if the user ID does not
-      match the current user's ID.
+    user does not have the required role, or if the user ID does not
+    match the current user's ID.
     - `422 Unprocessable Entity`: Raised if the current password is
-      incorrect.
+    incorrect.
     - `423 Locked`: Raised if the application is locked.
 
     **Hooks:**
@@ -54,7 +54,7 @@ async def user_password(
     **Auth:**
     - The user must provide a valid `JWT token` in the request header.
     - The `reader`, `writer`, `editor`, or `admin` role is required to
-      access this router.
+    access this router.
     """
     user_repository = Repository(session, cache, User)
     user = await user_repository.select(id=user_id)

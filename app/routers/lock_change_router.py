@@ -29,15 +29,15 @@ async def lock_change(
 
     **Args:**
     - `LockUpdateRequest`: The request schema containing the lock status
-      to be updated.
+    to be updated.
 
     **Returns:**
     - `LockUpdateResponse`: The response schema containing the updated
-      lock status.
+    lock status.
 
     **Raises:**
     - `403 Forbidden`: Raised if the user does not have the required
-      permissions.
+    permissions.
 
     **Auth:**
     - The user must provide a valid `JWT token` in the request header.

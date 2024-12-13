@@ -52,28 +52,27 @@ async def document_upload(
     permissions.
 
     **Args:**
-    - `collection_id`: The ID of the collection to upload the document
-      to.
+    - `collection_id`: The ID of the collection to upload the document to.
     - `file`: The file to be uploaded.
 
     **Returns:**
     - `DocumentUploadResponse`: The response schema containing the ID of
-      the document and the latest revision.
+    the document and the latest revision.
 
     **Raises:**
     - `403 Forbidden`: Raised if the user does not have the required
-      permissions.
+    permissions.
     - `422 Unprocessable Entity`: Raised if the collection does not exist
-      or is invalid.
+    or is invalid.
     - `423 Locked`: Raised if the collection or the application is
-      locked.
+    locked.
     - `500 Internal Server Error`: Raised if an error occurs during file
-      processing, encryption, or shard creation.
+    processing, encryption, or shard creation.
 
     **Auth:**
     - The user must provide a valid `JWT token` in the request header.
     - `writer`, `editor` or `admin` roles are required to access this
-      router.
+    router.
     """
     collection_repository = Repository(session, cache, Collection)
     collection = await collection_repository.select(id=collection_id)

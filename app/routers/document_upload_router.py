@@ -63,7 +63,7 @@ async def document_upload(
     **Raises:**
     - `403 Forbidden`: Raised if the user does not have the required
       permissions.
-    - `422 Unprocessable Entity`: Raised if the collection does not exist 
+    - `422 Unprocessable Entity`: Raised if the collection does not exist
       or is invalid.
     - `423 Locked`: Raised if the collection or the application is
       locked.

@@ -1,4 +1,4 @@
-COMMENT_MIGRATIONS = [
+COMMENT_TRIGGERS = [
     # The function that updates comments_count for documents
     """
     CREATE OR REPLACE FUNCTION update_comments_count()

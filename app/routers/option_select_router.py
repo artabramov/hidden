@@ -42,11 +42,11 @@ async def option_select(
     - `option_key`: The key of the option to retrieve.
 
     **Returns:**
-    - `OptionSelectResponse`: The response schema containing the 
+    - `OptionSelectResponse`: The response schema containing the
       retrieved option.
 
     **Raises:**
-    - `403 Forbidden`: Raised if the user does not have the required 
+    - `403 Forbidden`: Raised if the user does not have the required
       permissions.
     - `404 Not Found`: Raised if the option is not found.
     - `422 Unprocessable Entity`: Raised if arguments validation failed.

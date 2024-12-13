@@ -24,10 +24,10 @@ async def user_register(
     session=Depends(get_session), cache=Depends(get_cache)
 ) -> UserRegisterResponse:
     """
-    Register a user. Checks if the user login already exists and raises 
-    a 422 error if it does. If the login is unique, creates a new user 
-    with the provided details and returns a 201 response with the user's 
-    ID, MFA secret, and a link to the MFA QR code. Returns a 423 error 
+    Register a user. Checks if the user login already exists and raises
+    a 422 error if it does. If the login is unique, creates a new user
+    with the provided details and returns a 201 response with the user's
+    ID, MFA secret, and a link to the MFA QR code. Returns a 423 error
     if the application is locked.
 
     **Returns:**

@@ -38,7 +38,7 @@ async def options_list(
     application is locked.
 
     **Args:**
-    - `OptionListRequest`: The request schema containing filter criteria 
+    - `OptionListRequest`: The request schema containing filter criteria
       for retrieving the list of options.
 
     **Returns:**

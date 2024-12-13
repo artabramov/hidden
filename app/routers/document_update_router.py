@@ -45,7 +45,7 @@ async def document_update(
     or the application is locked, a 422 error if arguments validation
     failed, and a 403 error if authentication failed or the user does
     not have the required permissions.
-    
+
     **Args:**
     - `document_id`: The ID of the document to be updated.
     - `DocumentUpdateRequest`: The request schema containing the updated

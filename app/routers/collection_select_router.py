@@ -27,7 +27,7 @@ async def collection_select(
 ) -> CollectionSelectResponse:
     """
     Retrieve a collection. The router fetches the collection from the
-    repository using the provided ID, executes related hooks, and 
+    repository using the provided ID, executes related hooks, and
     returns the collection details in a JSON response. The current user
     should have a reader role or higher. Returns a 200 response on
     success, a 404 error if the collection is not found, a 403 error if

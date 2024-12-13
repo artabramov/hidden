@@ -31,14 +31,14 @@ async def token_retrieve(
 ) -> TokenRetrieveResponse:
     """
     Retrieve a token. This router retrieves a JWT token for the user
-    after validating the one-time password (TOTP). The user must be 
+    after validating the one-time password (TOTP). The user must be
     active and have accepted the password in the previous step. Returns
     a 200 response with the token on success, a 403 error if the user
     is inactive, a 422 error if the TOTP is incorrect, and a 423 error
     if the application is locked.
 
     **Returns:**
-    - `TokenRetrieveResponse`: A response schema containing the 
+    - `TokenRetrieveResponse`: A response schema containing the
       JWT token upon success.
 
     **Raises:**

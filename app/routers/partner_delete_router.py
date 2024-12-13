@@ -41,11 +41,11 @@ async def partner_delete(
     - `partner_id`: The ID of the partner to delete.
 
     **Returns:**
-    - `PartnerDeleteResponse`: The response schema containing the ID of 
+    - `PartnerDeleteResponse`: The response schema containing the ID of
       the deleted partner.
 
     **Raises:**
-    - `403 Forbidden`: Raised if the user does not have the required 
+    - `403 Forbidden`: Raised if the user does not have the required
       permissions.
     - `404 Not Found`: Raised if the partner is not found.
     - `423 Locked`: Raised if the application is locked.

@@ -32,7 +32,7 @@ async def user_mfa(
     Retrieve a MFA QR code. This endpoint generates a QR code for
     Multi-Factor Authentication (MFA) setup based on the user's secret
     and provides the image as a response. The function checks if the
-    user exists and validates the provided MFA secret. If any validation 
+    user exists and validates the provided MFA secret. If any validation
     fails, appropriate errors are raised. The user must not be active,
     and the provided MFA secret must match the one stored for the user.
     Returns a 403 error if the user is active, a 422 error if the user

@@ -38,17 +38,17 @@ async def user_delete(
     user attempts to delete their own account or if an exception occurs
     during deletion, a 404 error if the user is not found, and a 423
     error if the application is locked.
-    
+
     **Returns:**
     - `UserDeleteResponse`: The ID of the user to delete.
-    
+
     **Raises:**
     - `403 Forbidden`: Raised if the current user attempts to delete
       their own account or if the deletion is forbidden.
     - `404 Not Found`: Raised if the user with the provided ID does not
       exist.
     - `423 Locked`: Raised if the application is locked.
-    
+
     **Hooks:**
     - `HOOK_BEFORE_USER_DELETE`: Executes before deleting the user.
     - `HOOK_AFTER_USER_DELETE`: Executes after the user has been deleted.

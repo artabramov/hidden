@@ -18,7 +18,7 @@ http://localhost/docs
 
 The Sphinx docs are available on:  
 ```
-http://localhost/sphinx/
+http://localhost/sphinx
 ```
 
 ## Core mechanics

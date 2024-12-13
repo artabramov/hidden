@@ -119,23 +119,23 @@
 
 <span class="sd">    **Returns:**</span>
 <span class="sd">    - `CollectionSelectResponse`: The response schema containing the</span>
-<span class="sd">      details of the selected collection.</span>
+<span class="sd">    details of the selected collection.</span>
 
 <span class="sd">    **Raises:**</span>
 <span class="sd">    - `403 Forbidden`: Raised if the current user is not authenticated</span>
-<span class="sd">      or does not have the required permissions.</span>
+<span class="sd">    or does not have the required permissions.</span>
 <span class="sd">    - `404 Not Found`: Raised if the collection with the specified ID</span>
-<span class="sd">      does not exist.</span>
+<span class="sd">    does not exist.</span>
 <span class="sd">    - `423 Locked`: Raised if the application is locked.</span>
 
 <span class="sd">    **Hooks:**</span>
 <span class="sd">    - `HOOK_AFTER_COLLECTION_SELECT`: Executes after the collection is</span>
-<span class="sd">      successfully selected.</span>
+<span class="sd">    successfully selected.</span>
 
 <span class="sd">    **Auth:**</span>
 <span class="sd">    - The user must provide a valid `JWT token` in the request header.</span>
 <span class="sd">    - `reader`, `writer`, `editor` or `admin` user role is required to</span>
-<span class="sd">      access this router.</span>
+<span class="sd">    access this router.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">collection_repository</span> <span class="o">=</span> <span class="n">Repository</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">cache</span><span class="p">,</span> <span class="n">Collection</span><span class="p">)</span>
     <span class="n">collection</span> <span class="o">=</span> <span class="k">await</span> <span class="n">collection_repository</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">collection_id</span><span class="p">)</span>

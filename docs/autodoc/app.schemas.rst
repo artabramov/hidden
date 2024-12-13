@@ -20,18 +20,10 @@ app.schemas.comment\_schemas module
    :undoc-members:
    :show-inheritance:
 
-app.schemas.custom\_schemas module
-----------------------------------
-
-.. automodule:: app.schemas.custom_schemas
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-app.schemas.datafile\_schemas module
+app.schemas.document\_schemas module
 ------------------------------------
 
-.. automodule:: app.schemas.datafile_schemas
+.. automodule:: app.schemas.document_schemas
    :members:
    :undoc-members:
    :show-inheritance:
@@ -44,10 +36,10 @@ app.schemas.download\_schemas module
    :undoc-members:
    :show-inheritance:
 
-app.schemas.favorite\_schemas module
-------------------------------------
+app.schemas.execute\_schemas module
+-----------------------------------
 
-.. automodule:: app.schemas.favorite_schemas
+.. automodule:: app.schemas.execute_schemas
    :members:
    :undoc-members:
    :show-inheritance:
@@ -68,6 +60,14 @@ app.schemas.option\_schemas module
    :undoc-members:
    :show-inheritance:
 
+app.schemas.partner\_schemas module
+-----------------------------------
+
+.. automodule:: app.schemas.partner_schemas
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 app.schemas.revision\_schemas module
 ------------------------------------
 
@@ -76,10 +76,10 @@ app.schemas.revision\_schemas module
    :undoc-members:
    :show-inheritance:
 
-app.schemas.time\_schemas module
---------------------------------
+app.schemas.telemetry\_schemas module
+-------------------------------------
 
-.. automodule:: app.schemas.time_schemas
+.. automodule:: app.schemas.telemetry_schemas
    :members:
    :undoc-members:
    :show-inheritance:

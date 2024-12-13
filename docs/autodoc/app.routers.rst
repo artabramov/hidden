@@ -4,14 +4,6 @@ app.routers package
 Submodules
 ----------
 
-app.routers.cache\_erase\_router module
----------------------------------------
-
-.. automodule:: app.routers.cache_erase_router
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 app.routers.collection\_delete\_router module
 ---------------------------------------------
 
@@ -32,6 +24,14 @@ app.routers.collection\_list\_router module
 -------------------------------------------
 
 .. automodule:: app.routers.collection_list_router
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+app.routers.collection\_lock\_router module
+-------------------------------------------
+
+.. automodule:: app.routers.collection_lock_router
    :members:
    :undoc-members:
    :show-inheritance:
@@ -92,130 +92,106 @@ app.routers.comment\_update\_router module
    :undoc-members:
    :show-inheritance:
 
-app.routers.custom\_execute\_router module
-------------------------------------------
-
-.. automodule:: app.routers.custom_execute_router
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-app.routers.datafile\_delete\_router module
+app.routers.document\_delete\_router module
 -------------------------------------------
 
-.. automodule:: app.routers.datafile_delete_router
+.. automodule:: app.routers.document_delete_router
    :members:
    :undoc-members:
    :show-inheritance:
 
-app.routers.datafile\_download\_router module
+app.routers.document\_download\_router module
 ---------------------------------------------
 
-.. automodule:: app.routers.datafile_download_router
+.. automodule:: app.routers.document_download_router
    :members:
    :undoc-members:
    :show-inheritance:
 
-app.routers.datafile\_list\_router module
+app.routers.document\_downloads\_router module
+----------------------------------------------
+
+.. automodule:: app.routers.document_downloads_router
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+app.routers.document\_flag\_router module
 -----------------------------------------
 
-.. automodule:: app.routers.datafile_list_router
+.. automodule:: app.routers.document_flag_router
    :members:
    :undoc-members:
    :show-inheritance:
 
-app.routers.datafile\_replace\_router module
+app.routers.document\_list\_router module
+-----------------------------------------
+
+.. automodule:: app.routers.document_list_router
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+app.routers.document\_move\_router module
+-----------------------------------------
+
+.. automodule:: app.routers.document_move_router
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+app.routers.document\_replace\_router module
 --------------------------------------------
 
-.. automodule:: app.routers.datafile_replace_router
+.. automodule:: app.routers.document_replace_router
    :members:
    :undoc-members:
    :show-inheritance:
 
-app.routers.datafile\_select\_router module
+app.routers.document\_revisions\_router module
+----------------------------------------------
+
+.. automodule:: app.routers.document_revisions_router
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+app.routers.document\_select\_router module
 -------------------------------------------
 
-.. automodule:: app.routers.datafile_select_router
+.. automodule:: app.routers.document_select_router
    :members:
    :undoc-members:
    :show-inheritance:
 
-app.routers.datafile\_update\_router module
+app.routers.document\_update\_router module
 -------------------------------------------
 
-.. automodule:: app.routers.datafile_update_router
+.. automodule:: app.routers.document_update_router
    :members:
    :undoc-members:
    :show-inheritance:
 
-app.routers.datafile\_upload\_router module
+app.routers.document\_upload\_router module
 -------------------------------------------
 
-.. automodule:: app.routers.datafile_upload_router
+.. automodule:: app.routers.document_upload_router
    :members:
    :undoc-members:
    :show-inheritance:
 
-app.routers.download\_list\_router module
------------------------------------------
+app.routers.execute\_router module
+----------------------------------
 
-.. automodule:: app.routers.download_list_router
+.. automodule:: app.routers.execute_router
    :members:
    :undoc-members:
    :show-inheritance:
 
-app.routers.download\_select\_router module
--------------------------------------------
-
-.. automodule:: app.routers.download_select_router
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-app.routers.favorite\_delete\_router module
--------------------------------------------
-
-.. automodule:: app.routers.favorite_delete_router
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-app.routers.favorite\_insert\_router module
--------------------------------------------
-
-.. automodule:: app.routers.favorite_insert_router
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-app.routers.favorite\_list\_router module
------------------------------------------
-
-.. automodule:: app.routers.favorite_list_router
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-app.routers.favorite\_select\_router module
--------------------------------------------
-
-.. automodule:: app.routers.favorite_select_router
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-app.routers.lock\_create\_router module
+app.routers.lock\_change\_router module
 ---------------------------------------
 
-.. automodule:: app.routers.lock_create_router
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-app.routers.lock\_delete\_router module
----------------------------------------
-
-.. automodule:: app.routers.lock_delete_router
+.. automodule:: app.routers.lock_change_router
    :members:
    :undoc-members:
    :show-inheritance:
@@ -228,26 +204,10 @@ app.routers.lock\_retrieve\_router module
    :undoc-members:
    :show-inheritance:
 
-app.routers.mfa\_retrieve\_router module
-----------------------------------------
-
-.. automodule:: app.routers.mfa_retrieve_router
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 app.routers.option\_delete\_router module
 -----------------------------------------
 
 .. automodule:: app.routers.option_delete_router
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-app.routers.option\_insert\_router module
------------------------------------------
-
-.. automodule:: app.routers.option_insert_router
    :members:
    :undoc-members:
    :show-inheritance:
@@ -276,42 +236,66 @@ app.routers.option\_update\_router module
    :undoc-members:
    :show-inheritance:
 
-app.routers.password\_change\_router module
--------------------------------------------
+app.routers.partner\_delete\_router module
+------------------------------------------
 
-.. automodule:: app.routers.password_change_router
+.. automodule:: app.routers.partner_delete_router
    :members:
    :undoc-members:
    :show-inheritance:
 
-app.routers.revision\_download\_router module
+app.routers.partner\_insert\_router module
+------------------------------------------
+
+.. automodule:: app.routers.partner_insert_router
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+app.routers.partner\_list\_router module
+----------------------------------------
+
+.. automodule:: app.routers.partner_list_router
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+app.routers.partner\_select\_router module
+------------------------------------------
+
+.. automodule:: app.routers.partner_select_router
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+app.routers.partner\_update\_router module
+------------------------------------------
+
+.. automodule:: app.routers.partner_update_router
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+app.routers.partnerpic\_delete\_router module
 ---------------------------------------------
 
-.. automodule:: app.routers.revision_download_router
+.. automodule:: app.routers.partnerpic_delete_router
    :members:
    :undoc-members:
    :show-inheritance:
 
-app.routers.revision\_list\_router module
------------------------------------------
+app.routers.partnerpic\_upload\_router module
+---------------------------------------------
 
-.. automodule:: app.routers.revision_list_router
+.. automodule:: app.routers.partnerpic_upload_router
    :members:
    :undoc-members:
    :show-inheritance:
 
-app.routers.revision\_select\_router module
--------------------------------------------
+app.routers.sphinx\_router module
+---------------------------------
 
-.. automodule:: app.routers.revision_select_router
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-app.routers.role\_change\_router module
----------------------------------------
-
-.. automodule:: app.routers.role_change_router
+.. automodule:: app.routers.sphinx_router
    :members:
    :undoc-members:
    :show-inheritance:
@@ -320,14 +304,6 @@ app.routers.telemetry\_retrieve\_router module
 ----------------------------------------------
 
 .. automodule:: app.routers.telemetry_retrieve_router
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-app.routers.time\_retrieve\_router module
------------------------------------------
-
-.. automodule:: app.routers.time_retrieve_router
    :members:
    :undoc-members:
    :show-inheritance:
@@ -372,10 +348,34 @@ app.routers.user\_login\_router module
    :undoc-members:
    :show-inheritance:
 
+app.routers.user\_mfa\_router module
+------------------------------------
+
+.. automodule:: app.routers.user_mfa_router
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+app.routers.user\_password\_router module
+-----------------------------------------
+
+.. automodule:: app.routers.user_password_router
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 app.routers.user\_register\_router module
 -----------------------------------------
 
 .. automodule:: app.routers.user_register_router
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+app.routers.user\_role\_router module
+-------------------------------------
+
+.. automodule:: app.routers.user_role_router
    :members:
    :undoc-members:
    :show-inheritance:

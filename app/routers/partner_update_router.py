@@ -42,23 +42,23 @@ async def partner_update(
     **Args:**
     - `partner_id`: The ID of the partner to update.
     - `PartnerUpdateRequest`: The request schema containing the updated
-      partner data.
+    partner data.
 
     **Returns:**
     - `PartnerUpdateResponse`: The response schema containing the ID of
-      the updated partner.
+    the updated partner.
 
     **Raises:**
     - `403 Forbidden`: Raised if the current user is not authenticated
-      or does not have the required permissions.
+    or does not have the required permissions.
     - `404 Not Found`: Raised if the partner with the specified ID
-      does not exist.
+    does not exist.
     - `422 Unprocessable Entity`: Raised if arguments validation failed.
     - `423 Locked`: Raised if the application is locked.
 
     **Hooks:**
     - `HOOK_BEFORE_PARTNER_UPDATE`: Executes before the partner is
-      updated.
+    updated.
     - `HOOK_AFTER_PARTNER_UPDATE`: Executes after the partner is updated.
 
     **Auth:**

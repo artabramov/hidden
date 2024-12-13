@@ -119,12 +119,12 @@
 
 <span class="sd">    **Returns:**</span>
 <span class="sd">    - `TokenRetrieveResponse`: A response schema containing the</span>
-<span class="sd">      JWT token upon success.</span>
+<span class="sd">    JWT token upon success.</span>
 
 <span class="sd">    **Raises:**</span>
 <span class="sd">    - `403 Forbidden`: Raised if the user is inactive.</span>
 <span class="sd">    - `422 Unprocessable Entity`: Raised if the TOTP is incorrect or</span>
-<span class="sd">      invalid.</span>
+<span class="sd">    invalid.</span>
 <span class="sd">    - `423 Locked`: Raised if the application is locked.</span>
 
 <span class="sd">    **Hooks:**</span>
@@ -134,7 +134,7 @@
 <span class="sd">    **Auth:**</span>
 <span class="sd">    - The user must provide a valid `JWT token` in the request header.</span>
 <span class="sd">    - The `reader`, `writer`, `editor` or `admin` role is required to</span>
-<span class="sd">      access this router.</span>
+<span class="sd">    access this router.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">user_repository</span> <span class="o">=</span> <span class="n">Repository</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">cache</span><span class="p">,</span> <span class="n">User</span><span class="p">)</span>
     <span class="n">user</span> <span class="o">=</span> <span class="k">await</span> <span class="n">user_repository</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">user_login__eq</span><span class="o">=</span><span class="n">schema</span><span class="o">.</span><span class="n">user_login</span><span class="p">)</span>

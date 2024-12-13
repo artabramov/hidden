@@ -37,23 +37,23 @@ async def document_select(
 
     **Args:**
     - `document_id`: The unique identifier of the document to be
-      retrieved.
+    retrieved.
 
     **Returns:**
     - `DocumentSelectResponse`: The response schema containing the
-      document details.
+    document details.
 
     **Raises:**
     - `403 Forbidden`: Raised if the user does not have the necessary
-      permissions.
+    permissions.
     - `404 Not Found`: Raised if the document with the specified ID does
-      not exist.
+    not exist.
     - `423 Locked`: Raised if the application is locked.
 
     **Auth:**
     - The user must provide a valid `JWT token` in the request header.
     - `reader`, `writer`, `editor`, or `admin` role is required to
-      access the endpoint.
+    access the endpoint.
     """
     document_repository = Repository(session, cache, Document)
     document = await document_repository.select(id=document_id)

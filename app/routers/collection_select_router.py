@@ -39,23 +39,23 @@ async def collection_select(
 
     **Returns:**
     - `CollectionSelectResponse`: The response schema containing the
-      details of the selected collection.
+    details of the selected collection.
 
     **Raises:**
     - `403 Forbidden`: Raised if the current user is not authenticated
-      or does not have the required permissions.
+    or does not have the required permissions.
     - `404 Not Found`: Raised if the collection with the specified ID
-      does not exist.
+    does not exist.
     - `423 Locked`: Raised if the application is locked.
 
     **Hooks:**
     - `HOOK_AFTER_COLLECTION_SELECT`: Executes after the collection is
-      successfully selected.
+    successfully selected.
 
     **Auth:**
     - The user must provide a valid `JWT token` in the request header.
     - `reader`, `writer`, `editor` or `admin` user role is required to
-      access this router.
+    access this router.
     """
     collection_repository = Repository(session, cache, Collection)
     collection = await collection_repository.select(id=collection_id)

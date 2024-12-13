@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
@@ -5,18 +7,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>app.routers.collection_insert_router &mdash; Hidden  documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
-        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
-        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -33,9 +31,6 @@
           <a href="../../../index.html" class="icon icon-home">
             Hidden
           </a>
-              <div class="version">
-                0.0.52
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -50,6 +45,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.decorators.html">app.decorators package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.helpers.html">app.helpers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.managers.html">app.managers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.models.html">app.models package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.plugins.html">app.plugins package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.routers.html">app.routers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.schemas.html">app.schemas package</a></li>
 </ul>
 
         </div>
@@ -99,7 +98,7 @@
 
 <div class="viewcode-block" id="collection_insert">
 <a class="viewcode-back" href="../../../autodoc/app.routers.html#app.routers.collection_insert_router.collection_insert">[docs]</a>
-<span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/collection&quot;</span><span class="p">,</span> <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;Create a new collection&quot;</span><span class="p">,</span>
+<span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/collection&quot;</span><span class="p">,</span> <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;Create a collection&quot;</span><span class="p">,</span>
              <span class="n">response_class</span><span class="o">=</span><span class="n">JSONResponse</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_201_CREATED</span><span class="p">,</span>
              <span class="n">response_model</span><span class="o">=</span><span class="n">CollectionInsertResponse</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Collections&quot;</span><span class="p">])</span>
 <span class="nd">@locked</span>
@@ -109,14 +108,41 @@
     <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">auth</span><span class="p">(</span><span class="n">UserRole</span><span class="o">.</span><span class="n">writer</span><span class="p">))</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CollectionInsertResponse</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    FastAPI router for creating a collection entity. The router verifies</span>
-<span class="sd">    if a collection with the specified name already exists, inserts the</span>
-<span class="sd">    new collection into the repository, executes related hooks, and</span>
-<span class="sd">    returns the created collection ID in a JSON response. The current</span>
-<span class="sd">    user should have a writer role or higher. Returns a 201 response</span>
-<span class="sd">    on success, a 422 error if the collection name is duplicated, and</span>
-<span class="sd">    a 403 error if authentication fails or the user does not have</span>
-<span class="sd">    the required role.</span>
+<span class="sd">    Create a collection. The router verifies if a collection with the</span>
+<span class="sd">    specified name already exists, inserts the new collection into</span>
+<span class="sd">    the repository, executes related hooks, and returns the created</span>
+<span class="sd">    collection ID in a JSON response. The current user should have a</span>
+<span class="sd">    writer role or higher. Returns a 201 response on success, a 422</span>
+<span class="sd">    error if arguments validation failed or the collection name is</span>
+<span class="sd">    duplicated, a 403 error if authentication failed or the user does</span>
+<span class="sd">    not have the required permissions, and a 423 error if the</span>
+<span class="sd">    application is locked.</span>
+
+<span class="sd">    **Args:**</span>
+<span class="sd">    - `CollectionInsertRequest`: The request schema containing the data</span>
+<span class="sd">    for the new collection.</span>
+
+<span class="sd">    **Returns:**</span>
+<span class="sd">    - `CollectionInsertResponse`: The response schema containing the ID</span>
+<span class="sd">    of the newly created collection.</span>
+
+<span class="sd">    **Raises:**</span>
+<span class="sd">    - `403 Forbidden`: Raised if the current user is not authenticated</span>
+<span class="sd">    or does not have the required permissions.</span>
+<span class="sd">    - `422 Unprocessable Entity`: Raised if arguments validation failed</span>
+<span class="sd">    or the collection name is already exist.</span>
+<span class="sd">    - `423 Locked`: Raised if the application is locked.</span>
+
+<span class="sd">    **Hooks:**</span>
+<span class="sd">    - `HOOK_BEFORE_COLLECTION_INSERT`: Executes before the collection is</span>
+<span class="sd">    inserted.</span>
+<span class="sd">    - `HOOK_AFTER_COLLECTION_INSERT`: Executes after the collection is</span>
+<span class="sd">    inserted.</span>
+
+<span class="sd">    **Auth:**</span>
+<span class="sd">    - The user must provide a valid `JWT token` in the request header.</span>
+<span class="sd">    - `writer`, `editor` or `admin` user role is required to access this</span>
+<span class="sd">    router.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">collection_repository</span> <span class="o">=</span> <span class="n">Repository</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">cache</span><span class="p">,</span> <span class="n">Collection</span><span class="p">)</span>
 

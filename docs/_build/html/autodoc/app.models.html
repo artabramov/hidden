@@ -19,7 +19,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="app.routers package" href="app.routers.html" />
+    <link rel="next" title="app.plugins package" href="app.plugins.html" />
     <link rel="prev" title="app.managers package" href="app.managers.html" /> 
 </head>
 
@@ -46,6 +46,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="app.html">app package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="app.decorators.html">app.decorators package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app.filters.html">app.filters package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="app.helpers.html">app.helpers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="app.managers.html">app.managers package</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">app.models package</a><ul>
@@ -84,7 +85,40 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#app-models-datafile-model-module">app.models.datafile_model module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.models.document_model">app.models.document_model module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.models.document_model.Document"><code class="docutils literal notranslate"><span class="pre">Document</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.document_model.Document.collection_id"><code class="docutils literal notranslate"><span class="pre">Document.collection_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.document_model.Document.comments_count"><code class="docutils literal notranslate"><span class="pre">Document.comments_count</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.document_model.Document.created_date"><code class="docutils literal notranslate"><span class="pre">Document.created_date</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.document_model.Document.document_collection"><code class="docutils literal notranslate"><span class="pre">Document.document_collection</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.document_model.Document.document_comments"><code class="docutils literal notranslate"><span class="pre">Document.document_comments</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.document_model.Document.document_downloads"><code class="docutils literal notranslate"><span class="pre">Document.document_downloads</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.document_model.Document.document_filename"><code class="docutils literal notranslate"><span class="pre">Document.document_filename</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.document_model.Document.document_mimetype"><code class="docutils literal notranslate"><span class="pre">Document.document_mimetype</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.document_model.Document.document_partner"><code class="docutils literal notranslate"><span class="pre">Document.document_partner</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.document_model.Document.document_revisions"><code class="docutils literal notranslate"><span class="pre">Document.document_revisions</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.document_model.Document.document_size"><code class="docutils literal notranslate"><span class="pre">Document.document_size</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.document_model.Document.document_summary"><code class="docutils literal notranslate"><span class="pre">Document.document_summary</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.document_model.Document.document_tags"><code class="docutils literal notranslate"><span class="pre">Document.document_tags</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.document_model.Document.document_user"><code class="docutils literal notranslate"><span class="pre">Document.document_user</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.document_model.Document.downloads_count"><code class="docutils literal notranslate"><span class="pre">Document.downloads_count</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.document_model.Document.id"><code class="docutils literal notranslate"><span class="pre">Document.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.document_model.Document.is_flagged"><code class="docutils literal notranslate"><span class="pre">Document.is_flagged</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.document_model.Document.is_locked"><code class="docutils literal notranslate"><span class="pre">Document.is_locked</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.document_model.Document.latest_revision_id"><code class="docutils literal notranslate"><span class="pre">Document.latest_revision_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.document_model.Document.partner_id"><code class="docutils literal notranslate"><span class="pre">Document.partner_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.document_model.Document.revisions_count"><code class="docutils literal notranslate"><span class="pre">Document.revisions_count</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.document_model.Document.tag_values"><code class="docutils literal notranslate"><span class="pre">Document.tag_values</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.document_model.Document.thumbnail_filename"><code class="docutils literal notranslate"><span class="pre">Document.thumbnail_filename</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.document_model.Document.thumbnail_filename_encrypted"><code class="docutils literal notranslate"><span class="pre">Document.thumbnail_filename_encrypted</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.document_model.Document.thumbnail_url"><code class="docutils literal notranslate"><span class="pre">Document.thumbnail_url</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.document_model.Document.to_dict"><code class="docutils literal notranslate"><span class="pre">Document.to_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.document_model.Document.updated_date"><code class="docutils literal notranslate"><span class="pre">Document.updated_date</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.document_model.Document.user_id"><code class="docutils literal notranslate"><span class="pre">Document.user_id</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#module-app.models.download_model">app.models.download_model module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#app.models.download_model.Download"><code class="docutils literal notranslate"><span class="pre">Download</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#app.models.download_model.Download.created_date"><code class="docutils literal notranslate"><span class="pre">Download.created_date</span></code></a></li>
@@ -100,7 +134,6 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#app-models-favorite-model-module">app.models.favorite_model module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-app.models.option_model">app.models.option_model module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#app.models.option_model.Option"><code class="docutils literal notranslate"><span class="pre">Option</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#app.models.option_model.Option.created_date"><code class="docutils literal notranslate"><span class="pre">Option.created_date</span></code></a></li>
@@ -113,6 +146,31 @@
 <li class="toctree-l4"><a class="reference internal" href="#app.models.option_model.Option.user_id"><code class="docutils literal notranslate"><span class="pre">Option.user_id</span></code></a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.models.partner_model">app.models.partner_model module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.models.partner_model.Partner"><code class="docutils literal notranslate"><span class="pre">Partner</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.partner_model.Partner.created_date"><code class="docutils literal notranslate"><span class="pre">Partner.created_date</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.partner_model.Partner.id"><code class="docutils literal notranslate"><span class="pre">Partner.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.partner_model.Partner.partner_contacts"><code class="docutils literal notranslate"><span class="pre">Partner.partner_contacts</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.partner_model.Partner.partner_documents"><code class="docutils literal notranslate"><span class="pre">Partner.partner_documents</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.partner_model.Partner.partner_name"><code class="docutils literal notranslate"><span class="pre">Partner.partner_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.partner_model.Partner.partner_region"><code class="docutils literal notranslate"><span class="pre">Partner.partner_region</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.partner_model.Partner.partner_summary"><code class="docutils literal notranslate"><span class="pre">Partner.partner_summary</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.partner_model.Partner.partner_type"><code class="docutils literal notranslate"><span class="pre">Partner.partner_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.partner_model.Partner.partner_user"><code class="docutils literal notranslate"><span class="pre">Partner.partner_user</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.partner_model.Partner.partner_website"><code class="docutils literal notranslate"><span class="pre">Partner.partner_website</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.partner_model.Partner.partnerpic_filename"><code class="docutils literal notranslate"><span class="pre">Partner.partnerpic_filename</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.partner_model.Partner.partnerpic_filename_encrypted"><code class="docutils literal notranslate"><span class="pre">Partner.partnerpic_filename_encrypted</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.partner_model.Partner.partnerpic_path"><code class="docutils literal notranslate"><span class="pre">Partner.partnerpic_path</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.partner_model.Partner.partnerpic_url"><code class="docutils literal notranslate"><span class="pre">Partner.partnerpic_url</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.partner_model.Partner.to_dict"><code class="docutils literal notranslate"><span class="pre">Partner.to_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.partner_model.Partner.updated_date"><code class="docutils literal notranslate"><span class="pre">Partner.updated_date</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.partner_model.Partner.user_id"><code class="docutils literal notranslate"><span class="pre">Partner.user_id</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#app.models.partner_model.after_delete_listener"><code class="docutils literal notranslate"><span class="pre">after_delete_listener()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.models.partner_model.delete_partnerpic"><code class="docutils literal notranslate"><span class="pre">delete_partnerpic()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-app.models.revision_model">app.models.revision_model module</a><ul>
@@ -138,6 +196,24 @@
 <li class="toctree-l3"><a class="reference internal" href="#app.models.revision_model.after_delete_listener"><code class="docutils literal notranslate"><span class="pre">after_delete_listener()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#app.models.revision_model.delete_revision"><code class="docutils literal notranslate"><span class="pre">delete_revision()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#app.models.revision_model.delete_thumbnail"><code class="docutils literal notranslate"><span class="pre">delete_thumbnail()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.models.shard_model">app.models.shard_model module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.models.shard_model.Shard"><code class="docutils literal notranslate"><span class="pre">Shard</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.shard_model.Shard.created_date"><code class="docutils literal notranslate"><span class="pre">Shard.created_date</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.shard_model.Shard.id"><code class="docutils literal notranslate"><span class="pre">Shard.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.shard_model.Shard.revision_id"><code class="docutils literal notranslate"><span class="pre">Shard.revision_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.shard_model.Shard.shard_filename"><code class="docutils literal notranslate"><span class="pre">Shard.shard_filename</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.shard_model.Shard.shard_filename_encrypted"><code class="docutils literal notranslate"><span class="pre">Shard.shard_filename_encrypted</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.shard_model.Shard.shard_index"><code class="docutils literal notranslate"><span class="pre">Shard.shard_index</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.shard_model.Shard.shard_path"><code class="docutils literal notranslate"><span class="pre">Shard.shard_path</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.shard_model.Shard.shard_revision"><code class="docutils literal notranslate"><span class="pre">Shard.shard_revision</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.shard_model.Shard.shard_user"><code class="docutils literal notranslate"><span class="pre">Shard.shard_user</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.models.shard_model.Shard.user_id"><code class="docutils literal notranslate"><span class="pre">Shard.user_id</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#app.models.shard_model.after_delete_listener"><code class="docutils literal notranslate"><span class="pre">after_delete_listener()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.models.shard_model.delete_file"><code class="docutils literal notranslate"><span class="pre">delete_file()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-app.models.tag_model">app.models.tag_model module</a><ul>
@@ -210,6 +286,7 @@
 <li class="toctree-l1"><a class="reference internal" href="app.plugins.html">app.plugins package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="app.routers.html">app.routers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="app.schemas.html">app.schemas package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app.triggers.html">app.triggers package</a></li>
 </ul>
 
         </div>
@@ -392,8 +469,170 @@ entity and its relationships with users and documents.</p>
 </dd></dl>
 
 </section>
-<section id="app-models-datafile-model-module">
-<h2>app.models.datafile_model module<a class="headerlink" href="#app-models-datafile-model-module" title="Link to this heading"></a></h2>
+<section id="module-app.models.document_model">
+<span id="app-models-document-model-module"></span><h2>app.models.document_model module<a class="headerlink" href="#module-app.models.document_model" title="Link to this heading"></a></h2>
+<p>The module defines an SQLAlchemy model for documents. It describes the
+structure of the document entity, including its fields and relationships
+with other entities such as users, collections, partners, and related
+entities like tags, revisions, comments, downloads.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="app.models.document_model.Document">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.models.document_model.</span></span><span class="sig-name descname"><span class="pre">Document</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">document_filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">document_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_flagged</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">document_mimetype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">document_summary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thumbnail_filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/models/document_model.html#Document"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.document_model.Document" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Base</span></code></p>
+<p>SQLAlchemy model defines the document’s metadata, including its
+filename, size, associated user and collection, and relationships
+to other entities like partners, revisions, tags, comments,
+downloads. It also handles the encryption of thumbnail filenames
+and provides various properties to retrieve related data.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.document_model.Document.collection_id">
+<span class="sig-name descname"><span class="pre">collection_id</span></span><a class="headerlink" href="#app.models.document_model.Document.collection_id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.document_model.Document.comments_count">
+<span class="sig-name descname"><span class="pre">comments_count</span></span><a class="headerlink" href="#app.models.document_model.Document.comments_count" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.document_model.Document.created_date">
+<span class="sig-name descname"><span class="pre">created_date</span></span><a class="headerlink" href="#app.models.document_model.Document.created_date" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.document_model.Document.document_collection">
+<span class="sig-name descname"><span class="pre">document_collection</span></span><a class="headerlink" href="#app.models.document_model.Document.document_collection" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.document_model.Document.document_comments">
+<span class="sig-name descname"><span class="pre">document_comments</span></span><a class="headerlink" href="#app.models.document_model.Document.document_comments" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.document_model.Document.document_downloads">
+<span class="sig-name descname"><span class="pre">document_downloads</span></span><a class="headerlink" href="#app.models.document_model.Document.document_downloads" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.document_model.Document.document_filename">
+<span class="sig-name descname"><span class="pre">document_filename</span></span><a class="headerlink" href="#app.models.document_model.Document.document_filename" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.document_model.Document.document_mimetype">
+<span class="sig-name descname"><span class="pre">document_mimetype</span></span><a class="headerlink" href="#app.models.document_model.Document.document_mimetype" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.document_model.Document.document_partner">
+<span class="sig-name descname"><span class="pre">document_partner</span></span><a class="headerlink" href="#app.models.document_model.Document.document_partner" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.document_model.Document.document_revisions">
+<span class="sig-name descname"><span class="pre">document_revisions</span></span><a class="headerlink" href="#app.models.document_model.Document.document_revisions" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.document_model.Document.document_size">
+<span class="sig-name descname"><span class="pre">document_size</span></span><a class="headerlink" href="#app.models.document_model.Document.document_size" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.document_model.Document.document_summary">
+<span class="sig-name descname"><span class="pre">document_summary</span></span><a class="headerlink" href="#app.models.document_model.Document.document_summary" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.document_model.Document.document_tags">
+<span class="sig-name descname"><span class="pre">document_tags</span></span><a class="headerlink" href="#app.models.document_model.Document.document_tags" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.document_model.Document.document_user">
+<span class="sig-name descname"><span class="pre">document_user</span></span><a class="headerlink" href="#app.models.document_model.Document.document_user" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.document_model.Document.downloads_count">
+<span class="sig-name descname"><span class="pre">downloads_count</span></span><a class="headerlink" href="#app.models.document_model.Document.downloads_count" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.document_model.Document.id">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#app.models.document_model.Document.id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.document_model.Document.is_flagged">
+<span class="sig-name descname"><span class="pre">is_flagged</span></span><a class="headerlink" href="#app.models.document_model.Document.is_flagged" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="app.models.document_model.Document.is_locked">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_locked</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#app.models.document_model.Document.is_locked" title="Link to this definition"></a></dt>
+<dd><p>Determines if the document is locked based on the associated
+collection.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.document_model.Document.latest_revision_id">
+<span class="sig-name descname"><span class="pre">latest_revision_id</span></span><a class="headerlink" href="#app.models.document_model.Document.latest_revision_id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.document_model.Document.partner_id">
+<span class="sig-name descname"><span class="pre">partner_id</span></span><a class="headerlink" href="#app.models.document_model.Document.partner_id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.document_model.Document.revisions_count">
+<span class="sig-name descname"><span class="pre">revisions_count</span></span><a class="headerlink" href="#app.models.document_model.Document.revisions_count" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="app.models.document_model.Document.tag_values">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tag_values</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#app.models.document_model.Document.tag_values" title="Link to this definition"></a></dt>
+<dd><p>Returns a list of tag values associated with the document.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="app.models.document_model.Document.thumbnail_filename">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">thumbnail_filename</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#app.models.document_model.Document.thumbnail_filename" title="Link to this definition"></a></dt>
+<dd><p>Retrieves the decrypted thumbnail filename.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.document_model.Document.thumbnail_filename_encrypted">
+<span class="sig-name descname"><span class="pre">thumbnail_filename_encrypted</span></span><a class="headerlink" href="#app.models.document_model.Document.thumbnail_filename_encrypted" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="app.models.document_model.Document.thumbnail_url">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">thumbnail_url</span></span><a class="headerlink" href="#app.models.document_model.Document.thumbnail_url" title="Link to this definition"></a></dt>
+<dd><p>Constructs and returns the full URL for the document’s thumbnail.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.models.document_model.Document.to_dict">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/models/document_model.html#Document.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.document_model.Document.to_dict" title="Link to this definition"></a></dt>
+<dd><p>Converts the document instance into a dictionary representation,
+including all relevant metadata about the document.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.document_model.Document.updated_date">
+<span class="sig-name descname"><span class="pre">updated_date</span></span><a class="headerlink" href="#app.models.document_model.Document.updated_date" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.document_model.Document.user_id">
+<span class="sig-name descname"><span class="pre">user_id</span></span><a class="headerlink" href="#app.models.document_model.Document.user_id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
 <section id="module-app.models.download_model">
 <span id="app-models-download-model-module"></span><h2>app.models.download_model module<a class="headerlink" href="#module-app.models.download_model" title="Link to this heading"></a></h2>
@@ -463,9 +702,6 @@ revision ID.</p>
 </dd></dl>
 
 </section>
-<section id="app-models-favorite-model-module">
-<h2>app.models.favorite_model module<a class="headerlink" href="#app-models-favorite-model-module" title="Link to this heading"></a></h2>
-</section>
 <section id="module-app.models.option_model">
 <span id="app-models-option-model-module"></span><h2>app.models.option_model module<a class="headerlink" href="#module-app.models.option_model" title="Link to this heading"></a></h2>
 <p>The module defines the SQLAlchemy model for the option entity, which is
@@ -520,6 +756,137 @@ including all necessary attributes.</p>
 <span class="sig-name descname"><span class="pre">user_id</span></span><a class="headerlink" href="#app.models.option_model.Option.user_id" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
+</dd></dl>
+
+</section>
+<section id="module-app.models.partner_model">
+<span id="app-models-partner-model-module"></span><h2>app.models.partner_model module<a class="headerlink" href="#module-app.models.partner_model" title="Link to this heading"></a></h2>
+<p>The module defines an SQLAlchemy model for partners, representing
+a partner. It includes fields such as the partner’s name, type, region,
+website, contacts, and summary. The model handles the encryption and
+decryption of the partner’s profile picture filename and provides
+properties for constructing the picture’s URL and path. Additionally,
+the module ensures that the profile picture is deleted when the partner
+entity is removed from the database.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="app.models.partner_model.Partner">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.models.partner_model.</span></span><span class="sig-name descname"><span class="pre">Partner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partner_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partner_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partner_region</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partner_website</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partner_contacts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partner_summary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partnerpic_filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/models/partner_model.html#Partner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.partner_model.Partner" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Base</span></code></p>
+<p>SQLAlchemy model for a partner entity, which includes information
+about the partner such as their name, type, region, website, and
+contact details. It establishes relationships with the associated
+user and documents and includes methods for handling encrypted
+profile picture filenames, constructing URLs for the partner’s
+picture, and ensuring file deletion when the partner is deleted.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.partner_model.Partner.created_date">
+<span class="sig-name descname"><span class="pre">created_date</span></span><a class="headerlink" href="#app.models.partner_model.Partner.created_date" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.partner_model.Partner.id">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#app.models.partner_model.Partner.id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.partner_model.Partner.partner_contacts">
+<span class="sig-name descname"><span class="pre">partner_contacts</span></span><a class="headerlink" href="#app.models.partner_model.Partner.partner_contacts" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.partner_model.Partner.partner_documents">
+<span class="sig-name descname"><span class="pre">partner_documents</span></span><a class="headerlink" href="#app.models.partner_model.Partner.partner_documents" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.partner_model.Partner.partner_name">
+<span class="sig-name descname"><span class="pre">partner_name</span></span><a class="headerlink" href="#app.models.partner_model.Partner.partner_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.partner_model.Partner.partner_region">
+<span class="sig-name descname"><span class="pre">partner_region</span></span><a class="headerlink" href="#app.models.partner_model.Partner.partner_region" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.partner_model.Partner.partner_summary">
+<span class="sig-name descname"><span class="pre">partner_summary</span></span><a class="headerlink" href="#app.models.partner_model.Partner.partner_summary" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.partner_model.Partner.partner_type">
+<span class="sig-name descname"><span class="pre">partner_type</span></span><a class="headerlink" href="#app.models.partner_model.Partner.partner_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.partner_model.Partner.partner_user">
+<span class="sig-name descname"><span class="pre">partner_user</span></span><a class="headerlink" href="#app.models.partner_model.Partner.partner_user" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.partner_model.Partner.partner_website">
+<span class="sig-name descname"><span class="pre">partner_website</span></span><a class="headerlink" href="#app.models.partner_model.Partner.partner_website" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="app.models.partner_model.Partner.partnerpic_filename">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">partnerpic_filename</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#app.models.partner_model.Partner.partnerpic_filename" title="Link to this definition"></a></dt>
+<dd><p>Retrieves the decrypted profile picture filename for the partner.
+If the filename is not encrypted, returns None.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.partner_model.Partner.partnerpic_filename_encrypted">
+<span class="sig-name descname"><span class="pre">partnerpic_filename_encrypted</span></span><a class="headerlink" href="#app.models.partner_model.Partner.partnerpic_filename_encrypted" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="app.models.partner_model.Partner.partnerpic_path">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">partnerpic_path</span></span><a class="headerlink" href="#app.models.partner_model.Partner.partnerpic_path" title="Link to this definition"></a></dt>
+<dd><p>Constructs and returns the file system path for the partner’s
+profile picture.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="app.models.partner_model.Partner.partnerpic_url">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">partnerpic_url</span></span><a class="headerlink" href="#app.models.partner_model.Partner.partnerpic_url" title="Link to this definition"></a></dt>
+<dd><p>Constructs and returns the URL for the partner’s profile picture.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.models.partner_model.Partner.to_dict">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/models/partner_model.html#Partner.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.partner_model.Partner.to_dict" title="Link to this definition"></a></dt>
+<dd><p>Converts the partner instance into a dictionary representation,
+including relevant details like the partner’s name, type, region,
+website, and profile picture URL.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.partner_model.Partner.updated_date">
+<span class="sig-name descname"><span class="pre">updated_date</span></span><a class="headerlink" href="#app.models.partner_model.Partner.updated_date" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.partner_model.Partner.user_id">
+<span class="sig-name descname"><span class="pre">user_id</span></span><a class="headerlink" href="#app.models.partner_model.Partner.user_id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.models.partner_model.after_delete_listener">
+<span class="sig-prename descclassname"><span class="pre">app.models.partner_model.</span></span><span class="sig-name descname"><span class="pre">after_delete_listener</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mapper</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">connection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partner</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app.models.partner_model.Partner" title="app.models.partner_model.Partner"><span class="pre">Partner</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/models/partner_model.html#after_delete_listener"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.partner_model.after_delete_listener" title="Link to this definition"></a></dt>
+<dd><p>Event listener that triggers after a partner entity is deleted.
+It attempts to delete the partner’s profile picture file if it
+exists.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.models.partner_model.delete_partnerpic">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.models.partner_model.</span></span><span class="sig-name descname"><span class="pre">delete_partnerpic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">partner</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app.models.partner_model.Partner" title="app.models.partner_model.Partner"><span class="pre">Partner</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/models/partner_model.html#delete_partnerpic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.partner_model.delete_partnerpic" title="Link to this definition"></a></dt>
+<dd><p>Deletes the profile picture file associated with a partner if it
+exists. Handles exceptions and logs any errors that occur during
+deletion.</p>
 </dd></dl>
 
 </section>
@@ -657,6 +1024,97 @@ process.</p>
 <dd><p>Asynchronously deletes the thumbnail file associated with the
 specified revision entity. Logs any errors that occur during the
 deletion process.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.models.shard_model">
+<span id="app-models-shard-model-module"></span><h2>app.models.shard_model module<a class="headerlink" href="#module-app.models.shard_model" title="Link to this heading"></a></h2>
+<p>The module defines the Shard model for managing document shards in the
+database. It includes the structure of the shard entity and its
+relationships with the user and revision models. The Shard model handles
+shard filenames, including encryption and decryption, and provides
+methods for managing file deletion upon record deletion.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="app.models.shard_model.Shard">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.models.shard_model.</span></span><span class="sig-name descname"><span class="pre">Shard</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">revision_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shard_filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shard_index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/models/shard_model.html#Shard"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.shard_model.Shard" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Base</span></code></p>
+<p>Represents a shard of a document revision. Each shard is associated
+with a user and revision, and contains a filename (encrypted) and an
+index. The model provides methods for file handling, including
+encryption of shard filenames and deletion of the associated file
+when the record is deleted.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.shard_model.Shard.created_date">
+<span class="sig-name descname"><span class="pre">created_date</span></span><a class="headerlink" href="#app.models.shard_model.Shard.created_date" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.shard_model.Shard.id">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#app.models.shard_model.Shard.id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.shard_model.Shard.revision_id">
+<span class="sig-name descname"><span class="pre">revision_id</span></span><a class="headerlink" href="#app.models.shard_model.Shard.revision_id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="app.models.shard_model.Shard.shard_filename">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shard_filename</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#app.models.shard_model.Shard.shard_filename" title="Link to this definition"></a></dt>
+<dd><p>Decrypts the shard filename before returning it. This property
+allows access to the actual filename of the shard, after
+decryption.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.shard_model.Shard.shard_filename_encrypted">
+<span class="sig-name descname"><span class="pre">shard_filename_encrypted</span></span><a class="headerlink" href="#app.models.shard_model.Shard.shard_filename_encrypted" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.shard_model.Shard.shard_index">
+<span class="sig-name descname"><span class="pre">shard_index</span></span><a class="headerlink" href="#app.models.shard_model.Shard.shard_index" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="app.models.shard_model.Shard.shard_path">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shard_path</span></span><a class="headerlink" href="#app.models.shard_model.Shard.shard_path" title="Link to this definition"></a></dt>
+<dd><p>Generates the full file path for the shard based on the shard
+filename and the configured shard base path.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.shard_model.Shard.shard_revision">
+<span class="sig-name descname"><span class="pre">shard_revision</span></span><a class="headerlink" href="#app.models.shard_model.Shard.shard_revision" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.shard_model.Shard.shard_user">
+<span class="sig-name descname"><span class="pre">shard_user</span></span><a class="headerlink" href="#app.models.shard_model.Shard.shard_user" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.shard_model.Shard.user_id">
+<span class="sig-name descname"><span class="pre">user_id</span></span><a class="headerlink" href="#app.models.shard_model.Shard.user_id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.models.shard_model.after_delete_listener">
+<span class="sig-prename descclassname"><span class="pre">app.models.shard_model.</span></span><span class="sig-name descname"><span class="pre">after_delete_listener</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mapper</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">connection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shard</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app.models.shard_model.Shard" title="app.models.shard_model.Shard"><span class="pre">Shard</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/models/shard_model.html#after_delete_listener"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.shard_model.after_delete_listener" title="Link to this definition"></a></dt>
+<dd><p>Triggered after the deletion of a Shard instance, this function
+schedules the deletion of the shard file from the filesystem. It
+ensures that the shard file is removed asynchronously after the
+database record is deleted.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.models.shard_model.delete_file">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.models.shard_model.</span></span><span class="sig-name descname"><span class="pre">delete_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shard_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/models/shard_model.html#delete_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.shard_model.delete_file" title="Link to this definition"></a></dt>
+<dd><p>Asynchronously deletes the specified shard file from the filesystem.
+Any errors that occur during deletion are logged for debugging
+purposes.</p>
 </dd></dl>
 
 </section>
@@ -988,7 +1446,7 @@ has in the system.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="app.managers.html" class="btn btn-neutral float-left" title="app.managers package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="app.routers.html" class="btn btn-neutral float-right" title="app.routers package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="app.plugins.html" class="btn btn-neutral float-right" title="app.plugins package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

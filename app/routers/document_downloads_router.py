@@ -43,19 +43,19 @@ async def document_downloads(
 
     **Args:**
     - `document_id`: The ID of the document for which downloads are
-      being requested.
+    being requested.
     - `DownloadListRequest`: The request schema containing the filters
-      for the download list.
+    for the download list.
 
     **Returns:**
     - `DownloadListResponse`: A response schema containing the list of
-      downloads and the total count of downloads.
+    downloads and the total count of downloads.
 
     **Raises:**
     - `403 Forbidden`: Raised if the user does not have the required
-      permissions.
+    permissions.
     - `404 Not Found`: Raised if the document with the specified ID does
-      not exist.
+    not exist.
     - `422 Unprocessable Entity`: Raised if arguments validation failed.
     - `423 Locked`: Raised if the application is locked.
 

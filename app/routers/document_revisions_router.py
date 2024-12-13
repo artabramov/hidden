@@ -41,24 +41,24 @@ async def document_revisions(
     **Args:**
     - `document_id`: The document ID whose revisions need to be fetched.
     - `DocumentRevisionsRequest`: The request schema that contains
-      filter and pagination options for the revisions list.
+    filter and pagination options for the revisions list.
 
     **Returns:**
     - `DocumentRevisionsResponse`: A response containing a list of
-      revisions for the document and the total revision count.
+    revisions for the document and the total revision count.
 
     **Raises:**
     - `403 Forbidden`: Raised if the user does not have the required
-      permissions.
+    permissions.
     - `404 Not Found`: Raised if the document with the specified ID does
-      not exist.
+    not exist.
     - `422 Unprocessable Entity`: Raised if arguments validation failed.
     - `423 Locked`: Raised if the application is locked.
 
     **Auth:**
     - The user must provide a valid `JWT token` in the request header.
     - `reader`, `writer`, `editor`, or `admin` role is required to
-      access the router.
+    access the router.
     """
     document_repository = Repository(session, cache, Document)
     document = await document_repository.select(id=document_id)

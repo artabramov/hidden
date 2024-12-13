@@ -42,17 +42,17 @@ async def document_move(
     **Args:**
     - `document_id`: The ID of the document to be moved.
     - `collection_id`: The ID of the collection to which the document
-      will be moved.
+    will be moved.
 
     **Returns:**
     - `DocumentMoveResponse`: The response schema containing the
-      document's ID and the revision ID.
+    document's ID and the revision ID.
 
     **Raises:**
     - `403 Forbidden`: Raised if the user does not have the required
-      permissions.
+    permissions.
     - `404 Not Found`: Raised if the document or collection with the
-      specified ID does not exist.
+    specified ID does not exist.
     - `423 Locked`: Raised if collection or the application is locked.
 
     **Auth:**

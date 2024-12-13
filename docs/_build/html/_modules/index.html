@@ -43,12 +43,14 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../autodoc/app.html">app package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../autodoc/app.decorators.html">app.decorators package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../autodoc/app.filters.html">app.filters package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../autodoc/app.helpers.html">app.helpers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../autodoc/app.managers.html">app.managers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../autodoc/app.models.html">app.models package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../autodoc/app.plugins.html">app.plugins package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../autodoc/app.routers.html">app.routers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../autodoc/app.schemas.html">app.schemas package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../autodoc/app.triggers.html">app.triggers package</a></li>
 </ul>
 
         </div>
@@ -84,11 +86,20 @@
 <li><a href="app/decorators/locked_decorator.html">app.decorators.locked_decorator</a></li>
 <li><a href="app/decorators/timed_decorator.html">app.decorators.timed_decorator</a></li>
 <li><a href="app/errors.html">app.errors</a></li>
+<li><a href="app/filters/collection_filters.html">app.filters.collection_filters</a></li>
+<li><a href="app/filters/comment_filters.html">app.filters.comment_filters</a></li>
+<li><a href="app/filters/document_filters.html">app.filters.document_filters</a></li>
+<li><a href="app/filters/option_filters.html">app.filters.option_filters</a></li>
+<li><a href="app/filters/partner_filters.html">app.filters.partner_filters</a></li>
+<li><a href="app/filters/user_filters.html">app.filters.user_filters</a></li>
+<li><a href="app/helpers/encryption_helper.html">app.helpers.encryption_helper</a></li>
 <li><a href="app/helpers/hash_helper.html">app.helpers.hash_helper</a></li>
 <li><a href="app/helpers/hook_helper.html">app.helpers.hook_helper</a></li>
 <li><a href="app/helpers/image_helper.html">app.helpers.image_helper</a></li>
 <li><a href="app/helpers/jwt_helper.html">app.helpers.jwt_helper</a></li>
 <li><a href="app/helpers/lock_helper.html">app.helpers.lock_helper</a></li>
+<li><a href="app/helpers/shuffle_helper.html">app.helpers.shuffle_helper</a></li>
+<li><a href="app/helpers/tag_helper.html">app.helpers.tag_helper</a></li>
 <li><a href="app/helpers/uptime_helper.html">app.helpers.uptime_helper</a></li>
 <li><a href="app/hooks.html">app.hooks</a></li>
 <li><a href="app/log.html">app.log</a></li>
@@ -97,15 +108,21 @@
 <li><a href="app/managers/file_manager.html">app.managers.file_manager</a></li>
 <li><a href="app/models/collection_model.html">app.models.collection_model</a></li>
 <li><a href="app/models/comment_model.html">app.models.comment_model</a></li>
+<li><a href="app/models/document_model.html">app.models.document_model</a></li>
 <li><a href="app/models/download_model.html">app.models.download_model</a></li>
 <li><a href="app/models/option_model.html">app.models.option_model</a></li>
+<li><a href="app/models/partner_model.html">app.models.partner_model</a></li>
 <li><a href="app/models/revision_model.html">app.models.revision_model</a></li>
+<li><a href="app/models/shard_model.html">app.models.shard_model</a></li>
 <li><a href="app/models/tag_model.html">app.models.tag_model</a></li>
 <li><a href="app/models/user_model.html">app.models.user_model</a></li>
+<li><a href="app/plugins/example_plugin.html">app.plugins.example_plugin</a></li>
+<li><a href="app/plugins/logs_plugin.html">app.plugins.logs_plugin</a></li>
 <li><a href="app/repository.html">app.repository</a></li>
 <li><a href="app/routers/collection_delete_router.html">app.routers.collection_delete_router</a></li>
 <li><a href="app/routers/collection_insert_router.html">app.routers.collection_insert_router</a></li>
 <li><a href="app/routers/collection_list_router.html">app.routers.collection_list_router</a></li>
+<li><a href="app/routers/collection_lock_router.html">app.routers.collection_lock_router</a></li>
 <li><a href="app/routers/collection_select_router.html">app.routers.collection_select_router</a></li>
 <li><a href="app/routers/collection_update_router.html">app.routers.collection_update_router</a></li>
 <li><a href="app/routers/comment_delete_router.html">app.routers.comment_delete_router</a></li>
@@ -113,28 +130,57 @@
 <li><a href="app/routers/comment_list_router.html">app.routers.comment_list_router</a></li>
 <li><a href="app/routers/comment_select_router.html">app.routers.comment_select_router</a></li>
 <li><a href="app/routers/comment_update_router.html">app.routers.comment_update_router</a></li>
+<li><a href="app/routers/document_delete_router.html">app.routers.document_delete_router</a></li>
+<li><a href="app/routers/document_download_router.html">app.routers.document_download_router</a></li>
+<li><a href="app/routers/document_downloads_router.html">app.routers.document_downloads_router</a></li>
+<li><a href="app/routers/document_flag_router.html">app.routers.document_flag_router</a></li>
+<li><a href="app/routers/document_list_router.html">app.routers.document_list_router</a></li>
+<li><a href="app/routers/document_move_router.html">app.routers.document_move_router</a></li>
+<li><a href="app/routers/document_replace_router.html">app.routers.document_replace_router</a></li>
+<li><a href="app/routers/document_revisions_router.html">app.routers.document_revisions_router</a></li>
+<li><a href="app/routers/document_select_router.html">app.routers.document_select_router</a></li>
+<li><a href="app/routers/document_update_router.html">app.routers.document_update_router</a></li>
+<li><a href="app/routers/document_upload_router.html">app.routers.document_upload_router</a></li>
+<li><a href="app/routers/execute_router.html">app.routers.execute_router</a></li>
+<li><a href="app/routers/lock_change_router.html">app.routers.lock_change_router</a></li>
 <li><a href="app/routers/lock_retrieve_router.html">app.routers.lock_retrieve_router</a></li>
 <li><a href="app/routers/option_delete_router.html">app.routers.option_delete_router</a></li>
 <li><a href="app/routers/option_list_router.html">app.routers.option_list_router</a></li>
 <li><a href="app/routers/option_select_router.html">app.routers.option_select_router</a></li>
 <li><a href="app/routers/option_update_router.html">app.routers.option_update_router</a></li>
+<li><a href="app/routers/partner_delete_router.html">app.routers.partner_delete_router</a></li>
+<li><a href="app/routers/partner_insert_router.html">app.routers.partner_insert_router</a></li>
+<li><a href="app/routers/partner_list_router.html">app.routers.partner_list_router</a></li>
+<li><a href="app/routers/partner_select_router.html">app.routers.partner_select_router</a></li>
+<li><a href="app/routers/partner_update_router.html">app.routers.partner_update_router</a></li>
+<li><a href="app/routers/partnerpic_delete_router.html">app.routers.partnerpic_delete_router</a></li>
+<li><a href="app/routers/partnerpic_upload_router.html">app.routers.partnerpic_upload_router</a></li>
+<li><a href="app/routers/sphinx_router.html">app.routers.sphinx_router</a></li>
 <li><a href="app/routers/telemetry_retrieve_router.html">app.routers.telemetry_retrieve_router</a></li>
 <li><a href="app/routers/token_invalidate_router.html">app.routers.token_invalidate_router</a></li>
 <li><a href="app/routers/token_retrieve_router.html">app.routers.token_retrieve_router</a></li>
 <li><a href="app/routers/user_delete_router.html">app.routers.user_delete_router</a></li>
 <li><a href="app/routers/user_list_router.html">app.routers.user_list_router</a></li>
 <li><a href="app/routers/user_login_router.html">app.routers.user_login_router</a></li>
+<li><a href="app/routers/user_mfa_router.html">app.routers.user_mfa_router</a></li>
+<li><a href="app/routers/user_password_router.html">app.routers.user_password_router</a></li>
 <li><a href="app/routers/user_register_router.html">app.routers.user_register_router</a></li>
+<li><a href="app/routers/user_role_router.html">app.routers.user_role_router</a></li>
 <li><a href="app/routers/user_select_router.html">app.routers.user_select_router</a></li>
 <li><a href="app/routers/user_update_router.html">app.routers.user_update_router</a></li>
 <li><a href="app/routers/userpic_delete_router.html">app.routers.userpic_delete_router</a></li>
 <li><a href="app/routers/userpic_upload_router.html">app.routers.userpic_upload_router</a></li>
+<li><a href="app/scheduler.html">app.scheduler</a></li>
 <li><a href="app/schemas/collection_schemas.html">app.schemas.collection_schemas</a></li>
 <li><a href="app/schemas/comment_schemas.html">app.schemas.comment_schemas</a></li>
+<li><a href="app/schemas/document_schemas.html">app.schemas.document_schemas</a></li>
 <li><a href="app/schemas/download_schemas.html">app.schemas.download_schemas</a></li>
+<li><a href="app/schemas/execute_schemas.html">app.schemas.execute_schemas</a></li>
 <li><a href="app/schemas/lock_schemas.html">app.schemas.lock_schemas</a></li>
 <li><a href="app/schemas/option_schemas.html">app.schemas.option_schemas</a></li>
+<li><a href="app/schemas/partner_schemas.html">app.schemas.partner_schemas</a></li>
 <li><a href="app/schemas/revision_schemas.html">app.schemas.revision_schemas</a></li>
+<li><a href="app/schemas/telemetry_schemas.html">app.schemas.telemetry_schemas</a></li>
 <li><a href="app/schemas/user_schemas.html">app.schemas.user_schemas</a></li>
 </ul>
 

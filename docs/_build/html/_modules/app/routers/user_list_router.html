@@ -113,13 +113,13 @@
 
 <span class="sd">    **Returns:**</span>
 <span class="sd">    - `UserListResponse`: A response schema containing the list of users</span>
-<span class="sd">      and the total count.</span>
+<span class="sd">    and the total count.</span>
 
 <span class="sd">    **Raises:**</span>
 <span class="sd">    - `403 Forbidden`: Raised if authentication fails or the user does not</span>
-<span class="sd">      have the required permissions.</span>
+<span class="sd">    have the required permissions.</span>
 <span class="sd">    - `422 Unprocessable Entity`: Raised if the arguments in the request</span>
-<span class="sd">      schema are invalid.</span>
+<span class="sd">    schema are invalid.</span>
 <span class="sd">    - `423 Locked`: Raised if the application is locked.</span>
 
 <span class="sd">    **Hooks:**</span>
@@ -128,7 +128,7 @@
 <span class="sd">    **Auth:**</span>
 <span class="sd">    - The user must provide a valid `JWT token` in the request header.</span>
 <span class="sd">    - The `reader`, `writer`, `editor`, or `admin` role is required to</span>
-<span class="sd">      access this router.</span>
+<span class="sd">    access this router.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">user_repository</span> <span class="o">=</span> <span class="n">Repository</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">cache</span><span class="p">,</span> <span class="n">User</span><span class="p">)</span>
 

@@ -38,22 +38,22 @@ async def document_list(
 
     **Args:**
     - `DocumentListRequest`: The request schema containing the filters
-      for the document list.
+    for the document list.
 
     **Returns:**
     - `DocumentListResponse`: The response schema containing the list of
-      documents and the total count.
+    documents and the total count.
 
     **Raises:**
     - `403 Forbidden`: Raised if the user does not have the required
-      permissions.
+    permissions.
     - `422 Unprocessable Entity`: Raised if arguments validation failed.
     - `423 Locked`: Raised if the application is locked.
 
     **Auth:**
     - The user must provide a valid `JWT token` in the request header.
     - `reader`, `writer`, `editor` or `admin` user role is required to
-      access this router.
+    access this router.
     """
     document_repository = Repository(session, cache, Document)
 

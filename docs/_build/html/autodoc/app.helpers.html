@@ -20,7 +20,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="app.managers package" href="app.managers.html" />
-    <link rel="prev" title="app.decorators package" href="app.decorators.html" /> 
+    <link rel="prev" title="app.filters package" href="app.filters.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -46,8 +46,18 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="app.html">app package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="app.decorators.html">app.decorators package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app.filters.html">app.filters package</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">app.helpers package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.helpers.encryption_helper">app.helpers.encryption_helper module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.encryption_helper.decrypt_bytes"><code class="docutils literal notranslate"><span class="pre">decrypt_bytes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.encryption_helper.decrypt_value"><code class="docutils literal notranslate"><span class="pre">decrypt_value()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.encryption_helper.encrypt_bytes"><code class="docutils literal notranslate"><span class="pre">encrypt_bytes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.encryption_helper.encrypt_value"><code class="docutils literal notranslate"><span class="pre">encrypt_value()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.encryption_helper.extract_encryption_key"><code class="docutils literal notranslate"><span class="pre">extract_encryption_key()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.encryption_helper.generate_encryption_salt"><code class="docutils literal notranslate"><span class="pre">generate_encryption_salt()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#module-app.helpers.hash_helper">app.helpers.hash_helper module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#app.helpers.hash_helper.get_hash"><code class="docutils literal notranslate"><span class="pre">get_hash()</span></code></a></li>
 </ul>
@@ -75,7 +85,14 @@
 <li class="toctree-l3"><a class="reference internal" href="#app.helpers.lock_helper.locked_date"><code class="docutils literal notranslate"><span class="pre">locked_date()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#app-helpers-openapi-helper-module">app.helpers.openapi_helper module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.helpers.shuffle_helper">app.helpers.shuffle_helper module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.shuffle_helper.shuffle"><code class="docutils literal notranslate"><span class="pre">shuffle()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.helpers.tag_helper">app.helpers.tag_helper module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.tag_helper.extract_tag_values"><code class="docutils literal notranslate"><span class="pre">extract_tag_values()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#module-app.helpers.uptime_helper">app.helpers.uptime_helper module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#app.helpers.uptime_helper.Uptime"><code class="docutils literal notranslate"><span class="pre">Uptime</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#app.helpers.uptime_helper.Uptime.get_uptime"><code class="docutils literal notranslate"><span class="pre">Uptime.get_uptime()</span></code></a></li>
@@ -91,6 +108,7 @@
 <li class="toctree-l1"><a class="reference internal" href="app.plugins.html">app.plugins package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="app.routers.html">app.routers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="app.schemas.html">app.schemas package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app.triggers.html">app.triggers package</a></li>
 </ul>
 
         </div>
@@ -122,6 +140,56 @@
 <h1>app.helpers package<a class="headerlink" href="#app-helpers-package" title="Link to this heading"></a></h1>
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-app.helpers.encryption_helper">
+<span id="app-helpers-encryption-helper-module"></span><h2>app.helpers.encryption_helper module<a class="headerlink" href="#module-app.helpers.encryption_helper" title="Link to this heading"></a></h2>
+<p>The module provides functions for encrypting and decrypting data using
+AES encryption with PBKDF2 key derivation. It includes utilities for
+generating a random salt, deriving an AES key from a password and salt,
+encrypting and decrypting both bytes and string values, and returning
+encrypted data as base64-encoded strings.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.helpers.encryption_helper.decrypt_bytes">
+<span class="sig-prename descclassname"><span class="pre">app.helpers.encryption_helper.</span></span><span class="sig-name descname"><span class="pre">decrypt_bytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">encrypted_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bytes</span></span></span><a class="reference internal" href="../_modules/app/helpers/encryption_helper.html#decrypt_bytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.encryption_helper.decrypt_bytes" title="Link to this definition"></a></dt>
+<dd><p>Decrypts the encrypted data. The encrypted data contains the salt,
+IV, and ciphertext concatenated together.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.helpers.encryption_helper.decrypt_value">
+<span class="sig-prename descclassname"><span class="pre">app.helpers.encryption_helper.</span></span><span class="sig-name descname"><span class="pre">decrypt_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">encrypted_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/app/helpers/encryption_helper.html#decrypt_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.encryption_helper.decrypt_value" title="Link to this definition"></a></dt>
+<dd><p>The function decodes the base64 string into bytes, decrypts it using
+AES, and returns the decrypted string.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.helpers.encryption_helper.encrypt_bytes">
+<span class="sig-prename descclassname"><span class="pre">app.helpers.encryption_helper.</span></span><span class="sig-name descname"><span class="pre">encrypt_bytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bytes</span></span></span><a class="reference internal" href="../_modules/app/helpers/encryption_helper.html#encrypt_bytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.encryption_helper.encrypt_bytes" title="Link to this definition"></a></dt>
+<dd><p>Encrypts the provided data using AES encryption with CBC mode.
+The salt, IV, and ciphertext are concatenated and returned as a
+single encrypted value.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.helpers.encryption_helper.encrypt_value">
+<span class="sig-prename descclassname"><span class="pre">app.helpers.encryption_helper.</span></span><span class="sig-name descname"><span class="pre">encrypt_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/app/helpers/encryption_helper.html#encrypt_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.encryption_helper.encrypt_value" title="Link to this definition"></a></dt>
+<dd><p>Encrypts the given string value and returns the encrypted data as a
+base64-encoded string.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.helpers.encryption_helper.extract_encryption_key">
+<span class="sig-prename descclassname"><span class="pre">app.helpers.encryption_helper.</span></span><span class="sig-name descname"><span class="pre">extract_encryption_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">salt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bytes</span></span></span><a class="reference internal" href="../_modules/app/helpers/encryption_helper.html#extract_encryption_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.encryption_helper.extract_encryption_key" title="Link to this definition"></a></dt>
+<dd><p>Derives an AES key from the given password and salt using PBKDF2
+with HMAC-SHA256.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.helpers.encryption_helper.generate_encryption_salt">
+<span class="sig-prename descclassname"><span class="pre">app.helpers.encryption_helper.</span></span><span class="sig-name descname"><span class="pre">generate_encryption_salt</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bytes</span></span></span><a class="reference internal" href="../_modules/app/helpers/encryption_helper.html#generate_encryption_salt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.encryption_helper.generate_encryption_salt" title="Link to this definition"></a></dt>
+<dd><p>Generates a random salt for AES key derivation.</p>
+</dd></dl>
+
 </section>
 <section id="module-app.helpers.hash_helper">
 <span id="app-helpers-hash-helper-module"></span><h2>app.helpers.hash_helper module<a class="headerlink" href="#module-app.helpers.hash_helper" title="Link to this heading"></a></h2>
@@ -252,8 +320,35 @@ already exist.</p>
 </dd></dl>
 
 </section>
-<section id="app-helpers-openapi-helper-module">
-<h2>app.helpers.openapi_helper module<a class="headerlink" href="#app-helpers-openapi-helper-module" title="Link to this heading"></a></h2>
+<section id="module-app.helpers.shuffle_helper">
+<span id="app-helpers-shuffle-helper-module"></span><h2>app.helpers.shuffle_helper module<a class="headerlink" href="#module-app.helpers.shuffle_helper" title="Link to this heading"></a></h2>
+<p>The module provides functionality for shuffling files. It handles the
+process of copying, deleting, and renaming files based on shard
+information retrieved from the database. The function also supports
+locking mechanisms to prevent concurrent operations during the shuffle
+process.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.helpers.shuffle_helper.shuffle">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.helpers.shuffle_helper.</span></span><span class="sig-name descname"><span class="pre">shuffle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AsyncSession</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Redis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/helpers/shuffle_helper.html#shuffle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.shuffle_helper.shuffle" title="Link to this definition"></a></dt>
+<dd><p>Handles the process of shuffling files by copying, deleting, and
+renaming shard files. It retrieves shard information from the
+database and optionally enables a lock to prevent concurrent
+operations during the shuffle process.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.helpers.tag_helper">
+<span id="app-helpers-tag-helper-module"></span><h2>app.helpers.tag_helper module<a class="headerlink" href="#module-app.helpers.tag_helper" title="Link to this heading"></a></h2>
+<p>The module provides functionality for extracting and cleaning tag values
+from a comma-separated string. It converts the values to lowercase and
+removes duplicates.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.helpers.tag_helper.extract_tag_values">
+<span class="sig-prename descclassname"><span class="pre">app.helpers.tag_helper.</span></span><span class="sig-name descname"><span class="pre">extract_tag_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_string</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/app/helpers/tag_helper.html#extract_tag_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.tag_helper.extract_tag_values" title="Link to this definition"></a></dt>
+<dd><p>Extracts and cleans tag values from a comma-separated string,
+converting them to lowercase and removing duplicates.</p>
+</dd></dl>
+
 </section>
 <section id="module-app.helpers.uptime_helper">
 <span id="app-helpers-uptime-helper-module"></span><h2>app.helpers.uptime_helper module<a class="headerlink" href="#module-app.helpers.uptime_helper" title="Link to this heading"></a></h2>
@@ -285,7 +380,7 @@ difference between the current time and the recorded start time.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="app.decorators.html" class="btn btn-neutral float-left" title="app.decorators package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="app.filters.html" class="btn btn-neutral float-left" title="app.filters package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="app.managers.html" class="btn btn-neutral float-right" title="app.managers package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

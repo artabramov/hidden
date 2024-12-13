@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
@@ -5,18 +7,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>app.routers.comment_update_router &mdash; Hidden  documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
-        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
-        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -33,9 +31,6 @@
           <a href="../../../index.html" class="icon icon-home">
             Hidden
           </a>
-              <div class="version">
-                0.0.52
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -50,6 +45,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.decorators.html">app.decorators package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.helpers.html">app.helpers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.managers.html">app.managers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.models.html">app.models package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.plugins.html">app.plugins package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.routers.html">app.routers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.schemas.html">app.schemas package</a></li>
 </ul>
 
         </div>
@@ -113,15 +112,37 @@
     <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">auth</span><span class="p">(</span><span class="n">UserRole</span><span class="o">.</span><span class="n">editor</span><span class="p">))</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CommentUpdateResponse</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    FastAPI router for updating a comment entity. The router fetches</span>
-<span class="sd">    the comment from the repository using the provided ID, verifies</span>
-<span class="sd">    that the current user is the creator of the comment, checks that</span>
-<span class="sd">    the associated collection is not locked, updates the comment content,</span>
-<span class="sd">    and returns the updated comment ID in a JSON response. The current</span>
-<span class="sd">    user should have an editor role or higher. Returns a 200 response</span>
-<span class="sd">    on success, a 404 error if the comment is not found, a 423 error if</span>
-<span class="sd">    the collection is locked, and a 403 error if authentication fails or</span>
-<span class="sd">    the user does not have the required role.</span>
+<span class="sd">    Update a comment. The router fetches the comment from the repository</span>
+<span class="sd">    using the provided ID, verifies that the current user is the author</span>
+<span class="sd">    of the comment, checks that the associated collection is not locked,</span>
+<span class="sd">    updates the comment content, executes related hooks, and returns the</span>
+<span class="sd">    updated comment ID in a JSON response. The current user should have</span>
+<span class="sd">    an editor role or higher. Returns a 200 response on success, a 404</span>
+<span class="sd">    error if the comment is not found, a 423 error if the collection or</span>
+<span class="sd">    the application is locked, and a 403 error if authentication failed</span>
+<span class="sd">    or the user does not have the required permissions.</span>
+
+<span class="sd">    **Args:**</span>
+<span class="sd">    - `comment_id`: The ID of the comment to be updated.</span>
+<span class="sd">    - `CommentUpdateRequest`: The request schema containing the new</span>
+<span class="sd">    comment content.</span>
+
+<span class="sd">    **Returns:**</span>
+<span class="sd">    - `CommentUpdateResponse`: The response schema containing the ID of</span>
+<span class="sd">    the updated comment.</span>
+
+<span class="sd">    **Raises:**</span>
+<span class="sd">    - `403 Forbidden`: Raised if the current user is not the author of</span>
+<span class="sd">    the comment or lacks required permissions.</span>
+<span class="sd">    - `404 Not Found`: Raised if the comment with the specified ID does</span>
+<span class="sd">    not exist.</span>
+<span class="sd">    - `422 Unprocessable Entity`: Raised if arguments validation failed.</span>
+<span class="sd">    - `423 Locked`: Raised if the collection or the application is</span>
+<span class="sd">    locked.</span>
+
+<span class="sd">    **Auth:**</span>
+<span class="sd">    - The user must provide a valid `JWT token` in the request header.</span>
+<span class="sd">    - `editor` or `admin` user role are required to access this router.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">comment_repository</span> <span class="o">=</span> <span class="n">Repository</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">cache</span><span class="p">,</span> <span class="n">Comment</span><span class="p">)</span>
     <span class="n">comment</span> <span class="o">=</span> <span class="k">await</span> <span class="n">comment_repository</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">comment_id</span><span class="p">)</span>

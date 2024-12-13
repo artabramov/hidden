@@ -45,20 +45,20 @@ async def comment_update(
     **Args:**
     - `comment_id`: The ID of the comment to be updated.
     - `CommentUpdateRequest`: The request schema containing the new
-      comment content.
+    comment content.
 
     **Returns:**
     - `CommentUpdateResponse`: The response schema containing the ID of
-      the updated comment.
+    the updated comment.
 
     **Raises:**
     - `403 Forbidden`: Raised if the current user is not the author of
-      the comment or lacks required permissions.
+    the comment or lacks required permissions.
     - `404 Not Found`: Raised if the comment with the specified ID does
-      not exist.
+    not exist.
     - `422 Unprocessable Entity`: Raised if arguments validation failed.
     - `423 Locked`: Raised if the collection or the application is
-      locked.
+    locked.
 
     **Auth:**
     - The user must provide a valid `JWT token` in the request header.

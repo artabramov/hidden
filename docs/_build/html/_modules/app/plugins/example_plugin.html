@@ -1,0 +1,1191 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>app.plugins.example_plugin &mdash; Hidden  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Hidden
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.html">app package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.decorators.html">app.decorators package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.helpers.html">app.helpers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.managers.html">app.managers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.models.html">app.models package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.plugins.html">app.plugins package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.routers.html">app.routers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.schemas.html">app.schemas package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Hidden</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">app.plugins.example_plugin</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for app.plugins.example_plugin</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Example plugin module for handling event hook functions triggered</span>
+<span class="sd">by corresponding events within the application. Each function is</span>
+<span class="sd">associated with a specific event and is designed to be executed when</span>
+<span class="sd">that event occurs. Functions may include additional logic such as</span>
+<span class="sd">event logging, updating the database, managing the cache, performing</span>
+<span class="sd">file or network operations, interacting with third-party applications,</span>
+<span class="sd">and other related actions.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">app.models.user_model</span> <span class="kn">import</span> <span class="n">User</span>
+<span class="kn">from</span> <span class="nn">app.models.collection_model</span> <span class="kn">import</span> <span class="n">Collection</span>
+<span class="kn">from</span> <span class="nn">app.models.partner_model</span> <span class="kn">import</span> <span class="n">Partner</span>
+<span class="kn">from</span> <span class="nn">app.models.document_model</span> <span class="kn">import</span> <span class="n">Document</span>
+<span class="kn">from</span> <span class="nn">app.models.revision_model</span> <span class="kn">import</span> <span class="n">Revision</span>
+<span class="kn">from</span> <span class="nn">app.models.comment_model</span> <span class="kn">import</span> <span class="n">Comment</span>
+<span class="kn">from</span> <span class="nn">app.models.download_model</span> <span class="kn">import</span> <span class="n">Download</span>
+<span class="kn">from</span> <span class="nn">app.models.option_model</span> <span class="kn">import</span> <span class="n">Option</span>
+<span class="kn">from</span> <span class="nn">redis</span> <span class="kn">import</span> <span class="n">Redis</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.ext.asyncio</span> <span class="kn">import</span> <span class="n">AsyncSession</span>
+
+
+<div class="viewcode-block" id="on_telemetry_retrieve">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.on_telemetry_retrieve">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">on_telemetry_retrieve</span><span class="p">(</span>
+        <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+        <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes when telemetry is retrieved. Receives telemetry</span>
+<span class="sd">    data and performs any necessary post-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="on_lock_change">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.on_lock_change">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">on_lock_change</span><span class="p">(</span>
+        <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+        <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">is_locked</span><span class="p">:</span> <span class="nb">bool</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes when lock mode is changed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="on_lock_retrieve">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.on_lock_retrieve">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">on_lock_retrieve</span><span class="p">(</span>
+        <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+        <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">is_locked</span><span class="p">:</span> <span class="nb">bool</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes when lock mode is retrieved.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="on_execute">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.on_execute">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">on_execute</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">action</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">response</span><span class="p">:</span> <span class="nb">dict</span>
+<span class="p">):</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="on_schedule">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.on_schedule">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">on_schedule</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="kc">None</span>
+<span class="p">):</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="before_user_register">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.before_user_register">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">before_user_register</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes before a user is registered. Receives the user</span>
+<span class="sd">    entity and performs any necessary pre-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="after_user_register">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.after_user_register">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_user_register</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes after a user is registered. Receives the user</span>
+<span class="sd">    entity and performs any necessary post-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="before_mfa_select">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.before_mfa_select">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">before_mfa_select</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes before MFA image is retrieved. Receives the user</span>
+<span class="sd">    entity and performs any necessary pre-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="after_mfa_select">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.after_mfa_select">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_mfa_select</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes after MFA image is retrieved. Receives the user</span>
+<span class="sd">    entity and performs any necessary post-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="before_user_login">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.before_user_login">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">before_user_login</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes before a user is logged in. Receives the user</span>
+<span class="sd">    entity and performs any necessary pre-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="after_user_login">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.after_user_login">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_user_login</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes after a user is logged in. Receives the user</span>
+<span class="sd">    entity and performs any necessary post-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="before_token_retrieve">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.before_token_retrieve">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">before_token_retrieve</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes before a token is retrieved. Receives the user</span>
+<span class="sd">    entity and performs any necessary pre-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="after_token_retrieve">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.after_token_retrieve">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_token_retrieve</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes after a token is retrieved. Receives the user</span>
+<span class="sd">    entity and performs any necessary post-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="after_user_select">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.after_user_select">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_user_select</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes after a user is selected. Receives the user</span>
+<span class="sd">    entity and performs any necessary post-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="before_user_update">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.before_user_update">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">before_user_update</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes before a user is updated. Receives the user</span>
+<span class="sd">    entity and performs any necessary pre-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="after_user_update">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.after_user_update">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_user_update</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes after a user is updated. Receives the user</span>
+<span class="sd">    entity and performs any necessary post-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="before_role_update">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.before_role_update">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">before_role_update</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes before a user role is updated. Receives the user</span>
+<span class="sd">    entity and performs any necessary pre-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="after_role_update">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.after_role_update">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_role_update</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes after a user role is updated. Receives the user</span>
+<span class="sd">    entity and performs any necessary post-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="before_password_update">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.before_password_update">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">before_password_update</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes before a user password is updated. Receives the user</span>
+<span class="sd">    entity and performs any necessary pre-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="after_password_update">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.after_password_update">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_password_update</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes after a user password is updated. Receives the user</span>
+<span class="sd">    entity and performs any necessary post-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="before_user_delete">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.before_user_delete">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">before_user_delete</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes before a user is deleted. Receives the user</span>
+<span class="sd">    entity and performs any necessary pre-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="after_user_delete">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.after_user_delete">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_user_delete</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes after a user is deleted. Receives the user</span>
+<span class="sd">    entity and performs any necessary post-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="before_userpic_upload">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.before_userpic_upload">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">before_userpic_upload</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes before userpic is uploaded. Receives the user</span>
+<span class="sd">    entity and performs any necessary pre-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="after_userpic_upload">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.after_userpic_upload">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_userpic_upload</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes after userpic is uploaded. Receives the user</span>
+<span class="sd">    entity and performs any necessary post-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="before_userpic_delete">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.before_userpic_delete">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">before_userpic_delete</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes before userpic is removed. Receives the user</span>
+<span class="sd">    entity and performs any necessary pre-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="after_userpic_delete">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.after_userpic_delete">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_userpic_delete</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes after userpic is removed. Receives the user</span>
+<span class="sd">    entity and performs any necessary post-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="before_token_invalidate">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.before_token_invalidate">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">before_token_invalidate</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes before a token is invalidated. Receives the user</span>
+<span class="sd">    entity and performs any necessary pre-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="after_token_invalidate">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.after_token_invalidate">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_token_invalidate</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes after a token is invalidated. Receives the user</span>
+<span class="sd">    entity and performs any necessary post-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="after_user_list">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.after_user_list">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_user_list</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">users</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">User</span><span class="p">]</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes after a user list is retrieved. Receives the list</span>
+<span class="sd">    of user entities and performs any necessary post-processing</span>
+<span class="sd">    actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="before_collection_insert">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.before_collection_insert">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">before_collection_insert</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">collection</span><span class="p">:</span> <span class="n">Collection</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes before a collection is created. Receives the collection</span>
+<span class="sd">    entity and performs any necessary pre-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="after_collection_insert">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.after_collection_insert">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_collection_insert</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">collection</span><span class="p">:</span> <span class="n">Collection</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes after a collection is created. Receives the collection</span>
+<span class="sd">    entity and performs any necessary post-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="after_collection_select">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.after_collection_select">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_collection_select</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">collection</span><span class="p">:</span> <span class="n">Collection</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes after a collection is selected. Receives the collection</span>
+<span class="sd">    entity and performs any necessary post-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="before_collection_update">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.before_collection_update">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">before_collection_update</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">collection</span><span class="p">:</span> <span class="n">Collection</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes before a collection is updated. Receives the collection</span>
+<span class="sd">    entity and performs any necessary pre-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="after_collection_update">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.after_collection_update">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_collection_update</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">collection</span><span class="p">:</span> <span class="n">Collection</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes after a collection is updated. Receives the collection</span>
+<span class="sd">    entity and performs any necessary post-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="before_collection_delete">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.before_collection_delete">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">before_collection_delete</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">collection</span><span class="p">:</span> <span class="n">Collection</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes before a collection is deleted. Receives the collection</span>
+<span class="sd">    entity and performs any necessary pre-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="after_collection_delete">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.after_collection_delete">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_collection_delete</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">collection</span><span class="p">:</span> <span class="n">Collection</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes after a collection is deleted. Receives the collection</span>
+<span class="sd">    entity and performs any necessary post-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="after_collection_list">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.after_collection_list">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_collection_list</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">collections</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Collection</span><span class="p">]</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes after a collection list is retrieved. Receives the list</span>
+<span class="sd">    of collection entities and performs any necessary post-processing</span>
+<span class="sd">    actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="before_partner_insert">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.before_partner_insert">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">before_partner_insert</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">partner</span><span class="p">:</span> <span class="n">Partner</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes before a partner is created. Receives the partner</span>
+<span class="sd">    entity and performs any necessary pre-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="after_partner_insert">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.after_partner_insert">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_partner_insert</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">partner</span><span class="p">:</span> <span class="n">Partner</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes after a partner is created. Receives the partner</span>
+<span class="sd">    entity and performs any necessary post-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="after_partner_select">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.after_partner_select">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_partner_select</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">partner</span><span class="p">:</span> <span class="n">Partner</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes after a partner is selected. Receives the partner</span>
+<span class="sd">    entity and performs any necessary post-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="before_partner_update">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.before_partner_update">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">before_partner_update</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">partner</span><span class="p">:</span> <span class="n">Partner</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes before a partner is updated. Receives the partner</span>
+<span class="sd">    entity and performs any necessary pre-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="after_partner_update">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.after_partner_update">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_partner_update</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">partner</span><span class="p">:</span> <span class="n">Partner</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes after a partner is updated. Receives the partner</span>
+<span class="sd">    entity and performs any necessary post-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="before_partner_delete">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.before_partner_delete">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">before_partner_delete</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">partner</span><span class="p">:</span> <span class="n">Partner</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes before a partner is deleted. Receives the partner</span>
+<span class="sd">    entity and performs any necessary pre-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="after_partner_delete">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.after_partner_delete">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_partner_delete</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">partner</span><span class="p">:</span> <span class="n">Partner</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes after a partner is deleted. Receives the partner</span>
+<span class="sd">    entity and performs any necessary post-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="after_partner_list">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.after_partner_list">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_partner_list</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">partners</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Partner</span><span class="p">]</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes after a partner list is retrieved. Receives the list</span>
+<span class="sd">    of partner entities and performs any necessary post-processing</span>
+<span class="sd">    actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="before_partnerpic_upload">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.before_partnerpic_upload">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">before_partnerpic_upload</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">partner</span><span class="p">:</span> <span class="n">Partner</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes before partnerpic is uploaded. Receives the partner</span>
+<span class="sd">    entity and performs any necessary pre-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="after_partnerpic_upload">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.after_partnerpic_upload">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_partnerpic_upload</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">partner</span><span class="p">:</span> <span class="n">Partner</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes after partnerpic is uploaded. Receives the partner</span>
+<span class="sd">    entity and performs any necessary post-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="before_partnerpic_delete">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.before_partnerpic_delete">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">before_partnerpic_delete</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">partner</span><span class="p">:</span> <span class="n">Partner</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes before partnerpic is removed. Receives the partner</span>
+<span class="sd">    entity and performs any necessary pre-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="after_partnerpic_delete">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.after_partnerpic_delete">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_partnerpic_delete</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">partner</span><span class="p">:</span> <span class="n">Partner</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes after partnerpic is removed. Receives the partner</span>
+<span class="sd">    entity and performs any necessary post-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="before_document_upload">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.before_document_upload">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">before_document_upload</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">document</span><span class="p">:</span> <span class="n">Document</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes before a document is uploaded. Receives the document</span>
+<span class="sd">    entity and performs any necessary pre-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="after_document_upload">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.after_document_upload">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_document_upload</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">document</span><span class="p">:</span> <span class="n">Document</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes after a document is uploaded. Receives the document</span>
+<span class="sd">    entity and performs any necessary post-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="before_document_replace">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.before_document_replace">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">before_document_replace</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">document</span><span class="p">:</span> <span class="n">Document</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes before a document is replaced. Receives the document</span>
+<span class="sd">    entity and performs any necessary pre-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="after_document_replace">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.after_document_replace">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_document_replace</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">document</span><span class="p">:</span> <span class="n">Document</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes after a document is replaced. Receives the document</span>
+<span class="sd">    entity and performs any necessary post-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="after_document_select">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.after_document_select">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_document_select</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">document</span><span class="p">:</span> <span class="n">Document</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes after a document is selected. Receives the document</span>
+<span class="sd">    entity and performs any necessary post-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="before_document_update">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.before_document_update">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">before_document_update</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">document</span><span class="p">:</span> <span class="n">Document</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes before a document is updated. Receives the document</span>
+<span class="sd">    entity and performs any necessary pre-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="after_document_update">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.after_document_update">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_document_update</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">document</span><span class="p">:</span> <span class="n">Document</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes after a document is updated. Receives the document</span>
+<span class="sd">    entity and performs any necessary post-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="before_document_delete">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.before_document_delete">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">before_document_delete</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">document</span><span class="p">:</span> <span class="n">Document</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes before a document is deleted. Receives the document</span>
+<span class="sd">    entity and performs any necessary pre-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="after_document_delete">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.after_document_delete">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_document_delete</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">document</span><span class="p">:</span> <span class="n">Document</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes after a document is deleted. Receives the document</span>
+<span class="sd">    entity and performs any necessary post-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="after_document_list">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.after_document_list">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_document_list</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">documents</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Document</span><span class="p">]</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes after a document list is retrieved. Receives the list</span>
+<span class="sd">    of document entities and performs any necessary post-processing</span>
+<span class="sd">    actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="before_comment_insert">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.before_comment_insert">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">before_comment_insert</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">comment</span><span class="p">:</span> <span class="n">Comment</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes before a comment is inserted. Receives the comment</span>
+<span class="sd">    entity and performs any necessary pre-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="after_comment_insert">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.after_comment_insert">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_comment_insert</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">comment</span><span class="p">:</span> <span class="n">Comment</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes after a comment is inserted. Receives the comment</span>
+<span class="sd">    entity and performs any necessary post-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="after_comment_select">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.after_comment_select">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_comment_select</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">comment</span><span class="p">:</span> <span class="n">Comment</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes after a comment is retrieved. Receives the comment</span>
+<span class="sd">    entity and performs any necessary post-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="before_comment_update">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.before_comment_update">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">before_comment_update</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">comment</span><span class="p">:</span> <span class="n">Comment</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes before a comment is updated. Receives the comment</span>
+<span class="sd">    entity and performs any necessary pre-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="after_comment_update">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.after_comment_update">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_comment_update</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">comment</span><span class="p">:</span> <span class="n">Comment</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes after a comment is updated. Receives the comment</span>
+<span class="sd">    entity and performs any necessary post-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="before_comment_delete">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.before_comment_delete">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">before_comment_delete</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">comment</span><span class="p">:</span> <span class="n">Comment</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes before a comment is deleted. Receives the comment</span>
+<span class="sd">    entity and performs any necessary pre-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="after_comment_delete">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.after_comment_delete">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_comment_delete</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">comment</span><span class="p">:</span> <span class="n">Comment</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes after a comment is deleted. Receives the comment</span>
+<span class="sd">    entity and performs any necessary post-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="after_comment_list">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.after_comment_list">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_comment_list</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">comments</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Comment</span><span class="p">]</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes after a comment list is retrieved. Receives the list</span>
+<span class="sd">    of comment entities and performs any necessary post-processing</span>
+<span class="sd">    actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="before_revision_download">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.before_revision_download">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">before_revision_download</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">revision</span><span class="p">:</span> <span class="n">Revision</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes after an revision is downloaded. Receives the revision</span>
+<span class="sd">    entity and performs any necessary post-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="after_revision_list">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.after_revision_list">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_revision_list</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">revisions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Revision</span><span class="p">]</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes after an revision list is retrieved. Receives the list</span>
+<span class="sd">    of revision entities and performs any necessary post-processing</span>
+<span class="sd">    actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="after_download_list">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.after_download_list">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_download_list</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">downloads</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Download</span><span class="p">]</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes after a download list is retrieved. Receives the list</span>
+<span class="sd">    of download entities and performs any necessary post-processing</span>
+<span class="sd">    actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="after_option_select">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.after_option_select">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_option_select</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">option</span><span class="p">:</span> <span class="n">Option</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes after an option is selected. Receives the option</span>
+<span class="sd">    entity and performs any necessary post-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="before_option_update">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.before_option_update">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">before_option_update</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">option</span><span class="p">:</span> <span class="n">Option</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes before an option is updated. Receives the option</span>
+<span class="sd">    entity and performs any necessary pre-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="after_option_update">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.after_option_update">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_option_update</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">option</span><span class="p">:</span> <span class="n">Option</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes after an option is update. Receives the option</span>
+<span class="sd">    entity and performs any necessary post-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="before_option_delete">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.before_option_delete">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">before_option_delete</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">option</span><span class="p">:</span> <span class="n">Option</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes before an option is created. Receives the option</span>
+<span class="sd">    entity and performs any necessary pre-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="after_option_delete">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.after_option_delete">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_option_delete</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">option</span><span class="p">:</span> <span class="n">Option</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes after an option is deleted. Receives the option</span>
+<span class="sd">    entity and performs any necessary post-processing actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="after_option_list">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.after_option_list">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">after_option_list</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">options</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Option</span><span class="p">]</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes after an option list is retrieved. Receives the list</span>
+<span class="sd">    of option entities and performs any necessary post-processing</span>
+<span class="sd">    actions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Artem Abramov.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

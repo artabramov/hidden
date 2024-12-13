@@ -48,15 +48,15 @@ async def comment_delete(
 
     **Returns:**
     - `CommentDeleteResponse`: The response schema containing the ID of
-      the deleted comment.
+    the deleted comment.
 
     **Raises:**
     - `403 Forbidden`: Raised if the current user is not the author of
-      the comment or lacks the required permissions.
+    the comment or lacks the required permissions.
     - `404 Not Found`: Raised if the comment with the specified ID does
-      not exist.
+    not exist.
     - `423 Locked`: Raised if the corresponding collection or the
-      application is locked.
+    application is locked.
 
     **Auth:**
     - The user must provide a valid `JWT token` in the request header.

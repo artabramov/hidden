@@ -45,13 +45,13 @@ async def option_delete(
 
     **Returns:**
     - `OptionDeleteResponse`: The response schema containing the key of
-      the deleted option.
+    the deleted option.
 
     **Raises:**
     - `403 Forbidden`: Raised if the user does not have the required
-      permissions.
+    permissions.
     - `404 Not Found`: Raised if the option is not found in the
-      repository.
+    repository.
     - `423 Locked`: Raised if the the application is locked.
 
     **Auth:**

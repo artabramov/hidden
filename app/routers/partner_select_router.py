@@ -39,23 +39,23 @@ async def partner_select(
 
     **Returns:**
     - `PartnerSelectResponse`: The response schema containing the
-      details of the selected partner.
+    details of the selected partner.
 
     **Raises:**
     - `403 Forbidden`: Raised if the current user is not authenticated
-      or does not have the required permissions.
+    or does not have the required permissions.
     - `404 Not Found`: Raised if the partner with the specified ID does
-      not exist.
+    not exist.
     - `423 Locked`: Raised if the application is locked.
 
     **Hooks:**
     - `HOOK_AFTER_PARTNER_SELECT`: Executes after the partner is
-      successfully selected.
+    successfully selected.
 
     **Auth:**
     - The user must provide a valid `JWT token` in the request header.
     - `reader`, `writer`, `editor` or `admin` user role is required to
-      access this router.
+    access this router.
     """
     partner_repository = Repository(session, cache, Partner)
     partner = await partner_repository.select(id=partner_id)

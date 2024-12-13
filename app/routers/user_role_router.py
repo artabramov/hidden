@@ -37,12 +37,12 @@ async def user_role(
 
     **Returns:**
     - `RoleUpdateResponse`: A response schema containing the ID of the
-      updated user.
+    updated user.
 
     **Raises:**
     - `403 Forbidden`: Raised if the current user tries to update their
-      own role, if the user's token is invalid, or if the user does not
-      have the required role.
+    own role, if the user's token is invalid, or if the user does not
+    have the required role.
     - `404 Not Found`: Raised if the user to be updated is not found.
     - `422 Unprocessable Entity`: Raised if arguments validation failed
     - `423 Locked`: Raised if the application is locked.

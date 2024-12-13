@@ -47,11 +47,14 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">app package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="app.decorators.html">app.decorators package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.filters.html">app.filters package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="app.helpers.html">app.helpers package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="app.managers.html">app.managers package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="app.models.html">app.models package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html">app.plugins package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="app.routers.html">app.routers package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="app.schemas.html">app.schemas package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.triggers.html">app.triggers package</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
@@ -197,7 +200,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#app.log.get_log"><code class="docutils literal notranslate"><span class="pre">get_log()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#app-model-module">app.model module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-app.openapi">app.openapi module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-app.repository">app.repository module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#app.repository.Repository"><code class="docutils literal notranslate"><span class="pre">Repository</span></code></a><ul>
@@ -217,18 +219,24 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.scheduler">app.scheduler module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.scheduler.scheduler"><code class="docutils literal notranslate"><span class="pre">scheduler()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#module-app.serial">app.serial module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-app.version">app.version module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-app">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="app.decorators.html">app.decorators package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app.filters.html">app.filters package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="app.helpers.html">app.helpers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="app.managers.html">app.managers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="app.models.html">app.models package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="app.plugins.html">app.plugins package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="app.routers.html">app.routers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="app.schemas.html">app.schemas package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app.triggers.html">app.triggers package</a></li>
 </ul>
 
         </div>
@@ -274,8 +282,60 @@
 <li class="toctree-l2"><a class="reference internal" href="app.decorators.html#module-app.decorators">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="app.filters.html">app.filters package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="app.filters.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="app.filters.html#module-app.filters.collection_filters">app.filters.collection_filters module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="app.filters.html#app.filters.collection_filters.filter_collection_name"><code class="docutils literal notranslate"><span class="pre">filter_collection_name()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.filters.html#app.filters.collection_filters.filter_collection_summary"><code class="docutils literal notranslate"><span class="pre">filter_collection_summary()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="app.filters.html#module-app.filters.comment_filters">app.filters.comment_filters module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="app.filters.html#app.filters.comment_filters.filter_comment_content"><code class="docutils literal notranslate"><span class="pre">filter_comment_content()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="app.filters.html#module-app.filters.document_filters">app.filters.document_filters module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="app.filters.html#app.filters.document_filters.filter_document_filename"><code class="docutils literal notranslate"><span class="pre">filter_document_filename()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.filters.html#app.filters.document_filters.filter_document_summary"><code class="docutils literal notranslate"><span class="pre">filter_document_summary()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.filters.html#app.filters.document_filters.filter_tags"><code class="docutils literal notranslate"><span class="pre">filter_tags()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="app.filters.html#module-app.filters.option_filters">app.filters.option_filters module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="app.filters.html#app.filters.option_filters.filter_option_key"><code class="docutils literal notranslate"><span class="pre">filter_option_key()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.filters.html#app.filters.option_filters.filter_option_value"><code class="docutils literal notranslate"><span class="pre">filter_option_value()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="app.filters.html#module-app.filters.partner_filters">app.filters.partner_filters module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="app.filters.html#app.filters.partner_filters.filter_partner_contacts"><code class="docutils literal notranslate"><span class="pre">filter_partner_contacts()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.filters.html#app.filters.partner_filters.filter_partner_name"><code class="docutils literal notranslate"><span class="pre">filter_partner_name()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.filters.html#app.filters.partner_filters.filter_partner_region"><code class="docutils literal notranslate"><span class="pre">filter_partner_region()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.filters.html#app.filters.partner_filters.filter_partner_summary"><code class="docutils literal notranslate"><span class="pre">filter_partner_summary()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.filters.html#app.filters.partner_filters.filter_partner_type"><code class="docutils literal notranslate"><span class="pre">filter_partner_type()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.filters.html#app.filters.partner_filters.filter_partner_website"><code class="docutils literal notranslate"><span class="pre">filter_partner_website()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="app.filters.html#module-app.filters.user_filters">app.filters.user_filters module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="app.filters.html#app.filters.user_filters.filter_first_name"><code class="docutils literal notranslate"><span class="pre">filter_first_name()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.filters.html#app.filters.user_filters.filter_last_name"><code class="docutils literal notranslate"><span class="pre">filter_last_name()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.filters.html#app.filters.user_filters.filter_user_caption"><code class="docutils literal notranslate"><span class="pre">filter_user_caption()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.filters.html#app.filters.user_filters.filter_user_contacts"><code class="docutils literal notranslate"><span class="pre">filter_user_contacts()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.filters.html#app.filters.user_filters.filter_user_login"><code class="docutils literal notranslate"><span class="pre">filter_user_login()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.filters.html#app.filters.user_filters.filter_user_totp"><code class="docutils literal notranslate"><span class="pre">filter_user_totp()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="app.filters.html#module-app.filters">Module contents</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="app.helpers.html">app.helpers package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="app.helpers.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="app.helpers.html#module-app.helpers.encryption_helper">app.helpers.encryption_helper module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="app.helpers.html#app.helpers.encryption_helper.decrypt_bytes"><code class="docutils literal notranslate"><span class="pre">decrypt_bytes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.helpers.html#app.helpers.encryption_helper.decrypt_value"><code class="docutils literal notranslate"><span class="pre">decrypt_value()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.helpers.html#app.helpers.encryption_helper.encrypt_bytes"><code class="docutils literal notranslate"><span class="pre">encrypt_bytes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.helpers.html#app.helpers.encryption_helper.encrypt_value"><code class="docutils literal notranslate"><span class="pre">encrypt_value()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.helpers.html#app.helpers.encryption_helper.extract_encryption_key"><code class="docutils literal notranslate"><span class="pre">extract_encryption_key()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.helpers.html#app.helpers.encryption_helper.generate_encryption_salt"><code class="docutils literal notranslate"><span class="pre">generate_encryption_salt()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="app.helpers.html#module-app.helpers.hash_helper">app.helpers.hash_helper module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="app.helpers.html#app.helpers.hash_helper.get_hash"><code class="docutils literal notranslate"><span class="pre">get_hash()</span></code></a></li>
 </ul>
@@ -303,7 +363,14 @@
 <li class="toctree-l3"><a class="reference internal" href="app.helpers.html#app.helpers.lock_helper.locked_date"><code class="docutils literal notranslate"><span class="pre">locked_date()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="app.helpers.html#app-helpers-openapi-helper-module">app.helpers.openapi_helper module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="app.helpers.html#module-app.helpers.shuffle_helper">app.helpers.shuffle_helper module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="app.helpers.html#app.helpers.shuffle_helper.shuffle"><code class="docutils literal notranslate"><span class="pre">shuffle()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="app.helpers.html#module-app.helpers.tag_helper">app.helpers.tag_helper module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="app.helpers.html#app.helpers.tag_helper.extract_tag_values"><code class="docutils literal notranslate"><span class="pre">extract_tag_values()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="app.helpers.html#module-app.helpers.uptime_helper">app.helpers.uptime_helper module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="app.helpers.html#app.helpers.uptime_helper.Uptime"><code class="docutils literal notranslate"><span class="pre">Uptime</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="app.helpers.html#app.helpers.uptime_helper.Uptime.get_uptime"><code class="docutils literal notranslate"><span class="pre">Uptime.get_uptime()</span></code></a></li>
@@ -401,7 +468,40 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="app.models.html#app-models-datafile-model-module">app.models.datafile_model module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="app.models.html#module-app.models.document_model">app.models.document_model module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="app.models.html#app.models.document_model.Document"><code class="docutils literal notranslate"><span class="pre">Document</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.document_model.Document.collection_id"><code class="docutils literal notranslate"><span class="pre">Document.collection_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.document_model.Document.comments_count"><code class="docutils literal notranslate"><span class="pre">Document.comments_count</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.document_model.Document.created_date"><code class="docutils literal notranslate"><span class="pre">Document.created_date</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.document_model.Document.document_collection"><code class="docutils literal notranslate"><span class="pre">Document.document_collection</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.document_model.Document.document_comments"><code class="docutils literal notranslate"><span class="pre">Document.document_comments</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.document_model.Document.document_downloads"><code class="docutils literal notranslate"><span class="pre">Document.document_downloads</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.document_model.Document.document_filename"><code class="docutils literal notranslate"><span class="pre">Document.document_filename</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.document_model.Document.document_mimetype"><code class="docutils literal notranslate"><span class="pre">Document.document_mimetype</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.document_model.Document.document_partner"><code class="docutils literal notranslate"><span class="pre">Document.document_partner</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.document_model.Document.document_revisions"><code class="docutils literal notranslate"><span class="pre">Document.document_revisions</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.document_model.Document.document_size"><code class="docutils literal notranslate"><span class="pre">Document.document_size</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.document_model.Document.document_summary"><code class="docutils literal notranslate"><span class="pre">Document.document_summary</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.document_model.Document.document_tags"><code class="docutils literal notranslate"><span class="pre">Document.document_tags</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.document_model.Document.document_user"><code class="docutils literal notranslate"><span class="pre">Document.document_user</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.document_model.Document.downloads_count"><code class="docutils literal notranslate"><span class="pre">Document.downloads_count</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.document_model.Document.id"><code class="docutils literal notranslate"><span class="pre">Document.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.document_model.Document.is_flagged"><code class="docutils literal notranslate"><span class="pre">Document.is_flagged</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.document_model.Document.is_locked"><code class="docutils literal notranslate"><span class="pre">Document.is_locked</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.document_model.Document.latest_revision_id"><code class="docutils literal notranslate"><span class="pre">Document.latest_revision_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.document_model.Document.partner_id"><code class="docutils literal notranslate"><span class="pre">Document.partner_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.document_model.Document.revisions_count"><code class="docutils literal notranslate"><span class="pre">Document.revisions_count</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.document_model.Document.tag_values"><code class="docutils literal notranslate"><span class="pre">Document.tag_values</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.document_model.Document.thumbnail_filename"><code class="docutils literal notranslate"><span class="pre">Document.thumbnail_filename</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.document_model.Document.thumbnail_filename_encrypted"><code class="docutils literal notranslate"><span class="pre">Document.thumbnail_filename_encrypted</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.document_model.Document.thumbnail_url"><code class="docutils literal notranslate"><span class="pre">Document.thumbnail_url</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.document_model.Document.to_dict"><code class="docutils literal notranslate"><span class="pre">Document.to_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.document_model.Document.updated_date"><code class="docutils literal notranslate"><span class="pre">Document.updated_date</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.document_model.Document.user_id"><code class="docutils literal notranslate"><span class="pre">Document.user_id</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="app.models.html#module-app.models.download_model">app.models.download_model module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="app.models.html#app.models.download_model.Download"><code class="docutils literal notranslate"><span class="pre">Download</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.download_model.Download.created_date"><code class="docutils literal notranslate"><span class="pre">Download.created_date</span></code></a></li>
@@ -417,7 +517,6 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="app.models.html#app-models-favorite-model-module">app.models.favorite_model module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="app.models.html#module-app.models.option_model">app.models.option_model module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="app.models.html#app.models.option_model.Option"><code class="docutils literal notranslate"><span class="pre">Option</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.option_model.Option.created_date"><code class="docutils literal notranslate"><span class="pre">Option.created_date</span></code></a></li>
@@ -430,6 +529,31 @@
 <li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.option_model.Option.user_id"><code class="docutils literal notranslate"><span class="pre">Option.user_id</span></code></a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="app.models.html#module-app.models.partner_model">app.models.partner_model module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="app.models.html#app.models.partner_model.Partner"><code class="docutils literal notranslate"><span class="pre">Partner</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.partner_model.Partner.created_date"><code class="docutils literal notranslate"><span class="pre">Partner.created_date</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.partner_model.Partner.id"><code class="docutils literal notranslate"><span class="pre">Partner.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.partner_model.Partner.partner_contacts"><code class="docutils literal notranslate"><span class="pre">Partner.partner_contacts</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.partner_model.Partner.partner_documents"><code class="docutils literal notranslate"><span class="pre">Partner.partner_documents</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.partner_model.Partner.partner_name"><code class="docutils literal notranslate"><span class="pre">Partner.partner_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.partner_model.Partner.partner_region"><code class="docutils literal notranslate"><span class="pre">Partner.partner_region</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.partner_model.Partner.partner_summary"><code class="docutils literal notranslate"><span class="pre">Partner.partner_summary</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.partner_model.Partner.partner_type"><code class="docutils literal notranslate"><span class="pre">Partner.partner_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.partner_model.Partner.partner_user"><code class="docutils literal notranslate"><span class="pre">Partner.partner_user</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.partner_model.Partner.partner_website"><code class="docutils literal notranslate"><span class="pre">Partner.partner_website</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.partner_model.Partner.partnerpic_filename"><code class="docutils literal notranslate"><span class="pre">Partner.partnerpic_filename</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.partner_model.Partner.partnerpic_filename_encrypted"><code class="docutils literal notranslate"><span class="pre">Partner.partnerpic_filename_encrypted</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.partner_model.Partner.partnerpic_path"><code class="docutils literal notranslate"><span class="pre">Partner.partnerpic_path</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.partner_model.Partner.partnerpic_url"><code class="docutils literal notranslate"><span class="pre">Partner.partnerpic_url</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.partner_model.Partner.to_dict"><code class="docutils literal notranslate"><span class="pre">Partner.to_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.partner_model.Partner.updated_date"><code class="docutils literal notranslate"><span class="pre">Partner.updated_date</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.partner_model.Partner.user_id"><code class="docutils literal notranslate"><span class="pre">Partner.user_id</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="app.models.html#app.models.partner_model.after_delete_listener"><code class="docutils literal notranslate"><span class="pre">after_delete_listener()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.models.html#app.models.partner_model.delete_partnerpic"><code class="docutils literal notranslate"><span class="pre">delete_partnerpic()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="app.models.html#module-app.models.revision_model">app.models.revision_model module</a><ul>
@@ -455,6 +579,24 @@
 <li class="toctree-l3"><a class="reference internal" href="app.models.html#app.models.revision_model.after_delete_listener"><code class="docutils literal notranslate"><span class="pre">after_delete_listener()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="app.models.html#app.models.revision_model.delete_revision"><code class="docutils literal notranslate"><span class="pre">delete_revision()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="app.models.html#app.models.revision_model.delete_thumbnail"><code class="docutils literal notranslate"><span class="pre">delete_thumbnail()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="app.models.html#module-app.models.shard_model">app.models.shard_model module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="app.models.html#app.models.shard_model.Shard"><code class="docutils literal notranslate"><span class="pre">Shard</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.shard_model.Shard.created_date"><code class="docutils literal notranslate"><span class="pre">Shard.created_date</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.shard_model.Shard.id"><code class="docutils literal notranslate"><span class="pre">Shard.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.shard_model.Shard.revision_id"><code class="docutils literal notranslate"><span class="pre">Shard.revision_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.shard_model.Shard.shard_filename"><code class="docutils literal notranslate"><span class="pre">Shard.shard_filename</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.shard_model.Shard.shard_filename_encrypted"><code class="docutils literal notranslate"><span class="pre">Shard.shard_filename_encrypted</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.shard_model.Shard.shard_index"><code class="docutils literal notranslate"><span class="pre">Shard.shard_index</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.shard_model.Shard.shard_path"><code class="docutils literal notranslate"><span class="pre">Shard.shard_path</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.shard_model.Shard.shard_revision"><code class="docutils literal notranslate"><span class="pre">Shard.shard_revision</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.shard_model.Shard.shard_user"><code class="docutils literal notranslate"><span class="pre">Shard.shard_user</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.models.html#app.models.shard_model.Shard.user_id"><code class="docutils literal notranslate"><span class="pre">Shard.user_id</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="app.models.html#app.models.shard_model.after_delete_listener"><code class="docutils literal notranslate"><span class="pre">after_delete_listener()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.models.html#app.models.shard_model.delete_file"><code class="docutils literal notranslate"><span class="pre">delete_file()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="app.models.html#module-app.models.tag_model">app.models.tag_model module</a><ul>
@@ -524,9 +666,118 @@
 <li class="toctree-l2"><a class="reference internal" href="app.models.html#module-app.models">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="app.plugins.html">app.plugins package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="app.plugins.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="app.plugins.html#module-app.plugins.example_plugin">app.plugins.example_plugin module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.after_collection_delete"><code class="docutils literal notranslate"><span class="pre">after_collection_delete()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.after_collection_insert"><code class="docutils literal notranslate"><span class="pre">after_collection_insert()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.after_collection_list"><code class="docutils literal notranslate"><span class="pre">after_collection_list()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.after_collection_select"><code class="docutils literal notranslate"><span class="pre">after_collection_select()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.after_collection_update"><code class="docutils literal notranslate"><span class="pre">after_collection_update()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.after_comment_delete"><code class="docutils literal notranslate"><span class="pre">after_comment_delete()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.after_comment_insert"><code class="docutils literal notranslate"><span class="pre">after_comment_insert()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.after_comment_list"><code class="docutils literal notranslate"><span class="pre">after_comment_list()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.after_comment_select"><code class="docutils literal notranslate"><span class="pre">after_comment_select()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.after_comment_update"><code class="docutils literal notranslate"><span class="pre">after_comment_update()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.after_document_delete"><code class="docutils literal notranslate"><span class="pre">after_document_delete()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.after_document_list"><code class="docutils literal notranslate"><span class="pre">after_document_list()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.after_document_replace"><code class="docutils literal notranslate"><span class="pre">after_document_replace()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.after_document_select"><code class="docutils literal notranslate"><span class="pre">after_document_select()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.after_document_update"><code class="docutils literal notranslate"><span class="pre">after_document_update()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.after_document_upload"><code class="docutils literal notranslate"><span class="pre">after_document_upload()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.after_download_list"><code class="docutils literal notranslate"><span class="pre">after_download_list()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.after_mfa_select"><code class="docutils literal notranslate"><span class="pre">after_mfa_select()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.after_option_delete"><code class="docutils literal notranslate"><span class="pre">after_option_delete()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.after_option_list"><code class="docutils literal notranslate"><span class="pre">after_option_list()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.after_option_select"><code class="docutils literal notranslate"><span class="pre">after_option_select()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.after_option_update"><code class="docutils literal notranslate"><span class="pre">after_option_update()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.after_partner_delete"><code class="docutils literal notranslate"><span class="pre">after_partner_delete()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.after_partner_insert"><code class="docutils literal notranslate"><span class="pre">after_partner_insert()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.after_partner_list"><code class="docutils literal notranslate"><span class="pre">after_partner_list()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.after_partner_select"><code class="docutils literal notranslate"><span class="pre">after_partner_select()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.after_partner_update"><code class="docutils literal notranslate"><span class="pre">after_partner_update()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.after_partnerpic_delete"><code class="docutils literal notranslate"><span class="pre">after_partnerpic_delete()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.after_partnerpic_upload"><code class="docutils literal notranslate"><span class="pre">after_partnerpic_upload()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.after_password_update"><code class="docutils literal notranslate"><span class="pre">after_password_update()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.after_revision_list"><code class="docutils literal notranslate"><span class="pre">after_revision_list()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.after_role_update"><code class="docutils literal notranslate"><span class="pre">after_role_update()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.after_token_invalidate"><code class="docutils literal notranslate"><span class="pre">after_token_invalidate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.after_token_retrieve"><code class="docutils literal notranslate"><span class="pre">after_token_retrieve()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.after_user_delete"><code class="docutils literal notranslate"><span class="pre">after_user_delete()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.after_user_list"><code class="docutils literal notranslate"><span class="pre">after_user_list()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.after_user_login"><code class="docutils literal notranslate"><span class="pre">after_user_login()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.after_user_register"><code class="docutils literal notranslate"><span class="pre">after_user_register()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.after_user_select"><code class="docutils literal notranslate"><span class="pre">after_user_select()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.after_user_update"><code class="docutils literal notranslate"><span class="pre">after_user_update()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.after_userpic_delete"><code class="docutils literal notranslate"><span class="pre">after_userpic_delete()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.after_userpic_upload"><code class="docutils literal notranslate"><span class="pre">after_userpic_upload()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.before_collection_delete"><code class="docutils literal notranslate"><span class="pre">before_collection_delete()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.before_collection_insert"><code class="docutils literal notranslate"><span class="pre">before_collection_insert()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.before_collection_update"><code class="docutils literal notranslate"><span class="pre">before_collection_update()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.before_comment_delete"><code class="docutils literal notranslate"><span class="pre">before_comment_delete()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.before_comment_insert"><code class="docutils literal notranslate"><span class="pre">before_comment_insert()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.before_comment_update"><code class="docutils literal notranslate"><span class="pre">before_comment_update()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.before_document_delete"><code class="docutils literal notranslate"><span class="pre">before_document_delete()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.before_document_replace"><code class="docutils literal notranslate"><span class="pre">before_document_replace()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.before_document_update"><code class="docutils literal notranslate"><span class="pre">before_document_update()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.before_document_upload"><code class="docutils literal notranslate"><span class="pre">before_document_upload()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.before_mfa_select"><code class="docutils literal notranslate"><span class="pre">before_mfa_select()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.before_option_delete"><code class="docutils literal notranslate"><span class="pre">before_option_delete()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.before_option_update"><code class="docutils literal notranslate"><span class="pre">before_option_update()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.before_partner_delete"><code class="docutils literal notranslate"><span class="pre">before_partner_delete()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.before_partner_insert"><code class="docutils literal notranslate"><span class="pre">before_partner_insert()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.before_partner_update"><code class="docutils literal notranslate"><span class="pre">before_partner_update()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.before_partnerpic_delete"><code class="docutils literal notranslate"><span class="pre">before_partnerpic_delete()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.before_partnerpic_upload"><code class="docutils literal notranslate"><span class="pre">before_partnerpic_upload()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.before_password_update"><code class="docutils literal notranslate"><span class="pre">before_password_update()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.before_revision_download"><code class="docutils literal notranslate"><span class="pre">before_revision_download()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.before_role_update"><code class="docutils literal notranslate"><span class="pre">before_role_update()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.before_token_invalidate"><code class="docutils literal notranslate"><span class="pre">before_token_invalidate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.before_token_retrieve"><code class="docutils literal notranslate"><span class="pre">before_token_retrieve()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.before_user_delete"><code class="docutils literal notranslate"><span class="pre">before_user_delete()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.before_user_login"><code class="docutils literal notranslate"><span class="pre">before_user_login()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.before_user_register"><code class="docutils literal notranslate"><span class="pre">before_user_register()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.before_user_update"><code class="docutils literal notranslate"><span class="pre">before_user_update()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.before_userpic_delete"><code class="docutils literal notranslate"><span class="pre">before_userpic_delete()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.before_userpic_upload"><code class="docutils literal notranslate"><span class="pre">before_userpic_upload()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.on_execute"><code class="docutils literal notranslate"><span class="pre">on_execute()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.on_lock_change"><code class="docutils literal notranslate"><span class="pre">on_lock_change()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.on_lock_retrieve"><code class="docutils literal notranslate"><span class="pre">on_lock_retrieve()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.on_schedule"><code class="docutils literal notranslate"><span class="pre">on_schedule()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.example_plugin.on_telemetry_retrieve"><code class="docutils literal notranslate"><span class="pre">on_telemetry_retrieve()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="app.plugins.html#module-app.plugins.logs_plugin">app.plugins.logs_plugin module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.logs_plugin.Log"><code class="docutils literal notranslate"><span class="pre">Log</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="app.plugins.html#app.plugins.logs_plugin.Log.created_date"><code class="docutils literal notranslate"><span class="pre">Log.created_date</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.plugins.html#app.plugins.logs_plugin.Log.get_remote_address"><code class="docutils literal notranslate"><span class="pre">Log.get_remote_address()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.plugins.html#app.plugins.logs_plugin.Log.get_user_agent"><code class="docutils literal notranslate"><span class="pre">Log.get_user_agent()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.plugins.html#app.plugins.logs_plugin.Log.id"><code class="docutils literal notranslate"><span class="pre">Log.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.plugins.html#app.plugins.logs_plugin.Log.remote_address"><code class="docutils literal notranslate"><span class="pre">Log.remote_address</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.plugins.html#app.plugins.logs_plugin.Log.user_agent"><code class="docutils literal notranslate"><span class="pre">Log.user_agent</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.plugins.html#app.plugins.logs_plugin.Log.user_id"><code class="docutils literal notranslate"><span class="pre">Log.user_id</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.logs_plugin.LogsRequest"><code class="docutils literal notranslate"><span class="pre">LogsRequest</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="app.plugins.html#app.plugins.logs_plugin.LogsRequest.limit"><code class="docutils literal notranslate"><span class="pre">LogsRequest.limit</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.plugins.html#app.plugins.logs_plugin.LogsRequest.model_computed_fields"><code class="docutils literal notranslate"><span class="pre">LogsRequest.model_computed_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.plugins.html#app.plugins.logs_plugin.LogsRequest.model_config"><code class="docutils literal notranslate"><span class="pre">LogsRequest.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.plugins.html#app.plugins.logs_plugin.LogsRequest.model_fields"><code class="docutils literal notranslate"><span class="pre">LogsRequest.model_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.plugins.html#app.plugins.logs_plugin.LogsRequest.offset"><code class="docutils literal notranslate"><span class="pre">LogsRequest.offset</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.plugins.html#app.plugins.logs_plugin.LogsRequest.order"><code class="docutils literal notranslate"><span class="pre">LogsRequest.order</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.plugins.html#app.plugins.logs_plugin.LogsRequest.order_by"><code class="docutils literal notranslate"><span class="pre">LogsRequest.order_by</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.plugins.html#app.plugins.logs_plugin.LogsRequest.user_id__eq"><code class="docutils literal notranslate"><span class="pre">LogsRequest.user_id__eq</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.logs_plugin.after_token_retrieve"><code class="docutils literal notranslate"><span class="pre">after_token_retrieve()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.plugins.html#app.plugins.logs_plugin.on_execute"><code class="docutils literal notranslate"><span class="pre">on_execute()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="app.plugins.html#module-app.plugins">Module contents</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="app.routers.html">app.routers package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="app.routers.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="app.routers.html#app-routers-cache-erase-router-module">app.routers.cache_erase_router module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="app.routers.html#module-app.routers.collection_delete_router">app.routers.collection_delete_router module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="app.routers.html#app.routers.collection_delete_router.collection_delete"><code class="docutils literal notranslate"><span class="pre">collection_delete()</span></code></a></li>
 </ul>
@@ -537,6 +788,10 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="app.routers.html#module-app.routers.collection_list_router">app.routers.collection_list_router module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="app.routers.html#app.routers.collection_list_router.collection_list"><code class="docutils literal notranslate"><span class="pre">collection_list()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="app.routers.html#module-app.routers.collection_lock_router">app.routers.collection_lock_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="app.routers.html#app.routers.collection_lock_router.collection_delete"><code class="docutils literal notranslate"><span class="pre">collection_delete()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="app.routers.html#module-app.routers.collection_select_router">app.routers.collection_select_router module</a><ul>
@@ -567,32 +822,66 @@
 <li class="toctree-l3"><a class="reference internal" href="app.routers.html#app.routers.comment_update_router.comment_update"><code class="docutils literal notranslate"><span class="pre">comment_update()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="app.routers.html#app-routers-custom-execute-router-module">app.routers.custom_execute_router module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="app.routers.html#app-routers-datafile-delete-router-module">app.routers.datafile_delete_router module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="app.routers.html#app-routers-datafile-download-router-module">app.routers.datafile_download_router module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="app.routers.html#app-routers-datafile-list-router-module">app.routers.datafile_list_router module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="app.routers.html#app-routers-datafile-replace-router-module">app.routers.datafile_replace_router module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="app.routers.html#app-routers-datafile-select-router-module">app.routers.datafile_select_router module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="app.routers.html#app-routers-datafile-update-router-module">app.routers.datafile_update_router module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="app.routers.html#app-routers-datafile-upload-router-module">app.routers.datafile_upload_router module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="app.routers.html#app-routers-download-list-router-module">app.routers.download_list_router module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="app.routers.html#app-routers-download-select-router-module">app.routers.download_select_router module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="app.routers.html#app-routers-favorite-delete-router-module">app.routers.favorite_delete_router module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="app.routers.html#app-routers-favorite-insert-router-module">app.routers.favorite_insert_router module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="app.routers.html#app-routers-favorite-list-router-module">app.routers.favorite_list_router module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="app.routers.html#app-routers-favorite-select-router-module">app.routers.favorite_select_router module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="app.routers.html#app-routers-lock-create-router-module">app.routers.lock_create_router module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="app.routers.html#app-routers-lock-delete-router-module">app.routers.lock_delete_router module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="app.routers.html#module-app.routers.document_delete_router">app.routers.document_delete_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="app.routers.html#app.routers.document_delete_router.document_delete"><code class="docutils literal notranslate"><span class="pre">document_delete()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="app.routers.html#module-app.routers.document_download_router">app.routers.document_download_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="app.routers.html#app.routers.document_download_router.document_download"><code class="docutils literal notranslate"><span class="pre">document_download()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="app.routers.html#module-app.routers.document_downloads_router">app.routers.document_downloads_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="app.routers.html#app.routers.document_downloads_router.document_downloads"><code class="docutils literal notranslate"><span class="pre">document_downloads()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="app.routers.html#module-app.routers.document_flag_router">app.routers.document_flag_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="app.routers.html#app.routers.document_flag_router.document_update"><code class="docutils literal notranslate"><span class="pre">document_update()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="app.routers.html#module-app.routers.document_list_router">app.routers.document_list_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="app.routers.html#app.routers.document_list_router.document_list"><code class="docutils literal notranslate"><span class="pre">document_list()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="app.routers.html#module-app.routers.document_move_router">app.routers.document_move_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="app.routers.html#app.routers.document_move_router.document_move"><code class="docutils literal notranslate"><span class="pre">document_move()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="app.routers.html#module-app.routers.document_replace_router">app.routers.document_replace_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="app.routers.html#app.routers.document_replace_router.document_replace"><code class="docutils literal notranslate"><span class="pre">document_replace()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="app.routers.html#module-app.routers.document_revisions_router">app.routers.document_revisions_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="app.routers.html#app.routers.document_revisions_router.document_revisions"><code class="docutils literal notranslate"><span class="pre">document_revisions()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="app.routers.html#module-app.routers.document_select_router">app.routers.document_select_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="app.routers.html#app.routers.document_select_router.document_select"><code class="docutils literal notranslate"><span class="pre">document_select()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="app.routers.html#module-app.routers.document_update_router">app.routers.document_update_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="app.routers.html#app.routers.document_update_router.document_update"><code class="docutils literal notranslate"><span class="pre">document_update()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="app.routers.html#module-app.routers.document_upload_router">app.routers.document_upload_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="app.routers.html#app.routers.document_upload_router.document_upload"><code class="docutils literal notranslate"><span class="pre">document_upload()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="app.routers.html#module-app.routers.execute_router">app.routers.execute_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="app.routers.html#app.routers.execute_router.execute"><code class="docutils literal notranslate"><span class="pre">execute()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="app.routers.html#module-app.routers.lock_change_router">app.routers.lock_change_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="app.routers.html#app.routers.lock_change_router.lock_change"><code class="docutils literal notranslate"><span class="pre">lock_change()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="app.routers.html#module-app.routers.lock_retrieve_router">app.routers.lock_retrieve_router module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="app.routers.html#app.routers.lock_retrieve_router.lock_retrieve"><code class="docutils literal notranslate"><span class="pre">lock_retrieve()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="app.routers.html#app-routers-mfa-retrieve-router-module">app.routers.mfa_retrieve_router module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="app.routers.html#module-app.routers.option_delete_router">app.routers.option_delete_router module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="app.routers.html#app.routers.option_delete_router.option_delete"><code class="docutils literal notranslate"><span class="pre">option_delete()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="app.routers.html#app-routers-option-insert-router-module">app.routers.option_insert_router module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="app.routers.html#module-app.routers.option_list_router">app.routers.option_list_router module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="app.routers.html#app.routers.option_list_router.options_list"><code class="docutils literal notranslate"><span class="pre">options_list()</span></code></a></li>
 </ul>
@@ -605,16 +894,42 @@
 <li class="toctree-l3"><a class="reference internal" href="app.routers.html#app.routers.option_update_router.option_update"><code class="docutils literal notranslate"><span class="pre">option_update()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="app.routers.html#app-routers-password-change-router-module">app.routers.password_change_router module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="app.routers.html#app-routers-revision-download-router-module">app.routers.revision_download_router module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="app.routers.html#app-routers-revision-list-router-module">app.routers.revision_list_router module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="app.routers.html#app-routers-revision-select-router-module">app.routers.revision_select_router module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="app.routers.html#app-routers-role-change-router-module">app.routers.role_change_router module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="app.routers.html#module-app.routers.partner_delete_router">app.routers.partner_delete_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="app.routers.html#app.routers.partner_delete_router.partner_delete"><code class="docutils literal notranslate"><span class="pre">partner_delete()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="app.routers.html#module-app.routers.partner_insert_router">app.routers.partner_insert_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="app.routers.html#app.routers.partner_insert_router.partner_insert"><code class="docutils literal notranslate"><span class="pre">partner_insert()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="app.routers.html#module-app.routers.partner_list_router">app.routers.partner_list_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="app.routers.html#app.routers.partner_list_router.partner_list"><code class="docutils literal notranslate"><span class="pre">partner_list()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="app.routers.html#module-app.routers.partner_select_router">app.routers.partner_select_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="app.routers.html#app.routers.partner_select_router.partner_select"><code class="docutils literal notranslate"><span class="pre">partner_select()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="app.routers.html#module-app.routers.partner_update_router">app.routers.partner_update_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="app.routers.html#app.routers.partner_update_router.partner_update"><code class="docutils literal notranslate"><span class="pre">partner_update()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="app.routers.html#module-app.routers.partnerpic_delete_router">app.routers.partnerpic_delete_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="app.routers.html#app.routers.partnerpic_delete_router.partnerpic_delete"><code class="docutils literal notranslate"><span class="pre">partnerpic_delete()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="app.routers.html#module-app.routers.partnerpic_upload_router">app.routers.partnerpic_upload_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="app.routers.html#app.routers.partnerpic_upload_router.partnerpic_upload"><code class="docutils literal notranslate"><span class="pre">partnerpic_upload()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="app.routers.html#module-app.routers.sphinx_router">app.routers.sphinx_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="app.routers.html#app.routers.sphinx_router.redirect_to_sphinx"><code class="docutils literal notranslate"><span class="pre">redirect_to_sphinx()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="app.routers.html#module-app.routers.telemetry_retrieve_router">app.routers.telemetry_retrieve_router module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="app.routers.html#app.routers.telemetry_retrieve_router.telemetry_retrieve"><code class="docutils literal notranslate"><span class="pre">telemetry_retrieve()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="app.routers.html#app-routers-time-retrieve-router-module">app.routers.time_retrieve_router module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="app.routers.html#module-app.routers.token_invalidate_router">app.routers.token_invalidate_router module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="app.routers.html#app.routers.token_invalidate_router.token_invalidate"><code class="docutils literal notranslate"><span class="pre">token_invalidate()</span></code></a></li>
 </ul>
@@ -635,8 +950,20 @@
 <li class="toctree-l3"><a class="reference internal" href="app.routers.html#app.routers.user_login_router.user_login"><code class="docutils literal notranslate"><span class="pre">user_login()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="app.routers.html#module-app.routers.user_mfa_router">app.routers.user_mfa_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="app.routers.html#app.routers.user_mfa_router.user_mfa"><code class="docutils literal notranslate"><span class="pre">user_mfa()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="app.routers.html#module-app.routers.user_password_router">app.routers.user_password_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="app.routers.html#app.routers.user_password_router.user_password"><code class="docutils literal notranslate"><span class="pre">user_password()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="app.routers.html#module-app.routers.user_register_router">app.routers.user_register_router module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="app.routers.html#app.routers.user_register_router.user_register"><code class="docutils literal notranslate"><span class="pre">user_register()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="app.routers.html#module-app.routers.user_role_router">app.routers.user_role_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="app.routers.html#app.routers.user_role_router.user_role"><code class="docutils literal notranslate"><span class="pre">user_role()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="app.routers.html#module-app.routers.user_select_router">app.routers.user_select_router module</a><ul>
@@ -830,8 +1157,130 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="app.schemas.html#app-schemas-custom-schemas-module">app.schemas.custom_schemas module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="app.schemas.html#app-schemas-datafile-schemas-module">app.schemas.datafile_schemas module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="app.schemas.html#module-app.schemas.document_schemas">app.schemas.document_schemas module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentDeleteResponse"><code class="docutils literal notranslate"><span class="pre">DocumentDeleteResponse</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentDeleteResponse.document_id"><code class="docutils literal notranslate"><span class="pre">DocumentDeleteResponse.document_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentDeleteResponse.model_computed_fields"><code class="docutils literal notranslate"><span class="pre">DocumentDeleteResponse.model_computed_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentDeleteResponse.model_config"><code class="docutils literal notranslate"><span class="pre">DocumentDeleteResponse.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentDeleteResponse.model_fields"><code class="docutils literal notranslate"><span class="pre">DocumentDeleteResponse.model_fields</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentFlagRequest"><code class="docutils literal notranslate"><span class="pre">DocumentFlagRequest</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentFlagRequest.is_flagged"><code class="docutils literal notranslate"><span class="pre">DocumentFlagRequest.is_flagged</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentFlagRequest.model_computed_fields"><code class="docutils literal notranslate"><span class="pre">DocumentFlagRequest.model_computed_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentFlagRequest.model_config"><code class="docutils literal notranslate"><span class="pre">DocumentFlagRequest.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentFlagRequest.model_fields"><code class="docutils literal notranslate"><span class="pre">DocumentFlagRequest.model_fields</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentFlagResponse"><code class="docutils literal notranslate"><span class="pre">DocumentFlagResponse</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentFlagResponse.document_id"><code class="docutils literal notranslate"><span class="pre">DocumentFlagResponse.document_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentFlagResponse.model_computed_fields"><code class="docutils literal notranslate"><span class="pre">DocumentFlagResponse.model_computed_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentFlagResponse.model_config"><code class="docutils literal notranslate"><span class="pre">DocumentFlagResponse.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentFlagResponse.model_fields"><code class="docutils literal notranslate"><span class="pre">DocumentFlagResponse.model_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentFlagResponse.revision_id"><code class="docutils literal notranslate"><span class="pre">DocumentFlagResponse.revision_id</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentListRequest"><code class="docutils literal notranslate"><span class="pre">DocumentListRequest</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentListRequest.collection_id__eq"><code class="docutils literal notranslate"><span class="pre">DocumentListRequest.collection_id__eq</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentListRequest.document_filename__ilike"><code class="docutils literal notranslate"><span class="pre">DocumentListRequest.document_filename__ilike</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentListRequest.document_mimetype__ilike"><code class="docutils literal notranslate"><span class="pre">DocumentListRequest.document_mimetype__ilike</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentListRequest.document_size__ge"><code class="docutils literal notranslate"><span class="pre">DocumentListRequest.document_size__ge</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentListRequest.document_size__le"><code class="docutils literal notranslate"><span class="pre">DocumentListRequest.document_size__le</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentListRequest.is_flagged__eq"><code class="docutils literal notranslate"><span class="pre">DocumentListRequest.is_flagged__eq</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentListRequest.limit"><code class="docutils literal notranslate"><span class="pre">DocumentListRequest.limit</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentListRequest.model_computed_fields"><code class="docutils literal notranslate"><span class="pre">DocumentListRequest.model_computed_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentListRequest.model_config"><code class="docutils literal notranslate"><span class="pre">DocumentListRequest.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentListRequest.model_fields"><code class="docutils literal notranslate"><span class="pre">DocumentListRequest.model_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentListRequest.offset"><code class="docutils literal notranslate"><span class="pre">DocumentListRequest.offset</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentListRequest.order"><code class="docutils literal notranslate"><span class="pre">DocumentListRequest.order</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentListRequest.order_by"><code class="docutils literal notranslate"><span class="pre">DocumentListRequest.order_by</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentListRequest.partner_id__eq"><code class="docutils literal notranslate"><span class="pre">DocumentListRequest.partner_id__eq</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentListRequest.tag_value__eq"><code class="docutils literal notranslate"><span class="pre">DocumentListRequest.tag_value__eq</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentListResponse"><code class="docutils literal notranslate"><span class="pre">DocumentListResponse</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentListResponse.documents"><code class="docutils literal notranslate"><span class="pre">DocumentListResponse.documents</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentListResponse.documents_count"><code class="docutils literal notranslate"><span class="pre">DocumentListResponse.documents_count</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentListResponse.model_computed_fields"><code class="docutils literal notranslate"><span class="pre">DocumentListResponse.model_computed_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentListResponse.model_config"><code class="docutils literal notranslate"><span class="pre">DocumentListResponse.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentListResponse.model_fields"><code class="docutils literal notranslate"><span class="pre">DocumentListResponse.model_fields</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentMoveResponse"><code class="docutils literal notranslate"><span class="pre">DocumentMoveResponse</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentMoveResponse.document_id"><code class="docutils literal notranslate"><span class="pre">DocumentMoveResponse.document_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentMoveResponse.model_computed_fields"><code class="docutils literal notranslate"><span class="pre">DocumentMoveResponse.model_computed_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentMoveResponse.model_config"><code class="docutils literal notranslate"><span class="pre">DocumentMoveResponse.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentMoveResponse.model_fields"><code class="docutils literal notranslate"><span class="pre">DocumentMoveResponse.model_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentMoveResponse.revision_id"><code class="docutils literal notranslate"><span class="pre">DocumentMoveResponse.revision_id</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentReplaceResponse"><code class="docutils literal notranslate"><span class="pre">DocumentReplaceResponse</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentReplaceResponse.document_id"><code class="docutils literal notranslate"><span class="pre">DocumentReplaceResponse.document_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentReplaceResponse.model_computed_fields"><code class="docutils literal notranslate"><span class="pre">DocumentReplaceResponse.model_computed_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentReplaceResponse.model_config"><code class="docutils literal notranslate"><span class="pre">DocumentReplaceResponse.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentReplaceResponse.model_fields"><code class="docutils literal notranslate"><span class="pre">DocumentReplaceResponse.model_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentReplaceResponse.revision_id"><code class="docutils literal notranslate"><span class="pre">DocumentReplaceResponse.revision_id</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentSelectResponse"><code class="docutils literal notranslate"><span class="pre">DocumentSelectResponse</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentSelectResponse.collection_id"><code class="docutils literal notranslate"><span class="pre">DocumentSelectResponse.collection_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentSelectResponse.collection_name"><code class="docutils literal notranslate"><span class="pre">DocumentSelectResponse.collection_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentSelectResponse.comments_count"><code class="docutils literal notranslate"><span class="pre">DocumentSelectResponse.comments_count</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentSelectResponse.created_date"><code class="docutils literal notranslate"><span class="pre">DocumentSelectResponse.created_date</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentSelectResponse.document_filename"><code class="docutils literal notranslate"><span class="pre">DocumentSelectResponse.document_filename</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentSelectResponse.document_mimetype"><code class="docutils literal notranslate"><span class="pre">DocumentSelectResponse.document_mimetype</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentSelectResponse.document_size"><code class="docutils literal notranslate"><span class="pre">DocumentSelectResponse.document_size</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentSelectResponse.document_summary"><code class="docutils literal notranslate"><span class="pre">DocumentSelectResponse.document_summary</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentSelectResponse.document_tags"><code class="docutils literal notranslate"><span class="pre">DocumentSelectResponse.document_tags</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentSelectResponse.downloads_count"><code class="docutils literal notranslate"><span class="pre">DocumentSelectResponse.downloads_count</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentSelectResponse.id"><code class="docutils literal notranslate"><span class="pre">DocumentSelectResponse.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentSelectResponse.is_flagged"><code class="docutils literal notranslate"><span class="pre">DocumentSelectResponse.is_flagged</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentSelectResponse.latest_revision_id"><code class="docutils literal notranslate"><span class="pre">DocumentSelectResponse.latest_revision_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentSelectResponse.model_computed_fields"><code class="docutils literal notranslate"><span class="pre">DocumentSelectResponse.model_computed_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentSelectResponse.model_config"><code class="docutils literal notranslate"><span class="pre">DocumentSelectResponse.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentSelectResponse.model_fields"><code class="docutils literal notranslate"><span class="pre">DocumentSelectResponse.model_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentSelectResponse.partner_id"><code class="docutils literal notranslate"><span class="pre">DocumentSelectResponse.partner_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentSelectResponse.partner_name"><code class="docutils literal notranslate"><span class="pre">DocumentSelectResponse.partner_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentSelectResponse.revisions_count"><code class="docutils literal notranslate"><span class="pre">DocumentSelectResponse.revisions_count</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentSelectResponse.thumbnail_url"><code class="docutils literal notranslate"><span class="pre">DocumentSelectResponse.thumbnail_url</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentSelectResponse.updated_date"><code class="docutils literal notranslate"><span class="pre">DocumentSelectResponse.updated_date</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentSelectResponse.user_id"><code class="docutils literal notranslate"><span class="pre">DocumentSelectResponse.user_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentSelectResponse.user_name"><code class="docutils literal notranslate"><span class="pre">DocumentSelectResponse.user_name</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentUpdateRequest"><code class="docutils literal notranslate"><span class="pre">DocumentUpdateRequest</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentUpdateRequest.collection_id"><code class="docutils literal notranslate"><span class="pre">DocumentUpdateRequest.collection_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentUpdateRequest.document_filename"><code class="docutils literal notranslate"><span class="pre">DocumentUpdateRequest.document_filename</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentUpdateRequest.document_summary"><code class="docutils literal notranslate"><span class="pre">DocumentUpdateRequest.document_summary</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentUpdateRequest.document_tags"><code class="docutils literal notranslate"><span class="pre">DocumentUpdateRequest.document_tags</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentUpdateRequest.filter_document_filename"><code class="docutils literal notranslate"><span class="pre">DocumentUpdateRequest.filter_document_filename()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentUpdateRequest.filter_document_summary"><code class="docutils literal notranslate"><span class="pre">DocumentUpdateRequest.filter_document_summary()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentUpdateRequest.filter_tags"><code class="docutils literal notranslate"><span class="pre">DocumentUpdateRequest.filter_tags()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentUpdateRequest.is_flagged"><code class="docutils literal notranslate"><span class="pre">DocumentUpdateRequest.is_flagged</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentUpdateRequest.model_computed_fields"><code class="docutils literal notranslate"><span class="pre">DocumentUpdateRequest.model_computed_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentUpdateRequest.model_config"><code class="docutils literal notranslate"><span class="pre">DocumentUpdateRequest.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentUpdateRequest.model_fields"><code class="docutils literal notranslate"><span class="pre">DocumentUpdateRequest.model_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentUpdateRequest.partner_id"><code class="docutils literal notranslate"><span class="pre">DocumentUpdateRequest.partner_id</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentUpdateResponse"><code class="docutils literal notranslate"><span class="pre">DocumentUpdateResponse</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentUpdateResponse.document_id"><code class="docutils literal notranslate"><span class="pre">DocumentUpdateResponse.document_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentUpdateResponse.model_computed_fields"><code class="docutils literal notranslate"><span class="pre">DocumentUpdateResponse.model_computed_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentUpdateResponse.model_config"><code class="docutils literal notranslate"><span class="pre">DocumentUpdateResponse.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentUpdateResponse.model_fields"><code class="docutils literal notranslate"><span class="pre">DocumentUpdateResponse.model_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentUpdateResponse.revision_id"><code class="docutils literal notranslate"><span class="pre">DocumentUpdateResponse.revision_id</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentUploadResponse"><code class="docutils literal notranslate"><span class="pre">DocumentUploadResponse</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentUploadResponse.document_id"><code class="docutils literal notranslate"><span class="pre">DocumentUploadResponse.document_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentUploadResponse.model_computed_fields"><code class="docutils literal notranslate"><span class="pre">DocumentUploadResponse.model_computed_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentUploadResponse.model_config"><code class="docutils literal notranslate"><span class="pre">DocumentUploadResponse.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentUploadResponse.model_fields"><code class="docutils literal notranslate"><span class="pre">DocumentUploadResponse.model_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentUploadResponse.revision_id"><code class="docutils literal notranslate"><span class="pre">DocumentUploadResponse.revision_id</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="app.schemas.html#module-app.schemas.download_schemas">app.schemas.download_schemas module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="app.schemas.html#app.schemas.download_schemas.DownloadListRequest"><code class="docutils literal notranslate"><span class="pre">DownloadListRequest</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.download_schemas.DownloadListRequest.limit"><code class="docutils literal notranslate"><span class="pre">DownloadListRequest.limit</span></code></a></li>
@@ -865,7 +1314,17 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="app.schemas.html#app-schemas-favorite-schemas-module">app.schemas.favorite_schemas module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="app.schemas.html#module-app.schemas.execute_schemas">app.schemas.execute_schemas module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="app.schemas.html#app.schemas.execute_schemas.ExecuteRequest"><code class="docutils literal notranslate"><span class="pre">ExecuteRequest</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.execute_schemas.ExecuteRequest.action"><code class="docutils literal notranslate"><span class="pre">ExecuteRequest.action</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.execute_schemas.ExecuteRequest.model_computed_fields"><code class="docutils literal notranslate"><span class="pre">ExecuteRequest.model_computed_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.execute_schemas.ExecuteRequest.model_config"><code class="docutils literal notranslate"><span class="pre">ExecuteRequest.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.execute_schemas.ExecuteRequest.model_fields"><code class="docutils literal notranslate"><span class="pre">ExecuteRequest.model_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.execute_schemas.ExecuteRequest.params"><code class="docutils literal notranslate"><span class="pre">ExecuteRequest.params</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="app.schemas.html#module-app.schemas.lock_schemas">app.schemas.lock_schemas module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="app.schemas.html#app.schemas.lock_schemas.LockRetrieveResponse"><code class="docutils literal notranslate"><span class="pre">LockRetrieveResponse</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.lock_schemas.LockRetrieveResponse.is_locked"><code class="docutils literal notranslate"><span class="pre">LockRetrieveResponse.is_locked</span></code></a></li>
@@ -962,6 +1421,120 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="app.schemas.html#module-app.schemas.partner_schemas">app.schemas.partner_schemas module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerDeleteResponse"><code class="docutils literal notranslate"><span class="pre">PartnerDeleteResponse</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerDeleteResponse.model_computed_fields"><code class="docutils literal notranslate"><span class="pre">PartnerDeleteResponse.model_computed_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerDeleteResponse.model_config"><code class="docutils literal notranslate"><span class="pre">PartnerDeleteResponse.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerDeleteResponse.model_fields"><code class="docutils literal notranslate"><span class="pre">PartnerDeleteResponse.model_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerDeleteResponse.partner_id"><code class="docutils literal notranslate"><span class="pre">PartnerDeleteResponse.partner_id</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerInsertRequest"><code class="docutils literal notranslate"><span class="pre">PartnerInsertRequest</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerInsertRequest.filter_partner_contacts"><code class="docutils literal notranslate"><span class="pre">PartnerInsertRequest.filter_partner_contacts()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerInsertRequest.filter_partner_name"><code class="docutils literal notranslate"><span class="pre">PartnerInsertRequest.filter_partner_name()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerInsertRequest.filter_partner_region"><code class="docutils literal notranslate"><span class="pre">PartnerInsertRequest.filter_partner_region()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerInsertRequest.filter_partner_summary"><code class="docutils literal notranslate"><span class="pre">PartnerInsertRequest.filter_partner_summary()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerInsertRequest.filter_partner_type"><code class="docutils literal notranslate"><span class="pre">PartnerInsertRequest.filter_partner_type()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerInsertRequest.filter_partner_website"><code class="docutils literal notranslate"><span class="pre">PartnerInsertRequest.filter_partner_website()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerInsertRequest.model_computed_fields"><code class="docutils literal notranslate"><span class="pre">PartnerInsertRequest.model_computed_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerInsertRequest.model_config"><code class="docutils literal notranslate"><span class="pre">PartnerInsertRequest.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerInsertRequest.model_fields"><code class="docutils literal notranslate"><span class="pre">PartnerInsertRequest.model_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerInsertRequest.partner_contacts"><code class="docutils literal notranslate"><span class="pre">PartnerInsertRequest.partner_contacts</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerInsertRequest.partner_name"><code class="docutils literal notranslate"><span class="pre">PartnerInsertRequest.partner_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerInsertRequest.partner_region"><code class="docutils literal notranslate"><span class="pre">PartnerInsertRequest.partner_region</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerInsertRequest.partner_summary"><code class="docutils literal notranslate"><span class="pre">PartnerInsertRequest.partner_summary</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerInsertRequest.partner_type"><code class="docutils literal notranslate"><span class="pre">PartnerInsertRequest.partner_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerInsertRequest.partner_website"><code class="docutils literal notranslate"><span class="pre">PartnerInsertRequest.partner_website</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerInsertResponse"><code class="docutils literal notranslate"><span class="pre">PartnerInsertResponse</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerInsertResponse.model_computed_fields"><code class="docutils literal notranslate"><span class="pre">PartnerInsertResponse.model_computed_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerInsertResponse.model_config"><code class="docutils literal notranslate"><span class="pre">PartnerInsertResponse.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerInsertResponse.model_fields"><code class="docutils literal notranslate"><span class="pre">PartnerInsertResponse.model_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerInsertResponse.partner_id"><code class="docutils literal notranslate"><span class="pre">PartnerInsertResponse.partner_id</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerListRequest"><code class="docutils literal notranslate"><span class="pre">PartnerListRequest</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerListRequest.limit"><code class="docutils literal notranslate"><span class="pre">PartnerListRequest.limit</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerListRequest.model_computed_fields"><code class="docutils literal notranslate"><span class="pre">PartnerListRequest.model_computed_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerListRequest.model_config"><code class="docutils literal notranslate"><span class="pre">PartnerListRequest.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerListRequest.model_fields"><code class="docutils literal notranslate"><span class="pre">PartnerListRequest.model_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerListRequest.offset"><code class="docutils literal notranslate"><span class="pre">PartnerListRequest.offset</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerListRequest.order"><code class="docutils literal notranslate"><span class="pre">PartnerListRequest.order</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerListRequest.order_by"><code class="docutils literal notranslate"><span class="pre">PartnerListRequest.order_by</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerListRequest.partner_contacts__ilike"><code class="docutils literal notranslate"><span class="pre">PartnerListRequest.partner_contacts__ilike</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerListRequest.partner_name__ilike"><code class="docutils literal notranslate"><span class="pre">PartnerListRequest.partner_name__ilike</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerListRequest.partner_region__ilike"><code class="docutils literal notranslate"><span class="pre">PartnerListRequest.partner_region__ilike</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerListRequest.partner_type__ilike"><code class="docutils literal notranslate"><span class="pre">PartnerListRequest.partner_type__ilike</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerListResponse"><code class="docutils literal notranslate"><span class="pre">PartnerListResponse</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerListResponse.model_computed_fields"><code class="docutils literal notranslate"><span class="pre">PartnerListResponse.model_computed_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerListResponse.model_config"><code class="docutils literal notranslate"><span class="pre">PartnerListResponse.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerListResponse.model_fields"><code class="docutils literal notranslate"><span class="pre">PartnerListResponse.model_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerListResponse.partners"><code class="docutils literal notranslate"><span class="pre">PartnerListResponse.partners</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerListResponse.partners_count"><code class="docutils literal notranslate"><span class="pre">PartnerListResponse.partners_count</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerSelectResponse"><code class="docutils literal notranslate"><span class="pre">PartnerSelectResponse</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerSelectResponse.created_date"><code class="docutils literal notranslate"><span class="pre">PartnerSelectResponse.created_date</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerSelectResponse.id"><code class="docutils literal notranslate"><span class="pre">PartnerSelectResponse.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerSelectResponse.model_computed_fields"><code class="docutils literal notranslate"><span class="pre">PartnerSelectResponse.model_computed_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerSelectResponse.model_config"><code class="docutils literal notranslate"><span class="pre">PartnerSelectResponse.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerSelectResponse.model_fields"><code class="docutils literal notranslate"><span class="pre">PartnerSelectResponse.model_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerSelectResponse.partner_contacts"><code class="docutils literal notranslate"><span class="pre">PartnerSelectResponse.partner_contacts</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerSelectResponse.partner_name"><code class="docutils literal notranslate"><span class="pre">PartnerSelectResponse.partner_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerSelectResponse.partner_region"><code class="docutils literal notranslate"><span class="pre">PartnerSelectResponse.partner_region</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerSelectResponse.partner_summary"><code class="docutils literal notranslate"><span class="pre">PartnerSelectResponse.partner_summary</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerSelectResponse.partner_type"><code class="docutils literal notranslate"><span class="pre">PartnerSelectResponse.partner_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerSelectResponse.partner_website"><code class="docutils literal notranslate"><span class="pre">PartnerSelectResponse.partner_website</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerSelectResponse.partnerpic_url"><code class="docutils literal notranslate"><span class="pre">PartnerSelectResponse.partnerpic_url</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerSelectResponse.updated_date"><code class="docutils literal notranslate"><span class="pre">PartnerSelectResponse.updated_date</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerSelectResponse.user_id"><code class="docutils literal notranslate"><span class="pre">PartnerSelectResponse.user_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerSelectResponse.user_name"><code class="docutils literal notranslate"><span class="pre">PartnerSelectResponse.user_name</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerUpdateRequest"><code class="docutils literal notranslate"><span class="pre">PartnerUpdateRequest</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerUpdateRequest.filter_partner_contacts"><code class="docutils literal notranslate"><span class="pre">PartnerUpdateRequest.filter_partner_contacts()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerUpdateRequest.filter_partner_name"><code class="docutils literal notranslate"><span class="pre">PartnerUpdateRequest.filter_partner_name()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerUpdateRequest.filter_partner_region"><code class="docutils literal notranslate"><span class="pre">PartnerUpdateRequest.filter_partner_region()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerUpdateRequest.filter_partner_summary"><code class="docutils literal notranslate"><span class="pre">PartnerUpdateRequest.filter_partner_summary()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerUpdateRequest.filter_partner_type"><code class="docutils literal notranslate"><span class="pre">PartnerUpdateRequest.filter_partner_type()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerUpdateRequest.filter_partner_website"><code class="docutils literal notranslate"><span class="pre">PartnerUpdateRequest.filter_partner_website()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerUpdateRequest.model_computed_fields"><code class="docutils literal notranslate"><span class="pre">PartnerUpdateRequest.model_computed_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerUpdateRequest.model_config"><code class="docutils literal notranslate"><span class="pre">PartnerUpdateRequest.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerUpdateRequest.model_fields"><code class="docutils literal notranslate"><span class="pre">PartnerUpdateRequest.model_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerUpdateRequest.partner_contacts"><code class="docutils literal notranslate"><span class="pre">PartnerUpdateRequest.partner_contacts</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerUpdateRequest.partner_name"><code class="docutils literal notranslate"><span class="pre">PartnerUpdateRequest.partner_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerUpdateRequest.partner_region"><code class="docutils literal notranslate"><span class="pre">PartnerUpdateRequest.partner_region</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerUpdateRequest.partner_summary"><code class="docutils literal notranslate"><span class="pre">PartnerUpdateRequest.partner_summary</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerUpdateRequest.partner_type"><code class="docutils literal notranslate"><span class="pre">PartnerUpdateRequest.partner_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerUpdateRequest.partner_website"><code class="docutils literal notranslate"><span class="pre">PartnerUpdateRequest.partner_website</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerUpdateResponse"><code class="docutils literal notranslate"><span class="pre">PartnerUpdateResponse</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerUpdateResponse.model_computed_fields"><code class="docutils literal notranslate"><span class="pre">PartnerUpdateResponse.model_computed_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerUpdateResponse.model_config"><code class="docutils literal notranslate"><span class="pre">PartnerUpdateResponse.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerUpdateResponse.model_fields"><code class="docutils literal notranslate"><span class="pre">PartnerUpdateResponse.model_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerUpdateResponse.partner_id"><code class="docutils literal notranslate"><span class="pre">PartnerUpdateResponse.partner_id</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerpicDeleteResponse"><code class="docutils literal notranslate"><span class="pre">PartnerpicDeleteResponse</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerpicDeleteResponse.model_computed_fields"><code class="docutils literal notranslate"><span class="pre">PartnerpicDeleteResponse.model_computed_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerpicDeleteResponse.model_config"><code class="docutils literal notranslate"><span class="pre">PartnerpicDeleteResponse.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerpicDeleteResponse.model_fields"><code class="docutils literal notranslate"><span class="pre">PartnerpicDeleteResponse.model_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerpicDeleteResponse.partner_id"><code class="docutils literal notranslate"><span class="pre">PartnerpicDeleteResponse.partner_id</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerpicUploadResponse"><code class="docutils literal notranslate"><span class="pre">PartnerpicUploadResponse</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerpicUploadResponse.model_computed_fields"><code class="docutils literal notranslate"><span class="pre">PartnerpicUploadResponse.model_computed_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerpicUploadResponse.model_config"><code class="docutils literal notranslate"><span class="pre">PartnerpicUploadResponse.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerpicUploadResponse.model_fields"><code class="docutils literal notranslate"><span class="pre">PartnerpicUploadResponse.model_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerpicUploadResponse.partner_id"><code class="docutils literal notranslate"><span class="pre">PartnerpicUploadResponse.partner_id</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="app.schemas.html#module-app.schemas.revision_schemas">app.schemas.revision_schemas module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="app.schemas.html#app.schemas.revision_schemas.DocumentRevisionsRequest"><code class="docutils literal notranslate"><span class="pre">DocumentRevisionsRequest</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.revision_schemas.DocumentRevisionsRequest.limit"><code class="docutils literal notranslate"><span class="pre">DocumentRevisionsRequest.limit</span></code></a></li>
@@ -998,7 +1571,48 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="app.schemas.html#app-schemas-time-schemas-module">app.schemas.time_schemas module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="app.schemas.html#module-app.schemas.telemetry_schemas">app.schemas.telemetry_schemas module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="app.schemas.html#app.schemas.telemetry_schemas.TelemetryRetrieveResponse"><code class="docutils literal notranslate"><span class="pre">TelemetryRetrieveResponse</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.telemetry_schemas.TelemetryRetrieveResponse.cpu_core_count"><code class="docutils literal notranslate"><span class="pre">TelemetryRetrieveResponse.cpu_core_count</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.telemetry_schemas.TelemetryRetrieveResponse.cpu_frequency"><code class="docutils literal notranslate"><span class="pre">TelemetryRetrieveResponse.cpu_frequency</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.telemetry_schemas.TelemetryRetrieveResponse.cpu_usage_percent"><code class="docutils literal notranslate"><span class="pre">TelemetryRetrieveResponse.cpu_usage_percent</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.telemetry_schemas.TelemetryRetrieveResponse.disk_free"><code class="docutils literal notranslate"><span class="pre">TelemetryRetrieveResponse.disk_free</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.telemetry_schemas.TelemetryRetrieveResponse.disk_total"><code class="docutils literal notranslate"><span class="pre">TelemetryRetrieveResponse.disk_total</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.telemetry_schemas.TelemetryRetrieveResponse.disk_used"><code class="docutils literal notranslate"><span class="pre">TelemetryRetrieveResponse.disk_used</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.telemetry_schemas.TelemetryRetrieveResponse.hidden_serial"><code class="docutils literal notranslate"><span class="pre">TelemetryRetrieveResponse.hidden_serial</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.telemetry_schemas.TelemetryRetrieveResponse.hidden_uptime"><code class="docutils literal notranslate"><span class="pre">TelemetryRetrieveResponse.hidden_uptime</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.telemetry_schemas.TelemetryRetrieveResponse.hidden_version"><code class="docutils literal notranslate"><span class="pre">TelemetryRetrieveResponse.hidden_version</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.telemetry_schemas.TelemetryRetrieveResponse.memory_free"><code class="docutils literal notranslate"><span class="pre">TelemetryRetrieveResponse.memory_free</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.telemetry_schemas.TelemetryRetrieveResponse.memory_total"><code class="docutils literal notranslate"><span class="pre">TelemetryRetrieveResponse.memory_total</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.telemetry_schemas.TelemetryRetrieveResponse.memory_used"><code class="docutils literal notranslate"><span class="pre">TelemetryRetrieveResponse.memory_used</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.telemetry_schemas.TelemetryRetrieveResponse.model_computed_fields"><code class="docutils literal notranslate"><span class="pre">TelemetryRetrieveResponse.model_computed_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.telemetry_schemas.TelemetryRetrieveResponse.model_config"><code class="docutils literal notranslate"><span class="pre">TelemetryRetrieveResponse.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.telemetry_schemas.TelemetryRetrieveResponse.model_fields"><code class="docutils literal notranslate"><span class="pre">TelemetryRetrieveResponse.model_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.telemetry_schemas.TelemetryRetrieveResponse.os_name"><code class="docutils literal notranslate"><span class="pre">TelemetryRetrieveResponse.os_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.telemetry_schemas.TelemetryRetrieveResponse.os_release"><code class="docutils literal notranslate"><span class="pre">TelemetryRetrieveResponse.os_release</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.telemetry_schemas.TelemetryRetrieveResponse.os_version"><code class="docutils literal notranslate"><span class="pre">TelemetryRetrieveResponse.os_version</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.telemetry_schemas.TelemetryRetrieveResponse.platform_alias"><code class="docutils literal notranslate"><span class="pre">TelemetryRetrieveResponse.platform_alias</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.telemetry_schemas.TelemetryRetrieveResponse.platform_architecture"><code class="docutils literal notranslate"><span class="pre">TelemetryRetrieveResponse.platform_architecture</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.telemetry_schemas.TelemetryRetrieveResponse.platform_machine"><code class="docutils literal notranslate"><span class="pre">TelemetryRetrieveResponse.platform_machine</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.telemetry_schemas.TelemetryRetrieveResponse.platform_node"><code class="docutils literal notranslate"><span class="pre">TelemetryRetrieveResponse.platform_node</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.telemetry_schemas.TelemetryRetrieveResponse.platform_processor"><code class="docutils literal notranslate"><span class="pre">TelemetryRetrieveResponse.platform_processor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.telemetry_schemas.TelemetryRetrieveResponse.postgres_database_size"><code class="docutils literal notranslate"><span class="pre">TelemetryRetrieveResponse.postgres_database_size</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.telemetry_schemas.TelemetryRetrieveResponse.postgres_start_time"><code class="docutils literal notranslate"><span class="pre">TelemetryRetrieveResponse.postgres_start_time</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.telemetry_schemas.TelemetryRetrieveResponse.postgres_version"><code class="docutils literal notranslate"><span class="pre">TelemetryRetrieveResponse.postgres_version</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.telemetry_schemas.TelemetryRetrieveResponse.python_branch"><code class="docutils literal notranslate"><span class="pre">TelemetryRetrieveResponse.python_branch</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.telemetry_schemas.TelemetryRetrieveResponse.python_builddate"><code class="docutils literal notranslate"><span class="pre">TelemetryRetrieveResponse.python_builddate</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.telemetry_schemas.TelemetryRetrieveResponse.python_buildno"><code class="docutils literal notranslate"><span class="pre">TelemetryRetrieveResponse.python_buildno</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.telemetry_schemas.TelemetryRetrieveResponse.python_compiler"><code class="docutils literal notranslate"><span class="pre">TelemetryRetrieveResponse.python_compiler</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.telemetry_schemas.TelemetryRetrieveResponse.python_implementation"><code class="docutils literal notranslate"><span class="pre">TelemetryRetrieveResponse.python_implementation</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.telemetry_schemas.TelemetryRetrieveResponse.python_revision"><code class="docutils literal notranslate"><span class="pre">TelemetryRetrieveResponse.python_revision</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.telemetry_schemas.TelemetryRetrieveResponse.python_version"><code class="docutils literal notranslate"><span class="pre">TelemetryRetrieveResponse.python_version</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.telemetry_schemas.TelemetryRetrieveResponse.timezone_name"><code class="docutils literal notranslate"><span class="pre">TelemetryRetrieveResponse.timezone_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.telemetry_schemas.TelemetryRetrieveResponse.timezone_offset"><code class="docutils literal notranslate"><span class="pre">TelemetryRetrieveResponse.timezone_offset</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.telemetry_schemas.TelemetryRetrieveResponse.unix_timestamp"><code class="docutils literal notranslate"><span class="pre">TelemetryRetrieveResponse.unix_timestamp</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="app.schemas.html#module-app.schemas.user_schemas">app.schemas.user_schemas module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="app.schemas.html#app.schemas.user_schemas.PasswordUpdateRequest"><code class="docutils literal notranslate"><span class="pre">PasswordUpdateRequest</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="app.schemas.html#app.schemas.user_schemas.PasswordUpdateRequest.current_password"><code class="docutils literal notranslate"><span class="pre">PasswordUpdateRequest.current_password</span></code></a></li>
@@ -1184,6 +1798,15 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="app.schemas.html#module-app.schemas">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="app.triggers.html">app.triggers package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="app.triggers.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="app.triggers.html#module-app.triggers.comment_triggers">app.triggers.comment_triggers module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="app.triggers.html#module-app.triggers.document_triggers">app.triggers.document_triggers module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="app.triggers.html#module-app.triggers.download_triggers">app.triggers.download_triggers module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="app.triggers.html#module-app.triggers.revision_triggers">app.triggers.revision_triggers module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="app.triggers.html#module-app.triggers">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -1912,9 +2535,6 @@ filter to include trace request UUIDs in log messages.</p>
 </dd></dl>
 
 </section>
-<section id="app-model-module">
-<h2>app.model module<a class="headerlink" href="#app-model-module" title="Link to this heading"></a></h2>
-</section>
 <section id="module-app.openapi">
 <span id="app-openapi-module"></span><h2>app.openapi module<a class="headerlink" href="#module-app.openapi" title="Link to this heading"></a></h2>
 </section>
@@ -2010,6 +2630,27 @@ models matching the criteria.</p>
 optional immediate transaction commit.</p>
 </dd></dl>
 
+</dd></dl>
+
+</section>
+<section id="module-app.scheduler">
+<span id="app-scheduler-module"></span><h2>app.scheduler module<a class="headerlink" href="#module-app.scheduler" title="Link to this heading"></a></h2>
+<p>The module defines a scheduler that periodically executes a scheduled
+hook action. The scheduler runs in an infinite loop, fetching a session
+and cache instance from the database and cache generators, respectively.
+Once the resources are obtained, the Hook class is instantiated, and the
+hook action is executed.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.scheduler.scheduler">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.scheduler.</span></span><span class="sig-name descname"><span class="pre">scheduler</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/scheduler.html#scheduler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.scheduler.scheduler" title="Link to this definition"></a></dt>
+<dd><p>The function continuously runs an asynchronous loop that
+periodically retrieves a session and cache instance, then executes
+a scheduled task using the Hook class based on the HOOK_ON_SCHEDULE
+event. After executing the task, it ensures the session and cache
+are properly closed and then sleeps for a specified interval
+before repeating the process. This function is designed to run
+indefinitely, enabling periodic background tasks to be performed
+at regular intervals.</p>
 </dd></dl>
 
 </section>

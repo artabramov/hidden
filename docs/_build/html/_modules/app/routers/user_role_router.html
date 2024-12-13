@@ -1,0 +1,190 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>app.routers.user_role_router &mdash; Hidden  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Hidden
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.html">app package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.decorators.html">app.decorators package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.helpers.html">app.helpers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.managers.html">app.managers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.models.html">app.models package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.plugins.html">app.plugins package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.routers.html">app.routers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.schemas.html">app.schemas package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Hidden</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">app.routers.user_role_router</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for app.routers.user_role_router</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">APIRouter</span><span class="p">,</span> <span class="n">Depends</span><span class="p">,</span> <span class="n">status</span>
+<span class="kn">from</span> <span class="nn">fastapi.responses</span> <span class="kn">import</span> <span class="n">JSONResponse</span>
+<span class="kn">from</span> <span class="nn">app.database</span> <span class="kn">import</span> <span class="n">get_session</span>
+<span class="kn">from</span> <span class="nn">app.cache</span> <span class="kn">import</span> <span class="n">get_cache</span>
+<span class="kn">from</span> <span class="nn">app.decorators.locked_decorator</span> <span class="kn">import</span> <span class="n">locked</span>
+<span class="kn">from</span> <span class="nn">app.models.user_model</span> <span class="kn">import</span> <span class="n">User</span><span class="p">,</span> <span class="n">UserRole</span>
+<span class="kn">from</span> <span class="nn">app.schemas.user_schemas</span> <span class="kn">import</span> <span class="n">RoleUpdateRequest</span><span class="p">,</span> <span class="n">RoleUpdateResponse</span>
+<span class="kn">from</span> <span class="nn">app.errors</span> <span class="kn">import</span> <span class="n">E</span>
+<span class="kn">from</span> <span class="nn">app.hooks</span> <span class="kn">import</span> <span class="n">Hook</span>
+<span class="kn">from</span> <span class="nn">app.auth</span> <span class="kn">import</span> <span class="n">auth</span>
+<span class="kn">from</span> <span class="nn">app.repository</span> <span class="kn">import</span> <span class="n">Repository</span>
+<span class="kn">from</span> <span class="nn">app.constants</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">LOC_PATH</span><span class="p">,</span> <span class="n">ERR_RESOURCE_NOT_FOUND</span><span class="p">,</span> <span class="n">ERR_RESOURCE_FORBIDDEN</span><span class="p">,</span>
+    <span class="n">HOOK_BEFORE_ROLE_CHANGE</span><span class="p">,</span> <span class="n">HOOK_AFTER_ROLE_CHANGE</span><span class="p">)</span>
+
+<span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="user_role">
+<a class="viewcode-back" href="../../../autodoc/app.routers.html#app.routers.user_role_router.user_role">[docs]</a>
+<span class="nd">@router</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s2">&quot;/user/</span><span class="si">{user_id}</span><span class="s2">/role&quot;</span><span class="p">,</span> <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;Change a user role.&quot;</span><span class="p">,</span>
+            <span class="n">response_class</span><span class="o">=</span><span class="n">JSONResponse</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_200_OK</span><span class="p">,</span>
+            <span class="n">response_model</span><span class="o">=</span><span class="n">RoleUpdateResponse</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Users&quot;</span><span class="p">])</span>
+<span class="nd">@locked</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">user_role</span><span class="p">(</span>
+    <span class="n">user_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">schema</span><span class="p">:</span> <span class="n">RoleUpdateRequest</span><span class="p">,</span>
+    <span class="n">session</span><span class="o">=</span><span class="n">Depends</span><span class="p">(</span><span class="n">get_session</span><span class="p">),</span> <span class="n">cache</span><span class="o">=</span><span class="n">Depends</span><span class="p">(</span><span class="n">get_cache</span><span class="p">),</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">auth</span><span class="p">(</span><span class="n">UserRole</span><span class="o">.</span><span class="n">admin</span><span class="p">))</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RoleUpdateResponse</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Change a user role. Requires the current user to have an admin role.</span>
+<span class="sd">    The user being updated must be different from the current user.</span>
+<span class="sd">    Returns a 200 response with the ID of the updated user. Raises a 403</span>
+<span class="sd">    error if the current user tries to update their own role, if the</span>
+<span class="sd">    user&#39;s token is invalid, or if the user does not have the required</span>
+<span class="sd">    role. Returns a 404 error if the user to be updated is not found,</span>
+<span class="sd">    a 422 error if arguments validation failed, a 423 error if the</span>
+<span class="sd">    application is locked.</span>
+
+<span class="sd">    **Returns:**</span>
+<span class="sd">    - `RoleUpdateResponse`: A response schema containing the ID of the</span>
+<span class="sd">    updated user.</span>
+
+<span class="sd">    **Raises:**</span>
+<span class="sd">    - `403 Forbidden`: Raised if the current user tries to update their</span>
+<span class="sd">    own role, if the user&#39;s token is invalid, or if the user does not</span>
+<span class="sd">    have the required role.</span>
+<span class="sd">    - `404 Not Found`: Raised if the user to be updated is not found.</span>
+<span class="sd">    - `422 Unprocessable Entity`: Raised if arguments validation failed</span>
+<span class="sd">    - `423 Locked`: Raised if the application is locked.</span>
+
+<span class="sd">    **Hooks:**</span>
+<span class="sd">    - `HOOK_BEFORE_ROLE_CHANGE`: Executes before the role update.</span>
+<span class="sd">    - `HOOK_AFTER_ROLE_CHANGE`: Executes after the role update.</span>
+
+<span class="sd">    **Auth:**</span>
+<span class="sd">    - The user must provide a valid `JWT token` in the request header.</span>
+<span class="sd">    - The `admin` role is required to access this router.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">user_repository</span> <span class="o">=</span> <span class="n">Repository</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">cache</span><span class="p">,</span> <span class="n">User</span><span class="p">)</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="k">await</span> <span class="n">user_repository</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">user_id</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">E</span><span class="p">([</span><span class="n">LOC_PATH</span><span class="p">,</span> <span class="s2">&quot;user_id&quot;</span><span class="p">],</span> <span class="n">user_id</span><span class="p">,</span>
+                <span class="n">ERR_RESOURCE_NOT_FOUND</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_404_NOT_FOUND</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">user_id</span> <span class="o">==</span> <span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">E</span><span class="p">([</span><span class="n">LOC_PATH</span><span class="p">,</span> <span class="s2">&quot;user_id&quot;</span><span class="p">],</span> <span class="n">user_id</span><span class="p">,</span>
+                <span class="n">ERR_RESOURCE_FORBIDDEN</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_403_FORBIDDEN</span><span class="p">)</span>
+
+    <span class="n">user</span><span class="o">.</span><span class="n">is_active</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="n">is_active</span>
+    <span class="n">user</span><span class="o">.</span><span class="n">user_role</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="n">user_role</span>
+    <span class="k">await</span> <span class="n">user_repository</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">commit</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="n">hook</span> <span class="o">=</span> <span class="n">Hook</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">cache</span><span class="p">,</span> <span class="n">current_user</span><span class="o">=</span><span class="n">current_user</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">hook</span><span class="o">.</span><span class="n">do</span><span class="p">(</span><span class="n">HOOK_BEFORE_ROLE_CHANGE</span><span class="p">,</span> <span class="n">user</span><span class="p">)</span>
+
+    <span class="k">await</span> <span class="n">user_repository</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="k">await</span> <span class="n">hook</span><span class="o">.</span><span class="n">do</span><span class="p">(</span><span class="n">HOOK_AFTER_ROLE_CHANGE</span><span class="p">,</span> <span class="n">user</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">}</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Artem Abramov.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -4,18 +4,18 @@ app.plugins package
 Submodules
 ----------
 
-app.plugins.sample\_plugin module
----------------------------------
+app.plugins.example\_plugin module
+----------------------------------
 
-.. automodule:: app.plugins.sample_plugin
+.. automodule:: app.plugins.example_plugin
    :members:
    :undoc-members:
    :show-inheritance:
 
-app.plugins.users\_logs\_plugin module
---------------------------------------
+app.plugins.logs\_plugin module
+-------------------------------
 
-.. automodule:: app.plugins.users_logs_plugin
+.. automodule:: app.plugins.logs_plugin
    :members:
    :undoc-members:
    :show-inheritance:

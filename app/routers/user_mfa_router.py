@@ -41,17 +41,17 @@ async def user_mfa(
 
     **Returns:**
     - A QR code image in the response body to be scanned by an MFA
-      application.
+    application.
 
     **Raises:**
     - `403 Forbidden`: Raised if the user is active.
     - `422 Unprocessable Entity`: Raised if the user does not exist or
-      if the MFA secret does not match.
+    if the MFA secret does not match.
     - `423 Locked`: Raised if the application is locked.
 
     **Hooks:**
     - `HOOK_BEFORE_MFA_SELECT`: Executes before generating the MFA
-      QR code.
+    QR code.
     - `HOOK_AFTER_MFA_SELECT`: Executes after generating the MFA QR code.
 
     **Auth:**

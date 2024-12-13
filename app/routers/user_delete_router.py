@@ -44,9 +44,9 @@ async def user_delete(
 
     **Raises:**
     - `403 Forbidden`: Raised if the current user attempts to delete
-      their own account or if the deletion is forbidden.
+    their own account or if the deletion is forbidden.
     - `404 Not Found`: Raised if the user with the provided ID does not
-      exist.
+    exist.
     - `423 Locked`: Raised if the application is locked.
 
     **Hooks:**

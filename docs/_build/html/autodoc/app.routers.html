@@ -20,7 +20,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="app.schemas package" href="app.schemas.html" />
-    <link rel="prev" title="app.models package" href="app.models.html" /> 
+    <link rel="prev" title="app.plugins package" href="app.plugins.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -46,13 +46,13 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="app.html">app package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="app.decorators.html">app.decorators package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app.filters.html">app.filters package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="app.helpers.html">app.helpers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="app.managers.html">app.managers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="app.models.html">app.models package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="app.plugins.html">app.plugins package</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">app.routers package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#app-routers-cache-erase-router-module">app.routers.cache_erase_router module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-app.routers.collection_delete_router">app.routers.collection_delete_router module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#app.routers.collection_delete_router.collection_delete"><code class="docutils literal notranslate"><span class="pre">collection_delete()</span></code></a></li>
 </ul>
@@ -63,6 +63,10 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-app.routers.collection_list_router">app.routers.collection_list_router module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#app.routers.collection_list_router.collection_list"><code class="docutils literal notranslate"><span class="pre">collection_list()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.collection_lock_router">app.routers.collection_lock_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.collection_lock_router.collection_delete"><code class="docutils literal notranslate"><span class="pre">collection_delete()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-app.routers.collection_select_router">app.routers.collection_select_router module</a><ul>
@@ -93,32 +97,66 @@
 <li class="toctree-l3"><a class="reference internal" href="#app.routers.comment_update_router.comment_update"><code class="docutils literal notranslate"><span class="pre">comment_update()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#app-routers-custom-execute-router-module">app.routers.custom_execute_router module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#app-routers-datafile-delete-router-module">app.routers.datafile_delete_router module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#app-routers-datafile-download-router-module">app.routers.datafile_download_router module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#app-routers-datafile-list-router-module">app.routers.datafile_list_router module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#app-routers-datafile-replace-router-module">app.routers.datafile_replace_router module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#app-routers-datafile-select-router-module">app.routers.datafile_select_router module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#app-routers-datafile-update-router-module">app.routers.datafile_update_router module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#app-routers-datafile-upload-router-module">app.routers.datafile_upload_router module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#app-routers-download-list-router-module">app.routers.download_list_router module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#app-routers-download-select-router-module">app.routers.download_select_router module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#app-routers-favorite-delete-router-module">app.routers.favorite_delete_router module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#app-routers-favorite-insert-router-module">app.routers.favorite_insert_router module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#app-routers-favorite-list-router-module">app.routers.favorite_list_router module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#app-routers-favorite-select-router-module">app.routers.favorite_select_router module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#app-routers-lock-create-router-module">app.routers.lock_create_router module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#app-routers-lock-delete-router-module">app.routers.lock_delete_router module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.document_delete_router">app.routers.document_delete_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.document_delete_router.document_delete"><code class="docutils literal notranslate"><span class="pre">document_delete()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.document_download_router">app.routers.document_download_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.document_download_router.document_download"><code class="docutils literal notranslate"><span class="pre">document_download()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.document_downloads_router">app.routers.document_downloads_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.document_downloads_router.document_downloads"><code class="docutils literal notranslate"><span class="pre">document_downloads()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.document_flag_router">app.routers.document_flag_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.document_flag_router.document_update"><code class="docutils literal notranslate"><span class="pre">document_update()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.document_list_router">app.routers.document_list_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.document_list_router.document_list"><code class="docutils literal notranslate"><span class="pre">document_list()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.document_move_router">app.routers.document_move_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.document_move_router.document_move"><code class="docutils literal notranslate"><span class="pre">document_move()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.document_replace_router">app.routers.document_replace_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.document_replace_router.document_replace"><code class="docutils literal notranslate"><span class="pre">document_replace()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.document_revisions_router">app.routers.document_revisions_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.document_revisions_router.document_revisions"><code class="docutils literal notranslate"><span class="pre">document_revisions()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.document_select_router">app.routers.document_select_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.document_select_router.document_select"><code class="docutils literal notranslate"><span class="pre">document_select()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.document_update_router">app.routers.document_update_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.document_update_router.document_update"><code class="docutils literal notranslate"><span class="pre">document_update()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.document_upload_router">app.routers.document_upload_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.document_upload_router.document_upload"><code class="docutils literal notranslate"><span class="pre">document_upload()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.execute_router">app.routers.execute_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.execute_router.execute"><code class="docutils literal notranslate"><span class="pre">execute()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.lock_change_router">app.routers.lock_change_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.lock_change_router.lock_change"><code class="docutils literal notranslate"><span class="pre">lock_change()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#module-app.routers.lock_retrieve_router">app.routers.lock_retrieve_router module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#app.routers.lock_retrieve_router.lock_retrieve"><code class="docutils literal notranslate"><span class="pre">lock_retrieve()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#app-routers-mfa-retrieve-router-module">app.routers.mfa_retrieve_router module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-app.routers.option_delete_router">app.routers.option_delete_router module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#app.routers.option_delete_router.option_delete"><code class="docutils literal notranslate"><span class="pre">option_delete()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#app-routers-option-insert-router-module">app.routers.option_insert_router module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-app.routers.option_list_router">app.routers.option_list_router module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#app.routers.option_list_router.options_list"><code class="docutils literal notranslate"><span class="pre">options_list()</span></code></a></li>
 </ul>
@@ -131,16 +169,42 @@
 <li class="toctree-l3"><a class="reference internal" href="#app.routers.option_update_router.option_update"><code class="docutils literal notranslate"><span class="pre">option_update()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#app-routers-password-change-router-module">app.routers.password_change_router module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#app-routers-revision-download-router-module">app.routers.revision_download_router module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#app-routers-revision-list-router-module">app.routers.revision_list_router module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#app-routers-revision-select-router-module">app.routers.revision_select_router module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#app-routers-role-change-router-module">app.routers.role_change_router module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.partner_delete_router">app.routers.partner_delete_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.partner_delete_router.partner_delete"><code class="docutils literal notranslate"><span class="pre">partner_delete()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.partner_insert_router">app.routers.partner_insert_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.partner_insert_router.partner_insert"><code class="docutils literal notranslate"><span class="pre">partner_insert()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.partner_list_router">app.routers.partner_list_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.partner_list_router.partner_list"><code class="docutils literal notranslate"><span class="pre">partner_list()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.partner_select_router">app.routers.partner_select_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.partner_select_router.partner_select"><code class="docutils literal notranslate"><span class="pre">partner_select()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.partner_update_router">app.routers.partner_update_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.partner_update_router.partner_update"><code class="docutils literal notranslate"><span class="pre">partner_update()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.partnerpic_delete_router">app.routers.partnerpic_delete_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.partnerpic_delete_router.partnerpic_delete"><code class="docutils literal notranslate"><span class="pre">partnerpic_delete()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.partnerpic_upload_router">app.routers.partnerpic_upload_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.partnerpic_upload_router.partnerpic_upload"><code class="docutils literal notranslate"><span class="pre">partnerpic_upload()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.sphinx_router">app.routers.sphinx_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.sphinx_router.redirect_to_sphinx"><code class="docutils literal notranslate"><span class="pre">redirect_to_sphinx()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#module-app.routers.telemetry_retrieve_router">app.routers.telemetry_retrieve_router module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#app.routers.telemetry_retrieve_router.telemetry_retrieve"><code class="docutils literal notranslate"><span class="pre">telemetry_retrieve()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#app-routers-time-retrieve-router-module">app.routers.time_retrieve_router module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-app.routers.token_invalidate_router">app.routers.token_invalidate_router module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#app.routers.token_invalidate_router.token_invalidate"><code class="docutils literal notranslate"><span class="pre">token_invalidate()</span></code></a></li>
 </ul>
@@ -161,8 +225,20 @@
 <li class="toctree-l3"><a class="reference internal" href="#app.routers.user_login_router.user_login"><code class="docutils literal notranslate"><span class="pre">user_login()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.user_mfa_router">app.routers.user_mfa_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.user_mfa_router.user_mfa"><code class="docutils literal notranslate"><span class="pre">user_mfa()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.user_password_router">app.routers.user_password_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.user_password_router.user_password"><code class="docutils literal notranslate"><span class="pre">user_password()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#module-app.routers.user_register_router">app.routers.user_register_router module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#app.routers.user_register_router.user_register"><code class="docutils literal notranslate"><span class="pre">user_register()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.user_role_router">app.routers.user_role_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.user_role_router.user_role"><code class="docutils literal notranslate"><span class="pre">user_role()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-app.routers.user_select_router">app.routers.user_select_router module</a><ul>
@@ -185,6 +261,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="app.schemas.html">app.schemas package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app.triggers.html">app.triggers package</a></li>
 </ul>
 
         </div>
@@ -217,9 +294,6 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
 </section>
-<section id="app-routers-cache-erase-router-module">
-<h2>app.routers.cache_erase_router module<a class="headerlink" href="#app-routers-cache-erase-router-module" title="Link to this heading"></a></h2>
-</section>
 <section id="module-app.routers.collection_delete_router">
 <span id="app-routers-collection-delete-router-module"></span><h2>app.routers.collection_delete_router module<a class="headerlink" href="#module-app.routers.collection_delete_router" title="Link to this heading"></a></h2>
 <dl class="py function">
@@ -236,29 +310,19 @@ permissions, and a 423 error if the application is locked.</p>
 <p><strong>Args:</strong>
 - <cite>collection_id</cite>: The ID of the collection to be deleted.</p>
 <p><strong>Returns:</strong>
-- <cite>CollectionDeleteResponse</cite>: The response schema containing the ID</p>
-<blockquote>
-<div><p>of the deleted collection.</p>
-</div></blockquote>
+- <cite>CollectionDeleteResponse</cite>: The response schema containing the ID
+of the deleted collection.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the current user is not authenticated</p>
-<blockquote>
-<div><p>or does not have the required permissions.</p>
-</div></blockquote>
-<ul class="simple">
-<li><p><cite>404 Not Found</cite>: Raised if the collection with the specified
-ID does not exist.</p></li>
-<li><p><cite>423 Locked</cite>: Raised if the application is locked.</p></li>
-</ul>
+- <cite>403 Forbidden</cite>: Raised if the current user is not authenticated
+or does not have the required permissions.
+- <cite>404 Not Found</cite>: Raised if the collection with the specified
+ID does not exist.
+- <cite>423 Locked</cite>: Raised if the application is locked.</p>
 <p><strong>Hooks:</strong>
-- <cite>HOOK_BEFORE_COLLECTION_DELETE</cite>: Executed before the collection is</p>
-<blockquote>
-<div><p>deleted.</p>
-</div></blockquote>
-<ul class="simple">
-<li><p><cite>HOOK_AFTER_COLLECTION_DELETE</cite>: Executed after the collection is
-deleted.</p></li>
-</ul>
+- <cite>HOOK_BEFORE_COLLECTION_DELETE</cite>: Executed before the collection is
+deleted.
+- <cite>HOOK_AFTER_COLLECTION_DELETE</cite>: Executed after the collection is
+deleted.</p>
 <p><strong>Auth:</strong>
 - The user must provide a valid <cite>JWT token</cite> in the request header.
 - <cite>admin</cite> user role is required to access this router.</p>
@@ -280,40 +344,26 @@ duplicated, a 403 error if authentication failed or the user does
 not have the required permissions, and a 423 error if the
 application is locked.</p>
 <p><strong>Args:</strong>
-- <cite>CollectionInsertRequest</cite>: The request schema containing the data</p>
-<blockquote>
-<div><p>for the new collection.</p>
-</div></blockquote>
+- <cite>CollectionInsertRequest</cite>: The request schema containing the data
+for the new collection.</p>
 <p><strong>Returns:</strong>
-- <cite>CollectionInsertResponse</cite>: The response schema containing the ID</p>
-<blockquote>
-<div><p>of the newly created collection.</p>
-</div></blockquote>
+- <cite>CollectionInsertResponse</cite>: The response schema containing the ID
+of the newly created collection.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the current user is not authenticated</p>
-<blockquote>
-<div><p>or does not have the required permissions.</p>
-</div></blockquote>
-<ul class="simple">
-<li><p><cite>422 Unprocessable Entity</cite>: Raised if arguments validation failed
-or the collection name is already exist.</p></li>
-<li><p><cite>423 Locked</cite>: Raised if the application is locked.</p></li>
-</ul>
+- <cite>403 Forbidden</cite>: Raised if the current user is not authenticated
+or does not have the required permissions.
+- <cite>422 Unprocessable Entity</cite>: Raised if arguments validation failed
+or the collection name is already exist.
+- <cite>423 Locked</cite>: Raised if the application is locked.</p>
 <p><strong>Hooks:</strong>
-- <cite>HOOK_BEFORE_COLLECTION_INSERT</cite>: Executes before the collection is</p>
-<blockquote>
-<div><p>inserted.</p>
-</div></blockquote>
-<ul class="simple">
-<li><p><cite>HOOK_AFTER_COLLECTION_INSERT</cite>: Executes after the collection is
-inserted.</p></li>
-</ul>
+- <cite>HOOK_BEFORE_COLLECTION_INSERT</cite>: Executes before the collection is
+inserted.
+- <cite>HOOK_AFTER_COLLECTION_INSERT</cite>: Executes after the collection is
+inserted.</p>
 <p><strong>Auth:</strong>
 - The user must provide a valid <cite>JWT token</cite> in the request header.
-- <cite>writer</cite>, <cite>editor</cite> or <cite>admin</cite> user role is required to access this</p>
-<blockquote>
-<div><p>router.</p>
-</div></blockquote>
+- <cite>writer</cite>, <cite>editor</cite> or <cite>admin</cite> user role is required to access this
+router.</p>
 </dd></dl>
 
 </section>
@@ -330,35 +380,61 @@ error if authentication failed or the user does not have the
 required permissions, a 422 error if arguments validation failed,
 and a 423 error if the application is locked.</p>
 <p><strong>Args:</strong>
-- <cite>CollectionListRequest</cite>: The request schema containing filter and</p>
-<blockquote>
-<div><p>pagination details.</p>
-</div></blockquote>
+- <cite>CollectionListRequest</cite>: The request schema containing filter and
+pagination details.</p>
 <p><strong>Returns:</strong>
-- <cite>CollectionListResponse</cite>: The response schema containing the list</p>
-<blockquote>
-<div><p>of collections and the total count.</p>
-</div></blockquote>
+- <cite>CollectionListResponse</cite>: The response schema containing the list
+of collections and the total count.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the current user is not authenticated</p>
-<blockquote>
-<div><p>or does not have the required <cite>reader</cite> role.</p>
-</div></blockquote>
-<ul class="simple">
-<li><p><cite>422 Unprocessable Entity</cite>:  Raised if arguments validation failed.</p></li>
-<li><p><cite>423 Locked</cite>: Raised if the application is locked.</p></li>
-</ul>
+- <cite>403 Forbidden</cite>: Raised if the current user is not authenticated
+or does not have the required <cite>reader</cite> role.
+- <cite>422 Unprocessable Entity</cite>:  Raised if arguments validation failed.
+- <cite>423 Locked</cite>: Raised if the application is locked.</p>
 <p><strong>Hooks:</strong>
-- <cite>HOOK_AFTER_COLLECTION_LIST</cite>: Executes after the collections are</p>
-<blockquote>
-<div><p>retrieved.</p>
-</div></blockquote>
+- <cite>HOOK_AFTER_COLLECTION_LIST</cite>: Executes after the collections are
+retrieved.</p>
 <p><strong>Auth:</strong>
 - The user must provide a valid <cite>JWT token</cite> in the request header.
-- <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite>, <cite>admin</cite> user role is required to</p>
-<blockquote>
-<div><p>access this router.</p>
-</div></blockquote>
+- <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite>, <cite>admin</cite> user role is required to
+access this router.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.routers.collection_lock_router">
+<span id="app-routers-collection-lock-router-module"></span><h2>app.routers.collection_lock_router module<a class="headerlink" href="#module-app.routers.collection_lock_router" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.collection_lock_router.collection_delete">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.collection_lock_router.</span></span><span class="sig-name descname"><span class="pre">collection_delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collection_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.schemas.html#app.schemas.collection_schemas.CollectionLockUpdateRequest" title="app.schemas.collection_schemas.CollectionLockUpdateRequest"><span class="pre">CollectionLockUpdateRequest</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_edit)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.collection_schemas.CollectionLockUpdateResponse" title="app.schemas.collection_schemas.CollectionLockUpdateResponse"><span class="pre">CollectionLockUpdateResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/collection_lock_router.html#collection_delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.collection_lock_router.collection_delete" title="Link to this definition"></a></dt>
+<dd><p>Change the locking state of a collection. This router allows
+updating the locked status of a collection. The collection is
+retrieved from the repository using the provided ID, and its lock
+status is updated. The current user must have an editor role or
+higher. Returns a 200 response on success, a 404 error if the
+collection is not found, a 422 error if arguments validation failed,
+a 403 error if authentication failed or the user does not have the
+required permissions, and a 423 error if the application is locked.</p>
+<p><strong>Args:</strong>
+- <cite>collection_id</cite>: The ID of the collection to update.
+- <cite>CollectionLockUpdateRequest</cite>: The request schema containing the
+new locked state.</p>
+<p><strong>Returns:</strong>
+- <cite>CollectionLockUpdateResponse</cite>: The response schema containing the
+ID of the updated collection.</p>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the current user is not authenticated
+or does not have the required permissions.
+- <cite>404 Not Found</cite>: Raised if the collection with the specified
+ID does not exist.
+- <cite>422 Unprocessable Entity</cite>:  Raised if arguments validation failed.
+- <cite>423 Locked</cite>: Raised if the application is locked.</p>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_BEFORE_COLLECTION_UPDATE</cite>: Executes before the collection
+lock status is updated.
+- <cite>HOOK_AFTER_COLLECTION_UPDATE</cite>: Executes after the collection lock
+status is updated.</p>
+<p><strong>Auth:</strong>
+- The user must provide a valid <cite>JWT token</cite> in the request header.
+- <cite>editor</cite> or <cite>admin</cite> user role is required to access this router.</p>
 </dd></dl>
 
 </section>
@@ -377,31 +453,21 @@ permissions, and a 423 error if the application is locked.</p>
 <p><strong>Args:</strong>
 - <cite>collection_id</cite>: The ID of the collection to retrieve.</p>
 <p><strong>Returns:</strong>
-- <cite>CollectionSelectResponse</cite>: The response schema containing the</p>
-<blockquote>
-<div><p>details of the selected collection.</p>
-</div></blockquote>
+- <cite>CollectionSelectResponse</cite>: The response schema containing the
+details of the selected collection.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the current user is not authenticated</p>
-<blockquote>
-<div><p>or does not have the required permissions.</p>
-</div></blockquote>
-<ul class="simple">
-<li><p><cite>404 Not Found</cite>: Raised if the collection with the specified ID
-does not exist.</p></li>
-<li><p><cite>423 Locked</cite>: Raised if the application is locked.</p></li>
-</ul>
+- <cite>403 Forbidden</cite>: Raised if the current user is not authenticated
+or does not have the required permissions.
+- <cite>404 Not Found</cite>: Raised if the collection with the specified ID
+does not exist.
+- <cite>423 Locked</cite>: Raised if the application is locked.</p>
 <p><strong>Hooks:</strong>
-- <cite>HOOK_AFTER_COLLECTION_SELECT</cite>: Executes after the collection is</p>
-<blockquote>
-<div><p>successfully selected.</p>
-</div></blockquote>
+- <cite>HOOK_AFTER_COLLECTION_SELECT</cite>: Executes after the collection is
+successfully selected.</p>
 <p><strong>Auth:</strong>
 - The user must provide a valid <cite>JWT token</cite> in the request header.
-- <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite> or <cite>admin</cite> user role is required to</p>
-<blockquote>
-<div><p>access this router.</p>
-</div></blockquote>
+- <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite> or <cite>admin</cite> user role is required to
+access this router.</p>
 </dd></dl>
 
 </section>
@@ -422,35 +488,23 @@ authentication failed or the user does not have the required
 permissions, and a 423 error if the application is locked.</p>
 <p><strong>Args:</strong>
 - <cite>collection_id</cite>: The ID of the collection to update.
-- <cite>CollectionUpdateRequest</cite>: The request schema containing the</p>
-<blockquote>
-<div><p>updated collection data.</p>
-</div></blockquote>
+- <cite>CollectionUpdateRequest</cite>: The request schema containing the
+updated collection data.</p>
 <p><strong>Returns:</strong>
-- <cite>CollectionUpdateResponse</cite>: The response schema containing the ID</p>
-<blockquote>
-<div><p>of the updated collection.</p>
-</div></blockquote>
+- <cite>CollectionUpdateResponse</cite>: The response schema containing the ID
+of the updated collection.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the current user is not authenticated</p>
-<blockquote>
-<div><p>or does not have the required permissions.</p>
-</div></blockquote>
-<ul class="simple">
-<li><p><cite>404 Not Found</cite>: Raised if the collection with the specified ID
-does not exist.</p></li>
-<li><p><cite>422 Unprocessable Entity</cite>: Raised if arguments validation failed.</p></li>
-<li><p><cite>423 Locked</cite>: Raised if the application is locked.</p></li>
-</ul>
+- <cite>403 Forbidden</cite>: Raised if the current user is not authenticated
+or does not have the required permissions.
+- <cite>404 Not Found</cite>: Raised if the collection with the specified ID
+does not exist.
+- <cite>422 Unprocessable Entity</cite>: Raised if arguments validation failed.
+- <cite>423 Locked</cite>: Raised if the application is locked.</p>
 <p><strong>Hooks:</strong>
-- <cite>HOOK_BEFORE_COLLECTION_UPDATE</cite>: Executes before the collection is</p>
-<blockquote>
-<div><p>updated.</p>
-</div></blockquote>
-<ul class="simple">
-<li><p><cite>HOOK_AFTER_COLLECTION_UPDATE</cite>: Executes after the collection is
-updated.</p></li>
-</ul>
+- <cite>HOOK_BEFORE_COLLECTION_UPDATE</cite>: Executes before the collection is
+updated.
+- <cite>HOOK_AFTER_COLLECTION_UPDATE</cite>: Executes after the collection is
+updated.</p>
 <p><strong>Auth:</strong>
 - The user must provide a valid <cite>JWT token</cite> in the request header.
 - <cite>editor</cite> or <cite>admin</cite> user role is required to access this router.</p>
@@ -476,21 +530,15 @@ required permissions.</p>
 <p><strong>Args:</strong>
 - <cite>comment_id</cite>: The ID of the comment to be deleted.</p>
 <p><strong>Returns:</strong>
-- <cite>CommentDeleteResponse</cite>: The response schema containing the ID of</p>
-<blockquote>
-<div><p>the deleted comment.</p>
-</div></blockquote>
+- <cite>CommentDeleteResponse</cite>: The response schema containing the ID of
+the deleted comment.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the current user is not the author of</p>
-<blockquote>
-<div><p>the comment or lacks the required permissions.</p>
-</div></blockquote>
-<ul class="simple">
-<li><p><cite>404 Not Found</cite>: Raised if the comment with the specified ID does
-not exist.</p></li>
-<li><p><cite>423 Locked</cite>: Raised if the corresponding collection or the
-application is locked.</p></li>
-</ul>
+- <cite>403 Forbidden</cite>: Raised if the current user is not the author of
+the comment or lacks the required permissions.
+- <cite>404 Not Found</cite>: Raised if the comment with the specified ID does
+not exist.
+- <cite>423 Locked</cite>: Raised if the corresponding collection or the
+application is locked.</p>
 <p><strong>Auth:</strong>
 - The user must provide a valid <cite>JWT token</cite> in the request header.
 - <cite>editor</cite> or <cite>admin</cite> user role is required to access this router.</p>
@@ -512,31 +560,21 @@ document is not found, a 423 error if the collection or the
 application is locked, and a 403 error if authentication failed
 or the user does not have the required permissions.</p>
 <p><strong>Args:</strong>
-- <cite>CommentInsertRequest</cite>: The request schema containing the data</p>
-<blockquote>
-<div><p>for the new comment.</p>
-</div></blockquote>
+- <cite>CommentInsertRequest</cite>: The request schema containing the data
+for the new comment.</p>
 <p><strong>Returns:</strong>
-- <cite>CommentInsertResponse</cite>: The response schema containing the ID</p>
-<blockquote>
-<div><p>of the newly created comment.</p>
-</div></blockquote>
+- <cite>CommentInsertResponse</cite>: The response schema containing the ID
+of the newly created comment.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the user does not have the required</p>
-<blockquote>
-<div><p>permissions.</p>
-</div></blockquote>
-<ul class="simple">
-<li><p><cite>422 Unprocessable Entity</cite>:  Raised if arguments validation failed.</p></li>
-<li><p><cite>423 Locked</cite>: Raised if the document’s collection or the
-application is locked.</p></li>
-</ul>
+- <cite>403 Forbidden</cite>: Raised if the user does not have the required
+permissions.
+- <cite>422 Unprocessable Entity</cite>:  Raised if arguments validation failed.
+- <cite>423 Locked</cite>: Raised if the document’s collection or the
+application is locked.</p>
 <p><strong>Auth:</strong>
 - The user must provide a valid <cite>JWT token</cite> in the request header.
-- <cite>writer</cite>, <cite>editor</cite> or <cite>admin</cite> user role is required to access this</p>
-<blockquote>
-<div><p>router.</p>
-</div></blockquote>
+- <cite>writer</cite>, <cite>editor</cite> or <cite>admin</cite> user role is required to access this
+router.</p>
 </dd></dl>
 
 </section>
@@ -555,30 +593,20 @@ user does not have the required permissions, a 422 error if
 arguments validation failed, and a 423 error if the application
 is locked.</p>
 <p><strong>Args:</strong>
-- <cite>CommentListRequest</cite>: The request schema containing the filters</p>
-<blockquote>
-<div><p>for the comment list.</p>
-</div></blockquote>
+- <cite>CommentListRequest</cite>: The request schema containing the filters
+for the comment list.</p>
 <p><strong>Returns:</strong>
-- <cite>CommentListResponse</cite>: The response schema containing the list of</p>
-<blockquote>
-<div><p>comments and the total count.</p>
-</div></blockquote>
+- <cite>CommentListResponse</cite>: The response schema containing the list of
+comments and the total count.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the user does not have the required</p>
-<blockquote>
-<div><p>permissions.</p>
-</div></blockquote>
-<ul class="simple">
-<li><p><cite>422 Unprocessable Entity</cite>: Raised if arguments validation failed.</p></li>
-<li><p><cite>423 Locked</cite>: Raised if the application is locked.</p></li>
-</ul>
+- <cite>403 Forbidden</cite>: Raised if the user does not have the required
+permissions.
+- <cite>422 Unprocessable Entity</cite>: Raised if arguments validation failed.
+- <cite>423 Locked</cite>: Raised if the application is locked.</p>
 <p><strong>Auth:</strong>
 - The user must provide a valid <cite>JWT token</cite> in the request header.
-- <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite> or <cite>admin</cite> user role is required to</p>
-<blockquote>
-<div><p>access this router.</p>
-</div></blockquote>
+- <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite> or <cite>admin</cite> user role is required to
+access this router.</p>
 </dd></dl>
 
 </section>
@@ -598,26 +626,18 @@ permissions, and a 423 error if the application is locked.</p>
 <p><strong>Args:</strong>
 - <cite>comment_id</cite>: The ID of the comment to be retrieved.</p>
 <p><strong>Returns:</strong>
-- <cite>CommentSelectResponse</cite>: The response schema containing the</p>
-<blockquote>
-<div><p>comment details.</p>
-</div></blockquote>
+- <cite>CommentSelectResponse</cite>: The response schema containing the
+comment details.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the user does not have the required</p>
-<blockquote>
-<div><p>permissions.</p>
-</div></blockquote>
-<ul class="simple">
-<li><p><cite>404 Not Found</cite>: Raised if the comment with the specified ID does
-not exist.</p></li>
-<li><p><cite>423 Locked</cite>: Raised if the application is locked.</p></li>
-</ul>
+- <cite>403 Forbidden</cite>: Raised if the user does not have the required
+permissions.
+- <cite>404 Not Found</cite>: Raised if the comment with the specified ID does
+not exist.
+- <cite>423 Locked</cite>: Raised if the application is locked.</p>
 <p><strong>Auth:</strong>
 - The user must provide a valid <cite>JWT token</cite> in the request header.
-- <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite> or <cite>admin</cite> user role is required to</p>
-<blockquote>
-<div><p>access this router.</p>
-</div></blockquote>
+- <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite> or <cite>admin</cite> user role is required to
+access this router.</p>
 </dd></dl>
 
 </section>
@@ -638,80 +658,438 @@ the application is locked, and a 403 error if authentication failed
 or the user does not have the required permissions.</p>
 <p><strong>Args:</strong>
 - <cite>comment_id</cite>: The ID of the comment to be updated.
-- <cite>CommentUpdateRequest</cite>: The request schema containing the new</p>
-<blockquote>
-<div><p>comment content.</p>
-</div></blockquote>
+- <cite>CommentUpdateRequest</cite>: The request schema containing the new
+comment content.</p>
 <p><strong>Returns:</strong>
-- <cite>CommentUpdateResponse</cite>: The response schema containing the ID of</p>
-<blockquote>
-<div><p>the updated comment.</p>
-</div></blockquote>
+- <cite>CommentUpdateResponse</cite>: The response schema containing the ID of
+the updated comment.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the current user is not the author of</p>
-<blockquote>
-<div><p>the comment or lacks required permissions.</p>
-</div></blockquote>
-<ul class="simple">
-<li><p><cite>404 Not Found</cite>: Raised if the comment with the specified ID does
-not exist.</p></li>
-<li><p><cite>422 Unprocessable Entity</cite>: Raised if arguments validation failed.</p></li>
-<li><p><cite>423 Locked</cite>: Raised if the collection or the application is
-locked.</p></li>
-</ul>
+- <cite>403 Forbidden</cite>: Raised if the current user is not the author of
+the comment or lacks required permissions.
+- <cite>404 Not Found</cite>: Raised if the comment with the specified ID does
+not exist.
+- <cite>422 Unprocessable Entity</cite>: Raised if arguments validation failed.
+- <cite>423 Locked</cite>: Raised if the collection or the application is
+locked.</p>
 <p><strong>Auth:</strong>
 - The user must provide a valid <cite>JWT token</cite> in the request header.
 - <cite>editor</cite> or <cite>admin</cite> user role are required to access this router.</p>
 </dd></dl>
 
 </section>
-<section id="app-routers-custom-execute-router-module">
-<h2>app.routers.custom_execute_router module<a class="headerlink" href="#app-routers-custom-execute-router-module" title="Link to this heading"></a></h2>
+<section id="module-app.routers.document_delete_router">
+<span id="app-routers-document-delete-router-module"></span><h2>app.routers.document_delete_router module<a class="headerlink" href="#module-app.routers.document_delete_router" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.document_delete_router.document_delete">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.document_delete_router.</span></span><span class="sig-name descname"><span class="pre">document_delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">document_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_admin)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentDeleteResponse" title="app.schemas.document_schemas.DocumentDeleteResponse"><span class="pre">DocumentDeleteResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/document_delete_router.html#document_delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.document_delete_router.document_delete" title="Link to this definition"></a></dt>
+<dd><p>Delete a document. The router retrieves the document from the
+repository using the provided ID, checks if the document exists and
+its collection is not locked, deletes the document and all related
+entities, executes related hooks, and returns the deleted document
+ID in a JSON response. The current user should have an admin role.
+Returns a 200 response on success, a 404 error if the document is
+not found, a 423 error if the collection the application is locked,
+and a 403 error if authentication failed or the user does not have
+the required permissions.</p>
+<p><strong>Args:</strong>
+- <cite>document_id</cite>: The ID of the document to be deleted.</p>
+<p><strong>Returns:</strong>
+- <cite>DocumentDeleteResponse</cite>: The response schema containing the ID of
+the deleted document.</p>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the user does not have the required
+permissions.
+- <cite>404 Not Found</cite>: Raised if the document with the specified ID does
+not exist.
+- <cite>423 Locked</cite>: Raised if the document or the application is locked.</p>
+<p><strong>Auth:</strong>
+- The user must provide a valid <cite>JWT token</cite> in the request header.
+- <cite>admin</cite> user role is required to access this router.</p>
+</dd></dl>
+
 </section>
-<section id="app-routers-datafile-delete-router-module">
-<h2>app.routers.datafile_delete_router module<a class="headerlink" href="#app-routers-datafile-delete-router-module" title="Link to this heading"></a></h2>
+<section id="module-app.routers.document_download_router">
+<span id="app-routers-document-download-router-module"></span><h2>app.routers.document_download_router module<a class="headerlink" href="#module-app.routers.document_download_router" title="Link to this heading"></a></h2>
+<p>The module defines a FastAPI router for downloading revision entities.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.document_download_router.document_download">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.document_download_router.</span></span><span class="sig-name descname"><span class="pre">document_download</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">document_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">revision_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_read)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Response</span></span></span><a class="reference internal" href="../_modules/app/routers/document_download_router.html#document_download"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.document_download_router.document_download" title="Link to this definition"></a></dt>
+<dd><p>Download a document revision. The router retrieves the specified
+revision from the repository, decrypts the associated file, executes
+related hooks, and returns the file as an attachment. The current
+user should have a reader role or higher. Returns a 200 response on
+success, a 404 error if the revision or the document is not found,
+a 403 error if authentication failed or the user does not have the
+required permissions, and a 423 error if the application is locked.</p>
+<p><strong>Args:</strong>
+- <cite>document_id</cite>: The ID of the document.
+- <cite>revision_id</cite>: The ID of the revision to download.</p>
+<p><strong>Returns:</strong>
+- <cite>Response</cite>: A response containing the decrypted file content as
+an attachment.</p>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the user does not have the required
+permissions.
+- <cite>404 Not Found</cite>: Raised if the revision or the document with the
+specified ID does not exist.
+- <cite>423 Locked</cite>: Raised if the application is locked.</p>
+<p><strong>Auth:</strong>
+- The user must provide a valid <cite>JWT token</cite> in the request header.
+- <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite>, or <cite>admin</cite> roles are required to
+access this router.</p>
+</dd></dl>
+
 </section>
-<section id="app-routers-datafile-download-router-module">
-<h2>app.routers.datafile_download_router module<a class="headerlink" href="#app-routers-datafile-download-router-module" title="Link to this heading"></a></h2>
+<section id="module-app.routers.document_downloads_router">
+<span id="app-routers-document-downloads-router-module"></span><h2>app.routers.document_downloads_router module<a class="headerlink" href="#module-app.routers.document_downloads_router" title="Link to this heading"></a></h2>
+<p>The module defines a FastAPI router for retrieving the download list.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.document_downloads_router.document_downloads">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.document_downloads_router.</span></span><span class="sig-name descname"><span class="pre">document_downloads</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">document_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(DownloadListRequest)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_admin)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.download_schemas.DownloadListResponse" title="app.schemas.download_schemas.DownloadListResponse"><span class="pre">DownloadListResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/document_downloads_router.html#document_downloads"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.document_downloads_router.document_downloads" title="Link to this definition"></a></dt>
+<dd><p>Retrieve a list of document downloads. The router fetches the list
+of downloads from the repository based on the provided filter
+criteria, executes related hooks, and returns the results in a JSON
+response. The current user should have an admin role. Returns a 200
+response on success, a 403 error if authentication failed or the
+user does not have the required permissions, and a 423 error if the
+application is locked.</p>
+<p><strong>Args:</strong>
+- <cite>document_id</cite>: The ID of the document for which downloads are
+being requested.
+- <cite>DownloadListRequest</cite>: The request schema containing the filters
+for the download list.</p>
+<p><strong>Returns:</strong>
+- <cite>DownloadListResponse</cite>: A response schema containing the list of
+downloads and the total count of downloads.</p>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the user does not have the required
+permissions.
+- <cite>404 Not Found</cite>: Raised if the document with the specified ID does
+not exist.
+- <cite>422 Unprocessable Entity</cite>: Raised if arguments validation failed.
+- <cite>423 Locked</cite>: Raised if the application is locked.</p>
+<p><strong>Auth:</strong>
+- The user must provide a valid <cite>JWT token</cite> in the request header.
+- <cite>admin</cite> role is required to access this router.</p>
+</dd></dl>
+
 </section>
-<section id="app-routers-datafile-list-router-module">
-<h2>app.routers.datafile_list_router module<a class="headerlink" href="#app-routers-datafile-list-router-module" title="Link to this heading"></a></h2>
+<section id="module-app.routers.document_flag_router">
+<span id="app-routers-document-flag-router-module"></span><h2>app.routers.document_flag_router module<a class="headerlink" href="#module-app.routers.document_flag_router" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.document_flag_router.document_update">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.document_flag_router.</span></span><span class="sig-name descname"><span class="pre">document_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">document_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentFlagRequest" title="app.schemas.document_schemas.DocumentFlagRequest"><span class="pre">DocumentFlagRequest</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_edit)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentFlagResponse" title="app.schemas.document_schemas.DocumentFlagResponse"><span class="pre">DocumentFlagResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/document_flag_router.html#document_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.document_flag_router.document_update" title="Link to this definition"></a></dt>
+<dd><p>Flag or unflag a document. The router checks if the document with
+the specified ID exists, updates the document’s flagged status based
+on the provided request, executes related hooks, and returns the
+updated document’s ID and revision ID in a JSON response. The
+current user must have the editor role or higher. Returns a 200
+response on success, a 404 error if the document is not found, a 403
+error if authentication failed or the user does not have the
+required permissions, and a 423 error if the collection or the
+application is locked.</p>
+<p><strong>Args:</strong>
+- <cite>document_id</cite>: The ID of the document to flag or unflag.
+- <cite>DocumentFlagRequest</cite>: The request schema containing the flagged
+status.</p>
+<p><strong>Returns:</strong>
+- <cite>DocumentFlagResponse</cite>: A response schema containing the document
+ID and its latest revision ID.</p>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the user does not have the required
+permissions.
+- <cite>404 Not Found</cite>: Raised if the document with the specified ID does
+not exist.
+- <cite>423 Locked</cite>: Raised if the collection or the application is
+locked.</p>
+<p><strong>Auth:</strong>
+- The user must provide a valid <cite>JWT token</cite> in the request header.
+- <cite>editor</cite> or <cite>admin</cite> role is required to access this router.</p>
+</dd></dl>
+
 </section>
-<section id="app-routers-datafile-replace-router-module">
-<h2>app.routers.datafile_replace_router module<a class="headerlink" href="#app-routers-datafile-replace-router-module" title="Link to this heading"></a></h2>
+<section id="module-app.routers.document_list_router">
+<span id="app-routers-document-list-router-module"></span><h2>app.routers.document_list_router module<a class="headerlink" href="#module-app.routers.document_list_router" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.document_list_router.document_list">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.document_list_router.</span></span><span class="sig-name descname"><span class="pre">document_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(DocumentListRequest)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_read)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentListResponse" title="app.schemas.document_schemas.DocumentListResponse"><span class="pre">DocumentListResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/document_list_router.html#document_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.document_list_router.document_list" title="Link to this definition"></a></dt>
+<dd><p>Retrieve document list. The router fetches the list of documents
+from the repository based on the provided filter criteria, executes
+related hooks, and returns the results in a JSON response. The
+current user should have a reader role or higher. Returns a 200
+response on success, a 403 error if authentication failed or the
+user does not have the required permissions, a 422 error if
+arguments validation failed, and a 423 error if the application
+is locked.</p>
+<p><strong>Args:</strong>
+- <cite>DocumentListRequest</cite>: The request schema containing the filters
+for the document list.</p>
+<p><strong>Returns:</strong>
+- <cite>DocumentListResponse</cite>: The response schema containing the list of
+documents and the total count.</p>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the user does not have the required
+permissions.
+- <cite>422 Unprocessable Entity</cite>: Raised if arguments validation failed.
+- <cite>423 Locked</cite>: Raised if the application is locked.</p>
+<p><strong>Auth:</strong>
+- The user must provide a valid <cite>JWT token</cite> in the request header.
+- <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite> or <cite>admin</cite> user role is required to
+access this router.</p>
+</dd></dl>
+
 </section>
-<section id="app-routers-datafile-select-router-module">
-<h2>app.routers.datafile_select_router module<a class="headerlink" href="#app-routers-datafile-select-router-module" title="Link to this heading"></a></h2>
+<section id="module-app.routers.document_move_router">
+<span id="app-routers-document-move-router-module"></span><h2>app.routers.document_move_router module<a class="headerlink" href="#module-app.routers.document_move_router" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.document_move_router.document_move">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.document_move_router.</span></span><span class="sig-name descname"><span class="pre">document_move</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">document_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_edit)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentMoveResponse" title="app.schemas.document_schemas.DocumentMoveResponse"><span class="pre">DocumentMoveResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/document_move_router.html#document_move"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.document_move_router.document_move" title="Link to this definition"></a></dt>
+<dd><p>Move a document to collection. The router checks if the document
+and collection exist, verifies that the both collections are not
+locked, moves the document to the specified collection, and executes
+related hooks. The current user must have the editor role or higher.
+Returns a 200 response on success, a 404 error if the document or
+collection is not found, a 423 error if the collection or the
+application is locked.</p>
+<p><strong>Args:</strong>
+- <cite>document_id</cite>: The ID of the document to be moved.
+- <cite>collection_id</cite>: The ID of the collection to which the document
+will be moved.</p>
+<p><strong>Returns:</strong>
+- <cite>DocumentMoveResponse</cite>: The response schema containing the
+document’s ID and the revision ID.</p>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the user does not have the required
+permissions.
+- <cite>404 Not Found</cite>: Raised if the document or collection with the
+specified ID does not exist.
+- <cite>423 Locked</cite>: Raised if collection or the application is locked.</p>
+<p><strong>Auth:</strong>
+- The user must provide a valid <cite>JWT token</cite> in the request header.
+- <cite>editor</cite> or <cite>admin</cite> user role is required to access this router.</p>
+</dd></dl>
+
 </section>
-<section id="app-routers-datafile-update-router-module">
-<h2>app.routers.datafile_update_router module<a class="headerlink" href="#app-routers-datafile-update-router-module" title="Link to this heading"></a></h2>
+<section id="module-app.routers.document_replace_router">
+<span id="app-routers-document-replace-router-module"></span><h2>app.routers.document_replace_router module<a class="headerlink" href="#module-app.routers.document_replace_router" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.document_replace_router.document_replace">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.document_replace_router.</span></span><span class="sig-name descname"><span class="pre">document_replace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">document_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">UploadFile</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">File(PydanticUndefined)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_edit)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentReplaceResponse" title="app.schemas.document_schemas.DocumentReplaceResponse"><span class="pre">DocumentReplaceResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/document_replace_router.html#document_replace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.document_replace_router.document_replace" title="Link to this definition"></a></dt>
+<dd><p>Replace the latest revision of a document. The router allows to
+upload a new version of the document, replace its latest revision,
+and update the document’s metadata. The file is encrypted, split
+into shards, and stored securely. The current user must have the
+editor role or higher. Returns a 201 response on success, a 404
+error if the document is not found, a 423 error if the collection
+or the application is locked, and a 422 error if the file is invalid.</p>
+<p><strong>Args:</strong>
+- <cite>document_id</cite>: The ID of the document to be replaced.
+- <cite>file</cite>: The new file to replace the current document revision.</p>
+<p><strong>Returns:</strong>
+- <cite>DocumentReplaceResponse</cite>: The response schema containing the
+document’s ID and the revision ID of the newly added revision.</p>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the user does not have the required
+permissions.
+- <cite>404 Not Found</cite>: Raised if the document with the specified ID does
+not exist.
+- <cite>422 Unprocessable Entity</cite>: Raised if the uploaded file is invalid
+or cannot be processed.
+- <cite>423 Locked</cite>: Raised if the collection or the document is locked.</p>
+<p><strong>Auth:</strong>
+- The user must provide a valid <cite>JWT token</cite> in the request header.
+- <cite>editor</cite> or <cite>admin</cite> user role is required to access this router.</p>
+</dd></dl>
+
 </section>
-<section id="app-routers-datafile-upload-router-module">
-<h2>app.routers.datafile_upload_router module<a class="headerlink" href="#app-routers-datafile-upload-router-module" title="Link to this heading"></a></h2>
+<section id="module-app.routers.document_revisions_router">
+<span id="app-routers-document-revisions-router-module"></span><h2>app.routers.document_revisions_router module<a class="headerlink" href="#module-app.routers.document_revisions_router" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.document_revisions_router.document_revisions">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.document_revisions_router.</span></span><span class="sig-name descname"><span class="pre">document_revisions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">document_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(DocumentRevisionsRequest)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_read)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.revision_schemas.DocumentRevisionsResponse" title="app.schemas.revision_schemas.DocumentRevisionsResponse"><span class="pre">DocumentRevisionsResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/document_revisions_router.html#document_revisions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.document_revisions_router.document_revisions" title="Link to this definition"></a></dt>
+<dd><p>Retrieve a document revision list. The  router fetches the list of
+revisions from the repository based on the provided filter criteria,
+executes related hooks, and returns the results in a JSON response.
+The current user should have a reader role or higher. Returns a 200
+response on success, a 403 error if authentication failed or the
+user does not have the required permissions, a 422 error if
+arguments validation failed, and a 423 error if the application
+is locked.</p>
+<p><strong>Args:</strong>
+- <cite>document_id</cite>: The document ID whose revisions need to be fetched.
+- <cite>DocumentRevisionsRequest</cite>: The request schema that contains
+filter and pagination options for the revisions list.</p>
+<p><strong>Returns:</strong>
+- <cite>DocumentRevisionsResponse</cite>: A response containing a list of
+revisions for the document and the total revision count.</p>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the user does not have the required
+permissions.
+- <cite>404 Not Found</cite>: Raised if the document with the specified ID does
+not exist.
+- <cite>422 Unprocessable Entity</cite>: Raised if arguments validation failed.
+- <cite>423 Locked</cite>: Raised if the application is locked.</p>
+<p><strong>Auth:</strong>
+- The user must provide a valid <cite>JWT token</cite> in the request header.
+- <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite>, or <cite>admin</cite> role is required to
+access the router.</p>
+</dd></dl>
+
 </section>
-<section id="app-routers-download-list-router-module">
-<h2>app.routers.download_list_router module<a class="headerlink" href="#app-routers-download-list-router-module" title="Link to this heading"></a></h2>
+<section id="module-app.routers.document_select_router">
+<span id="app-routers-document-select-router-module"></span><h2>app.routers.document_select_router module<a class="headerlink" href="#module-app.routers.document_select_router" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.document_select_router.document_select">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.document_select_router.</span></span><span class="sig-name descname"><span class="pre">document_select</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">document_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_read)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentSelectResponse" title="app.schemas.document_schemas.DocumentSelectResponse"><span class="pre">DocumentSelectResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/document_select_router.html#document_select"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.document_select_router.document_select" title="Link to this definition"></a></dt>
+<dd><p>Retrieve a document. The router fetches the document from the
+repository using the provided ID, verifies that the document exists,
+executes related hooks, and returns the document details in a JSON
+response. The current user should have a reader role or higher.
+Returns a 200 response on success, a 404 error if the document is
+not found, a 403 error if authentication failed or the user does not
+have the required role, and a 423 error if the application is locked.</p>
+<p><strong>Args:</strong>
+- <cite>document_id</cite>: The unique identifier of the document to be
+retrieved.</p>
+<p><strong>Returns:</strong>
+- <cite>DocumentSelectResponse</cite>: The response schema containing the
+document details.</p>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the user does not have the necessary
+permissions.
+- <cite>404 Not Found</cite>: Raised if the document with the specified ID does
+not exist.
+- <cite>423 Locked</cite>: Raised if the application is locked.</p>
+<p><strong>Auth:</strong>
+- The user must provide a valid <cite>JWT token</cite> in the request header.
+- <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite>, or <cite>admin</cite> role is required to
+access the endpoint.</p>
+</dd></dl>
+
 </section>
-<section id="app-routers-download-select-router-module">
-<h2>app.routers.download_select_router module<a class="headerlink" href="#app-routers-download-select-router-module" title="Link to this heading"></a></h2>
+<section id="module-app.routers.document_update_router">
+<span id="app-routers-document-update-router-module"></span><h2>app.routers.document_update_router module<a class="headerlink" href="#module-app.routers.document_update_router" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.document_update_router.document_update">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.document_update_router.</span></span><span class="sig-name descname"><span class="pre">document_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">document_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentUpdateRequest" title="app.schemas.document_schemas.DocumentUpdateRequest"><span class="pre">DocumentUpdateRequest</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_edit)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentUpdateResponse" title="app.schemas.document_schemas.DocumentUpdateResponse"><span class="pre">DocumentUpdateResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/document_update_router.html#document_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.document_update_router.document_update" title="Link to this definition"></a></dt>
+<dd><p>Update a document. The router fetches the document using the
+provided ID, checks if the associated collection is not locked, and
+if a partner ID is provided, validates the partner. It updates the
+document data and tags. Executes related hooks before and after
+committing the changes. Returns a 200 response on success, a 404
+error if the document is not found, a 423 error if the collection
+or the application is locked, a 422 error if arguments validation
+failed, and a 403 error if authentication failed or the user does
+not have the required permissions.</p>
+<p><strong>Args:</strong>
+- <cite>document_id</cite>: The ID of the document to be updated.
+- <cite>DocumentUpdateRequest</cite>: The request schema containing the updated
+document information.</p>
+<p><strong>Returns:</strong>
+- <cite>DocumentUpdateResponse</cite>: The response schema containing the ID of
+the updated document.</p>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the user does not have the required
+permissions.
+- <cite>404 Not Found</cite>: Raised if the document with the provided ID does
+- <cite>422 Unprocessable Entity</cite>:  Raised if arguments validation failed.
+not exist.
+- <cite>423 Locked</cite>: Raised if the collection or the application is
+locked.</p>
+<p><strong>Auth:</strong>
+- The user must provide a valid <cite>JWT token</cite> in the request header.
+- <cite>editor</cite> or <cite>admin</cite> roles are required to access this router.</p>
+</dd></dl>
+
 </section>
-<section id="app-routers-favorite-delete-router-module">
-<h2>app.routers.favorite_delete_router module<a class="headerlink" href="#app-routers-favorite-delete-router-module" title="Link to this heading"></a></h2>
+<section id="module-app.routers.document_upload_router">
+<span id="app-routers-document-upload-router-module"></span><h2>app.routers.document_upload_router module<a class="headerlink" href="#module-app.routers.document_upload_router" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.document_upload_router.document_upload">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.document_upload_router.</span></span><span class="sig-name descname"><span class="pre">document_upload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collection_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">UploadFile</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">File(PydanticUndefined)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_write)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.document_schemas.DocumentUploadResponse" title="app.schemas.document_schemas.DocumentUploadResponse"><span class="pre">DocumentUploadResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/document_upload_router.html#document_upload"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.document_upload_router.document_upload" title="Link to this definition"></a></dt>
+<dd><p>Upload a document. The router validates the provided collection,
+ensures it is not locked, processes the file (validating, encrypting,
+and creating a thumbnail if needed), splits it into shards, and
+creates a revision for the document. It then saves the document and
+revision details to the repository. The current user should have a
+writer role or higher. Returns a 201 response on success, a 422
+error if the collection is invalid, a 423 error if the collection
+or the application is locked, a 500 error if an unexpected failure
+occurs during file processing or shard creation, and a 403 error
+if authentication failed or the user does not have the required
+permissions.</p>
+<p><strong>Args:</strong>
+- <cite>collection_id</cite>: The ID of the collection to upload the document to.
+- <cite>file</cite>: The file to be uploaded.</p>
+<p><strong>Returns:</strong>
+- <cite>DocumentUploadResponse</cite>: The response schema containing the ID of
+the document and the latest revision.</p>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the user does not have the required
+permissions.
+- <cite>422 Unprocessable Entity</cite>: Raised if the collection does not exist
+or is invalid.
+- <cite>423 Locked</cite>: Raised if the collection or the application is
+locked.
+- <cite>500 Internal Server Error</cite>: Raised if an error occurs during file
+processing, encryption, or shard creation.</p>
+<p><strong>Auth:</strong>
+- The user must provide a valid <cite>JWT token</cite> in the request header.
+- <cite>writer</cite>, <cite>editor</cite> or <cite>admin</cite> roles are required to access this
+router.</p>
+</dd></dl>
+
 </section>
-<section id="app-routers-favorite-insert-router-module">
-<h2>app.routers.favorite_insert_router module<a class="headerlink" href="#app-routers-favorite-insert-router-module" title="Link to this heading"></a></h2>
+<section id="module-app.routers.execute_router">
+<span id="app-routers-execute-router-module"></span><h2>app.routers.execute_router module<a class="headerlink" href="#module-app.routers.execute_router" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.execute_router.execute">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.execute_router.</span></span><span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.schemas.html#app.schemas.execute_schemas.ExecuteRequest" title="app.schemas.execute_schemas.ExecuteRequest"><span class="pre">ExecuteRequest</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_admin)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/routers/execute_router.html#execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.execute_router.execute" title="Link to this definition"></a></dt>
+<dd><p>Execute a custom action. The router executes corresponding hooks
+with defined parameters. The current user must have an admin role.
+Returns a 403 error if authentication failed or the user does not
+have the required permissions, a 423 error if the the application
+is locked.</p>
+<p><strong>Args:</strong>
+- <cite>ExecuteRequest</cite>: The request schema containing the action to be
+executed and its parameters.</p>
+<p><strong>Returns:</strong>
+- <cite>JSONResponse</cite>: The response object containing the result of the
+executed action.</p>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the user does not have the required
+permissions.
+- <cite>423 Locked</cite>: Raised if the the application is locked.</p>
+<p><strong>Auth:</strong>
+- The user must provide a valid <cite>JWT token</cite> in the request header.
+- <cite>admin</cite> roles is required to access this router.</p>
+</dd></dl>
+
 </section>
-<section id="app-routers-favorite-list-router-module">
-<h2>app.routers.favorite_list_router module<a class="headerlink" href="#app-routers-favorite-list-router-module" title="Link to this heading"></a></h2>
-</section>
-<section id="app-routers-favorite-select-router-module">
-<h2>app.routers.favorite_select_router module<a class="headerlink" href="#app-routers-favorite-select-router-module" title="Link to this heading"></a></h2>
-</section>
-<section id="app-routers-lock-create-router-module">
-<h2>app.routers.lock_create_router module<a class="headerlink" href="#app-routers-lock-create-router-module" title="Link to this heading"></a></h2>
-</section>
-<section id="app-routers-lock-delete-router-module">
-<h2>app.routers.lock_delete_router module<a class="headerlink" href="#app-routers-lock-delete-router-module" title="Link to this heading"></a></h2>
+<section id="module-app.routers.lock_change_router">
+<span id="app-routers-lock-change-router-module"></span><h2>app.routers.lock_change_router module<a class="headerlink" href="#module-app.routers.lock_change_router" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.lock_change_router.lock_change">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.lock_change_router.</span></span><span class="sig-name descname"><span class="pre">lock_change</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.schemas.html#app.schemas.lock_schemas.LockUpdateRequest" title="app.schemas.lock_schemas.LockUpdateRequest"><span class="pre">LockUpdateRequest</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_admin)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.lock_schemas.LockUpdateResponse" title="app.schemas.lock_schemas.LockUpdateResponse"><span class="pre">LockUpdateResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/lock_change_router.html#lock_change"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.lock_change_router.lock_change" title="Link to this definition"></a></dt>
+<dd><p>Change the application lock mode. This router enables or disables
+the application lock based on the provided request. It executes a
+corresponding hook after the lock state is changed. The current user
+must have an admin role. Returns a 403 error if authentication
+failed or the user does not have the required permissions.</p>
+<p><strong>Args:</strong>
+- <cite>LockUpdateRequest</cite>: The request schema containing the lock status
+to be updated.</p>
+<p><strong>Returns:</strong>
+- <cite>LockUpdateResponse</cite>: The response schema containing the updated
+lock status.</p>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the user does not have the required
+permissions.</p>
+<p><strong>Auth:</strong>
+- The user must provide a valid <cite>JWT token</cite> in the request header.
+- <cite>admin</cite> role is required to access this router.</p>
+</dd></dl>
+
 </section>
 <section id="module-app.routers.lock_retrieve_router">
 <span id="app-routers-lock-retrieve-router-module"></span><h2>app.routers.lock_retrieve_router module<a class="headerlink" href="#module-app.routers.lock_retrieve_router" title="Link to this heading"></a></h2>
@@ -723,17 +1101,12 @@ application is locked and retrieves the date when the lock was
 applied. It executes a corresponding hook after retrieving the lock
 state.</p>
 <p><strong>Returns:</strong>
-- <cite>LockRetrieveResponse</cite>: The response schema containing the lock</p>
-<blockquote>
-<div><p>status and the date when the application was locked.</p>
-</div></blockquote>
+- <cite>LockRetrieveResponse</cite>: The response schema containing the lock
+status and the date when the application was locked.</p>
 <p><strong>Auth:</strong>
 - No authentication is required to access this router.</p>
 </dd></dl>
 
-</section>
-<section id="app-routers-mfa-retrieve-router-module">
-<h2>app.routers.mfa_retrieve_router module<a class="headerlink" href="#app-routers-mfa-retrieve-router-module" title="Link to this heading"></a></h2>
 </section>
 <section id="module-app.routers.option_delete_router">
 <span id="app-routers-option-delete-router-module"></span><h2>app.routers.option_delete_router module<a class="headerlink" href="#module-app.routers.option_delete_router" title="Link to this heading"></a></h2>
@@ -752,28 +1125,19 @@ required permissions, a 423 error if the the application is locked.</p>
 <p><strong>Args:</strong>
 - <cite>option_key</cite>: The key of the option to be deleted.</p>
 <p><strong>Returns:</strong>
-- <cite>OptionDeleteResponse</cite>: The response schema containing the key of</p>
-<blockquote>
-<div><p>the deleted option.</p>
-</div></blockquote>
+- <cite>OptionDeleteResponse</cite>: The response schema containing the key of
+the deleted option.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the user does not have the required</p>
-<blockquote>
-<div><p>permissions.</p>
-</div></blockquote>
-<ul class="simple">
-<li><p><cite>404 Not Found</cite>: Raised if the option is not found in the
-repository.</p></li>
-<li><p><cite>423 Locked</cite>: Raised if the the application is locked.</p></li>
-</ul>
+- <cite>403 Forbidden</cite>: Raised if the user does not have the required
+permissions.
+- <cite>404 Not Found</cite>: Raised if the option is not found in the
+repository.
+- <cite>423 Locked</cite>: Raised if the the application is locked.</p>
 <p><strong>Auth:</strong>
 - The user must provide a valid <cite>JWT token</cite> in the request header.
 - <cite>admin</cite> role is required to access this router.</p>
 </dd></dl>
 
-</section>
-<section id="app-routers-option-insert-router-module">
-<h2>app.routers.option_insert_router module<a class="headerlink" href="#app-routers-option-insert-router-module" title="Link to this heading"></a></h2>
 </section>
 <section id="module-app.routers.option_list_router">
 <span id="app-routers-option-list-router-module"></span><h2>app.routers.option_list_router module<a class="headerlink" href="#module-app.routers.option_list_router" title="Link to this heading"></a></h2>
@@ -790,24 +1154,16 @@ authentication failed or the user does not have the required role,
 a 422 error if arguments validation failed, a 423 error if the the
 application is locked.</p>
 <p><strong>Args:</strong>
-- <cite>OptionListRequest</cite>: The request schema containing filter criteria</p>
-<blockquote>
-<div><p>for retrieving the list of options.</p>
-</div></blockquote>
+- <cite>OptionListRequest</cite>: The request schema containing filter criteria
+for retrieving the list of options.</p>
 <p><strong>Returns:</strong>
-- <cite>OptionListResponse</cite>: The response schema containing a list of</p>
-<blockquote>
-<div><p>options and the total count of options.</p>
-</div></blockquote>
+- <cite>OptionListResponse</cite>: The response schema containing a list of
+options and the total count of options.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the user does not have the required</p>
-<blockquote>
-<div><p>permissions.</p>
-</div></blockquote>
-<ul class="simple">
-<li><p><cite>422 Unprocessable Entity</cite>: Raised if arguments validation failed.</p></li>
-<li><p><cite>423 Locked</cite>: Raised if the application is locked.</p></li>
-</ul>
+- <cite>403 Forbidden</cite>: Raised if the user does not have the required
+permissions.
+- <cite>422 Unprocessable Entity</cite>: Raised if arguments validation failed.
+- <cite>423 Locked</cite>: Raised if the application is locked.</p>
 <p><strong>Auth:</strong>
 - The user must provide a valid <cite>JWT token</cite> in the request header.
 - <cite>admin</cite> role is required to access this router.</p>
@@ -830,20 +1186,14 @@ application is locked.</p>
 <p><strong>Args:</strong>
 - <cite>option_key</cite>: The key of the option to retrieve.</p>
 <p><strong>Returns:</strong>
-- <cite>OptionSelectResponse</cite>: The response schema containing the</p>
-<blockquote>
-<div><p>retrieved option.</p>
-</div></blockquote>
+- <cite>OptionSelectResponse</cite>: The response schema containing the
+retrieved option.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the user does not have the required</p>
-<blockquote>
-<div><p>permissions.</p>
-</div></blockquote>
-<ul class="simple">
-<li><p><cite>404 Not Found</cite>: Raised if the option is not found.</p></li>
-<li><p><cite>422 Unprocessable Entity</cite>: Raised if arguments validation failed.</p></li>
-<li><p><cite>423 Locked</cite>: Raised if the application is locked.</p></li>
-</ul>
+- <cite>403 Forbidden</cite>: Raised if the user does not have the required
+permissions.
+- <cite>404 Not Found</cite>: Raised if the option is not found.
+- <cite>422 Unprocessable Entity</cite>: Raised if arguments validation failed.
+- <cite>423 Locked</cite>: Raised if the application is locked.</p>
 <p><strong>Auth:</strong>
 - The user must provide a valid <cite>JWT token</cite> in the request header.
 - <cite>admin</cite> role is required to access this router.</p>
@@ -866,45 +1216,267 @@ option value is invalid, and a 423 error if the application is
 locked.</p>
 <p><strong>Args:</strong>
 - <cite>option_key</cite>: The key of the option to update.
-- <cite>OptionUpdateRequest</cite>: The request schema containing the updated</p>
-<blockquote>
-<div><p>option value.</p>
-</div></blockquote>
+- <cite>OptionUpdateRequest</cite>: The request schema containing the updated
+option value.</p>
 <p><strong>Returns:</strong>
-- <cite>OptionUpdateResponse</cite>: The response schema containing the updated</p>
-<blockquote>
-<div><p>option key.</p>
-</div></blockquote>
+- <cite>OptionUpdateResponse</cite>: The response schema containing the updated
+option key.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the user does not have the required</p>
-<blockquote>
-<div><p>permissions.</p>
-</div></blockquote>
-<ul class="simple">
-<li><p><cite>422 Unprocessable Entity</cite>: Raised if the provided option value
-is invalid.</p></li>
-<li><p><cite>423 Locked</cite>: Raised if the application is locked.</p></li>
-</ul>
+- <cite>403 Forbidden</cite>: Raised if the user does not have the required
+permissions.
+- <cite>422 Unprocessable Entity</cite>: Raised if the provided option value
+is invalid.
+- <cite>423 Locked</cite>: Raised if the application is locked.</p>
 <p><strong>Auth:</strong>
 - The user must provide a valid <cite>JWT token</cite> in the request header.
 - <cite>admin</cite> role is required to access this router.</p>
 </dd></dl>
 
 </section>
-<section id="app-routers-password-change-router-module">
-<h2>app.routers.password_change_router module<a class="headerlink" href="#app-routers-password-change-router-module" title="Link to this heading"></a></h2>
+<section id="module-app.routers.partner_delete_router">
+<span id="app-routers-partner-delete-router-module"></span><h2>app.routers.partner_delete_router module<a class="headerlink" href="#module-app.routers.partner_delete_router" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.partner_delete_router.partner_delete">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.partner_delete_router.</span></span><span class="sig-name descname"><span class="pre">partner_delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">partner_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_admin)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerDeleteResponse" title="app.schemas.partner_schemas.PartnerDeleteResponse"><span class="pre">PartnerDeleteResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/partner_delete_router.html#partner_delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.partner_delete_router.partner_delete" title="Link to this definition"></a></dt>
+<dd><p>Delete a partner. The router retrieves the partner from the
+repository using the provided partner ID. If the partner exists,
+it deletes the partner (but not associated documents), and then
+executes the relevant hooks before and after the partner deletion.
+The current user should have an admin role. Returns a 200 response
+on success, a 404 error if the partner is not found, a 403 error if
+the user does not have the required permissions, and a 423 error if
+the application is locked.</p>
+<p><strong>Args:</strong>
+- <cite>partner_id</cite>: The ID of the partner to delete.</p>
+<p><strong>Returns:</strong>
+- <cite>PartnerDeleteResponse</cite>: The response schema containing the ID of
+the deleted partner.</p>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the user does not have the required
+permissions.
+- <cite>404 Not Found</cite>: Raised if the partner is not found.
+- <cite>423 Locked</cite>: Raised if the application is locked.</p>
+<p><strong>Auth:</strong>
+- The user must provide a valid <cite>JWT token</cite> in the request header.
+- <cite>admin</cite> role is required to access this router.</p>
+</dd></dl>
+
 </section>
-<section id="app-routers-revision-download-router-module">
-<h2>app.routers.revision_download_router module<a class="headerlink" href="#app-routers-revision-download-router-module" title="Link to this heading"></a></h2>
+<section id="module-app.routers.partner_insert_router">
+<span id="app-routers-partner-insert-router-module"></span><h2>app.routers.partner_insert_router module<a class="headerlink" href="#module-app.routers.partner_insert_router" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.partner_insert_router.partner_insert">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.partner_insert_router.</span></span><span class="sig-name descname"><span class="pre">partner_insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerInsertRequest" title="app.schemas.partner_schemas.PartnerInsertRequest"><span class="pre">PartnerInsertRequest</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_write)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerInsertResponse" title="app.schemas.partner_schemas.PartnerInsertResponse"><span class="pre">PartnerInsertResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/partner_insert_router.html#partner_insert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.partner_insert_router.partner_insert" title="Link to this definition"></a></dt>
+<dd><p>Create a partner. The router checks if a partner with the same name
+already exists in the repository. If it does, it raises a validation
+error. If the partner is unique, it creates the partner and executes
+relevant hooks before and after insertion, and returns the created
+partner ID in a JSON response. The current user should have a writer
+role or higher. Returns a 201 response on success, a 422 error if
+arguments validation failed or the partner name is duplicated, a 403
+error if authentication failed or the user does not have the
+required permissions, and a 423 error if the application is locked.</p>
+<p><strong>Args:</strong>
+- <cite>PartnerInsertRequest</cite>: A request schema containing the details
+for the new partner.</p>
+<p><strong>Returns:</strong>
+- <cite>PartnerInsertResponse</cite>: The response schema containing the ID of
+the newly created partner.</p>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the current user is not authenticated
+or does not have the required permissions.
+- <cite>422 Unprocessable Entity</cite>: Raised if arguments validation failed
+or the partner name is already exist.
+- <cite>423 Locked</cite>: Raised if the application is locked.</p>
+<p><strong>Auth:</strong>
+- The user must provide a valid <cite>JWT token</cite> in the request header.
+- <cite>writer</cite>, <cite>editor</cite> or <cite>admin</cite> role is required to access this
+router.</p>
+</dd></dl>
+
 </section>
-<section id="app-routers-revision-list-router-module">
-<h2>app.routers.revision_list_router module<a class="headerlink" href="#app-routers-revision-list-router-module" title="Link to this heading"></a></h2>
+<section id="module-app.routers.partner_list_router">
+<span id="app-routers-partner-list-router-module"></span><h2>app.routers.partner_list_router module<a class="headerlink" href="#module-app.routers.partner_list_router" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.partner_list_router.partner_list">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.partner_list_router.</span></span><span class="sig-name descname"><span class="pre">partner_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(PartnerListRequest)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_read)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerListResponse" title="app.schemas.partner_schemas.PartnerListResponse"><span class="pre">PartnerListResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/partner_list_router.html#partner_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.partner_list_router.partner_list" title="Link to this definition"></a></dt>
+<dd><p>Retrieve a list of partners. This endpoint fetches all partners from
+the repository based on the provided filter criteria and executes
+related hooks. The current user must have a reader role or higher.
+Returns a 200 response on success, a 403 error if authentication
+failed or the user does not have the required permissions, a 422
+error if arguments validation failed, and a 423 error if the
+application is locked.</p>
+<p><strong>Args:</strong>
+- <cite>PartnerListRequest</cite>: The request schema containing filter and
+pagination details.</p>
+<p><strong>Returns:</strong>
+- <cite>PartnerListResponse</cite>: The response schema containing the list
+of partners and the total count.</p>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the current user is not authenticated
+or does not have the required <cite>reader</cite> role.
+- <cite>422 Unprocessable Entity</cite>:  Raised if arguments validation failed.
+- <cite>423 Locked</cite>: Raised if the application is locked.</p>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_AFTER_PARTNER_LIST</cite>: Executes after the partners are
+retrieved.</p>
+<p><strong>Auth:</strong>
+- The user must provide a valid <cite>JWT token</cite> in the request header.
+- <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite>, <cite>admin</cite> user role is required to
+access this router.</p>
+</dd></dl>
+
 </section>
-<section id="app-routers-revision-select-router-module">
-<h2>app.routers.revision_select_router module<a class="headerlink" href="#app-routers-revision-select-router-module" title="Link to this heading"></a></h2>
+<section id="module-app.routers.partner_select_router">
+<span id="app-routers-partner-select-router-module"></span><h2>app.routers.partner_select_router module<a class="headerlink" href="#module-app.routers.partner_select_router" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.partner_select_router.partner_select">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.partner_select_router.</span></span><span class="sig-name descname"><span class="pre">partner_select</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">partner_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_read)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerSelectResponse" title="app.schemas.partner_schemas.PartnerSelectResponse"><span class="pre">PartnerSelectResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/partner_select_router.html#partner_select"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.partner_select_router.partner_select" title="Link to this definition"></a></dt>
+<dd><p>Retrieve a partner. The router fetches the partner from the
+repository using the provided ID, executes related hooks, and
+returns the partner details in a JSON response. The current user
+should have a reader role or higher. Returns a 200 response on
+success, a 404 error if the partner is not found, a 403 error if
+authentication failed or the user does not have the required
+permissions, and a 423 error if the application is locked.</p>
+<p><strong>Args:</strong>
+- <cite>partner_id</cite>: The ID of the partner to retrieve.</p>
+<p><strong>Returns:</strong>
+- <cite>PartnerSelectResponse</cite>: The response schema containing the
+details of the selected partner.</p>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the current user is not authenticated
+or does not have the required permissions.
+- <cite>404 Not Found</cite>: Raised if the partner with the specified ID does
+not exist.
+- <cite>423 Locked</cite>: Raised if the application is locked.</p>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_AFTER_PARTNER_SELECT</cite>: Executes after the partner is
+successfully selected.</p>
+<p><strong>Auth:</strong>
+- The user must provide a valid <cite>JWT token</cite> in the request header.
+- <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite> or <cite>admin</cite> user role is required to
+access this router.</p>
+</dd></dl>
+
 </section>
-<section id="app-routers-role-change-router-module">
-<h2>app.routers.role_change_router module<a class="headerlink" href="#app-routers-role-change-router-module" title="Link to this heading"></a></h2>
+<section id="module-app.routers.partner_update_router">
+<span id="app-routers-partner-update-router-module"></span><h2>app.routers.partner_update_router module<a class="headerlink" href="#module-app.routers.partner_update_router" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.partner_update_router.partner_update">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.partner_update_router.</span></span><span class="sig-name descname"><span class="pre">partner_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">partner_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerUpdateRequest" title="app.schemas.partner_schemas.PartnerUpdateRequest"><span class="pre">PartnerUpdateRequest</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_edit)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerUpdateResponse" title="app.schemas.partner_schemas.PartnerUpdateResponse"><span class="pre">PartnerUpdateResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/partner_update_router.html#partner_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.partner_update_router.partner_update" title="Link to this definition"></a></dt>
+<dd><p>Update a partner. The router retrieves the partner from the
+repository using the provided ID, ensures that the partner exists,
+and checks that the new partner name is unique. It updates the
+partner’s attributes, executes related hooks, and returns the
+updated partner ID in a JSON response. The current user must have
+an editor role or higher. Returns a 200 response on success, a 404
+error if the partner is not found, a 422 error if validation
+failed or the partner name is duplicated, a 403 error if
+authentication failed or the user does not have the required
+permissions, and a 423 error if the application is locked.</p>
+<p><strong>Args:</strong>
+- <cite>partner_id</cite>: The ID of the partner to update.
+- <cite>PartnerUpdateRequest</cite>: The request schema containing the updated
+partner data.</p>
+<p><strong>Returns:</strong>
+- <cite>PartnerUpdateResponse</cite>: The response schema containing the ID of
+the updated partner.</p>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the current user is not authenticated
+or does not have the required permissions.
+- <cite>404 Not Found</cite>: Raised if the partner with the specified ID
+does not exist.
+- <cite>422 Unprocessable Entity</cite>: Raised if arguments validation failed.
+- <cite>423 Locked</cite>: Raised if the application is locked.</p>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_BEFORE_PARTNER_UPDATE</cite>: Executes before the partner is
+updated.
+- <cite>HOOK_AFTER_PARTNER_UPDATE</cite>: Executes after the partner is updated.</p>
+<p><strong>Auth:</strong>
+- The user must provide a valid <cite>JWT token</cite> in the request header.
+- <cite>editor</cite> or <cite>admin</cite> user role is required to access this router.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.routers.partnerpic_delete_router">
+<span id="app-routers-partnerpic-delete-router-module"></span><h2>app.routers.partnerpic_delete_router module<a class="headerlink" href="#module-app.routers.partnerpic_delete_router" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.partnerpic_delete_router.partnerpic_delete">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.partnerpic_delete_router.</span></span><span class="sig-name descname"><span class="pre">partnerpic_delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">partner_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_edit)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerpicDeleteResponse" title="app.schemas.partner_schemas.PartnerpicDeleteResponse"><span class="pre">PartnerpicDeleteResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/partnerpic_delete_router.html#partnerpic_delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.partnerpic_delete_router.partnerpic_delete" title="Link to this definition"></a></dt>
+<dd><p>Delete a partner image. This router deletes the image associated
+with a given partner ID if it exists. It also triggers hooks before
+and after the deletion process, and returns the partner ID in a JSON
+response. The current user must have an editor role or higher.
+Returns a 200 response on success, a 404 error if the partner is
+not found, a 403 error if authentication failed or the user does
+not have the required permissions, and a 423 error if the
+application is locked.</p>
+<p><strong>Args:</strong>
+- <cite>partner_id</cite>: The ID of the partner whose image is to be deleted.</p>
+<p><strong>Returns:</strong>
+- <cite>PartnerpicDeleteResponse</cite>: Response containing the partner ID
+after the image is successfully removed.</p>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the current user is not authenticated
+or does not have the required permissions.
+- <cite>404 Not Found</cite>: Raised if the partner with the specified ID
+does not exist.
+- <cite>423 Locked</cite>: Raised if the application is locked.</p>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_BEFORE_PARTNERPIC_DELETE</cite>: Executes before the image is
+deleted.
+- <cite>HOOK_AFTER_PARTNERPIC_DELETE</cite>: Executes after the image has been
+deleted.</p>
+<p><strong>Auth:</strong>
+- The user must provide a valid JWT token in the request header.
+- The <cite>editor</cite> or <cite>admin</cite> role is required to access this endpoint.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.routers.partnerpic_upload_router">
+<span id="app-routers-partnerpic-upload-router-module"></span><h2>app.routers.partnerpic_upload_router module<a class="headerlink" href="#module-app.routers.partnerpic_upload_router" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.partnerpic_upload_router.partnerpic_upload">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.partnerpic_upload_router.</span></span><span class="sig-name descname"><span class="pre">partnerpic_upload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">partner_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">UploadFile</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">File(PydanticUndefined)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_edit)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.partner_schemas.PartnerpicUploadResponse" title="app.schemas.partner_schemas.PartnerpicUploadResponse"><span class="pre">PartnerpicUploadResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/partnerpic_upload_router.html#partnerpic_upload"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.partnerpic_upload_router.partnerpic_upload" title="Link to this definition"></a></dt>
+<dd><p>Upload a partner image. This router uploads an image for a partner
+based on the provided partner ID. The image is validated, resized,
+and saved to the server. The current user must have the editor role
+or higher to access this endpoint. Returns a 200 response on
+success, a 404 error if the partner is not found, a 403 error if
+authentication failed or the user does not have the required
+permissions, and a 423 error if the application is locked.</p>
+<p><strong>Args:</strong>
+- <cite>partner_id</cite>: The ID of the partner whose image is being uploaded.
+- <cite>file</cite>: The image file to be uploaded.</p>
+<p><strong>Returns:</strong>
+- <cite>PartnerpicUploadResponse</cite>: A response schema containing the
+partner ID after the image has been successfully uploaded.</p>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the current user is not authenticated
+or does not have the required permissions.
+- <cite>404 Not Found</cite>: Raised if the partner with the specified ID
+does not exist.
+- <cite>423 Locked</cite>: Raised if the application is locked.</p>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_BEFORE_PARTNERPIC_UPLOAD</cite>: Executes before the image is
+uploaded.
+- <cite>HOOK_AFTER_PARTNERPIC_UPLOAD</cite>: Executes after the image has been
+uploaded.</p>
+<p><strong>Auth:</strong>
+- The user must provide a valid JWT token in the request header.
+- The <cite>editor</cite> or <cite>admin</cite> role is required to access this endpoint.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.routers.sphinx_router">
+<span id="app-routers-sphinx-router-module"></span><h2>app.routers.sphinx_router module<a class="headerlink" href="#module-app.routers.sphinx_router" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.sphinx_router.redirect_to_sphinx">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.sphinx_router.</span></span><span class="sig-name descname"><span class="pre">redirect_to_sphinx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/routers/sphinx_router.html#redirect_to_sphinx"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.sphinx_router.redirect_to_sphinx" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 </section>
 <section id="module-app.routers.telemetry_retrieve_router">
 <span id="app-routers-telemetry-retrieve-router-module"></span><h2>app.routers.telemetry_retrieve_router module<a class="headerlink" href="#module-app.routers.telemetry_retrieve_router" title="Link to this heading"></a></h2>
@@ -922,31 +1494,20 @@ an admin role. Returns a 200 response on success, a 403 error if
 authentication failed or the user does not have the required
 permissions, and a 423 error if the application is locked.</p>
 <p><strong>Returns:</strong>
-- <cite>TelemetryRetrieveResponse</cite>: A response schema containing the</p>
-<blockquote>
-<div><p>telemetry data.</p>
-</div></blockquote>
+- <cite>TelemetryRetrieveResponse</cite>: A response schema containing the
+telemetry data.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the current user is not authenticated</p>
-<blockquote>
-<div><p>or does not have the required permissions.</p>
-</div></blockquote>
-<ul class="simple">
-<li><p><cite>423 Locked</cite>: Raised if the application is locked.</p></li>
-</ul>
+- <cite>403 Forbidden</cite>: Raised if the current user is not authenticated
+or does not have the required permissions.
+- <cite>423 Locked</cite>: Raised if the application is locked.</p>
 <p><strong>Hooks:</strong>
-- <cite>HOOK_ON_TELEMETRY_RETRIEVE</cite>: Executes after the telemetry data is</p>
-<blockquote>
-<div><p>retrieved.</p>
-</div></blockquote>
+- <cite>HOOK_ON_TELEMETRY_RETRIEVE</cite>: Executes after the telemetry data is
+retrieved.</p>
 <p><strong>Auth:</strong>
 - The user must provide a valid JWT token in the request header.
 - The <cite>admin</cite> role is required to access this endpoint.</p>
 </dd></dl>
 
-</section>
-<section id="app-routers-time-retrieve-router-module">
-<h2>app.routers.time_retrieve_router module<a class="headerlink" href="#app-routers-time-retrieve-router-module" title="Link to this heading"></a></h2>
 </section>
 <section id="module-app.routers.token_invalidate_router">
 <span id="app-routers-token-invalidate-router-module"></span><h2>app.routers.token_invalidate_router module<a class="headerlink" href="#module-app.routers.token_invalidate_router" title="Link to this heading"></a></h2>
@@ -960,33 +1521,21 @@ returned. Returns a 200 status code on success, a 403 status code
 if authentication fails or the user does not have the required
 permissions, and a 423 status code if the application is locked.</p>
 <p><strong>Returns:</strong>
-- <cite>TokenDeleteResponse</cite>: A response schema indicating the user ID</p>
-<blockquote>
-<div><p>for which the token was invalidated.</p>
-</div></blockquote>
+- <cite>TokenDeleteResponse</cite>: A response schema indicating the user ID
+for which the token was invalidated.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the user is not authenticated or does</p>
-<blockquote>
-<div><p>not have the required permissions.</p>
-</div></blockquote>
-<ul class="simple">
-<li><p><cite>423 Locked</cite>: Raised if the application is locked.</p></li>
-</ul>
+- <cite>403 Forbidden</cite>: Raised if the user is not authenticated or does
+not have the required permissions.
+- <cite>423 Locked</cite>: Raised if the application is locked.</p>
 <p><strong>Hooks:</strong>
-- <cite>HOOK_BEFORE_TOKEN_INVALIDATE</cite>: Executes before invalidating the</p>
-<blockquote>
-<div><p>token.</p>
-</div></blockquote>
-<ul class="simple">
-<li><p><cite>HOOK_AFTER_TOKEN_INVALIDATE</cite>: Executes after the token has been
-invalidated.</p></li>
-</ul>
+- <cite>HOOK_BEFORE_TOKEN_INVALIDATE</cite>: Executes before invalidating the
+token.
+- <cite>HOOK_AFTER_TOKEN_INVALIDATE</cite>: Executes after the token has been
+invalidated.</p>
 <p><strong>Auth:</strong>
 - The user must provide a valid <cite>JWT token</cite> in the request header.
-- The <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite> or <cite>admin</cite> role is required to</p>
-<blockquote>
-<div><p>access this router.</p>
-</div></blockquote>
+- The <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite> or <cite>admin</cite> role is required to
+access this router.</p>
 </dd></dl>
 
 </section>
@@ -1002,28 +1551,20 @@ a 200 response with the token on success, a 403 error if the user
 is inactive, a 422 error if the TOTP is incorrect, and a 423 error
 if the application is locked.</p>
 <p><strong>Returns:</strong>
-- <cite>TokenRetrieveResponse</cite>: A response schema containing the</p>
-<blockquote>
-<div><p>JWT token upon success.</p>
-</div></blockquote>
+- <cite>TokenRetrieveResponse</cite>: A response schema containing the
+JWT token upon success.</p>
 <p><strong>Raises:</strong>
 - <cite>403 Forbidden</cite>: Raised if the user is inactive.
-- <cite>422 Unprocessable Entity</cite>: Raised if the TOTP is incorrect or</p>
-<blockquote>
-<div><p>invalid.</p>
-</div></blockquote>
-<ul class="simple">
-<li><p><cite>423 Locked</cite>: Raised if the application is locked.</p></li>
-</ul>
+- <cite>422 Unprocessable Entity</cite>: Raised if the TOTP is incorrect or
+invalid.
+- <cite>423 Locked</cite>: Raised if the application is locked.</p>
 <p><strong>Hooks:</strong>
 - <cite>HOOK_BEFORE_TOKEN_RETRIEVE</cite>: Executes before retrieving the token.
 - <cite>HOOK_AFTER_TOKEN_RETRIEVE</cite>: Executes after the token is retrieved.</p>
 <p><strong>Auth:</strong>
 - The user must provide a valid <cite>JWT token</cite> in the request header.
-- The <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite> or <cite>admin</cite> role is required to</p>
-<blockquote>
-<div><p>access this router.</p>
-</div></blockquote>
+- The <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite> or <cite>admin</cite> role is required to
+access this router.</p>
 </dd></dl>
 
 </section>
@@ -1044,15 +1585,11 @@ error if the application is locked.</p>
 <p><strong>Returns:</strong>
 - <cite>UserDeleteResponse</cite>: The ID of the user to delete.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the current user attempts to delete</p>
-<blockquote>
-<div><p>their own account or if the deletion is forbidden.</p>
-</div></blockquote>
-<ul class="simple">
-<li><p><cite>404 Not Found</cite>: Raised if the user with the provided ID does not
-exist.</p></li>
-<li><p><cite>423 Locked</cite>: Raised if the application is locked.</p></li>
-</ul>
+- <cite>403 Forbidden</cite>: Raised if the current user attempts to delete
+their own account or if the deletion is forbidden.
+- <cite>404 Not Found</cite>: Raised if the user with the provided ID does not
+exist.
+- <cite>423 Locked</cite>: Raised if the application is locked.</p>
 <p><strong>Hooks:</strong>
 - <cite>HOOK_BEFORE_USER_DELETE</cite>: Executes before deleting the user.
 - <cite>HOOK_AFTER_USER_DELETE</cite>: Executes after the user has been deleted.</p>
@@ -1075,28 +1612,20 @@ failed or the user does not have the required permissions, a 422
 error if arguments validation failed, and a 423 error if the
 application is locked.</p>
 <p><strong>Returns:</strong>
-- <cite>UserListResponse</cite>: A response schema containing the list of users</p>
-<blockquote>
-<div><p>and the total count.</p>
-</div></blockquote>
+- <cite>UserListResponse</cite>: A response schema containing the list of users
+and the total count.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if authentication fails or the user does not</p>
-<blockquote>
-<div><p>have the required permissions.</p>
-</div></blockquote>
-<ul class="simple">
-<li><p><cite>422 Unprocessable Entity</cite>: Raised if the arguments in the request
-schema are invalid.</p></li>
-<li><p><cite>423 Locked</cite>: Raised if the application is locked.</p></li>
-</ul>
+- <cite>403 Forbidden</cite>: Raised if authentication fails or the user does not
+have the required permissions.
+- <cite>422 Unprocessable Entity</cite>: Raised if the arguments in the request
+schema are invalid.
+- <cite>423 Locked</cite>: Raised if the application is locked.</p>
 <p><strong>Hooks:</strong>
 - <cite>HOOK_AFTER_USER_LIST</cite>: Executes after the user list is retrieved.</p>
 <p><strong>Auth:</strong>
 - The user must provide a valid <cite>JWT token</cite> in the request header.
-- The <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite>, or <cite>admin</cite> role is required to</p>
-<blockquote>
-<div><p>access this router.</p>
-</div></blockquote>
+- The <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite>, or <cite>admin</cite> role is required to
+access this router.</p>
 </dd></dl>
 
 </section>
@@ -1114,24 +1643,80 @@ successful authentication. Returns a 403 error if the user is
 suspended or inactive, a 422 error if the password is invalid, and
 a 423 error if the application is locked.</p>
 <p><strong>Returns:</strong>
-- <cite>UserLoginResponse</cite>: A response schema confirming whether the</p>
-<blockquote>
-<div><p>password was accepted or not.</p>
-</div></blockquote>
+- <cite>UserLoginResponse</cite>: A response schema confirming whether the
+password was accepted or not.</p>
 <p><strong>Raises:</strong>
 - <cite>403 Forbidden</cite>: Raised if the user is suspended or inactive.
-- <cite>422 Unprocessable Entity</cite>: Raised if the provided password is</p>
-<blockquote>
-<div><p>invalid.</p>
-</div></blockquote>
-<ul class="simple">
-<li><p><cite>423 Locked</cite>: Raised if the application is locked.</p></li>
-</ul>
+- <cite>422 Unprocessable Entity</cite>: Raised if the provided password is
+invalid.
+- <cite>423 Locked</cite>: Raised if the application is locked.</p>
 <p><strong>Hooks:</strong>
 - <cite>HOOK_BEFORE_USER_LOGIN</cite>: Executes before the user login process.
 - <cite>HOOK_AFTER_USER_LOGIN</cite>: Executes after the user login process.</p>
 <p><strong>Auth:</strong>
 - No authentication required for this endpoint.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.routers.user_mfa_router">
+<span id="app-routers-user-mfa-router-module"></span><h2>app.routers.user_mfa_router module<a class="headerlink" href="#module-app.routers.user_mfa_router" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.user_mfa_router.user_mfa">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.user_mfa_router.</span></span><span class="sig-name descname"><span class="pre">user_mfa</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mfa_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/routers/user_mfa_router.html#user_mfa"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.user_mfa_router.user_mfa" title="Link to this definition"></a></dt>
+<dd><p>Retrieve a MFA QR code. This endpoint generates a QR code for
+Multi-Factor Authentication (MFA) setup based on the user’s secret
+and provides the image as a response. The function checks if the
+user exists and validates the provided MFA secret. If any validation
+fails, appropriate errors are raised. The user must not be active,
+and the provided MFA secret must match the one stored for the user.
+Returns a 403 error if the user is active, a 422 error if the user
+does not exist or if the MFA secret does not match, and a 423 error
+if the application is locked.</p>
+<p><strong>Returns:</strong>
+- A QR code image in the response body to be scanned by an MFA
+application.</p>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the user is active.
+- <cite>422 Unprocessable Entity</cite>: Raised if the user does not exist or
+if the MFA secret does not match.
+- <cite>423 Locked</cite>: Raised if the application is locked.</p>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_BEFORE_MFA_SELECT</cite>: Executes before generating the MFA
+QR code.
+- <cite>HOOK_AFTER_MFA_SELECT</cite>: Executes after generating the MFA QR code.</p>
+<p><strong>Auth:</strong>
+- No authentication required for this endpoint.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.routers.user_password_router">
+<span id="app-routers-user-password-router-module"></span><h2>app.routers.user_password_router module<a class="headerlink" href="#module-app.routers.user_password_router" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.user_password_router.user_password">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.user_password_router.</span></span><span class="sig-name descname"><span class="pre">user_password</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.schemas.html#app.schemas.user_schemas.PasswordUpdateRequest" title="app.schemas.user_schemas.PasswordUpdateRequest"><span class="pre">PasswordUpdateRequest</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_read)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.user_schemas.PasswordUpdateResponse" title="app.schemas.user_schemas.PasswordUpdateResponse"><span class="pre">PasswordUpdateResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/user_password_router.html#user_password"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.user_password_router.user_password" title="Link to this definition"></a></dt>
+<dd><p>Change user password. Requires the current user to have a reader
+role or higher. The user ID in the request must match the current
+user ID. Returns a 200 response with the ID of the updated user.
+Raises a 403 error if the user’s token is invalid or if the user
+does not have the required role, a 422 error if the current password
+is incorrect, and a 423 error if the application is locked.</p>
+<p><strong>Returns:</strong>
+- <cite>PasswordUpdateResponse</cite>: A response schema containing the ID of
+the updated user.</p>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the user’s token is invalid or if the
+user does not have the required role, or if the user ID does not
+match the current user’s ID.
+- <cite>422 Unprocessable Entity</cite>: Raised if the current password is
+incorrect.
+- <cite>423 Locked</cite>: Raised if the application is locked.</p>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_BEFORE_PASSWORD_CHANGE</cite>: Executes before the password change.
+- <cite>HOOK_AFTER_PASSWORD_CHANGE</cite>: Executes after the password change.</p>
+<p><strong>Auth:</strong>
+- The user must provide a valid <cite>JWT token</cite> in the request header.
+- The <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite>, or <cite>admin</cite> role is required to
+access this router.</p>
 </dd></dl>
 
 </section>
@@ -1146,24 +1731,50 @@ with the provided details and returns a 201 response with the user’s
 ID, MFA secret, and a link to the MFA QR code. Returns a 423 error
 if the application is locked.</p>
 <p><strong>Returns:</strong>
-- <cite>UserRegisterResponse</cite>: A response schema containing the ID of</p>
-<blockquote>
-<div><p>the newly registered user, their MFA secret, and the MFA URL for
+- <cite>UserRegisterResponse</cite>: A response schema containing the ID of
+the newly registered user, their MFA secret, and the MFA URL for
 setting up Multi-Factor Authentication.</p>
-</div></blockquote>
 <p><strong>Raises:</strong>
-- <cite>422 Unprocessable Entity</cite>: Raised if the provided user login</p>
-<blockquote>
-<div><p>already exists (duplicate).</p>
-</div></blockquote>
-<ul class="simple">
-<li><p><cite>423 Locked</cite>: Raised if the application is locked.</p></li>
-</ul>
+- <cite>422 Unprocessable Entity</cite>: Raised if the provided user login
+already exists (duplicate).
+- <cite>423 Locked</cite>: Raised if the application is locked.</p>
 <p><strong>Hooks:</strong>
 - <cite>HOOK_BEFORE_USER_REGISTER</cite>: Executes before the user registration.
 - <cite>HOOK_AFTER_USER_REGISTER</cite>: Executes after the user registration.</p>
 <p><strong>Auth:</strong>
 - No authentication required for this endpoint.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.routers.user_role_router">
+<span id="app-routers-user-role-router-module"></span><h2>app.routers.user_role_router module<a class="headerlink" href="#module-app.routers.user_role_router" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.user_role_router.user_role">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.user_role_router.</span></span><span class="sig-name descname"><span class="pre">user_role</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.schemas.html#app.schemas.user_schemas.RoleUpdateRequest" title="app.schemas.user_schemas.RoleUpdateRequest"><span class="pre">RoleUpdateRequest</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_admin)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.user_schemas.RoleUpdateResponse" title="app.schemas.user_schemas.RoleUpdateResponse"><span class="pre">RoleUpdateResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/user_role_router.html#user_role"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.user_role_router.user_role" title="Link to this definition"></a></dt>
+<dd><p>Change a user role. Requires the current user to have an admin role.
+The user being updated must be different from the current user.
+Returns a 200 response with the ID of the updated user. Raises a 403
+error if the current user tries to update their own role, if the
+user’s token is invalid, or if the user does not have the required
+role. Returns a 404 error if the user to be updated is not found,
+a 422 error if arguments validation failed, a 423 error if the
+application is locked.</p>
+<p><strong>Returns:</strong>
+- <cite>RoleUpdateResponse</cite>: A response schema containing the ID of the
+updated user.</p>
+<p><strong>Raises:</strong>
+- <cite>403 Forbidden</cite>: Raised if the current user tries to update their
+own role, if the user’s token is invalid, or if the user does not
+have the required role.
+- <cite>404 Not Found</cite>: Raised if the user to be updated is not found.
+- <cite>422 Unprocessable Entity</cite>: Raised if arguments validation failed
+- <cite>423 Locked</cite>: Raised if the application is locked.</p>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_BEFORE_ROLE_CHANGE</cite>: Executes before the role update.
+- <cite>HOOK_AFTER_ROLE_CHANGE</cite>: Executes after the role update.</p>
+<p><strong>Auth:</strong>
+- The user must provide a valid <cite>JWT token</cite> in the request header.
+- The <cite>admin</cite> role is required to access this router.</p>
 </dd></dl>
 
 </section>
@@ -1180,30 +1791,20 @@ found. Raises a 404 error if the user is not found, a 403 error if
 the user’s token is invalid or if the user does not have the
 required role, a 423 error if the application is locked.</p>
 <p><strong>Returns:</strong>
-- <cite>UserSelectResponse</cite>: A response schema containing the details of</p>
-<blockquote>
-<div><p>the retrieved user.</p>
-</div></blockquote>
+- <cite>UserSelectResponse</cite>: A response schema containing the details of
+the retrieved user.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the user’s token is invalid or if the</p>
-<blockquote>
-<div><p>user does not have the required <cite>reader</cite> role or higher.</p>
-</div></blockquote>
-<ul class="simple">
-<li><p><cite>404 Not Found</cite>: Raised if the user with the given ID is not found.</p></li>
-<li><p><cite>423 Locked</cite>: Raised if the application is locked.</p></li>
-</ul>
+- <cite>403 Forbidden</cite>: Raised if the user’s token is invalid or if the
+user does not have the required <cite>reader</cite> role or higher.
+- <cite>404 Not Found</cite>: Raised if the user with the given ID is not found.
+- <cite>423 Locked</cite>: Raised if the application is locked.</p>
 <p><strong>Hooks:</strong>
-- <cite>HOOK_AFTER_USER_SELECT</cite>: Executes after successfully retrieving</p>
-<blockquote>
-<div><p>the user.</p>
-</div></blockquote>
+- <cite>HOOK_AFTER_USER_SELECT</cite>: Executes after successfully retrieving
+the user.</p>
 <p><strong>Auth:</strong>
 - The user must provide a valid <cite>JWT token</cite> in the request header.
-- The <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite>, or <cite>admin</cite> role is required to</p>
-<blockquote>
-<div><p>access this router.</p>
-</div></blockquote>
+- The <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite>, or <cite>admin</cite> role is required to
+access this router.</p>
 </dd></dl>
 
 </section>
@@ -1220,38 +1821,26 @@ or if the user is attempting to update a different user’s details,
 a 422 error if arguments validation failed, a 423 error if the
 application is locked.</p>
 <p><strong>Returns:</strong>
-- <cite>UserUpdateResponse</cite>: A response schema containing the ID of the</p>
-<blockquote>
-<div><p>updated user.</p>
-</div></blockquote>
+- <cite>UserUpdateResponse</cite>: A response schema containing the ID of the
+updated user.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the current user does not have the</p>
-<blockquote>
-<div><p>required permissions, or if the user is trying to update another
-user’s information.</p>
-</div></blockquote>
-<ul class="simple">
-<li><p><cite>404 Not Found</cite>: Raised if the user with the provided ID is not
-found.</p></li>
-<li><p><cite>422 Unprocessable Entity</cite>: Raised if the provided data does not
-meet validation criteria.</p></li>
-<li><p><cite>423 Locked</cite>: Raised if the application is locked.</p></li>
-</ul>
+- <cite>403 Forbidden</cite>: Raised if the current user does not have the
+required permissions, or if the user is trying to update another
+user’s information.
+- <cite>404 Not Found</cite>: Raised if the user with the provided ID is not
+found.
+- <cite>422 Unprocessable Entity</cite>: Raised if the provided data does not
+meet validation criteria.
+- <cite>423 Locked</cite>: Raised if the application is locked.</p>
 <p><strong>Hooks:</strong>
-- <cite>HOOK_BEFORE_USER_UPDATE</cite>: Executes before updating the user</p>
-<blockquote>
-<div><p>details.</p>
-</div></blockquote>
-<ul class="simple">
-<li><p><cite>HOOK_AFTER_USER_UPDATE</cite>: Executes after the user details have
-been updated.</p></li>
-</ul>
+- <cite>HOOK_BEFORE_USER_UPDATE</cite>: Executes before updating the user
+details.
+- <cite>HOOK_AFTER_USER_UPDATE</cite>: Executes after the user details have
+been updated.</p>
 <p><strong>Auth:</strong>
 - The user must provide a valid <cite>JWT token</cite> in the request header.
-- The <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite>, or <cite>admin</cite> role is required to</p>
-<blockquote>
-<div><p>access this router.</p>
-</div></blockquote>
+- The <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite>, or <cite>admin</cite> role is required to
+access this router.</p>
 </dd></dl>
 
 </section>
@@ -1268,36 +1857,24 @@ to delete a userpic for a different user or if the user’s token is
 invalid, a 404 error if the user is not found, a 423 error if the
 application is locked.</p>
 <p><strong>Returns:</strong>
-- <cite>UserpicDeleteResponse</cite>: A response schema containing the ID of</p>
-<blockquote>
-<div><p>the user from whom the userpic was deleted.</p>
-</div></blockquote>
+- <cite>UserpicDeleteResponse</cite>: A response schema containing the ID of
+the user from whom the userpic was deleted.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the current user attempts to delete the</p>
-<blockquote>
-<div><p>userpic of another user, or if the user does not have the required
-role or if the user’s token is invalid.</p>
-</div></blockquote>
-<ul class="simple">
-<li><p><cite>404 Not Found</cite>: Raised if the user with the provided ID is not
-found.</p></li>
-<li><p><cite>423 Locked</cite>: Raised if the application is locked.</p></li>
-</ul>
+- <cite>403 Forbidden</cite>: Raised if the current user attempts to delete the
+userpic of another user, or if the user does not have the required
+role or if the user’s token is invalid.
+- <cite>404 Not Found</cite>: Raised if the user with the provided ID is not
+found.
+- <cite>423 Locked</cite>: Raised if the application is locked.</p>
 <p><strong>Hooks:</strong>
-- <cite>HOOK_BEFORE_USERPIC_DELETE</cite>: Executes before the userpic is</p>
-<blockquote>
-<div><p>deleted.</p>
-</div></blockquote>
-<ul class="simple">
-<li><p><cite>HOOK_AFTER_USERPIC_DELETE</cite>: Executes after the userpic has been
-deleted.</p></li>
-</ul>
+- <cite>HOOK_BEFORE_USERPIC_DELETE</cite>: Executes before the userpic is
+deleted.
+- <cite>HOOK_AFTER_USERPIC_DELETE</cite>: Executes after the userpic has been
+deleted.</p>
 <p><strong>Auth:</strong>
 - The user must provide a valid <cite>JWT token</cite> in the request header.
-- The <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite>, or <cite>admin</cite> role is required to</p>
-<blockquote>
-<div><p>access this router.</p>
-</div></blockquote>
+- The <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite>, or <cite>admin</cite> role is required to
+access this router.</p>
 </dd></dl>
 
 </section>
@@ -1315,37 +1892,25 @@ user attempts to upload a userpic for a different user, or if the
 user’s token is invalid. Raises a 422 error if the file’s MIME type
 is unsupported. Raises a 423 error if the application is locked.</p>
 <p><strong>Returns:</strong>
-- <cite>UserpicUploadResponse</cite>: A response schema containing the ID of</p>
-<blockquote>
-<div><p>the user with the updated userpic.</p>
-</div></blockquote>
+- <cite>UserpicUploadResponse</cite>: A response schema containing the ID of
+the user with the updated userpic.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the current user attempts to upload a</p>
-<blockquote>
-<div><p>userpic for a different user, or if the user’s token is invalid.</p>
-</div></blockquote>
-<ul class="simple">
-<li><p><cite>422 Unprocessable Entity</cite>: Raised if the file’s MIME type is
-unsupported.</p></li>
-<li><p><cite>404 Not Found</cite>: Raised if the user with the provided ID is not
-found.</p></li>
-<li><p><cite>423 Locked</cite>: Raised if the application is locked.</p></li>
-</ul>
+- <cite>403 Forbidden</cite>: Raised if the current user attempts to upload a
+userpic for a different user, or if the user’s token is invalid.
+- <cite>422 Unprocessable Entity</cite>: Raised if the file’s MIME type is
+unsupported.
+- <cite>404 Not Found</cite>: Raised if the user with the provided ID is not
+found.
+- <cite>423 Locked</cite>: Raised if the application is locked.</p>
 <p><strong>Hooks:</strong>
-- <cite>HOOK_BEFORE_USERPIC_UPLOAD</cite>: Executes before the userpic upload</p>
-<blockquote>
-<div><p>process begins.</p>
-</div></blockquote>
-<ul class="simple">
-<li><p><cite>HOOK_AFTER_USERPIC_UPLOAD</cite>: Executes after the userpic has been
-successfully uploaded.</p></li>
-</ul>
+- <cite>HOOK_BEFORE_USERPIC_UPLOAD</cite>: Executes before the userpic upload
+process begins.
+- <cite>HOOK_AFTER_USERPIC_UPLOAD</cite>: Executes after the userpic has been
+successfully uploaded.</p>
 <p><strong>Auth:</strong>
 - The user must provide a valid <cite>JWT token</cite> in the request header.
-- The <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite>, or <cite>admin</cite> role is required to</p>
-<blockquote>
-<div><p>access this router.</p>
-</div></blockquote>
+- The <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite>, or <cite>admin</cite> role is required to
+access this router.</p>
 </dd></dl>
 
 </section>
@@ -1358,7 +1923,7 @@ successfully uploaded.</p></li>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="app.models.html" class="btn btn-neutral float-left" title="app.models package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="app.plugins.html" class="btn btn-neutral float-left" title="app.plugins package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="app.schemas.html" class="btn btn-neutral float-right" title="app.schemas package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

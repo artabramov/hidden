@@ -20,10 +20,10 @@ app.models.comment\_model module
    :undoc-members:
    :show-inheritance:
 
-app.models.datafile\_model module
+app.models.document\_model module
 ---------------------------------
 
-.. automodule:: app.models.datafile_model
+.. automodule:: app.models.document_model
    :members:
    :undoc-members:
    :show-inheritance:
@@ -36,14 +36,6 @@ app.models.download\_model module
    :undoc-members:
    :show-inheritance:
 
-app.models.favorite\_model module
----------------------------------
-
-.. automodule:: app.models.favorite_model
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 app.models.option\_model module
 -------------------------------
 
@@ -52,10 +44,26 @@ app.models.option\_model module
    :undoc-members:
    :show-inheritance:
 
+app.models.partner\_model module
+--------------------------------
+
+.. automodule:: app.models.partner_model
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 app.models.revision\_model module
 ---------------------------------
 
 .. automodule:: app.models.revision_model
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+app.models.shard\_model module
+------------------------------
+
+.. automodule:: app.models.shard_model
    :members:
    :undoc-members:
    :show-inheritance:

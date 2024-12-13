@@ -39,15 +39,15 @@ async def options_list(
 
     **Args:**
     - `OptionListRequest`: The request schema containing filter criteria
-      for retrieving the list of options.
+    for retrieving the list of options.
 
     **Returns:**
     - `OptionListResponse`: The response schema containing a list of
-      options and the total count of options.
+    options and the total count of options.
 
     **Raises:**
     - `403 Forbidden`: Raised if the user does not have the required
-      permissions.
+    permissions.
     - `422 Unprocessable Entity`: Raised if arguments validation failed.
     - `423 Locked`: Raised if the application is locked.
 

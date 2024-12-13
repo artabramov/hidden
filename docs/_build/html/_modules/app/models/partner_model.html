@@ -1,0 +1,278 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>app.models.partner_model &mdash; Hidden  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Hidden
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.html">app package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.decorators.html">app.decorators package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.helpers.html">app.helpers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.managers.html">app.managers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.models.html">app.models package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.plugins.html">app.plugins package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.routers.html">app.routers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.schemas.html">app.schemas package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Hidden</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">app.models.partner_model</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for app.models.partner_model</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The module defines an SQLAlchemy model for partners, representing</span>
+<span class="sd">a partner. It includes fields such as the partner&#39;s name, type, region,</span>
+<span class="sd">website, contacts, and summary. The model handles the encryption and</span>
+<span class="sd">decryption of the partner&#39;s profile picture filename and provides</span>
+<span class="sd">properties for constructing the picture&#39;s URL and path. Additionally,</span>
+<span class="sd">the module ensures that the profile picture is deleted when the partner</span>
+<span class="sd">entity is removed from the database.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">relationship</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">Column</span><span class="p">,</span> <span class="n">BigInteger</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">,</span> <span class="n">String</span><span class="p">,</span> <span class="n">event</span>
+<span class="kn">from</span> <span class="nn">app.config</span> <span class="kn">import</span> <span class="n">get_config</span>
+<span class="kn">from</span> <span class="nn">app.database</span> <span class="kn">import</span> <span class="n">Base</span>
+<span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">from</span> <span class="nn">app.log</span> <span class="kn">import</span> <span class="n">get_log</span>
+<span class="kn">from</span> <span class="nn">app.managers.file_manager</span> <span class="kn">import</span> <span class="n">FileManager</span>
+<span class="kn">from</span> <span class="nn">app.helpers.encryption_helper</span> <span class="kn">import</span> <span class="n">encrypt_value</span><span class="p">,</span> <span class="n">decrypt_value</span>
+
+<span class="n">cfg</span> <span class="o">=</span> <span class="n">get_config</span><span class="p">()</span>
+<span class="n">log</span> <span class="o">=</span> <span class="n">get_log</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="Partner">
+<a class="viewcode-back" href="../../../autodoc/app.models.html#app.models.partner_model.Partner">[docs]</a>
+<span class="k">class</span> <span class="nc">Partner</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    SQLAlchemy model for a partner entity, which includes information</span>
+<span class="sd">    about the partner such as their name, type, region, website, and</span>
+<span class="sd">    contact details. It establishes relationships with the associated</span>
+<span class="sd">    user and documents and includes methods for handling encrypted</span>
+<span class="sd">    profile picture filenames, constructing URLs for the partner&#39;s</span>
+<span class="sd">    picture, and ensuring file deletion when the partner is deleted.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;partners&quot;</span>
+    <span class="n">_cacheable</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">BigInteger</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">created_date</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">Integer</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                          <span class="n">default</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()))</span>
+    <span class="n">updated_date</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">Integer</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                          <span class="n">onupdate</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()),</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">user_id</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">BigInteger</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;users.id&quot;</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">partner_name</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">String</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">partner_type</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">String</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">partner_region</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">String</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">partner_website</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">String</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">partner_contacts</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">String</span><span class="p">(</span><span class="mi">512</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">partner_summary</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">String</span><span class="p">(</span><span class="mi">512</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">partnerpic_filename_encrypted</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span>
+        <span class="n">String</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">partner_user</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span>
+        <span class="s2">&quot;User&quot;</span><span class="p">,</span> <span class="n">back_populates</span><span class="o">=</span><span class="s2">&quot;user_partners&quot;</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="s2">&quot;joined&quot;</span><span class="p">)</span>
+
+    <span class="n">partner_documents</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span>
+        <span class="s2">&quot;Document&quot;</span><span class="p">,</span> <span class="n">back_populates</span><span class="o">=</span><span class="s2">&quot;document_partner&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">partner_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                 <span class="n">partner_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">partner_region</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">partner_website</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">partner_contacts</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">partner_summary</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">partnerpic_filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes a new partner instance with the provided details</span>
+<span class="sd">        including the partner&#39;s user association, name, type, region,</span>
+<span class="sd">        website, contacts, and summary. Optionally initializes the</span>
+<span class="sd">        profile picture filename.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user_id</span> <span class="o">=</span> <span class="n">user_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">partner_name</span> <span class="o">=</span> <span class="n">partner_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">partner_type</span> <span class="o">=</span> <span class="n">partner_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">partner_region</span> <span class="o">=</span> <span class="n">partner_region</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">partner_website</span> <span class="o">=</span> <span class="n">partner_website</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">partner_contacts</span> <span class="o">=</span> <span class="n">partner_contacts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">partner_summary</span> <span class="o">=</span> <span class="n">partner_summary</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">partnerpic_filename</span> <span class="o">=</span> <span class="n">partnerpic_filename</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">partnerpic_filename</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves the decrypted profile picture filename for the partner.</span>
+<span class="sd">        If the filename is not encrypted, returns None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">decrypt_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">partnerpic_filename_encrypted</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">partnerpic_filename_encrypted</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="nd">@partnerpic_filename</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">partnerpic_filename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the encrypted profile picture filename for the partner.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">partnerpic_filename_encrypted</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">encrypt_value</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">if</span> <span class="n">value</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">partnerpic_url</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructs and returns the URL for the partner&#39;s profile picture.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">partnerpic_filename</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">cfg</span><span class="o">.</span><span class="n">PARTNERPIC_BASE_URL</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">partnerpic_filename</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">partnerpic_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructs and returns the file system path for the partner&#39;s</span>
+<span class="sd">        profile picture.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">partnerpic_filename</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">PARTNERPIC_BASE_PATH</span><span class="p">,</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">partnerpic_filename</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Partner.to_dict">
+<a class="viewcode-back" href="../../../autodoc/app.models.html#app.models.partner_model.Partner.to_dict">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts the partner instance into a dictionary representation,</span>
+<span class="sd">        including relevant details like the partner&#39;s name, type, region,</span>
+<span class="sd">        website, and profile picture URL.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+            <span class="s2">&quot;created_date&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">created_date</span><span class="p">,</span>
+            <span class="s2">&quot;updated_date&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">updated_date</span><span class="p">,</span>
+            <span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_id</span><span class="p">,</span>
+            <span class="s2">&quot;user_name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">partner_user</span><span class="o">.</span><span class="n">full_name</span><span class="p">,</span>
+            <span class="s2">&quot;partner_name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">partner_name</span><span class="p">,</span>
+            <span class="s2">&quot;partner_type&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">partner_type</span><span class="p">,</span>
+            <span class="s2">&quot;partner_region&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">partner_region</span><span class="p">,</span>
+            <span class="s2">&quot;partner_website&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">partner_website</span><span class="p">,</span>
+            <span class="s2">&quot;partner_contacts&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">partner_contacts</span><span class="p">,</span>
+            <span class="s2">&quot;partner_summary&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">partner_summary</span><span class="p">,</span>
+            <span class="s2">&quot;partnerpic_url&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">partnerpic_url</span><span class="p">,</span>
+        <span class="p">}</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="after_delete_listener">
+<a class="viewcode-back" href="../../../autodoc/app.models.html#app.models.partner_model.after_delete_listener">[docs]</a>
+<span class="nd">@event</span><span class="o">.</span><span class="n">listens_for</span><span class="p">(</span><span class="n">Partner</span><span class="p">,</span> <span class="s2">&quot;after_delete&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">after_delete_listener</span><span class="p">(</span><span class="n">mapper</span><span class="p">,</span> <span class="n">connection</span><span class="p">,</span> <span class="n">partner</span><span class="p">:</span> <span class="n">Partner</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Event listener that triggers after a partner entity is deleted.</span>
+<span class="sd">    It attempts to delete the partner&#39;s profile picture file if it</span>
+<span class="sd">    exists.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">partner</span><span class="o">.</span><span class="n">partnerpic_filename</span><span class="p">:</span>
+        <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="n">delete_partnerpic</span><span class="p">(</span><span class="n">partner</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="delete_partnerpic">
+<a class="viewcode-back" href="../../../autodoc/app.models.html#app.models.partner_model.delete_partnerpic">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">delete_partnerpic</span><span class="p">(</span><span class="n">partner</span><span class="p">:</span> <span class="n">Partner</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Deletes the profile picture file associated with a partner if it</span>
+<span class="sd">    exists. Handles exceptions and logs any errors that occur during</span>
+<span class="sd">    deletion.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">await</span> <span class="n">FileManager</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">partner</span><span class="o">.</span><span class="n">partnerpic_path</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;File deletion failed; module=partner_model; &quot;</span>
+                  <span class="s2">&quot;function=delete_partnerpic; e=</span><span class="si">%s</span><span class="s2">;&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Artem Abramov.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

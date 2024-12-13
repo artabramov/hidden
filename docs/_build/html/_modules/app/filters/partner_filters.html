@@ -1,0 +1,199 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>app.filters.partner_filters &mdash; Hidden  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Hidden
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.html">app package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.decorators.html">app.decorators package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.filters.html">app.filters package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.helpers.html">app.helpers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.managers.html">app.managers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.models.html">app.models package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.plugins.html">app.plugins package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.routers.html">app.routers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.schemas.html">app.schemas package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.triggers.html">app.triggers package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Hidden</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">app.filters.partner_filters</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for app.filters.partner_filters</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The module provides functions for filtering partner-related attributes.</span>
+<span class="sd">These filters are used within Pydantic schemas.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+
+
+<div class="viewcode-block" id="filter_partner_name">
+<a class="viewcode-back" href="../../../autodoc/app.filters.html#app.filters.partner_filters.filter_partner_name">[docs]</a>
+<span class="k">def</span> <span class="nf">filter_partner_name</span><span class="p">(</span><span class="n">partner_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Filters a partner name by stripping leading and trailing whitespace.</span>
+<span class="sd">    If the input is empty, returns None. Otherwise, returns the trimmed</span>
+<span class="sd">    partner name.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">partner_name</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">if</span> <span class="n">partner_name</span> <span class="k">else</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="filter_partner_type">
+<a class="viewcode-back" href="../../../autodoc/app.filters.html#app.filters.partner_filters.filter_partner_type">[docs]</a>
+<span class="k">def</span> <span class="nf">filter_partner_type</span><span class="p">(</span><span class="n">partner_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Filters a partner type by stripping leading and trailing whitespace.</span>
+<span class="sd">    If the input is empty or consists only of whitespace, returns None.</span>
+<span class="sd">    Otherwise, returns the trimmed partner type.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">partner_type</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">partner_type</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">or</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="filter_partner_region">
+<a class="viewcode-back" href="../../../autodoc/app.filters.html#app.filters.partner_filters.filter_partner_region">[docs]</a>
+<span class="k">def</span> <span class="nf">filter_partner_region</span><span class="p">(</span><span class="n">partner_region</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Filters a partner region by stripping leading and trailing</span>
+<span class="sd">    whitespace. If the input is empty or consists only of whitespace,</span>
+<span class="sd">    returns None. Otherwise, returns the trimmed partner region.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">partner_region</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">partner_region</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">or</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="filter_partner_website">
+<a class="viewcode-back" href="../../../autodoc/app.filters.html#app.filters.partner_filters.filter_partner_website">[docs]</a>
+<span class="k">def</span> <span class="nf">filter_partner_website</span><span class="p">(</span><span class="n">partner_website</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Filters a partner website by stripping leading and trailing</span>
+<span class="sd">    whitespace, and converting it to lowercase. If the input is empty</span>
+<span class="sd">    or consists only of whitespace, returns None. Otherwise, returns</span>
+<span class="sd">    the trimmed and lowercase website.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">partner_website</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">partner_website</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">or</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="filter_partner_contacts">
+<a class="viewcode-back" href="../../../autodoc/app.filters.html#app.filters.partner_filters.filter_partner_contacts">[docs]</a>
+<span class="k">def</span> <span class="nf">filter_partner_contacts</span><span class="p">(</span><span class="n">partner_contacts</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Filters partner contacts by stripping leading and trailing</span>
+<span class="sd">    whitespace. If the input is empty or consists only of whitespace,</span>
+<span class="sd">    returns None. Otherwise, returns the trimmed contacts information.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">partner_contacts</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">partner_contacts</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">or</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="filter_partner_summary">
+<a class="viewcode-back" href="../../../autodoc/app.filters.html#app.filters.partner_filters.filter_partner_summary">[docs]</a>
+<span class="k">def</span> <span class="nf">filter_partner_summary</span><span class="p">(</span><span class="n">partner_summary</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Filters a partner summary by stripping leading and trailing</span>
+<span class="sd">    whitespace. If the input is empty or consists only of whitespace,</span>
+<span class="sd">    returns None. Otherwise, returns the trimmed partner summary.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">partner_summary</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">partner_summary</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">or</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Artem Abramov.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

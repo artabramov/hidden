@@ -39,12 +39,12 @@ async def user_login(
 
     **Returns:**
     - `UserLoginResponse`: A response schema confirming whether the
-      password was accepted or not.
+    password was accepted or not.
 
     **Raises:**
     - `403 Forbidden`: Raised if the user is suspended or inactive.
     - `422 Unprocessable Entity`: Raised if the provided password is
-      invalid.
+    invalid.
     - `423 Locked`: Raised if the application is locked.
 
     **Hooks:**

@@ -40,23 +40,23 @@ async def partner_insert(
 
     **Args:**
     - `PartnerInsertRequest`: A request schema containing the details
-      for the new partner.
+    for the new partner.
 
     **Returns:**
     - `PartnerInsertResponse`: The response schema containing the ID of
-      the newly created partner.
+    the newly created partner.
 
     **Raises:**
     - `403 Forbidden`: Raised if the current user is not authenticated
-      or does not have the required permissions.
+    or does not have the required permissions.
     - `422 Unprocessable Entity`: Raised if arguments validation failed
-      or the partner name is already exist.
+    or the partner name is already exist.
     - `423 Locked`: Raised if the application is locked.
 
     **Auth:**
     - The user must provide a valid `JWT token` in the request header.
     - `writer`, `editor` or `admin` role is required to access this
-      router.
+    router.
     """
     partner_repository = Repository(session, cache, Partner)
 

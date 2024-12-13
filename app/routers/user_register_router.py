@@ -32,12 +32,12 @@ async def user_register(
 
     **Returns:**
     - `UserRegisterResponse`: A response schema containing the ID of
-      the newly registered user, their MFA secret, and the MFA URL for
-      setting up Multi-Factor Authentication.
+    the newly registered user, their MFA secret, and the MFA URL for
+    setting up Multi-Factor Authentication.
 
     **Raises:**
     - `422 Unprocessable Entity`: Raised if the provided user login
-      already exists (duplicate).
+    already exists (duplicate).
     - `423 Locked`: Raised if the application is locked.
 
     **Hooks:**

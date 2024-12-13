@@ -21,7 +21,7 @@ from app.constants import (
 router = APIRouter()
 
 
-@router.delete("/option/{option_key}", summary="Delete option",
+@router.delete("/option/{option_key}", summary="Delete an option.",
                response_class=JSONResponse, status_code=status.HTTP_200_OK,
                response_model=OptionDeleteResponse, tags=["Options"])
 @locked
@@ -31,14 +31,32 @@ async def option_delete(
     current_user: User = Depends(auth(UserRole.admin)),
 ) -> OptionDeleteResponse:
     """
-    FastAPI router for deleting an option entity. The router retrieves
-    the option from the repository using the provided option key. If
-    the option exists, it deletes it from the repository and executes
-    related hooks. The router returns the option key of the deleted
-    option in a JSON response. The current user should have an admin
-    role. Returns a 200 response on success, a 404 error if the option
-    is not found, and a 403 error if authentication fails or the user
-    does not have the required role.
+    Delete an option. The router retrieves the option from the
+    repository using the provided option key. If the option exists,
+    it deletes it from the repository and executes related hooks. The
+    router returns the option key of the deleted option in a JSON
+    response. The current user should have an admin role. Returns a 200
+    response on success, a 404 error if the option is not found, a 403
+    error if authentication failed or the user does not have the
+    required permissions, a 423 error if the the application is locked.
+
+    **Args:**
+    - `option_key`: The key of the option to be deleted.
+
+    **Returns:**
+    - `OptionDeleteResponse`: The response schema containing the key of
+      the deleted option.
+
+    **Raises:**
+    - `403 Forbidden`: Raised if the user does not have the required
+      permissions.
+    - `404 Not Found`: Raised if the option is not found in the
+      repository.
+    - `423 Locked`: Raised if the the application is locked.
+
+    **Auth:**
+    - The user must provide a valid `JWT token` in the request header.
+    - `admin` role is required to access this router.
     """
     option_repository = Repository(session, cache, Option)
     option = await option_repository.select(option_key__eq=option_key)

@@ -18,7 +18,7 @@ from app.constants import HOOK_AFTER_OPTION_LIST
 router = APIRouter()
 
 
-@router.get("/options", summary="Fetch option list",
+@router.get("/options", summary="Retrieve a list of options.",
             response_class=JSONResponse, status_code=status.HTTP_200_OK,
             response_model=OptionListResponse, tags=["Options"])
 @locked
@@ -28,13 +28,32 @@ async def options_list(
     current_user: User = Depends(auth(UserRole.admin))
 ) -> OptionListResponse:
     """
-    FastAPI router for retrieving a list of option entities. The router
-    retrieves all options from the repository based on the provided
-    filter criteria and executes related hooks. The router returns a
-    list of options and the total count of options in a JSON response.
-    The current user should have an admin role. Returns a 200 response
-    on success and a 403 error if authentication fails or the user does
-    not have the required role.
+    Retrieve a list of options. The router retrieves all options from
+    the repository based on the provided filter criteria and executes
+    related hooks. The router returns a list of options and the total
+    count of options in a JSON response. The current user should have
+    an admin role. Returns a 200 response on success, a 403 error if
+    authentication failed or the user does not have the required role,
+    a 422 error if arguments validation failed, a 423 error if the the
+    application is locked.
+
+    **Args:**
+    - `OptionListRequest`: The request schema containing filter criteria 
+      for retrieving the list of options.
+
+    **Returns:**
+    - `OptionListResponse`: The response schema containing a list of
+      options and the total count of options.
+
+    **Raises:**
+    - `403 Forbidden`: Raised if the user does not have the required
+      permissions.
+    - `422 Unprocessable Entity`: Raised if arguments validation failed.
+    - `423 Locked`: Raised if the application is locked.
+
+    **Auth:**
+    - The user must provide a valid `JWT token` in the request header.
+    - `admin` role is required to access this router.
     """
     option_repository = Repository(session, cache, Option)
 

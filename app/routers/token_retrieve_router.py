@@ -21,7 +21,7 @@ router = APIRouter()
 cfg = get_config()
 
 
-@router.get("/auth/token", summary="Retrieve token",
+@router.get("/auth/token", summary="Retrieve a token.",
             response_class=JSONResponse, status_code=status.HTTP_200_OK,
             response_model=TokenRetrieveResponse, tags=["Authentication"])
 @locked
@@ -30,13 +30,31 @@ async def token_retrieve(
     session=Depends(get_session), cache=Depends(get_cache)
 ) -> TokenRetrieveResponse:
     """
-    FastAPI router for the second step of multi-factor authentication.
-    Retrieves a JWT token by validating the provided one-time password
-    (TOTP). Requires the user to be active and have accepted the
-    password in the previous step. Returns a 200 response with the
-    token upon success. Returns a 404 error if the user is not found,
-    a 403 error if the user is inactive, and a 422 error if the TOTP is
-    incorrect. Requires the user to have the reader role or higher.
+    Retrieve a token. This router retrieves a JWT token for the user
+    after validating the one-time password (TOTP). The user must be 
+    active and have accepted the password in the previous step. Returns
+    a 200 response with the token on success, a 403 error if the user
+    is inactive, a 422 error if the TOTP is incorrect, and a 423 error
+    if the application is locked.
+
+    **Returns:**
+    - `TokenRetrieveResponse`: A response schema containing the 
+      JWT token upon success.
+
+    **Raises:**
+    - `403 Forbidden`: Raised if the user is inactive.
+    - `422 Unprocessable Entity`: Raised if the TOTP is incorrect or
+      invalid.
+    - `423 Locked`: Raised if the application is locked.
+
+    **Hooks:**
+    - `HOOK_BEFORE_TOKEN_RETRIEVE`: Executes before retrieving the token.
+    - `HOOK_AFTER_TOKEN_RETRIEVE`: Executes after the token is retrieved.
+
+    **Auth:**
+    - The user must provide a valid `JWT token` in the request header.
+    - The `reader`, `writer`, `editor` or `admin` role is required to
+      access this router.
     """
     user_repository = Repository(session, cache, User)
     user = await user_repository.select(user_login__eq=schema.user_login)

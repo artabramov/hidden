@@ -17,7 +17,7 @@ from app.constants import (
 router = APIRouter()
 
 
-@router.delete("/user/{user_id}/userpic", summary="Remove userpic",
+@router.delete("/user/{user_id}/userpic", summary="Remove a userpic.",
                response_class=JSONResponse, status_code=status.HTTP_200_OK,
                response_model=UserpicDeleteResponse, tags=["Users"])
 @locked
@@ -27,12 +27,36 @@ async def userpic_delete(
     current_user: User = Depends(auth(UserRole.reader))
 ) -> UserpicDeleteResponse:
     """
-    FastAPI router for deleting a userpic. Deletes the userpic if it
-    exists and updates the user's data to remove the userpic. Allowed
-    for the current user only. Requires the user to have a reader role
-    or higher. Returns a 200 response with the user ID. Raises a 403
-    error if the user attempts to delete a userpic for a different user
-    or if the user's token is invalid.
+    Remove a userpic. Deletes the userpic if it exists and updates the
+    user's data to remove the userpic. Allowed for the current user only.
+    Requires the user to have a reader role or higher. Returns a 200
+    response with the user ID. Raises a 403 error if the user attempts
+    to delete a userpic for a different user or if the user's token is
+    invalid, a 404 error if the user is not found, a 423 error if the
+    application is locked.
+
+    **Returns:**
+    - `UserpicDeleteResponse`: A response schema containing the ID of
+      the user from whom the userpic was deleted.
+
+    **Raises:**
+    - `403 Forbidden`: Raised if the current user attempts to delete the
+      userpic of another user, or if the user does not have the required
+      role or if the user's token is invalid.
+    - `404 Not Found`: Raised if the user with the provided ID is not
+      found.
+    - `423 Locked`: Raised if the application is locked.
+
+    **Hooks:**
+    - `HOOK_BEFORE_USERPIC_DELETE`: Executes before the userpic is
+      deleted.
+    - `HOOK_AFTER_USERPIC_DELETE`: Executes after the userpic has been
+      deleted.
+
+    **Auth:**
+    - The user must provide a valid `JWT token` in the request header.
+    - The `reader`, `writer`, `editor`, or `admin` role is required to
+      access this router.
     """
     user_repository = Repository(session, cache, User)
     user = await user_repository.select(id=user_id)

@@ -12,7 +12,7 @@ from app.constants import HOOK_ON_LOCK_CHANGE
 router = APIRouter()
 
 
-@router.put("/locked", summary="Change lock mode",
+@router.put("/locked", summary="Change the application lock mode.",
             response_class=JSONResponse, status_code=status.HTTP_200_OK,
             response_model=LockUpdateResponse, tags=["Lock"])
 async def lock_change(
@@ -20,6 +20,29 @@ async def lock_change(
     session=Depends(get_session), cache=Depends(get_cache),
     current_user: User = Depends(auth(UserRole.admin))
 ) -> LockUpdateResponse:
+    """
+    Change the application lock mode. This router enables or disables
+    the application lock based on the provided request. It executes a
+    corresponding hook after the lock state is changed. The current user
+    must have an admin role. Returns a 403 error if authentication
+    failed or the user does not have the required permissions.
+
+    **Args:**
+    - `LockUpdateRequest`: The request schema containing the lock status
+      to be updated.
+
+    **Returns:**
+    - `LockUpdateResponse`: The response schema containing the updated
+      lock status.
+
+    **Raises:**
+    - `403 Forbidden`: Raised if the user does not have the required
+      permissions.
+
+    **Auth:**
+    - The user must provide a valid `JWT token` in the request header.
+    - `admin` role is required to access this router.
+    """
     if schema.is_locked:
         await lock_enable()
         is_locked = True

@@ -17,7 +17,7 @@ from app.constants import (
 router = APIRouter()
 
 
-@router.delete("/collection/{collection_id}", summary="Delete a collection",
+@router.delete("/collection/{collection_id}", summary="Delete a collection.",
                response_class=JSONResponse, status_code=status.HTTP_200_OK,
                response_model=CollectionDeleteResponse, tags=["Collections"])
 @locked
@@ -27,14 +27,38 @@ async def collection_delete(
     current_user: User = Depends(auth(UserRole.admin))
 ) -> CollectionDeleteResponse:
     """
-    FastAPI router for deleting a collection entity. The router
-    retrieves the collection from the repository using the provided ID,
-    verifies that it exists, deletes the collection and all related
-    entities, executes related hooks, and returns the deleted collection
-    ID in a JSON response. The current user should have an admin role.
-    Returns a 200 response on success, a 404 error if the collection is
-    not found, and a 403 error if authentication fails or the user does
-    not have the required role.
+    Delete a collection. The router retrieves the collection from the
+    repository using the provided ID, verifies that it exists, deletes
+    the collection and all related entities, executes related hooks, and
+    returns the deleted collection ID in a JSON response. The current
+    user should have an admin role. Returns a 200 response on success,
+    a 404 error if the collection is not found, a 403 error if
+    authentication failed or the user does not have the required
+    permissions, and a 423 error if the application is locked.
+
+    **Args:**
+    - `collection_id`: The ID of the collection to be deleted.
+
+    **Returns:**
+    - `CollectionDeleteResponse`: The response schema containing the ID
+      of the deleted collection.
+
+    **Raises:**
+    - `403 Forbidden`: Raised if the current user is not authenticated
+      or does not have the required permissions.
+    - `404 Not Found`: Raised if the collection with the specified
+      ID does not exist.
+    - `423 Locked`: Raised if the application is locked.
+
+    **Hooks:**
+    - `HOOK_BEFORE_COLLECTION_DELETE`: Executed before the collection is
+      deleted.
+    - `HOOK_AFTER_COLLECTION_DELETE`: Executed after the collection is
+      deleted.
+
+    **Auth:**
+    - The user must provide a valid `JWT token` in the request header.
+    - `admin` user role is required to access this router.
     """
     collection_repository = Repository(session, cache, Collection)
 

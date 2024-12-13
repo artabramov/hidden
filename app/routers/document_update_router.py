@@ -26,7 +26,7 @@ router = APIRouter()
 
 
 @router.put("/document/{document_id}",
-            summary="Update a document data",
+            summary="Update a document.",
             response_class=JSONResponse, status_code=status.HTTP_200_OK,
             response_model=DocumentUpdateResponse, tags=["Documents"])
 @locked
@@ -35,9 +35,39 @@ async def document_update(
     session=Depends(get_session), cache=Depends(get_cache),
     current_user: User = Depends(auth(UserRole.editor))
 ) -> DocumentUpdateResponse:
+    """
+    Update a document. The router fetches the document using the
+    provided ID, checks if the associated collection is not locked, and
+    if a partner ID is provided, validates the partner. It updates the
+    document data and tags. Executes related hooks before and after
+    committing the changes. Returns a 200 response on success, a 404
+    error if the document is not found, a 423 error if the collection
+    or the application is locked, a 422 error if arguments validation
+    failed, and a 403 error if authentication failed or the user does
+    not have the required permissions.
+    
+    **Args:**
+    - `document_id`: The ID of the document to be updated.
+    - `DocumentUpdateRequest`: The request schema containing the updated
+      document information.
 
-    # Validate the document.
+    **Returns:**
+    - `DocumentUpdateResponse`: The response schema containing the ID of
+      the updated document.
 
+    **Raises:**
+    - `403 Forbidden`: Raised if the user does not have the required
+      permissions.
+    - `404 Not Found`: Raised if the document with the provided ID does
+    - `422 Unprocessable Entity`:  Raised if arguments validation failed.
+      not exist.
+    - `423 Locked`: Raised if the collection or the application is
+      locked.
+
+    **Auth:**
+    - The user must provide a valid `JWT token` in the request header.
+    - `editor` or `admin` roles are required to access this router.
+    """
     document_repository = Repository(session, cache, Document)
     document = await document_repository.select(id=document_id)
 

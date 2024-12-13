@@ -18,7 +18,7 @@ from app.constants import (
 router = APIRouter()
 
 
-@router.put("/partner/{partner_id}", summary="Update a partner",
+@router.put("/partner/{partner_id}", summary="Update a partner.",
             response_class=JSONResponse, status_code=status.HTTP_200_OK,
             response_model=PartnerUpdateResponse, tags=["Partners"])
 @locked
@@ -27,6 +27,44 @@ async def partner_update(
     session=Depends(get_session), cache=Depends(get_cache),
     current_user: User = Depends(auth(UserRole.editor))
 ) -> PartnerUpdateResponse:
+    """
+    Update a partner. The router retrieves the partner from the
+    repository using the provided ID, ensures that the partner exists,
+    and checks that the new partner name is unique. It updates the
+    partner's attributes, executes related hooks, and returns the
+    updated partner ID in a JSON response. The current user must have
+    an editor role or higher. Returns a 200 response on success, a 404
+    error if the partner is not found, a 422 error if validation
+    failed or the partner name is duplicated, a 403 error if
+    authentication failed or the user does not have the required
+    permissions, and a 423 error if the application is locked.
+
+    **Args:**
+    - `partner_id`: The ID of the partner to update.
+    - `PartnerUpdateRequest`: The request schema containing the updated
+      partner data.
+
+    **Returns:**
+    - `PartnerUpdateResponse`: The response schema containing the ID of
+      the updated partner.
+
+    **Raises:**
+    - `403 Forbidden`: Raised if the current user is not authenticated
+      or does not have the required permissions.
+    - `404 Not Found`: Raised if the partner with the specified ID
+      does not exist.
+    - `422 Unprocessable Entity`: Raised if arguments validation failed.
+    - `423 Locked`: Raised if the application is locked.
+
+    **Hooks:**
+    - `HOOK_BEFORE_PARTNER_UPDATE`: Executes before the partner is
+      updated.
+    - `HOOK_AFTER_PARTNER_UPDATE`: Executes after the partner is updated.
+
+    **Auth:**
+    - The user must provide a valid `JWT token` in the request header.
+    - `editor` or `admin` user role is required to access this router.
+    """
     partner_repository = Repository(session, cache, Partner)
 
     partner = await partner_repository.select(id=partner_id)

@@ -23,7 +23,7 @@ router = APIRouter()
 cfg = get_config()
 
 
-@router.post("/user/{user_id}/userpic", summary="Upload userpic",
+@router.post("/user/{user_id}/userpic", summary="Upload a userpic.",
              response_class=JSONResponse, status_code=status.HTTP_200_OK,
              response_model=UserpicUploadResponse, tags=["Users"])
 @locked
@@ -33,14 +33,38 @@ async def userpic_upload(
     current_user: User = Depends(auth(UserRole.reader))
 ) -> UserpicUploadResponse:
     """
-    FastAPI router for uploading a userpic. Deletes the existing
-    userpic if it exists, uploads and saves a new one, resizes it to
-    the specified dimensions, and updates the user's data with the new
-    userpic. Allowed for the current user only. Requires the user to
-    have a reader role or higher. Returns a 200 response with the
-    user ID. Raises a 403 error if the user attempts to upload a
-    userpic for a different user, or if the user's token is invalid.
-    Raises a 422 error if the file's MIME type is unsupported.
+    Upload a userpic. Deletes the existing userpic if it exists, uploads
+    and saves a new one, resizes it to the specified dimensions, and
+    updates the user's data with the new userpic. Allowed for the
+    current user only. Requires the user to have a reader role or higher.
+    Returns a 200 response with the user ID. Raises a 403 error if the
+    user attempts to upload a userpic for a different user, or if the
+    user's token is invalid. Raises a 422 error if the file's MIME type
+    is unsupported. Raises a 423 error if the application is locked.
+
+    **Returns:**
+    - `UserpicUploadResponse`: A response schema containing the ID of
+      the user with the updated userpic.
+
+    **Raises:**
+    - `403 Forbidden`: Raised if the current user attempts to upload a
+      userpic for a different user, or if the user's token is invalid.
+    - `422 Unprocessable Entity`: Raised if the file's MIME type is
+      unsupported.
+    - `404 Not Found`: Raised if the user with the provided ID is not
+      found.
+    - `423 Locked`: Raised if the application is locked.
+
+    **Hooks:**
+    - `HOOK_BEFORE_USERPIC_UPLOAD`: Executes before the userpic upload
+      process begins.
+    - `HOOK_AFTER_USERPIC_UPLOAD`: Executes after the userpic has been
+      successfully uploaded.
+
+    **Auth:**
+    - The user must provide a valid `JWT token` in the request header.
+    - The `reader`, `writer`, `editor`, or `admin` role is required to
+      access this router.
     """
     user_repository = Repository(session, cache, User)
     user = await user_repository.select(id=user_id)

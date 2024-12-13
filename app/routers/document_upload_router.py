@@ -28,7 +28,8 @@ cfg = get_config()
 router = APIRouter()
 
 
-@router.post("/collection/{collection_id}/document", summary="Upload file",
+@router.post("/collection/{collection_id}/document",
+             summary="Upload a document.",
              response_class=JSONResponse, status_code=status.HTTP_201_CREATED,
              response_model=DocumentUploadResponse, tags=["Files"])
 @locked
@@ -37,7 +38,43 @@ async def document_upload(
     session=Depends(get_session), cache=Depends(get_cache),
     current_user: User = Depends(auth(UserRole.writer))
 ) -> DocumentUploadResponse:
+    """
+    Upload a document. The router validates the provided collection,
+    ensures it is not locked, processes the file (validating, encrypting,
+    and creating a thumbnail if needed), splits it into shards, and
+    creates a revision for the document. It then saves the document and
+    revision details to the repository. The current user should have a
+    writer role or higher. Returns a 201 response on success, a 422
+    error if the collection is invalid, a 423 error if the collection
+    or the application is locked, a 500 error if an unexpected failure
+    occurs during file processing or shard creation, and a 403 error
+    if authentication failed or the user does not have the required
+    permissions.
 
+    **Args:**
+    - `collection_id`: The ID of the collection to upload the document
+      to.
+    - `file`: The file to be uploaded.
+
+    **Returns:**
+    - `DocumentUploadResponse`: The response schema containing the ID of
+      the document and the latest revision.
+
+    **Raises:**
+    - `403 Forbidden`: Raised if the user does not have the required
+      permissions.
+    - `422 Unprocessable Entity`: Raised if the collection does not exist 
+      or is invalid.
+    - `423 Locked`: Raised if the collection or the application is
+      locked.
+    - `500 Internal Server Error`: Raised if an error occurs during file
+      processing, encryption, or shard creation.
+
+    **Auth:**
+    - The user must provide a valid `JWT token` in the request header.
+    - `writer`, `editor` or `admin` roles are required to access this
+      router.
+    """
     collection_repository = Repository(session, cache, Collection)
     collection = await collection_repository.select(id=collection_id)
 

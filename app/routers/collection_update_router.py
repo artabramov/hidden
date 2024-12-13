@@ -30,16 +30,43 @@ async def collection_update(
     current_user: User = Depends(auth(UserRole.editor))
 ) -> CollectionUpdateResponse:
     """
-    FastAPI router for updating a collection entity. The router
-    retrieves the collection from the repository using the provided ID,
-    ensures that the collection exists, and checks that the new
-    collection name is unique. It updates the collection's attributes,
-    executes related hooks, and returns the updated collection ID in
-    a JSON response. The current user should have an editor role or
-    higher. Returns a 200 response on success, a 404 error if the
-    collection is not found, a 422 error if the collection name is
-    duplicated, and a 403 error if authentication fails or the user
-    does not have the required role.
+    Update a collection. The router retrieves the collection from the
+    repository using the provided ID, ensures that the collection exists,
+    and checks that the new collection name is unique. It updates the
+    collection's attributes, executes related hooks, and returns the
+    updated collection ID in a JSON response. The current user must have
+    an editor role or higher. Returns a 200 response on success, a 404
+    error if the collection is not found, a 422 error if validation
+    failed or the collection name is duplicated, a 403 error if
+    authentication failed or the user does not have the required
+    permissions, and a 423 error if the application is locked.
+
+    **Args:**
+    - `collection_id`: The ID of the collection to update.
+    - `CollectionUpdateRequest`: The request schema containing the
+      updated collection data.
+
+    **Returns:**
+    - `CollectionUpdateResponse`: The response schema containing the ID
+      of the updated collection.
+
+    **Raises:**
+    - `403 Forbidden`: Raised if the current user is not authenticated
+      or does not have the required permissions.
+    - `404 Not Found`: Raised if the collection with the specified ID
+      does not exist.
+    - `422 Unprocessable Entity`: Raised if arguments validation failed.
+    - `423 Locked`: Raised if the application is locked.
+
+    **Hooks:**
+    - `HOOK_BEFORE_COLLECTION_UPDATE`: Executes before the collection is
+      updated.
+    - `HOOK_AFTER_COLLECTION_UPDATE`: Executes after the collection is
+      updated.
+
+    **Auth:**
+    - The user must provide a valid `JWT token` in the request header.
+    - `editor` or `admin` user role is required to access this router.
     """
     collection_repository = Repository(session, cache, Collection)
 

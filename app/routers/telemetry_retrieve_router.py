@@ -18,7 +18,7 @@ from app.schemas.telemetry_schemas import TelemetryRetrieveResponse
 router = APIRouter()
 
 
-@router.get("/telemetry", summary="Retrieve telemetry data",
+@router.get("/telemetry", summary="Retrieve telemetry.",
             response_class=JSONResponse, status_code=status.HTTP_200_OK,
             response_model=TelemetryRetrieveResponse,
             tags=["Telemetry"])
@@ -27,6 +27,35 @@ async def telemetry_retrieve(
     session=Depends(get_session), cache=Depends(get_cache),
     current_user: User = Depends(auth(UserRole.admin))
 ):
+    """
+    Retrieve telemetry. This router aggregates system metrics and
+    configuration details from the server and the database to provide
+    insight into the current status of the system and database. It
+    returns information such as the operating system, platform, Python
+    version, disk and memory usage, CPU status, and database details
+    like version and size. Executes the corresponding hook and returns
+    the telemetry data in a JSON response. The current user should have
+    an admin role. Returns a 200 response on success, a 403 error if
+    authentication failed or the user does not have the required
+    permissions, and a 423 error if the application is locked.
+
+    **Returns:**
+    - `TelemetryRetrieveResponse`: A response schema containing the
+      telemetry data.
+
+    **Raises:**
+    - `403 Forbidden`: Raised if the current user is not authenticated
+      or does not have the required permissions.
+    - `423 Locked`: Raised if the application is locked.
+
+    **Hooks:**
+    - `HOOK_ON_TELEMETRY_RETRIEVE`: Executes after the telemetry data is
+      retrieved.
+
+    **Auth:**
+    - The user must provide a valid JWT token in the request header.
+    - The `admin` role is required to access this endpoint.
+    """
     from app.app import uptime
 
     entity_manager = EntityManager(session)

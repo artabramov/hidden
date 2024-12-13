@@ -22,6 +22,7 @@ http://localhost/sphinx/
 ```
 
 ## Core mechanics
+The main entity handler used across all application routers is the Repository. A concrete instance of the Repository is created for each specific entity type. It handles interactions with a PostgreSQL database through an encapsulated Entity Manager and Redis cache via a Cache Manager. The primary application entities are SQLAlchemy models, and Pydantic validation schemas are used for validation across the application.
 ```mermaid
 graph LR
     AUTH[Auth<br>Decorator]

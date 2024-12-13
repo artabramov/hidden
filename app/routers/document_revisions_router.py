@@ -1,7 +1,3 @@
-"""
-The module defines a FastAPI router for retrieving the revision list.
-"""
-
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 from app.database import get_session
@@ -23,7 +19,7 @@ router = APIRouter()
 
 
 @router.get("/document/{document_id}/revisions",
-            summary="Retrieve the revisions list for a specified document.",
+            summary="Retrieve a document revision list.",
             response_class=JSONResponse, status_code=status.HTTP_200_OK,
             response_model=DocumentRevisionsResponse, tags=["Documents"])
 @locked
@@ -33,12 +29,36 @@ async def document_revisions(
     current_user: User = Depends(auth(UserRole.reader)),
 ) -> DocumentRevisionsResponse:
     """
-    FastAPI router for retrieving a list of revision entities. The
-    router fetches the list of revisions from the repository, executes
-    related hooks, and returns the results in a JSON response. The
-    current user should have a reader role or higher. Returns a 200
-    response on success and a 403 error if authentication fails or
-    the user does not have the required role.
+    Retrieve a document revision list. The  router fetches the list of
+    revisions from the repository based on the provided filter criteria,
+    executes related hooks, and returns the results in a JSON response.
+    The current user should have a reader role or higher. Returns a 200
+    response on success, a 403 error if authentication failed or the
+    user does not have the required permissions, a 422 error if
+    arguments validation failed, and a 423 error if the application
+    is locked.
+
+    **Args:**
+    - `document_id`: The document ID whose revisions need to be fetched.
+    - `DocumentRevisionsRequest`: The request schema that contains
+      filter and pagination options for the revisions list.
+
+    **Returns:**
+    - `DocumentRevisionsResponse`: A response containing a list of
+      revisions for the document and the total revision count.
+
+    **Raises:**
+    - `403 Forbidden`: Raised if the user does not have the required
+      permissions.
+    - `404 Not Found`: Raised if the document with the specified ID does
+      not exist.
+    - `422 Unprocessable Entity`: Raised if arguments validation failed.
+    - `423 Locked`: Raised if the application is locked.
+
+    **Auth:**
+    - The user must provide a valid `JWT token` in the request header.
+    - `reader`, `writer`, `editor`, or `admin` role is required to
+      access the router.
     """
     document_repository = Repository(session, cache, Document)
     document = await document_repository.select(id=document_id)

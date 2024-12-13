@@ -24,7 +24,8 @@ router = APIRouter()
 cfg = get_config()
 
 
-@router.post("/partner/{partner_id}/partnerpic", summary="Upload partnerpic",
+@router.post("/partner/{partner_id}/partnerpic",
+             summary="Upload a partner image.",
              response_class=JSONResponse, status_code=status.HTTP_200_OK,
              response_model=PartnerpicUploadResponse, tags=["Partners"])
 @locked
@@ -33,6 +34,40 @@ async def partnerpic_upload(
     session=Depends(get_session), cache=Depends(get_cache),
     current_user: User = Depends(auth(UserRole.editor))
 ) -> PartnerpicUploadResponse:
+    """
+    Upload a partner image. This router uploads an image for a partner 
+    based on the provided partner ID. The image is validated, resized, 
+    and saved to the server. The current user must have the editor role 
+    or higher to access this endpoint. Returns a 200 response on
+    success, a 404 error if the partner is not found, a 403 error if
+    authentication failed or the user does not have the required
+    permissions, and a 423 error if the application is locked.
+
+    **Args:**
+    - `partner_id`: The ID of the partner whose image is being uploaded.
+    - `file`: The image file to be uploaded.
+
+    **Returns:**
+    - `PartnerpicUploadResponse`: A response schema containing the
+      partner ID after the image has been successfully uploaded.
+
+    **Raises:**
+    - `403 Forbidden`: Raised if the current user is not authenticated
+      or does not have the required permissions.
+    - `404 Not Found`: Raised if the partner with the specified ID
+      does not exist.
+    - `423 Locked`: Raised if the application is locked.
+
+    **Hooks:**
+    - `HOOK_BEFORE_PARTNERPIC_UPLOAD`: Executes before the image is
+      uploaded.
+    - `HOOK_AFTER_PARTNERPIC_UPLOAD`: Executes after the image has been
+      uploaded.
+
+    **Auth:**
+    - The user must provide a valid JWT token in the request header.
+    - The `editor` or `admin` role is required to access this endpoint.
+    """
     partner_repository = Repository(session, cache, Partner)
     partner = await partner_repository.select(id=partner_id)
 

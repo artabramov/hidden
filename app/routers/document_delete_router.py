@@ -27,16 +27,33 @@ async def document_delete(
     current_user: User = Depends(auth(UserRole.admin))
 ) -> DocumentDeleteResponse:
     """
-    FastAPI router for deleting a document entity. The router retrieves
-    the document from the repository using the provided ID, checks if
-    the document exists and its collection is not locked, deletes the
-    document and all related entities, updates the counters for the
-    associated collection, executes related hooks, and returns the
-    deleted document ID in a JSON response. The current user should
-    have an admin role. Returns a 200 response on success, a 404 error
-    if the document is not found, a 423 error if the collection is
-    locked, and a 403 error if authentication fails or the user does
-    not have the required role.
+    Delete a document. The router retrieves the document from the
+    repository using the provided ID, checks if the document exists and
+    its collection is not locked, deletes the document and all related
+    entities, executes related hooks, and returns the deleted document
+    ID in a JSON response. The current user should have an admin role.
+    Returns a 200 response on success, a 404 error if the document is
+    not found, a 423 error if the collection the application is locked,
+    and a 403 error if authentication failed or the user does not have
+    the required permissions.
+
+    **Args:**
+    - `document_id`: The ID of the document to be deleted.
+
+    **Returns:**
+    - `DocumentDeleteResponse`: The response schema containing the ID of
+      the deleted document.
+
+    **Raises:**
+    - `403 Forbidden`: Raised if the user does not have the required
+      permissions.
+    - `404 Not Found`: Raised if the document with the specified ID does
+      not exist.
+    - `423 Locked`: Raised if the document or the application is locked.
+
+    **Auth:**
+    - The user must provide a valid `JWT token` in the request header.
+    - `admin` user role is required to access this router.
     """
     document_repository = Repository(session, cache, Document)
     document = await document_repository.select(id=document_id)

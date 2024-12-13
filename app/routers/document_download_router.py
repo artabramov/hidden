@@ -26,7 +26,7 @@ router = APIRouter()
 
 
 @router.get("/document/{document_id}/revision/{revision_id}",
-            summary="Download file",
+            summary="Download a document revision.",
             response_class=Response, status_code=status.HTTP_200_OK,
             tags=["Files"])
 @locked
@@ -36,13 +36,33 @@ async def document_download(
     current_user: User = Depends(auth(UserRole.reader))
 ) -> Response:
     """
-    FastAPI router for downloading a revision entity. The router
-    retrieves the specified revision from the repository, decrypts the
-    associated file, executes related hooks, and returns the file as an
-    attachment. The current user should have a reader role or higher.
-    Returns a 200 response on success, a 404 error if the revision is
-    not found, and a 403 error if authentication fails or the user
-    does not have the required role.
+    Download a document revision. The router retrieves the specified
+    revision from the repository, decrypts the associated file, executes
+    related hooks, and returns the file as an attachment. The current
+    user should have a reader role or higher. Returns a 200 response on
+    success, a 404 error if the revision or the document is not found,
+    a 403 error if authentication failed or the user does not have the
+    required permissions, and a 423 error if the application is locked.
+
+    **Args:**
+    - `document_id`: The ID of the document.
+    - `revision_id`: The ID of the revision to download.
+
+    **Returns:**
+    - `Response`: A response containing the decrypted file content as
+      an attachment.
+
+    **Raises:**
+    - `403 Forbidden`: Raised if the user does not have the required
+      permissions.
+    - `404 Not Found`: Raised if the revision or the document with the
+      specified ID does not exist.
+    - `423 Locked`: Raised if the application is locked.
+
+    **Auth:**
+    - The user must provide a valid `JWT token` in the request header.
+    - `reader`, `writer`, `editor`, or `admin` roles are required to
+      access this router.
     """
     revision_repository = Repository(session, cache, Revision)
     revision = await revision_repository.select(id=revision_id)

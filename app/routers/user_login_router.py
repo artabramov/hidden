@@ -19,7 +19,7 @@ router = APIRouter()
 cfg = get_config()
 
 
-@router.post("/auth/login", summary="Authenticate user",
+@router.post("/auth/login", summary="Authenticate a user.",
              response_class=JSONResponse, status_code=status.HTTP_200_OK,
              response_model=UserLoginResponse, tags=["Authentication"])
 @locked
@@ -28,15 +28,33 @@ async def user_login(
     session=Depends(get_session), cache=Depends(get_cache)
 ) -> UserLoginResponse:
     """
-    FastAPI router for the first step of multi-factor authentication.
-    Authenticates a user by validating their login credentials. Returns
+    Authenticate a user. The router for the first step of multi-factor
+    authentication. Authenticates a user by validating their login
+    credentials. Invalid passwords increase the attempt count and may
+    lead to user suspension if the attempt limit is exceeded. Returns
     a 200 response with a confirmation of password acceptance upon
-    successful authentication. Returns a 404 error if the user is not
-    found, a 403 error if the user is suspended or inactive, and a 422
-    error if the password is invalid. Invalid passwords increase the
-    attempt count and may lead to user suspension if the attempt limit
-    is exceeded.
+    successful authentication. Returns a 403 error if the user is
+    suspended or inactive, a 422 error if the password is invalid, and
+    a 423 error if the application is locked.
+
+    **Returns:**
+    - `UserLoginResponse`: A response schema confirming whether the
+      password was accepted or not.
+
+    **Raises:**
+    - `403 Forbidden`: Raised if the user is suspended or inactive.
+    - `422 Unprocessable Entity`: Raised if the provided password is
+      invalid.
+    - `423 Locked`: Raised if the application is locked.
+
+    **Hooks:**
+    - `HOOK_BEFORE_USER_LOGIN`: Executes before the user login process.
+    - `HOOK_AFTER_USER_LOGIN`: Executes after the user login process.
+
+    **Auth:**
+    - No authentication required for this endpoint.
     """
+
     user_repository = Repository(session, cache, User)
     user = await user_repository.select(user_login__eq=schema.user_login)
 

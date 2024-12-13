@@ -18,7 +18,7 @@ from app.constants import (
 router = APIRouter()
 
 
-@router.put("/user/{user_id}/password", summary="Change user password",
+@router.put("/user/{user_id}/password", summary="Change user password.",
             response_class=JSONResponse, status_code=status.HTTP_200_OK,
             response_model=PasswordUpdateResponse, tags=["Users"])
 @locked
@@ -28,12 +28,33 @@ async def user_password(
     current_user: User = Depends(auth(UserRole.reader))
 ) -> PasswordUpdateResponse:
     """
-    FastAPI router for updating a user password. Requires the current
-    user to have a reader role or higher. The user ID in the request
-    must match the current user ID. Returns a 200 response with the ID
-    of the updated user. Raises a 403 error if the user's token is
-    invalid or if the user does not have the required role. Raises
-    a 422 error if the current password is incorrect.
+    Change user password. Requires the current user to have a reader
+    role or higher. The user ID in the request must match the current
+    user ID. Returns a 200 response with the ID of the updated user.
+    Raises a 403 error if the user's token is invalid or if the user
+    does not have the required role, a 422 error if the current password
+    is incorrect, and a 423 error if the application is locked.
+
+    **Returns:**
+    - `PasswordUpdateResponse`: A response schema containing the ID of
+      the updated user.
+
+    **Raises:**
+    - `403 Forbidden`: Raised if the user's token is invalid or if the
+      user does not have the required role, or if the user ID does not
+      match the current user's ID.
+    - `422 Unprocessable Entity`: Raised if the current password is
+      incorrect.
+    - `423 Locked`: Raised if the application is locked.
+
+    **Hooks:**
+    - `HOOK_BEFORE_PASSWORD_CHANGE`: Executes before the password change.
+    - `HOOK_AFTER_PASSWORD_CHANGE`: Executes after the password change.
+
+    **Auth:**
+    - The user must provide a valid `JWT token` in the request header.
+    - The `reader`, `writer`, `editor`, or `admin` role is required to 
+      access this router.
     """
     user_repository = Repository(session, cache, User)
     user = await user_repository.select(id=user_id)

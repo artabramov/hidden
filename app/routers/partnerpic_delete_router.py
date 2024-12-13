@@ -18,7 +18,8 @@ from app.constants import (
 router = APIRouter()
 
 
-@router.delete("/partner/{partner_id}/partnerpic", summary="Remove partnerpic",
+@router.delete("/partner/{partner_id}/partnerpic",
+               summary="Delete a partner image.",
                response_class=JSONResponse, status_code=status.HTTP_200_OK,
                response_model=PartnerpicDeleteResponse, tags=["Partners"])
 @locked
@@ -27,6 +28,40 @@ async def partnerpic_delete(
     session=Depends(get_session), cache=Depends(get_cache),
     current_user: User = Depends(auth(UserRole.editor))
 ) -> PartnerpicDeleteResponse:
+    """
+    Delete a partner image. This router deletes the image associated
+    with a given partner ID if it exists. It also triggers hooks before
+    and after the deletion process, and returns the partner ID in a JSON
+    response. The current user must have an editor role or higher.
+    Returns a 200 response on success, a 404 error if the partner is
+    not found, a 403 error if authentication failed or the user does
+    not have the required permissions, and a 423 error if the
+    application is locked.
+
+    **Args:**
+    - `partner_id`: The ID of the partner whose image is to be deleted.
+
+    **Returns:**
+    - `PartnerpicDeleteResponse`: Response containing the partner ID
+      after the image is successfully removed.
+
+    **Raises:**
+    - `403 Forbidden`: Raised if the current user is not authenticated
+      or does not have the required permissions.
+    - `404 Not Found`: Raised if the partner with the specified ID
+      does not exist.
+    - `423 Locked`: Raised if the application is locked.
+
+    **Hooks:**
+    - `HOOK_BEFORE_PARTNERPIC_DELETE`: Executes before the image is
+      deleted.
+    - `HOOK_AFTER_PARTNERPIC_DELETE`: Executes after the image has been
+      deleted.
+
+    **Auth:**
+    - The user must provide a valid JWT token in the request header.
+    - The `editor` or `admin` role is required to access this endpoint.
+    """
     partner_repository = Repository(session, cache, Partner)
     partner = await partner_repository.select(id=partner_id)
 

@@ -17,7 +17,7 @@ from app.constants import HOOK_AFTER_DOCUMENT_LIST
 router = APIRouter()
 
 
-@router.get("/documents", summary="Retrieve the list of documents.",
+@router.get("/documents", summary="Retrieve document list.",
             response_class=JSONResponse, status_code=status.HTTP_200_OK,
             response_model=DocumentListResponse, tags=["Documents"])
 @locked
@@ -27,12 +27,33 @@ async def document_list(
     current_user: User = Depends(auth(UserRole.reader))
 ) -> DocumentListResponse:
     """
-    FastAPI router for retrieving a list of document entities. The
-    router fetches the list of documents from the repository, executes
+    Retrieve document list. The router fetches the list of documents
+    from the repository based on the provided filter criteria, executes
     related hooks, and returns the results in a JSON response. The
     current user should have a reader role or higher. Returns a 200
-    response on success and a 403 error if authentication fails or
-    the user does not have the required role.
+    response on success, a 403 error if authentication failed or the
+    user does not have the required permissions, a 422 error if
+    arguments validation failed, and a 423 error if the application
+    is locked.
+
+    **Args:**
+    - `DocumentListRequest`: The request schema containing the filters
+      for the document list.
+
+    **Returns:**
+    - `DocumentListResponse`: The response schema containing the list of
+      documents and the total count.
+
+    **Raises:**
+    - `403 Forbidden`: Raised if the user does not have the required
+      permissions.
+    - `422 Unprocessable Entity`: Raised if arguments validation failed.
+    - `423 Locked`: Raised if the application is locked.
+
+    **Auth:**
+    - The user must provide a valid `JWT token` in the request header.
+    - `reader`, `writer`, `editor` or `admin` user role is required to
+      access this router.
     """
     document_repository = Repository(session, cache, Document)
 
@@ -43,11 +64,6 @@ async def document_list(
 
     documents = await document_repository.select_all(**kwargs)
     documents_count = await document_repository.count_all(**kwargs)
-
-    # revision_repository = Repository(session, cache, Revision)
-    # for document in documents:
-    #     document.latest_revision = await revision_repository.select(
-    #       id=document.latest_revision_id)
 
     hook = Hook(session, cache, current_user=current_user)
     await hook.do(HOOK_AFTER_DOCUMENT_LIST, documents)

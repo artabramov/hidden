@@ -23,7 +23,7 @@ from app.constants import (
 router = APIRouter()
 
 
-@router.post("/comment", summary="Create a new comment",
+@router.post("/comment", summary="Create a comment",
              response_class=JSONResponse, status_code=status.HTTP_201_CREATED,
              response_model=CommentInsertResponse, tags=["Comments"])
 @locked
@@ -33,15 +33,34 @@ async def comment_insert(
     current_user: User = Depends(auth(UserRole.writer))
 ) -> CommentInsertResponse:
     """
-    FastAPI router for creating a comment entity. The router validates
-    that the document exists and that its collection is not locked,
-    inserts the new comment into the repository, updates the comment
-    count for the associated document, executes related hooks, and
-    returns the created comment ID in a JSON response. The current user
-    should have a writer role or higher. Returns a 201 response on
-    success, a 404 error if the document is not found, a 423 error if
-    the collection is locked, and a 403 error if authentication fails
-    or the user does not have the required role.
+    Create a comment. The router validates that the document exists and
+    that its collection is not locked, inserts the new comment into the
+    repository, executes related hooks, and returns the created comment
+    ID in a JSON response. The current user should have a writer role or
+    higher. Returns a 201 response on success, a 404 error if the
+    document is not found, a 423 error if the collection or the
+    application is locked, and a 403 error if authentication failed
+    or the user does not have the required permissions.
+
+    **Args:**
+    - `CommentInsertRequest`: The request schema containing the data
+      for the new comment.
+
+    **Returns:**
+    - `CommentInsertResponse`: The response schema containing the ID
+      of the newly created comment.
+
+    **Raises:**
+    - `403 Forbidden`: Raised if the user does not have the required
+      permissions.
+    - `422 Unprocessable Entity`:  Raised if arguments validation failed.
+    - `423 Locked`: Raised if the document's collection or the
+      application is locked.
+
+    **Auth:**
+    - The user must provide a valid `JWT token` in the request header.
+    - `writer`, `editor` or `admin` user role is required to access this
+      router.
     """
     document_repository = Repository(session, cache, Document)
     document = await document_repository.select(id__eq=schema.document_id)

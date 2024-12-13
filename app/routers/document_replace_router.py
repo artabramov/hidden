@@ -28,7 +28,7 @@ router = APIRouter()
 
 
 @router.post("/document/{document_id}",
-             summary="Replace file",
+             summary="Replace the latest revision of a document.",
              response_class=JSONResponse, status_code=status.HTTP_201_CREATED,
              response_model=DocumentReplaceResponse, tags=["Files"])
 @locked
@@ -37,7 +37,36 @@ async def document_replace(
     session=Depends(get_session), cache=Depends(get_cache),
     current_user: User = Depends(auth(UserRole.editor))
 ) -> DocumentReplaceResponse:
+    """
+    Replace the latest revision of a document. The router allows to
+    upload a new version of the document, replace its latest revision,
+    and update the document's metadata. The file is encrypted, split
+    into shards, and stored securely. The current user must have the
+    editor role or higher. Returns a 201 response on success, a 404
+    error if the document is not found, a 423 error if the collection
+    or the application is locked, and a 422 error if the file is invalid.
 
+    **Args:**
+    - `document_id`: The ID of the document to be replaced.
+    - `file`: The new file to replace the current document revision.
+
+    **Returns:**
+    - `DocumentReplaceResponse`: The response schema containing the
+      document's ID and the revision ID of the newly added revision.
+
+    **Raises:**
+    - `403 Forbidden`: Raised if the user does not have the required
+      permissions.
+    - `404 Not Found`: Raised if the document with the specified ID does
+      not exist.
+    - `422 Unprocessable Entity`: Raised if the uploaded file is invalid
+      or cannot be processed.
+    - `423 Locked`: Raised if the collection or the document is locked.
+
+    **Auth:**
+    - The user must provide a valid `JWT token` in the request header.
+    - `editor` or `admin` user role is required to access this router.
+    """
     document_repository = Repository(session, cache, Document)
     document = await document_repository.select(id=document_id)
 

@@ -19,7 +19,8 @@ cfg = get_config()
 MFA_MASK = "otpauth://totp/%s?secret=%s&issuer=%s"
 
 
-@router.get("/user/{user_id}/mfa/{mfa_secret}", summary="Retrieve MFA",
+@router.get("/user/{user_id}/mfa/{mfa_secret}",
+            summary="Retrieve a MFA QR code.",
             status_code=status.HTTP_200_OK, include_in_schema=True,
             tags=["Users"])
 @locked
@@ -28,10 +29,33 @@ async def user_mfa(
     session=Depends(get_session), cache=Depends(get_cache)
 ):
     """
-    Retrieve a QR code for MFA setup for a user. This endpoint validates
-    the user's MFA secret and generates a QR code that can be scanned by
-    an MFA app. The QR code includes the MFA secret and user login
-    information.
+    Retrieve a MFA QR code. This endpoint generates a QR code for
+    Multi-Factor Authentication (MFA) setup based on the user's secret
+    and provides the image as a response. The function checks if the
+    user exists and validates the provided MFA secret. If any validation 
+    fails, appropriate errors are raised. The user must not be active,
+    and the provided MFA secret must match the one stored for the user.
+    Returns a 403 error if the user is active, a 422 error if the user
+    does not exist or if the MFA secret does not match, and a 423 error
+    if the application is locked.
+
+    **Returns:**
+    - A QR code image in the response body to be scanned by an MFA
+      application.
+
+    **Raises:**
+    - `403 Forbidden`: Raised if the user is active.
+    - `422 Unprocessable Entity`: Raised if the user does not exist or
+      if the MFA secret does not match.
+    - `423 Locked`: Raised if the application is locked.
+
+    **Hooks:**
+    - `HOOK_BEFORE_MFA_SELECT`: Executes before generating the MFA
+      QR code.
+    - `HOOK_AFTER_MFA_SELECT`: Executes after generating the MFA QR code.
+
+    **Auth:**
+    - No authentication required for this endpoint.
     """
     user_repository = Repository(session, cache, User)
     user = await user_repository.select(id=user_id)

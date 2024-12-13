@@ -30,13 +30,32 @@ async def comment_select(
     current_user: User = Depends(auth(UserRole.reader))
 ) -> CommentSelectResponse:
     """
-    FastAPI router for retrieving a comment entity. The router fetches
-    the comment from the repository using the provided ID, executes
-    related hooks, and returns the comment details in a JSON response.
-    The current user should have a reader role or higher. Returns a 200
-    response on success, a 404 error if the comment is not found, and
-    a 403 error if authentication fails or the user does not have the
-    required role.
+    Retrieve a comment. The router fetches the comment from the
+    repository using the provided ID, executes related hooks, and
+    returns the comment details in a JSON response. The current user
+    should have a reader role or higher. Returns a 200 response on
+    success, a 404 error if the comment is not found, a 403 error if
+    authentication failed or the user does not have the required
+    permissions, and a 423 error if the application is locked.
+
+    **Args:**
+    - `comment_id`: The ID of the comment to be retrieved.
+
+    **Returns:**
+    - `CommentSelectResponse`: The response schema containing the
+      comment details.
+
+    **Raises:**
+    - `403 Forbidden`: Raised if the user does not have the required
+      permissions.
+    - `404 Not Found`: Raised if the comment with the specified ID does
+      not exist.
+    - `423 Locked`: Raised if the application is locked.
+
+    **Auth:**
+    - The user must provide a valid `JWT token` in the request header.
+    - `reader`, `writer`, `editor` or `admin` user role is required to
+      access this router.
     """
     comment_repository = Repository(session, cache, Comment)
     comment = await comment_repository.select(id=comment_id)

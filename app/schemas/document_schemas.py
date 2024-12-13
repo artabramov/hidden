@@ -95,7 +95,7 @@ class DocumentUpdateResponse(BaseModel):
     revision_id: int
 
 
-class DocumentPinRequest(BaseModel):
+class DocumentFlagRequest(BaseModel):
     """
     Pydantic schema for request to pin or unpin document entity.
     Requires the is_flagged to be specified.
@@ -103,7 +103,7 @@ class DocumentPinRequest(BaseModel):
     is_flagged: bool
 
 
-class DocumentPinResponse(BaseModel):
+class DocumentFlagResponse(BaseModel):
     """
     Pydantic schema for the response after pinning a document. Includes
     the document ID and revision ID.

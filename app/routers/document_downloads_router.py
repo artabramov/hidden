@@ -23,7 +23,7 @@ router = APIRouter()
 
 
 @router.get("/document/{document_id}/downloads",
-            summary="Retrieve download list",
+            summary="Retrieve a list of document downloads.",
             response_class=JSONResponse, status_code=status.HTTP_200_OK,
             response_model=DownloadListResponse, tags=["Documents"])
 @locked
@@ -33,12 +33,35 @@ async def document_downloads(
     current_user: User = Depends(auth(UserRole.admin))
 ) -> DownloadListResponse:
     """
-    FastAPI router for retrieving a list of download entities. The
-    router fetches the list of downloads from the repository, executes
-    related hooks, and returns the results in a JSON response. The
-    current user should have an admin role. Returns a 200 response on
-    success and a 403 error if authentication fails or the user does
-    not have the required role.
+    Retrieve a list of document downloads. The router fetches the list
+    of downloads from the repository based on the provided filter
+    criteria, executes related hooks, and returns the results in a JSON
+    response. The current user should have an admin role. Returns a 200
+    response on success, a 403 error if authentication failed or the
+    user does not have the required permissions, and a 423 error if the
+    application is locked.
+
+    **Args:**
+    - `document_id`: The ID of the document for which downloads are
+      being requested.
+    - `DownloadListRequest`: The request schema containing the filters
+      for the download list.
+
+    **Returns:**
+    - `DownloadListResponse`: A response schema containing the list of
+      downloads and the total count of downloads.
+
+    **Raises:**
+    - `403 Forbidden`: Raised if the user does not have the required
+      permissions.
+    - `404 Not Found`: Raised if the document with the specified ID does
+      not exist.
+    - `422 Unprocessable Entity`: Raised if arguments validation failed.
+    - `423 Locked`: Raised if the application is locked.
+
+    **Auth:**
+    - The user must provide a valid `JWT token` in the request header.
+    - `admin` role is required to access this router.
     """
     document_repository = Repository(session, cache, Document)
     document = await document_repository.select(id=document_id)

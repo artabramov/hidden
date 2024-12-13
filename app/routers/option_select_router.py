@@ -20,7 +20,7 @@ from app.constants import (
 router = APIRouter()
 
 
-@router.get("/option/{option_key}", summary="Get option",
+@router.get("/option/{option_key}", summary="Retrieve an option.",
             response_class=JSONResponse, status_code=status.HTTP_200_OK,
             response_model=OptionSelectResponse, tags=["Options"])
 @locked
@@ -30,12 +30,31 @@ async def option_select(
     current_user: User = Depends(auth(UserRole.admin))
 ) -> OptionSelectResponse:
     """
-    FastAPI router for fetching an option entity. The router retrieves
-    the option from the repository using the provided option key and
-    executes related hooks. The current user should have an admin role.
-    Returns a 200 response on success, a 404 error if the option is not
-    found, and a 403 error if authentication fails or the user does
-    not have the required role.
+    Retrieve an option. The router fetches the option from the
+    repository using the provided option key and executes related hooks.
+    The current user should have an admin role. Returns a 200 response
+    on success, a 404 error if the option is not found, a 403 error if
+    authentication fails or the user does not have the required role,
+    a 422 error if arguments validation failed, a 423 error if the the
+    application is locked.
+
+    **Args:**
+    - `option_key`: The key of the option to retrieve.
+
+    **Returns:**
+    - `OptionSelectResponse`: The response schema containing the 
+      retrieved option.
+
+    **Raises:**
+    - `403 Forbidden`: Raised if the user does not have the required 
+      permissions.
+    - `404 Not Found`: Raised if the option is not found.
+    - `422 Unprocessable Entity`: Raised if arguments validation failed.
+    - `423 Locked`: Raised if the application is locked.
+
+    **Auth:**
+    - The user must provide a valid `JWT token` in the request header.
+    - `admin` role is required to access this router.
     """
     option_repository = Repository(session, cache, Option)
     option = await option_repository.select(option_key__eq=option_key)

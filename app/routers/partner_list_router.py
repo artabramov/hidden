@@ -15,7 +15,7 @@ from app.constants import HOOK_AFTER_PARTNER_LIST
 router = APIRouter()
 
 
-@router.get("/partners", summary="Retrieve partner list",
+@router.get("/partners", summary="Retrieve a list of partners.",
             response_class=JSONResponse, status_code=status.HTTP_200_OK,
             response_model=PartnerListResponse, tags=["Partners"])
 @locked
@@ -24,6 +24,38 @@ async def partner_list(
     session=Depends(get_session), cache=Depends(get_cache),
     current_user: User = Depends(auth(UserRole.reader))
 ) -> PartnerListResponse:
+    """
+    Retrieve a list of partners. This endpoint fetches all partners from
+    the repository based on the provided filter criteria and executes
+    related hooks. The current user must have a reader role or higher.
+    Returns a 200 response on success, a 403 error if authentication
+    failed or the user does not have the required permissions, a 422
+    error if arguments validation failed, and a 423 error if the
+    application is locked.
+
+    **Args:**
+    - `PartnerListRequest`: The request schema containing filter and
+      pagination details.
+
+    **Returns:**
+    - `PartnerListResponse`: The response schema containing the list
+      of partners and the total count.
+
+    **Raises:**
+    - `403 Forbidden`: Raised if the current user is not authenticated
+      or does not have the required `reader` role.
+    - `422 Unprocessable Entity`:  Raised if arguments validation failed.
+    - `423 Locked`: Raised if the application is locked.
+
+    **Hooks:**
+    - `HOOK_AFTER_PARTNER_LIST`: Executes after the partners are
+      retrieved.
+
+    **Auth:**
+    - The user must provide a valid `JWT token` in the request header.
+    - `reader`, `writer`, `editor`, `admin` user role is required to
+      access this router.
+    """
     partner_repository = Repository(session, cache, Partner)
 
     partners = await partner_repository.select_all(**schema.__dict__)

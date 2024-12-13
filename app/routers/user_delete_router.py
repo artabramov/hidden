@@ -20,7 +20,7 @@ from app.constants import (
 router = APIRouter()
 
 
-@router.delete("/user/{user_id}", summary="Delete a user",
+@router.delete("/user/{user_id}", summary="Delete a user.",
                response_class=JSONResponse, status_code=status.HTTP_200_OK,
                response_model=UserDeleteResponse, tags=["Users"])
 @locked
@@ -30,14 +30,32 @@ async def user_delete(
     current_user: User = Depends(auth(UserRole.admin)),
 ) -> UserDeleteResponse:
     """
-    FastAPI router for deleting a user entity. The router checks if the
-    current user  is not trying to delete their own account, retrieves
-    the user from the repository using the provided ID, verifies if the
-    user exists, deletes the user, and executes related hooks. The
-    current user should have an admin role. Returns a 200 response on
-    success, a 403 error if the current user attempts to delete their
-    own account or if an exception occurs during deletion, and a 404
-    error if the user is not found.
+    Delete a user. The router checks if the current user is not trying
+    to delete their own account, retrieves the user from the repository
+    using the provided ID, verifies if the user exists, deletes the user,
+    and executes related hooks. The current user should have an admin
+    role. Returns a 200 response on success, a 403 error if the current
+    user attempts to delete their own account or if an exception occurs
+    during deletion, a 404 error if the user is not found, and a 423
+    error if the application is locked.
+    
+    **Returns:**
+    - `UserDeleteResponse`: The ID of the user to delete.
+    
+    **Raises:**
+    - `403 Forbidden`: Raised if the current user attempts to delete
+      their own account or if the deletion is forbidden.
+    - `404 Not Found`: Raised if the user with the provided ID does not
+      exist.
+    - `423 Locked`: Raised if the application is locked.
+    
+    **Hooks:**
+    - `HOOK_BEFORE_USER_DELETE`: Executes before deleting the user.
+    - `HOOK_AFTER_USER_DELETE`: Executes after the user has been deleted.
+
+    **Auth:**
+    - The user must provide a valid `JWT token` in the request header.
+    - The `admin` role is required to access this router.
     """
     if user_id == current_user.id:
         raise E([LOC_PATH, "user_id"], user_id,

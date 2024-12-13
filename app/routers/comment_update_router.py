@@ -32,15 +32,37 @@ async def comment_update(
     current_user: User = Depends(auth(UserRole.editor))
 ) -> CommentUpdateResponse:
     """
-    FastAPI router for updating a comment entity. The router fetches
-    the comment from the repository using the provided ID, verifies
-    that the current user is the creator of the comment, checks that
-    the associated collection is not locked, updates the comment content,
-    and returns the updated comment ID in a JSON response. The current
-    user should have an editor role or higher. Returns a 200 response
-    on success, a 404 error if the comment is not found, a 423 error if
-    the collection is locked, and a 403 error if authentication fails or
-    the user does not have the required role.
+    Update a comment. The router fetches the comment from the repository
+    using the provided ID, verifies that the current user is the author
+    of the comment, checks that the associated collection is not locked,
+    updates the comment content, executes related hooks, and returns the
+    updated comment ID in a JSON response. The current user should have
+    an editor role or higher. Returns a 200 response on success, a 404
+    error if the comment is not found, a 423 error if the collection or
+    the application is locked, and a 403 error if authentication failed
+    or the user does not have the required permissions.
+
+    **Args:**
+    - `comment_id`: The ID of the comment to be updated.
+    - `CommentUpdateRequest`: The request schema containing the new
+      comment content.
+
+    **Returns:**
+    - `CommentUpdateResponse`: The response schema containing the ID of
+      the updated comment.
+
+    **Raises:**
+    - `403 Forbidden`: Raised if the current user is not the author of
+      the comment or lacks required permissions.
+    - `404 Not Found`: Raised if the comment with the specified ID does
+      not exist.
+    - `422 Unprocessable Entity`: Raised if arguments validation failed.
+    - `423 Locked`: Raised if the collection or the application is
+      locked.
+
+    **Auth:**
+    - The user must provide a valid `JWT token` in the request header.
+    - `editor` or `admin` user role are required to access this router.
     """
     comment_repository = Repository(session, cache, Comment)
     comment = await comment_repository.select(id=comment_id)

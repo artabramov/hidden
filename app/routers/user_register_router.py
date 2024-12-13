@@ -15,7 +15,7 @@ from app.constants import (
 router = APIRouter()
 
 
-@router.post("/user", summary="Register a new user",
+@router.post("/user", summary="Register a user.",
              response_class=JSONResponse, status_code=status.HTTP_201_CREATED,
              response_model=UserRegisterResponse, tags=["Users"])
 @locked
@@ -24,11 +24,28 @@ async def user_register(
     session=Depends(get_session), cache=Depends(get_cache)
 ) -> UserRegisterResponse:
     """
-    FastAPI router for registering a new user. Checks if the user login
-    already exists and raises a 422 error if it does. If the login is
-    unique, creates a new user with the provided details and returns
-    a 201 response with the user's ID, MFA secret, and a link to the
-    MFA QR code.
+    Register a user. Checks if the user login already exists and raises 
+    a 422 error if it does. If the login is unique, creates a new user 
+    with the provided details and returns a 201 response with the user's 
+    ID, MFA secret, and a link to the MFA QR code. Returns a 423 error 
+    if the application is locked.
+
+    **Returns:**
+    - `UserRegisterResponse`: A response schema containing the ID of
+      the newly registered user, their MFA secret, and the MFA URL for
+      setting up Multi-Factor Authentication.
+
+    **Raises:**
+    - `422 Unprocessable Entity`: Raised if the provided user login
+      already exists (duplicate).
+    - `423 Locked`: Raised if the application is locked.
+
+    **Hooks:**
+    - `HOOK_BEFORE_USER_REGISTER`: Executes before the user registration.
+    - `HOOK_AFTER_USER_REGISTER`: Executes after the user registration.
+
+    **Auth:**
+    - No authentication required for this endpoint.
     """
     user_repository = Repository(session, cache, User)
     user_exists = await user_repository.exists(

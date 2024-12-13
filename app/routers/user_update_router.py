@@ -16,7 +16,7 @@ from app.constants import (
 router = APIRouter()
 
 
-@router.put("/user/{user_id}", summary="Update user",
+@router.put("/user/{user_id}", summary="Update a user.",
             response_class=JSONResponse, status_code=status.HTTP_200_OK,
             response_model=UserUpdateResponse, tags=["Users"])
 @locked
@@ -26,12 +26,38 @@ async def user_update(
     current_user: User = Depends(auth(UserRole.reader))
 ) -> UserUpdateResponse:
     """
-    FastAPI router for updating a user entity. Modifies the first name,
-    last name, user signature, and user contacts for the specified user.
-    Requires the user to have the reader role or higher. Returns a 200
-    response with the updated user's ID. Raises a 403 error if the user
-    does not have the required role or if the user is attempting to
-    update a different user's details.
+    Update a user. Modifies the first name, last name, user caption, and
+    user contacts for the specified user. Requires the user to have the
+    reader role or higher. Returns a 200 response with the updated user's
+    ID. Raises a 403 error if the user does not have the required role
+    or if the user is attempting to update a different user's details,
+    a 422 error if arguments validation failed, a 423 error if the
+    application is locked.
+
+    **Returns:**
+    - `UserUpdateResponse`: A response schema containing the ID of the
+      updated user.
+
+    **Raises:**
+    - `403 Forbidden`: Raised if the current user does not have the
+      required permissions, or if the user is trying to update another
+      user's information.
+    - `404 Not Found`: Raised if the user with the provided ID is not
+      found.
+    - `422 Unprocessable Entity`: Raised if the provided data does not
+      meet validation criteria.
+    - `423 Locked`: Raised if the application is locked.
+
+    **Hooks:**
+    - `HOOK_BEFORE_USER_UPDATE`: Executes before updating the user
+      details.
+    - `HOOK_AFTER_USER_UPDATE`: Executes after the user details have
+      been updated.
+
+    **Auth:**
+    - The user must provide a valid `JWT token` in the request header.
+    - The `reader`, `writer`, `editor`, or `admin` role is required to
+      access this router.
     """
     user_repository = Repository(session, cache, User)
     user = await user_repository.select(id=user_id)

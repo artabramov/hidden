@@ -18,4 +18,3 @@ data/temp/*
 !data/temp/.gitkeep
 
 lock/lock
-/hidden/secret.key

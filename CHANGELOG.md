@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.1.10 (2024-12-14)
+- **Updated frontend** with minor fixes and translation improvements.
+
 ## Version 0.1.9 (2024-12-14)
 - **Added secret key generator** for creatind a unique secret key for each installation.
 

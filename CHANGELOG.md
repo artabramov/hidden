@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.1.9 (2024-12-14)
+- **Added secret key generator** for creatind a unique secret key for each installation.
+
 ## Version 0.1.8 (2024-12-13)
 - **Updated formatting** across the codebase.
 - **Updated Sphinx documentation** for better clarity and structure.

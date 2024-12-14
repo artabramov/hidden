@@ -72,5 +72,8 @@ RUN mkdir /var/www/html
 RUN chmod 755 -R /var/www
 COPY html/ /var/www/html/
 
+# secret key
+RUN cd /hidden/app && python3 -m secret > /hidden/secret.key
+
 EXPOSE 80
 ENTRYPOINT ["/hidden/entrypoint.sh"]

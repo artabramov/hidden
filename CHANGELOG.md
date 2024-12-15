@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.1.12 (2024-12-15)
+- **Updated frontend** with minor fixes and translation improvements.
+
 ## Version 0.1.11 (2024-12-15)
 - **Updated frontend** with minor fixes and translation improvements.
 

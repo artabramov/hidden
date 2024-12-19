@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.1.13 (2024-12-19)
+- **Fixed Makefile** to prevent installation errors on container restart error.
+
 ## Version 0.1.12 (2024-12-15)
 - **Updated frontend** with minor fixes and translation improvements.
 

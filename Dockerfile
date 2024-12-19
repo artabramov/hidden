@@ -20,7 +20,6 @@ RUN apt install -y redis
 RUN apt install -y sudo
 RUN apt install -y wget
 RUN apt install -y git
-RUN apt install -y vim
 
 RUN pip3 install fastapi==0.111.0
 RUN pip3 install uvicorn==0.30.1
@@ -37,13 +36,13 @@ RUN pip3 install asynctest==0.13.0
 RUN pip3 install coverage==7.5.4
 RUN pip3 install flake8==7.1.0
 RUN pip3 install safety
+RUN pip3 install sphinx==8.0.2
+RUN pip3 install sphinx sphinx_rtd_theme
 
-# sphinx
+# create sphinx docs from scratch
 # sphinx-quickstart docs -q -p "hidden" -a "Artem Abramov" -v "0.0.1" -r "1" --no-batchfile
 # sphinx-apidoc --remove-old --output-dir /hidden/docs/autodoc /hidden/app/
 # make -C /hidden/docs html
-RUN pip3 install sphinx==8.0.2
-RUN pip3 install sphinx sphinx_rtd_theme
 
 RUN mkdir /var/log/app
 RUN chmod -R 777 /var/log/app
@@ -72,7 +71,7 @@ RUN mkdir /var/www/html
 RUN chmod 755 -R /var/www
 COPY html/ /var/www/html/
 
-# secret key
+# generate secret key
 RUN cd /hidden/app && python3 -m secret > /hidden/secret.key
 
 EXPOSE 80

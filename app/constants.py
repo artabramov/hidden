@@ -73,7 +73,7 @@ ERR_MIMETYPE_UNSUPPORTED = "mimetype_unsupported"
 ERR_RESOURCE_LOCKED = "resource_locked"
 
 # Internal server error (500).
-ERR_SERVER_ERROR = "Internal server error"
+ERR_SERVER_ERROR = "internal_server_error"
 
 # Hook types used to manage various pre-event and post-event actions
 # within the app. These hooks are used to trigger corresponding funcs

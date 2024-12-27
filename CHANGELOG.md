@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.1.14 (2024-12-27)
+- **Fixed error types** to make error responses more consistent.
+
 ## Version 0.1.13 (2024-12-19)
 - **Fixed Makefile** to prevent installation errors on container restart error.
 

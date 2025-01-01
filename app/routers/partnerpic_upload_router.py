@@ -39,9 +39,10 @@ async def partnerpic_upload(
     based on the provided partner ID. The image is validated, resized,
     and saved to the server. The current user must have the editor role
     or higher to access this endpoint. Returns a 200 response on
-    success, a 404 error if the partner is not found, a 403 error if
+    success, a 404 error if the partner is not found, a 401 error if
     authentication failed or the user does not have the required
-    permissions, and a 423 error if the application is locked.
+    permissions, a 403 error if the token is missing, and a 423 error
+    if the application is locked.
 
     **Args:**
     - `partner_id`: The ID of the partner whose image is being uploaded.
@@ -52,8 +53,10 @@ async def partnerpic_upload(
     partner ID after the image has been successfully uploaded.
 
     **Raises:**
-    - `403 Forbidden`: Raised if the current user is not authenticated
-    or does not have the required permissions.
+    - `401 Unauthorized`: Raised if the token is invalid or expired,
+    or if the current user is not authenticated or does not have the
+    required permissions.
+    - `403 Forbidden`: Raised if the token is missing.
     - `404 Not Found`: Raised if the partner with the specified ID
     does not exist.
     - `423 Locked`: Raised if the application is locked.

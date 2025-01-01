@@ -35,16 +35,19 @@ async def user_mfa(
     user exists and validates the provided MFA secret. If any validation
     fails, appropriate errors are raised. The user must not be active,
     and the provided MFA secret must match the one stored for the user.
-    Returns a 403 error if the user is active, a 422 error if the user
-    does not exist or if the MFA secret does not match, and a 423 error
-    if the application is locked.
+    Returns a 401 error if the user is active, a 403 error if the token
+    is missing, a 422 error if the user does not exist or if the MFA
+    secret does not match, and a 423 error if the application is locked.
 
     **Returns:**
     - A QR code image in the response body to be scanned by an MFA
     application.
 
     **Raises:**
-    - `403 Forbidden`: Raised if the user is active.
+    - `401 Unauthorized`: Raised if the token is invalid or expired,
+    or if the current user is not authenticated or does not have the
+    required permissions.
+    - `403 Forbidden`: Raised if the token is missing.
     - `422 Unprocessable Entity`: Raised if the user does not exist or
     if the MFA secret does not match.
     - `423 Locked`: Raised if the application is locked.

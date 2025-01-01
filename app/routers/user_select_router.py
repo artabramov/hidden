@@ -29,17 +29,20 @@ async def user_select(
     using the provided ID, executes related hooks, and returns the user
     details in a JSON response. Requires the user to have the reader
     role or higher. Returns a 200 response with the user's details if
-    found. Raises a 404 error if the user is not found, a 403 error if
+    found. Raises a 404 error if the user is not found, a 401 error if
     the user's token is invalid or if the user does not have the
-    required role, a 423 error if the application is locked.
+    required role, a 403 error if the token is missing, a 423 error
+    if the application is locked.
 
     **Returns:**
     - `UserSelectResponse`: A response schema containing the details of
     the retrieved user.
 
     **Raises:**
-    - `403 Forbidden`: Raised if the user's token is invalid or if the
-    user does not have the required `reader` role or higher.
+    - `401 Unauthorized`: Raised if the token is invalid or expired,
+    or if the current user is not authenticated or does not have the
+    required permissions.
+    - `403 Forbidden`: Raised if the token is missing.
     - `404 Not Found`: Raised if the user with the given ID is not found.
     - `423 Locked`: Raised if the application is locked.
 

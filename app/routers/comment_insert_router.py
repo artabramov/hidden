@@ -39,8 +39,9 @@ async def comment_insert(
     ID in a JSON response. The current user should have a writer role or
     higher. Returns a 201 response on success, a 404 error if the
     document is not found, a 423 error if the collection or the
-    application is locked, and a 403 error if authentication failed
-    or the user does not have the required permissions.
+    application is locked, and a 401 error if authentication failed
+    or the user does not have the required permissions, a 403 error if
+    the token is missing.
 
     **Args:**
     - `CommentInsertRequest`: The request schema containing the data
@@ -51,8 +52,10 @@ async def comment_insert(
     of the newly created comment.
 
     **Raises:**
-    - `403 Forbidden`: Raised if the user does not have the required
-    permissions.
+    - `401 Unauthorized`: Raised if the token is invalid or expired,
+    or if the current user is not authenticated or does not have the
+    required permissions.
+    - `403 Forbidden`: Raised if the token is missing.
     - `422 Unprocessable Entity`:  Raised if arguments validation failed.
     - `423 Locked`: Raised if the document's collection or the
     application is locked.

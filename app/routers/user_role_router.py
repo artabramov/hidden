@@ -29,20 +29,21 @@ async def user_role(
     Change a user role. Requires the current user to have an admin role.
     The user being updated must be different from the current user.
     Returns a 200 response with the ID of the updated user. Raises a 403
-    error if the current user tries to update their own role, if the
-    user's token is invalid, or if the user does not have the required
-    role. Returns a 404 error if the user to be updated is not found,
-    a 422 error if arguments validation failed, a 423 error if the
-    application is locked.
+    error if the token is missing or if the current user tries to update
+    their own role, a 401 error if the user's token is invalid, or if
+    the user does not have the required role. Returns a 404 error if
+    the user to be updated is not found, a 422 error if arguments
+    validation failed, a 423 error if the application is locked.
 
     **Returns:**
     - `RoleUpdateResponse`: A response schema containing the ID of the
     updated user.
 
     **Raises:**
-    - `403 Forbidden`: Raised if the current user tries to update their
-    own role, if the user's token is invalid, or if the user does not
-    have the required role.
+    - `401 Unauthorized`: Raised if the current user tries to update
+    their own role, if the user's token is invalid, or if the user does
+    not have the required role.
+    - `403 Forbidden`: Raised if the token is missing.
     - `404 Not Found`: Raised if the user to be updated is not found.
     - `422 Unprocessable Entity`: Raised if arguments validation failed
     - `423 Locked`: Raised if the application is locked.

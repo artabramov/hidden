@@ -36,9 +36,10 @@ async def option_delete(
     it deletes it from the repository and executes related hooks. The
     router returns the option key of the deleted option in a JSON
     response. The current user should have an admin role. Returns a 200
-    response on success, a 404 error if the option is not found, a 403
+    response on success, a 404 error if the option is not found, a 401
     error if authentication failed or the user does not have the
-    required permissions, a 423 error if the the application is locked.
+    required permissions, a 403 error if the token is missing, a 423
+    error if the the application is locked.
 
     **Args:**
     - `option_key`: The key of the option to be deleted.
@@ -48,8 +49,10 @@ async def option_delete(
     the deleted option.
 
     **Raises:**
-    - `403 Forbidden`: Raised if the user does not have the required
-    permissions.
+    - `401 Unauthorized`: Raised if the token is invalid or expired,
+    or if the current user is not authenticated or does not have the
+    required permissions.
+    - `403 Forbidden`: Raised if the token is missing.
     - `404 Not Found`: Raised if the option is not found in the
     repository.
     - `423 Locked`: Raised if the the application is locked.

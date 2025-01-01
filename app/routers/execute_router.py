@@ -24,9 +24,9 @@ async def execute(
     """
     Execute a custom action. The router executes corresponding hooks
     with defined parameters. The current user must have an admin role.
-    Returns a 403 error if authentication failed or the user does not
-    have the required permissions, a 423 error if the the application
-    is locked.
+    Returns a 401 error if authentication failed or the user does not
+    have the required permissions, a 403 error if the token is missing,
+    a 423 error if the the application is locked.
 
     **Args:**
     - `ExecuteRequest`: The request schema containing the action to be
@@ -37,8 +37,10 @@ async def execute(
     executed action.
 
     **Raises:**
-    - `403 Forbidden`: Raised if the user does not have the required
-    permissions.
+    - `401 Unauthorized`: Raised if the token is invalid or expired,
+    or if the current user is not authenticated or does not have the
+    required permissions.
+    - `403 Forbidden`: Raised if the token is missing.
     - `423 Locked`: Raised if the the application is locked.
 
     **Auth:**

@@ -36,10 +36,10 @@ async def document_update(
     on the provided request, executes related hooks, and returns the
     updated document's ID and revision ID in a JSON response. The
     current user must have the editor role or higher. Returns a 200
-    response on success, a 404 error if the document is not found, a 403
+    response on success, a 404 error if the document is not found, a 401
     error if authentication failed or the user does not have the
-    required permissions, and a 423 error if the collection or the
-    application is locked.
+    required permissions, a 403 error if the token is missing, and a 423
+    error if the collection or the application is locked.
 
     **Args:**
     - `document_id`: The ID of the document to flag or unflag.
@@ -51,8 +51,10 @@ async def document_update(
     ID and its latest revision ID.
 
     **Raises:**
-    - `403 Forbidden`: Raised if the user does not have the required
-    permissions.
+    - `401 Unauthorized`: Raised if the token is invalid or expired,
+    or if the current user is not authenticated or does not have the
+    required permissions.
+    - `403 Forbidden`: Raised if the token is missing.
     - `404 Not Found`: Raised if the document with the specified ID does
     not exist.
     - `423 Locked`: Raised if the collection or the application is

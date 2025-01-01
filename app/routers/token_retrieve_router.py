@@ -33,9 +33,9 @@ async def token_retrieve(
     Retrieve a token. This router retrieves a JWT token for the user
     after validating the one-time password (TOTP). The user must be
     active and have accepted the password in the previous step. Returns
-    a 200 response with the token on success, a 403 error if the user
-    is inactive, a 422 error if the TOTP is incorrect, and a 423 error
-    if the application is locked.
+    a 200 response with the token on success, a 401 error if the user
+    is inactive, a 403 error if the token is missing, a 422 error if the
+    TOTP is incorrect, and a 423 error if the application is locked.
 
     **Returns:**
     - `TokenRetrieveResponse`: A response schema containing the
@@ -68,7 +68,7 @@ async def token_retrieve(
 
     if not user.is_active and admin_exists:
         raise E([LOC_QUERY, "user_login"], schema.user_login,
-                ERR_USER_INACTIVE, status.HTTP_403_FORBIDDEN)
+                ERR_USER_INACTIVE, status.HTTP_401_UNAUTHORIZED)
 
     elif not user.password_accepted:
         raise E([LOC_QUERY, "user_totp"], schema.user_totp,

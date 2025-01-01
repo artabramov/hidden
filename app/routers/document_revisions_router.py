@@ -33,10 +33,10 @@ async def document_revisions(
     revisions from the repository based on the provided filter criteria,
     executes related hooks, and returns the results in a JSON response.
     The current user should have a reader role or higher. Returns a 200
-    response on success, a 403 error if authentication failed or the
-    user does not have the required permissions, a 422 error if
-    arguments validation failed, and a 423 error if the application
-    is locked.
+    response on success, a 401 error if authentication failed or the
+    user does not have the required permissions, a 403 error if the
+    token is missing, a 422 error if arguments validation failed, and
+    a 423 error if the application is locked.
 
     **Args:**
     - `document_id`: The document ID whose revisions need to be fetched.
@@ -48,8 +48,10 @@ async def document_revisions(
     revisions for the document and the total revision count.
 
     **Raises:**
-    - `403 Forbidden`: Raised if the user does not have the required
-    permissions.
+    - `401 Unauthorized`: Raised if the token is invalid or expired,
+    or if the current user is not authenticated or does not have the
+    required permissions.
+    - `403 Forbidden`: Raised if the token is missing.
     - `404 Not Found`: Raised if the document with the specified ID does
     not exist.
     - `422 Unprocessable Entity`: Raised if arguments validation failed.

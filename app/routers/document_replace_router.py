@@ -43,8 +43,11 @@ async def document_replace(
     and update the document's metadata. The file is encrypted, split
     into shards, and stored securely. The current user must have the
     editor role or higher. Returns a 201 response on success, a 404
-    error if the document is not found, a 423 error if the collection
-    or the application is locked, and a 422 error if the file is invalid.
+    error if the document is not found, a 401 error if authentication
+    failed or the user does not have the required permissions, a 403
+    error if the token is missing, a 423 error if the collection
+    or the application is locked, and a 422 error if the file
+    is invalid.
 
     **Args:**
     - `document_id`: The ID of the document to be replaced.
@@ -55,8 +58,10 @@ async def document_replace(
     document's ID and the revision ID of the newly added revision.
 
     **Raises:**
-    - `403 Forbidden`: Raised if the user does not have the required
-    permissions.
+    - `401 Unauthorized`: Raised if the token is invalid or expired,
+    or if the current user is not authenticated or does not have the
+    required permissions.
+    - `403 Forbidden`: Raised if the token is missing.
     - `404 Not Found`: Raised if the document with the specified ID does
     not exist.
     - `422 Unprocessable Entity`: Raised if the uploaded file is invalid

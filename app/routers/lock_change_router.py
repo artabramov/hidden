@@ -24,8 +24,9 @@ async def lock_change(
     Change the application lock mode. This router enables or disables
     the application lock based on the provided request. It executes a
     corresponding hook after the lock state is changed. The current user
-    must have an admin role. Returns a 403 error if authentication
-    failed or the user does not have the required permissions.
+    must have an admin role. Returns a 401 error if authentication
+    failed or the user does not have the required permissions, a 403
+    error if the token is missing.
 
     **Args:**
     - `LockUpdateRequest`: The request schema containing the lock status
@@ -36,8 +37,10 @@ async def lock_change(
     lock status.
 
     **Raises:**
-    - `403 Forbidden`: Raised if the user does not have the required
-    permissions.
+    - `401 Unauthorized`: Raised if the token is invalid or expired,
+    or if the current user is not authenticated or does not have the
+    required permissions.
+    - `403 Forbidden`: Raised if the token is missing.
 
     **Auth:**
     - The user must provide a valid `JWT token` in the request header.

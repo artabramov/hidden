@@ -47,9 +47,9 @@ async def document_upload(
     writer role or higher. Returns a 201 response on success, a 422
     error if the collection is invalid, a 423 error if the collection
     or the application is locked, a 500 error if an unexpected failure
-    occurs during file processing or shard creation, and a 403 error
+    occurs during file processing or shard creation, and a 401 error
     if authentication failed or the user does not have the required
-    permissions.
+    permissions, a 403 error if the token is missing.
 
     **Args:**
     - `collection_id`: The ID of the collection to upload the document to.
@@ -60,8 +60,10 @@ async def document_upload(
     the document and the latest revision.
 
     **Raises:**
-    - `403 Forbidden`: Raised if the user does not have the required
-    permissions.
+    - `401 Unauthorized`: Raised if the token is invalid or expired,
+    or if the current user is not authenticated or does not have the
+    required permissions.
+    - `403 Forbidden`: Raised if the token is missing.
     - `422 Unprocessable Entity`: Raised if the collection does not exist
     or is invalid.
     - `423 Locked`: Raised if the collection or the application is

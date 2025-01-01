@@ -37,18 +37,20 @@ async def userpic_upload(
     and saves a new one, resizes it to the specified dimensions, and
     updates the user's data with the new userpic. Allowed for the
     current user only. Requires the user to have a reader role or higher.
-    Returns a 200 response with the user ID. Raises a 403 error if the
-    user attempts to upload a userpic for a different user, or if the
-    user's token is invalid. Raises a 422 error if the file's MIME type
-    is unsupported. Raises a 423 error if the application is locked.
+    Returns a 200 response with the user ID. Raises 401 error if the
+    user's token is invalid, a 403 error if the token is missing or if
+    the user attempts to upload a userpic for a different user. Raises
+    a 422 error if the file's MIME type is unsupported. Raises a 423
+    error if the application is locked.
 
     **Returns:**
     - `UserpicUploadResponse`: A response schema containing the ID of
     the user with the updated userpic.
 
     **Raises:**
-    - `403 Forbidden`: Raised if the current user attempts to upload a
-    userpic for a different user, or if the user's token is invalid.
+    - `401 Unauthorized`: Raised if the user's token is invalid.
+    - `403 Forbidden`: Raised if the token is missing or if the curren
+    user attempts to upload a userpic for a different user.
     - `422 Unprocessable Entity`: Raised if the file's MIME type is
     unsupported.
     - `404 Not Found`: Raised if the user with the provided ID is not

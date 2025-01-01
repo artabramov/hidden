@@ -33,10 +33,10 @@ async def option_select(
     Retrieve an option. The router fetches the option from the
     repository using the provided option key and executes related hooks.
     The current user should have an admin role. Returns a 200 response
-    on success, a 404 error if the option is not found, a 403 error if
+    on success, a 404 error if the option is not found, a 401 error if
     authentication fails or the user does not have the required role,
-    a 422 error if arguments validation failed, a 423 error if the the
-    application is locked.
+    a 403 error if the token is missing, a 422 error if arguments
+    validation failed, a 423 error if the the application is locked.
 
     **Args:**
     - `option_key`: The key of the option to retrieve.
@@ -46,8 +46,10 @@ async def option_select(
     retrieved option.
 
     **Raises:**
-    - `403 Forbidden`: Raised if the user does not have the required
-    permissions.
+    - `401 Unauthorized`: Raised if the token is invalid or expired,
+    or if the current user is not authenticated or does not have the
+    required permissions.
+    - `403 Forbidden`: Raised if the token is missing.
     - `404 Not Found`: Raised if the option is not found.
     - `422 Unprocessable Entity`: Raised if arguments validation failed.
     - `423 Locked`: Raised if the application is locked.

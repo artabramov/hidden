@@ -35,7 +35,9 @@ async def document_move(
     and collection exist, verifies that the both collections are not
     locked, moves the document to the specified collection, and executes
     related hooks. The current user must have the editor role or higher.
-    Returns a 200 response on success, a 404 error if the document or
+    Returns a 200 response on success, a 401 error if authentication
+    failed or the user does not have the required permissions, a 403
+    error if the token is missing, a 404 error if the document or
     collection is not found, a 423 error if the collection or the
     application is locked.
 
@@ -49,8 +51,10 @@ async def document_move(
     document's ID and the revision ID.
 
     **Raises:**
-    - `403 Forbidden`: Raised if the user does not have the required
-    permissions.
+    - `401 Unauthorized`: Raised if the token is invalid or expired,
+    or if the current user is not authenticated or does not have the
+    required permissions.
+    - `403 Forbidden`: Raised if the token is missing.
     - `404 Not Found`: Raised if the document or collection with the
     specified ID does not exist.
     - `423 Locked`: Raised if collection or the application is locked.

@@ -35,8 +35,9 @@ async def collection_delete(
     status is updated. The current user must have an editor role or
     higher. Returns a 200 response on success, a 404 error if the
     collection is not found, a 422 error if arguments validation failed,
-    a 403 error if authentication failed or the user does not have the
-    required permissions, and a 423 error if the application is locked.
+    a 401 error if authentication failed or the user does not have the
+    required permissions, a 403 error if the token is missing, and
+    a 423 error if the application is locked.
 
     **Args:**
     - `collection_id`: The ID of the collection to update.
@@ -48,8 +49,10 @@ async def collection_delete(
     ID of the updated collection.
 
     **Raises:**
-    - `403 Forbidden`: Raised if the current user is not authenticated
-    or does not have the required permissions.
+    - `401 Unauthorized`: Raised if the token is invalid or expired,
+    or if the current user is not authenticated or does not have the
+    required permissions.
+    - `403 Forbidden`: Raised if the token is missing.
     - `404 Not Found`: Raised if the collection with the specified
     ID does not exist.
     - `422 Unprocessable Entity`:  Raised if arguments validation failed.

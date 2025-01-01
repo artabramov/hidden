@@ -34,9 +34,9 @@ async def collection_insert(
     collection ID in a JSON response. The current user should have a
     writer role or higher. Returns a 201 response on success, a 422
     error if arguments validation failed or the collection name is
-    duplicated, a 403 error if authentication failed or the user does
-    not have the required permissions, and a 423 error if the
-    application is locked.
+    duplicated, a 401 error if authentication failed or the user does
+    not have the required permissions, a 403 error if the token is
+    missing, and a 423 error if the application is locked.
 
     **Args:**
     - `CollectionInsertRequest`: The request schema containing the data
@@ -47,8 +47,10 @@ async def collection_insert(
     of the newly created collection.
 
     **Raises:**
-    - `403 Forbidden`: Raised if the current user is not authenticated
-    or does not have the required permissions.
+    - `401 Unauthorized`: Raised if the token is invalid or expired,
+    or if the current user is not authenticated or does not have the
+    required permissions.
+    - `403 Forbidden`: Raised if the token is missing.
     - `422 Unprocessable Entity`: Raised if arguments validation failed
     or the collection name is already exist.
     - `423 Locked`: Raised if the application is locked.

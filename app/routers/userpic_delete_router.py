@@ -30,19 +30,21 @@ async def userpic_delete(
     Remove a userpic. Deletes the userpic if it exists and updates the
     user's data to remove the userpic. Allowed for the current user only.
     Requires the user to have a reader role or higher. Returns a 200
-    response with the user ID. Raises a 403 error if the user attempts
-    to delete a userpic for a different user or if the user's token is
-    invalid, a 404 error if the user is not found, a 423 error if the
-    application is locked.
+    response with the user ID. Raises a 401 error if the token is
+    invalid or if the user does not have the required role, a 403 error
+    if the user attempts to delete a userpic for a different user, a 404
+    error if the user is not found, a 423 error if the application is
+    locked.
 
     **Returns:**
     - `UserpicDeleteResponse`: A response schema containing the ID of
     the user from whom the userpic was deleted.
 
     **Raises:**
-    - `403 Forbidden`: Raised if the current user attempts to delete the
-    userpic of another user, or if the user does not have the required
-    role or if the user's token is invalid.
+    - `401 Unauthorized`: Raised if the user does not have the
+    required role or if the user's token is invalid.
+    - `403 Forbidden`: Raised if the token is missing or if the current
+    user attempts to delete the userpic of another user.
     - `404 Not Found`: Raised if the user with the provided ID is not
     found.
     - `423 Locked`: Raised if the application is locked.

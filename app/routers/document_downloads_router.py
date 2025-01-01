@@ -37,9 +37,9 @@ async def document_downloads(
     of downloads from the repository based on the provided filter
     criteria, executes related hooks, and returns the results in a JSON
     response. The current user should have an admin role. Returns a 200
-    response on success, a 403 error if authentication failed or the
-    user does not have the required permissions, and a 423 error if the
-    application is locked.
+    response on success, a 401 error if authentication failed or the
+    user does not have the required permissions, a 403 error if the
+    token is missing, and a 423 error if the application is locked.
 
     **Args:**
     - `document_id`: The ID of the document for which downloads are
@@ -52,8 +52,10 @@ async def document_downloads(
     downloads and the total count of downloads.
 
     **Raises:**
-    - `403 Forbidden`: Raised if the user does not have the required
-    permissions.
+    - `401 Unauthorized`: Raised if the token is invalid or expired,
+    or if the current user is not authenticated or does not have the
+    required permissions.
+    - `403 Forbidden`: Raised if the token is missing.
     - `404 Not Found`: Raised if the document with the specified ID does
     not exist.
     - `422 Unprocessable Entity`: Raised if arguments validation failed.

@@ -166,7 +166,7 @@ HOOK_AFTER_OPTION_LIST = "after_option_list"
 
 # service hooks
 HOOK_ON_TELEMETRY_RETRIEVE = "on_telemetry_retrieve"
+HOOK_ON_HEARTBEAT_RETRIEVE = "on_heartbeat_retrieve"
 HOOK_ON_LOCK_CHANGE = "on_lock_change"
-HOOK_ON_LOCK_RETRIEVE = "on_lock_retrieve"
 HOOK_ON_EXECUTE = "on_execute"
 HOOK_ON_SCHEDULE = "on_schedule"

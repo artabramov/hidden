@@ -14,7 +14,7 @@ router = APIRouter()
 
 @router.put("/locked", summary="Change the application lock mode.",
             response_class=JSONResponse, status_code=status.HTTP_200_OK,
-            response_model=LockUpdateResponse, tags=["Lock"])
+            response_model=LockUpdateResponse, tags=["Services"])
 async def lock_change(
     schema: LockUpdateRequest,
     session=Depends(get_session), cache=Depends(get_cache),

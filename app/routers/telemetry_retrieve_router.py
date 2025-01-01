@@ -1,4 +1,3 @@
-import time
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 from app.database import get_session
@@ -21,7 +20,7 @@ router = APIRouter()
 @router.get("/telemetry", summary="Retrieve telemetry.",
             response_class=JSONResponse, status_code=status.HTTP_200_OK,
             response_model=TelemetryRetrieveResponse,
-            tags=["Telemetry"])
+            tags=["Services"])
 @locked
 async def telemetry_retrieve(
     session=Depends(get_session), cache=Depends(get_cache),
@@ -73,10 +72,6 @@ async def telemetry_retrieve(
     await hook.do(HOOK_ON_TELEMETRY_RETRIEVE)
 
     return {
-        "unix_timestamp": int(time.time()),
-        "timezone_name": time.tzname[0],
-        "timezone_offset": time.timezone,
-
         "hidden_uptime": uptime.get_uptime(),
         "hidden_version": __version__,
         "hidden_serial": __serial__,

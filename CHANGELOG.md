@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.1.17 (2025-01-01)
+- **Changed partner schema** and removed redundant data.
+
 ## Version 0.1.16 (2025-01-01)
 - **Added heartbeat requests** to retrieve the application's current state.
 

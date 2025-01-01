@@ -72,9 +72,6 @@ async def partner_insert(
 
     partner = Partner(
         current_user.id, schema.partner_name,
-        partner_type=schema.partner_type,
-        partner_region=schema.partner_region,
-        partner_website=schema.partner_website,
         partner_contacts=schema.partner_contacts,
         partner_summary=schema.partner_summary)
     await partner_repository.insert(partner, commit=False)

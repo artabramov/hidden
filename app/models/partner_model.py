@@ -43,9 +43,6 @@ class Partner(Base):
     user_id = Column(BigInteger, ForeignKey("users.id"), index=True)
 
     partner_name = Column(String(256), index=True, unique=True, nullable=False)
-    partner_type = Column(String(256), index=True, nullable=True)
-    partner_region = Column(String(256), index=True, nullable=True)
-    partner_website = Column(String(256), index=True, nullable=True)
     partner_contacts = Column(String(512), index=True, nullable=True)
     partner_summary = Column(String(512), nullable=True)
     partnerpic_filename_encrypted = Column(
@@ -58,9 +55,8 @@ class Partner(Base):
         "Document", back_populates="document_partner")
 
     def __init__(self, user_id: int, partner_name: str,
-                 partner_type: str = None, partner_region: str = None,
-                 partner_website: str = None, partner_contacts: str = None,
-                 partner_summary: str = None, partnerpic_filename: str = None):
+                 partner_contacts: str = None, partner_summary: str = None,
+                 partnerpic_filename: str = None):
         """
         Initializes a new partner instance with the provided details
         including the partner's user association, name, type, region,
@@ -69,9 +65,6 @@ class Partner(Base):
         """
         self.user_id = user_id
         self.partner_name = partner_name
-        self.partner_type = partner_type
-        self.partner_region = partner_region
-        self.partner_website = partner_website
         self.partner_contacts = partner_contacts
         self.partner_summary = partner_summary
         self.partnerpic_filename = partnerpic_filename
@@ -124,9 +117,6 @@ class Partner(Base):
             "user_id": self.user_id,
             "user_name": self.partner_user.full_name,
             "partner_name": self.partner_name,
-            "partner_type": self.partner_type,
-            "partner_region": self.partner_region,
-            "partner_website": self.partner_website,
             "partner_contacts": self.partner_contacts,
             "partner_summary": self.partner_summary,
             "partnerpic_url": self.partnerpic_url,

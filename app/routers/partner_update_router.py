@@ -82,9 +82,6 @@ async def partner_update(
                 ERR_VALUE_DUPLICATED, status.HTTP_422_UNPROCESSABLE_ENTITY)
 
     partner.partner_name = schema.partner_name
-    partner.partner_type = schema.partner_type
-    partner.partner_region = schema.partner_region
-    partner.partner_website = schema.partner_website
     partner.partner_contacts = schema.partner_contacts
     partner.partner_summary = schema.partner_summary
     await partner_repository.update(partner, commit=False)

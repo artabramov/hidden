@@ -32,22 +32,22 @@ async def on_telemetry_retrieve(
     ...
 
 
+async def on_heartbeat_retrieve(
+        session: AsyncSession, cache: Redis,
+        current_user: User, is_locked: bool
+):
+    """
+    Executes when a heartbeat is retrieved.
+    """
+    ...
+
+
 async def on_lock_change(
         session: AsyncSession, cache: Redis,
         current_user: User, is_locked: bool
 ):
     """
     Executes when lock mode is changed.
-    """
-    ...
-
-
-async def on_lock_retrieve(
-        session: AsyncSession, cache: Redis,
-        current_user: User, is_locked: bool
-):
-    """
-    Executes when lock mode is retrieved.
     """
     ...
 

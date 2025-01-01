@@ -32,15 +32,7 @@ openapi_tags = [
         "description": "Operations with options."
     },
     {
-        "name": "Lock",
-        "description": "Enable and disable lock mode."
+        "name": "Services",
+        "description": "Application services."
     },
-    {
-        "name": "Telemetry",
-        "description": "Telemetry data."
-    },
-    {
-        "name": "Execute",
-        "description": "Execute custom action."
-    }
 ]

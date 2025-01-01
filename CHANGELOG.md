@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.1.16 (2025-01-01)
+- **Added heartbeat requests** to retrieve the application's current state.
+
 ## Version 0.1.15 (2025-01-01)
 - **Added 401 unauthorized error** for auth decorator.
 

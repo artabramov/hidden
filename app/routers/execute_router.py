@@ -14,7 +14,7 @@ router = APIRouter()
 
 @router.post("/execute", summary="Execute a custom action.",
              response_class=JSONResponse, status_code=status.HTTP_200_OK,
-             tags=["Execute"])
+             tags=["Services"])
 @locked
 async def execute(
     schema: ExecuteRequest,

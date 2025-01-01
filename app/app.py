@@ -83,9 +83,9 @@ from app.routers import (
     option_update_router,
     option_delete_router,
     option_list_router,
-    lock_change_router,
-    lock_retrieve_router,
     telemetry_retrieve_router,
+    heartbeat_retrieve_router,
+    lock_change_router,
     execute_router,
     sphinx_router)
 from app.helpers.uptime_helper import Uptime
@@ -185,9 +185,9 @@ app.include_router(option_select_router.router, prefix=cfg.APP_PREFIX)
 app.include_router(option_update_router.router, prefix=cfg.APP_PREFIX)
 app.include_router(option_delete_router.router, prefix=cfg.APP_PREFIX)
 app.include_router(option_list_router.router, prefix=cfg.APP_PREFIX)
-app.include_router(lock_change_router.router, prefix=cfg.APP_PREFIX)
-app.include_router(lock_retrieve_router.router, prefix=cfg.APP_PREFIX)
 app.include_router(telemetry_retrieve_router.router, prefix=cfg.APP_PREFIX)
+app.include_router(heartbeat_retrieve_router.router, prefix=cfg.APP_PREFIX)
+app.include_router(lock_change_router.router, prefix=cfg.APP_PREFIX)
 app.include_router(execute_router.router, prefix=cfg.APP_PREFIX)
 
 # The router is necessary to handle the redirect from /sphinx to /sphinx/

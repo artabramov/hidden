@@ -43,12 +43,14 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.html">app package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.decorators.html">app.decorators package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.filters.html">app.filters package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.helpers.html">app.helpers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.managers.html">app.managers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.models.html">app.models package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.plugins.html">app.plugins package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.routers.html">app.routers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.schemas.html">app.schemas package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.triggers.html">app.triggers package</a></li>
 </ul>
 
         </div>
@@ -113,10 +115,10 @@
 <span class="sd">    from the repository based on the provided filter criteria, executes</span>
 <span class="sd">    related hooks, and returns the results in a JSON response. The</span>
 <span class="sd">    current user should have a reader role or higher. Returns a 200</span>
-<span class="sd">    response on success, a 403 error if authentication failed or the</span>
-<span class="sd">    user does not have the required permissions, a 422 error if</span>
-<span class="sd">    arguments validation failed, and a 423 error if the application</span>
-<span class="sd">    is locked.</span>
+<span class="sd">    response on success, a 401 error if authentication failed or the</span>
+<span class="sd">    user does not have the required permissions, a 403 error if the</span>
+<span class="sd">    token is missing, a 422 error if arguments validation failed, and</span>
+<span class="sd">    a 423 error if the application is locked.</span>
 
 <span class="sd">    **Args:**</span>
 <span class="sd">    - `CommentListRequest`: The request schema containing the filters</span>
@@ -127,8 +129,10 @@
 <span class="sd">    comments and the total count.</span>
 
 <span class="sd">    **Raises:**</span>
-<span class="sd">    - `403 Forbidden`: Raised if the user does not have the required</span>
-<span class="sd">    permissions.</span>
+<span class="sd">    - `401 Unauthorized`: Raised if the token is invalid or expired,</span>
+<span class="sd">    or if the current user is not authenticated or does not have the</span>
+<span class="sd">    required permissions.</span>
+<span class="sd">    - `403 Forbidden`: Raised if the token is missing.</span>
 <span class="sd">    - `422 Unprocessable Entity`: Raised if arguments validation failed.</span>
 <span class="sd">    - `423 Locked`: Raised if the application is locked.</span>
 

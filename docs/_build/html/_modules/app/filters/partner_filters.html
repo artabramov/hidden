@@ -98,49 +98,6 @@
 
 
 
-<div class="viewcode-block" id="filter_partner_type">
-<a class="viewcode-back" href="../../../autodoc/app.filters.html#app.filters.partner_filters.filter_partner_type">[docs]</a>
-<span class="k">def</span> <span class="nf">filter_partner_type</span><span class="p">(</span><span class="n">partner_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Filters a partner type by stripping leading and trailing whitespace.</span>
-<span class="sd">    If the input is empty or consists only of whitespace, returns None.</span>
-<span class="sd">    Otherwise, returns the trimmed partner type.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">partner_type</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">partner_type</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">or</span> <span class="kc">None</span>
-    <span class="k">return</span> <span class="kc">None</span></div>
-
-
-
-<div class="viewcode-block" id="filter_partner_region">
-<a class="viewcode-back" href="../../../autodoc/app.filters.html#app.filters.partner_filters.filter_partner_region">[docs]</a>
-<span class="k">def</span> <span class="nf">filter_partner_region</span><span class="p">(</span><span class="n">partner_region</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Filters a partner region by stripping leading and trailing</span>
-<span class="sd">    whitespace. If the input is empty or consists only of whitespace,</span>
-<span class="sd">    returns None. Otherwise, returns the trimmed partner region.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">partner_region</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">partner_region</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">or</span> <span class="kc">None</span>
-    <span class="k">return</span> <span class="kc">None</span></div>
-
-
-
-<div class="viewcode-block" id="filter_partner_website">
-<a class="viewcode-back" href="../../../autodoc/app.filters.html#app.filters.partner_filters.filter_partner_website">[docs]</a>
-<span class="k">def</span> <span class="nf">filter_partner_website</span><span class="p">(</span><span class="n">partner_website</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Filters a partner website by stripping leading and trailing</span>
-<span class="sd">    whitespace, and converting it to lowercase. If the input is empty</span>
-<span class="sd">    or consists only of whitespace, returns None. Otherwise, returns</span>
-<span class="sd">    the trimmed and lowercase website.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">partner_website</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">partner_website</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">or</span> <span class="kc">None</span>
-    <span class="k">return</span> <span class="kc">None</span></div>
-
-
-
 <div class="viewcode-block" id="filter_partner_contacts">
 <a class="viewcode-back" href="../../../autodoc/app.filters.html#app.filters.partner_filters.filter_partner_contacts">[docs]</a>
 <span class="k">def</span> <span class="nf">filter_partner_contacts</span><span class="p">(</span><span class="n">partner_contacts</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>

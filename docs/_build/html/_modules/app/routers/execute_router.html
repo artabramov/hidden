@@ -43,12 +43,14 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.html">app package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.decorators.html">app.decorators package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.filters.html">app.filters package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.helpers.html">app.helpers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.managers.html">app.managers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.models.html">app.models package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.plugins.html">app.plugins package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.routers.html">app.routers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.schemas.html">app.schemas package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.triggers.html">app.triggers package</a></li>
 </ul>
 
         </div>
@@ -94,7 +96,7 @@
 <a class="viewcode-back" href="../../../autodoc/app.routers.html#app.routers.execute_router.execute">[docs]</a>
 <span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/execute&quot;</span><span class="p">,</span> <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;Execute a custom action.&quot;</span><span class="p">,</span>
              <span class="n">response_class</span><span class="o">=</span><span class="n">JSONResponse</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_200_OK</span><span class="p">,</span>
-             <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Execute&quot;</span><span class="p">])</span>
+             <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Services&quot;</span><span class="p">])</span>
 <span class="nd">@locked</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span>
     <span class="n">schema</span><span class="p">:</span> <span class="n">ExecuteRequest</span><span class="p">,</span>
@@ -104,9 +106,9 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Execute a custom action. The router executes corresponding hooks</span>
 <span class="sd">    with defined parameters. The current user must have an admin role.</span>
-<span class="sd">    Returns a 403 error if authentication failed or the user does not</span>
-<span class="sd">    have the required permissions, a 423 error if the the application</span>
-<span class="sd">    is locked.</span>
+<span class="sd">    Returns a 401 error if authentication failed or the user does not</span>
+<span class="sd">    have the required permissions, a 403 error if the token is missing,</span>
+<span class="sd">    a 423 error if the the application is locked.</span>
 
 <span class="sd">    **Args:**</span>
 <span class="sd">    - `ExecuteRequest`: The request schema containing the action to be</span>
@@ -117,8 +119,10 @@
 <span class="sd">    executed action.</span>
 
 <span class="sd">    **Raises:**</span>
-<span class="sd">    - `403 Forbidden`: Raised if the user does not have the required</span>
-<span class="sd">    permissions.</span>
+<span class="sd">    - `401 Unauthorized`: Raised if the token is invalid or expired,</span>
+<span class="sd">    or if the current user is not authenticated or does not have the</span>
+<span class="sd">    required permissions.</span>
+<span class="sd">    - `403 Forbidden`: Raised if the token is missing.</span>
 <span class="sd">    - `423 Locked`: Raised if the the application is locked.</span>
 
 <span class="sd">    **Auth:**</span>

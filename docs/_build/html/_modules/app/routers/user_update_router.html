@@ -43,12 +43,14 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.html">app package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.decorators.html">app.decorators package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.filters.html">app.filters package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.helpers.html">app.helpers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.managers.html">app.managers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.models.html">app.models package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.plugins.html">app.plugins package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.routers.html">app.routers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.schemas.html">app.schemas package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.triggers.html">app.triggers package</a></li>
 </ul>
 
         </div>
@@ -109,19 +111,20 @@
 <span class="sd">    Update a user. Modifies the first name, last name, user caption, and</span>
 <span class="sd">    user contacts for the specified user. Requires the user to have the</span>
 <span class="sd">    reader role or higher. Returns a 200 response with the updated user&#39;s</span>
-<span class="sd">    ID. Raises a 403 error if the user does not have the required role</span>
-<span class="sd">    or if the user is attempting to update a different user&#39;s details,</span>
-<span class="sd">    a 422 error if arguments validation failed, a 423 error if the</span>
-<span class="sd">    application is locked.</span>
+<span class="sd">    ID. Raises a 401 error if the user does not have the required role,</span>
+<span class="sd">    a 403 error if the token is missing or if the user is attempting to</span>
+<span class="sd">    update a different user&#39;s details, a 422 error if arguments</span>
+<span class="sd">    validation failed, a 423 error if the application is locked.</span>
 
 <span class="sd">    **Returns:**</span>
 <span class="sd">    - `UserUpdateResponse`: A response schema containing the ID of the</span>
 <span class="sd">    updated user.</span>
 
 <span class="sd">    **Raises:**</span>
-<span class="sd">    - `403 Forbidden`: Raised if the current user does not have the</span>
-<span class="sd">    required permissions, or if the user is trying to update another</span>
-<span class="sd">    user&#39;s information.</span>
+<span class="sd">    - `401 Unauthorized`: Raised if the current user does not have the</span>
+<span class="sd">    required permissions.</span>
+<span class="sd">    - `403 Forbidden`: Raised if the token is missing, or if the user is</span>
+<span class="sd">    trying to update another user&#39;s information.</span>
 <span class="sd">    - `404 Not Found`: Raised if the user with the provided ID is not</span>
 <span class="sd">    found.</span>
 <span class="sd">    - `422 Unprocessable Entity`: Raised if the provided data does not</span>

@@ -43,12 +43,14 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../autodoc/app.html">app package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../autodoc/app.decorators.html">app.decorators package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autodoc/app.filters.html">app.filters package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../autodoc/app.helpers.html">app.helpers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../autodoc/app.managers.html">app.managers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../autodoc/app.models.html">app.models package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../autodoc/app.plugins.html">app.plugins package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../autodoc/app.routers.html">app.routers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../autodoc/app.schemas.html">app.schemas package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autodoc/app.triggers.html">app.triggers package</a></li>
 </ul>
 
         </div>
@@ -161,9 +163,9 @@
     <span class="n">option_update_router</span><span class="p">,</span>
     <span class="n">option_delete_router</span><span class="p">,</span>
     <span class="n">option_list_router</span><span class="p">,</span>
-    <span class="n">lock_change_router</span><span class="p">,</span>
-    <span class="n">lock_retrieve_router</span><span class="p">,</span>
     <span class="n">telemetry_retrieve_router</span><span class="p">,</span>
+    <span class="n">heartbeat_retrieve_router</span><span class="p">,</span>
+    <span class="n">lock_change_router</span><span class="p">,</span>
     <span class="n">execute_router</span><span class="p">,</span>
     <span class="n">sphinx_router</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">app.helpers.uptime_helper</span> <span class="kn">import</span> <span class="n">Uptime</span>
@@ -266,9 +268,9 @@
 <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">option_update_router</span><span class="o">.</span><span class="n">router</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">APP_PREFIX</span><span class="p">)</span>
 <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">option_delete_router</span><span class="o">.</span><span class="n">router</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">APP_PREFIX</span><span class="p">)</span>
 <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">option_list_router</span><span class="o">.</span><span class="n">router</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">APP_PREFIX</span><span class="p">)</span>
-<span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">lock_change_router</span><span class="o">.</span><span class="n">router</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">APP_PREFIX</span><span class="p">)</span>
-<span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">lock_retrieve_router</span><span class="o">.</span><span class="n">router</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">APP_PREFIX</span><span class="p">)</span>
 <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">telemetry_retrieve_router</span><span class="o">.</span><span class="n">router</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">APP_PREFIX</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">heartbeat_retrieve_router</span><span class="o">.</span><span class="n">router</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">APP_PREFIX</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">lock_change_router</span><span class="o">.</span><span class="n">router</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">APP_PREFIX</span><span class="p">)</span>
 <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">execute_router</span><span class="o">.</span><span class="n">router</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">APP_PREFIX</span><span class="p">)</span>
 
 <span class="c1"># The router is necessary to handle the redirect from /sphinx to /sphinx/</span>

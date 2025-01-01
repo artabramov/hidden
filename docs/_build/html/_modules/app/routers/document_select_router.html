@@ -43,12 +43,14 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.html">app package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.decorators.html">app.decorators package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.filters.html">app.filters package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.helpers.html">app.helpers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.managers.html">app.managers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.models.html">app.models package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.plugins.html">app.plugins package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.routers.html">app.routers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.schemas.html">app.schemas package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.triggers.html">app.triggers package</a></li>
 </ul>
 
         </div>
@@ -112,8 +114,9 @@
 <span class="sd">    executes related hooks, and returns the document details in a JSON</span>
 <span class="sd">    response. The current user should have a reader role or higher.</span>
 <span class="sd">    Returns a 200 response on success, a 404 error if the document is</span>
-<span class="sd">    not found, a 403 error if authentication failed or the user does not</span>
-<span class="sd">    have the required role, and a 423 error if the application is locked.</span>
+<span class="sd">    not found, a 401 error if authentication failed or the user does not</span>
+<span class="sd">    have the required role, a 403 error if the token is missing, and</span>
+<span class="sd">    a 423 error if the application is locked.</span>
 
 <span class="sd">    **Args:**</span>
 <span class="sd">    - `document_id`: The unique identifier of the document to be</span>
@@ -124,8 +127,10 @@
 <span class="sd">    document details.</span>
 
 <span class="sd">    **Raises:**</span>
-<span class="sd">    - `403 Forbidden`: Raised if the user does not have the necessary</span>
-<span class="sd">    permissions.</span>
+<span class="sd">    - `401 Unauthorized`: Raised if the token is invalid or expired,</span>
+<span class="sd">    or if the current user is not authenticated or does not have the</span>
+<span class="sd">    required permissions.</span>
+<span class="sd">    - `403 Forbidden`: Raised if the token is missing.</span>
 <span class="sd">    - `404 Not Found`: Raised if the document with the specified ID does</span>
 <span class="sd">    not exist.</span>
 <span class="sd">    - `423 Locked`: Raised if the application is locked.</span>

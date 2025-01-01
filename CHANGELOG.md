@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.1.18 (2025-01-01)
+- **Updated frontend** and documentation.
+
 ## Version 0.1.17 (2025-01-01)
 - **Changed partner schema** and removed redundant data.
 

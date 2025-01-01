@@ -43,12 +43,14 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.html">app package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.decorators.html">app.decorators package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.filters.html">app.filters package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.helpers.html">app.helpers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.managers.html">app.managers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.models.html">app.models package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.plugins.html">app.plugins package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.routers.html">app.routers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.schemas.html">app.schemas package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.triggers.html">app.triggers package</a></li>
 </ul>
 
         </div>
@@ -113,6 +115,19 @@
 
 
 
+<div class="viewcode-block" id="on_heartbeat_retrieve">
+<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.on_heartbeat_retrieve">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">on_heartbeat_retrieve</span><span class="p">(</span>
+        <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+        <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">is_locked</span><span class="p">:</span> <span class="nb">bool</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes when a heartbeat is retrieved.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="o">...</span></div>
+
+
+
 <div class="viewcode-block" id="on_lock_change">
 <a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.on_lock_change">[docs]</a>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">on_lock_change</span><span class="p">(</span>
@@ -121,19 +136,6 @@
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Executes when lock mode is changed.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="o">...</span></div>
-
-
-
-<div class="viewcode-block" id="on_lock_retrieve">
-<a class="viewcode-back" href="../../../autodoc/app.plugins.html#app.plugins.example_plugin.on_lock_retrieve">[docs]</a>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">on_lock_retrieve</span><span class="p">(</span>
-        <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
-        <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">is_locked</span><span class="p">:</span> <span class="nb">bool</span>
-<span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Executes when lock mode is retrieved.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="o">...</span></div>
 

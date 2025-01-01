@@ -43,12 +43,14 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.html">app package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.decorators.html">app.decorators package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.filters.html">app.filters package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.helpers.html">app.helpers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.managers.html">app.managers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.models.html">app.models package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.plugins.html">app.plugins package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.routers.html">app.routers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.schemas.html">app.schemas package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.triggers.html">app.triggers package</a></li>
 </ul>
 
         </div>
@@ -94,7 +96,7 @@
 <a class="viewcode-back" href="../../../autodoc/app.routers.html#app.routers.lock_change_router.lock_change">[docs]</a>
 <span class="nd">@router</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s2">&quot;/locked&quot;</span><span class="p">,</span> <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;Change the application lock mode.&quot;</span><span class="p">,</span>
             <span class="n">response_class</span><span class="o">=</span><span class="n">JSONResponse</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_200_OK</span><span class="p">,</span>
-            <span class="n">response_model</span><span class="o">=</span><span class="n">LockUpdateResponse</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Lock&quot;</span><span class="p">])</span>
+            <span class="n">response_model</span><span class="o">=</span><span class="n">LockUpdateResponse</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Services&quot;</span><span class="p">])</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">lock_change</span><span class="p">(</span>
     <span class="n">schema</span><span class="p">:</span> <span class="n">LockUpdateRequest</span><span class="p">,</span>
     <span class="n">session</span><span class="o">=</span><span class="n">Depends</span><span class="p">(</span><span class="n">get_session</span><span class="p">),</span> <span class="n">cache</span><span class="o">=</span><span class="n">Depends</span><span class="p">(</span><span class="n">get_cache</span><span class="p">),</span>
@@ -104,8 +106,9 @@
 <span class="sd">    Change the application lock mode. This router enables or disables</span>
 <span class="sd">    the application lock based on the provided request. It executes a</span>
 <span class="sd">    corresponding hook after the lock state is changed. The current user</span>
-<span class="sd">    must have an admin role. Returns a 403 error if authentication</span>
-<span class="sd">    failed or the user does not have the required permissions.</span>
+<span class="sd">    must have an admin role. Returns a 401 error if authentication</span>
+<span class="sd">    failed or the user does not have the required permissions, a 403</span>
+<span class="sd">    error if the token is missing.</span>
 
 <span class="sd">    **Args:**</span>
 <span class="sd">    - `LockUpdateRequest`: The request schema containing the lock status</span>
@@ -116,8 +119,10 @@
 <span class="sd">    lock status.</span>
 
 <span class="sd">    **Raises:**</span>
-<span class="sd">    - `403 Forbidden`: Raised if the user does not have the required</span>
-<span class="sd">    permissions.</span>
+<span class="sd">    - `401 Unauthorized`: Raised if the token is invalid or expired,</span>
+<span class="sd">    or if the current user is not authenticated or does not have the</span>
+<span class="sd">    required permissions.</span>
+<span class="sd">    - `403 Forbidden`: Raised if the token is missing.</span>
 
 <span class="sd">    **Auth:**</span>
 <span class="sd">    - The user must provide a valid `JWT token` in the request header.</span>

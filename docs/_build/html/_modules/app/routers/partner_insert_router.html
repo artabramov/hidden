@@ -43,12 +43,14 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.html">app package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.decorators.html">app.decorators package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.filters.html">app.filters package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.helpers.html">app.helpers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.managers.html">app.managers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.models.html">app.models package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.plugins.html">app.plugins package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.routers.html">app.routers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.schemas.html">app.schemas package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.triggers.html">app.triggers package</a></li>
 </ul>
 
         </div>
@@ -114,9 +116,10 @@
 <span class="sd">    relevant hooks before and after insertion, and returns the created</span>
 <span class="sd">    partner ID in a JSON response. The current user should have a writer</span>
 <span class="sd">    role or higher. Returns a 201 response on success, a 422 error if</span>
-<span class="sd">    arguments validation failed or the partner name is duplicated, a 403</span>
+<span class="sd">    arguments validation failed or the partner name is duplicated, a 401</span>
 <span class="sd">    error if authentication failed or the user does not have the</span>
-<span class="sd">    required permissions, and a 423 error if the application is locked.</span>
+<span class="sd">    required permissions, a 403 error if the token is missing, and</span>
+<span class="sd">    a 423 error if the application is locked.</span>
 
 <span class="sd">    **Args:**</span>
 <span class="sd">    - `PartnerInsertRequest`: A request schema containing the details</span>
@@ -127,8 +130,10 @@
 <span class="sd">    the newly created partner.</span>
 
 <span class="sd">    **Raises:**</span>
-<span class="sd">    - `403 Forbidden`: Raised if the current user is not authenticated</span>
-<span class="sd">    or does not have the required permissions.</span>
+<span class="sd">    - `401 Unauthorized`: Raised if the token is invalid or expired,</span>
+<span class="sd">    or if the current user is not authenticated or does not have the</span>
+<span class="sd">    required permissions.</span>
+<span class="sd">    - `403 Forbidden`: Raised if the token is missing.</span>
 <span class="sd">    - `422 Unprocessable Entity`: Raised if arguments validation failed</span>
 <span class="sd">    or the partner name is already exist.</span>
 <span class="sd">    - `423 Locked`: Raised if the application is locked.</span>
@@ -149,9 +154,6 @@
 
     <span class="n">partner</span> <span class="o">=</span> <span class="n">Partner</span><span class="p">(</span>
         <span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">schema</span><span class="o">.</span><span class="n">partner_name</span><span class="p">,</span>
-        <span class="n">partner_type</span><span class="o">=</span><span class="n">schema</span><span class="o">.</span><span class="n">partner_type</span><span class="p">,</span>
-        <span class="n">partner_region</span><span class="o">=</span><span class="n">schema</span><span class="o">.</span><span class="n">partner_region</span><span class="p">,</span>
-        <span class="n">partner_website</span><span class="o">=</span><span class="n">schema</span><span class="o">.</span><span class="n">partner_website</span><span class="p">,</span>
         <span class="n">partner_contacts</span><span class="o">=</span><span class="n">schema</span><span class="o">.</span><span class="n">partner_contacts</span><span class="p">,</span>
         <span class="n">partner_summary</span><span class="o">=</span><span class="n">schema</span><span class="o">.</span><span class="n">partner_summary</span><span class="p">)</span>
     <span class="k">await</span> <span class="n">partner_repository</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">partner</span><span class="p">,</span> <span class="n">commit</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>

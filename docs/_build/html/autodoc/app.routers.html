@@ -149,10 +149,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#app.routers.lock_change_router.lock_change"><code class="docutils literal notranslate"><span class="pre">lock_change()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.lock_retrieve_router">app.routers.lock_retrieve_router module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#app.routers.lock_retrieve_router.lock_retrieve"><code class="docutils literal notranslate"><span class="pre">lock_retrieve()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="#app-routers-lock-retrieve-router-module">app.routers.lock_retrieve_router module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-app.routers.option_delete_router">app.routers.option_delete_router module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#app.routers.option_delete_router.option_delete"><code class="docutils literal notranslate"><span class="pre">option_delete()</span></code></a></li>
 </ul>
@@ -304,17 +301,20 @@ repository using the provided ID, verifies that it exists, deletes
 the collection and all related entities, executes related hooks, and
 returns the deleted collection ID in a JSON response. The current
 user should have an admin role. Returns a 200 response on success,
-a 404 error if the collection is not found, a 403 error if
+a 404 error if the collection is not found, a 401 error if
 authentication failed or the user does not have the required
-permissions, and a 423 error if the application is locked.</p>
+permissions, a 403 error if the token is missing, and a 423 error
+if the application is locked.</p>
 <p><strong>Args:</strong>
 - <cite>collection_id</cite>: The ID of the collection to be deleted.</p>
 <p><strong>Returns:</strong>
 - <cite>CollectionDeleteResponse</cite>: The response schema containing the ID
 of the deleted collection.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the current user is not authenticated
-or does not have the required permissions.
+- <cite>401 Unauthorized</cite>: Raised if the token is invalid or expired,
+or if the current user is not authenticated or does not have the
+required permissions.
+- <cite>403 Forbidden</cite>: Raised if the token is missing.
 - <cite>404 Not Found</cite>: Raised if the collection with the specified
 ID does not exist.
 - <cite>423 Locked</cite>: Raised if the application is locked.</p>
@@ -340,9 +340,9 @@ the repository, executes related hooks, and returns the created
 collection ID in a JSON response. The current user should have a
 writer role or higher. Returns a 201 response on success, a 422
 error if arguments validation failed or the collection name is
-duplicated, a 403 error if authentication failed or the user does
-not have the required permissions, and a 423 error if the
-application is locked.</p>
+duplicated, a 401 error if authentication failed or the user does
+not have the required permissions, a 403 error if the token is
+missing, and a 423 error if the application is locked.</p>
 <p><strong>Args:</strong>
 - <cite>CollectionInsertRequest</cite>: The request schema containing the data
 for the new collection.</p>
@@ -350,8 +350,10 @@ for the new collection.</p>
 - <cite>CollectionInsertResponse</cite>: The response schema containing the ID
 of the newly created collection.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the current user is not authenticated
-or does not have the required permissions.
+- <cite>401 Unauthorized</cite>: Raised if the token is invalid or expired,
+or if the current user is not authenticated or does not have the
+required permissions.
+- <cite>403 Forbidden</cite>: Raised if the token is missing.
 - <cite>422 Unprocessable Entity</cite>: Raised if arguments validation failed
 or the collection name is already exist.
 - <cite>423 Locked</cite>: Raised if the application is locked.</p>
@@ -375,10 +377,11 @@ router.</p>
 <dd><p>Retrieve a list of collections. This endpoint fetches all
 collections from the repository based on the provided filter
 criteria and executes related hooks. The current user must have
-a reader role or higher. Returns a 200 response on success, a 403
+a reader role or higher. Returns a 200 response on success, a 401
 error if authentication failed or the user does not have the
-required permissions, a 422 error if arguments validation failed,
-and a 423 error if the application is locked.</p>
+required permissions, a 403 error if the token is missing, a 422
+error if arguments validation failed, and a 423 error if the
+application is locked.</p>
 <p><strong>Args:</strong>
 - <cite>CollectionListRequest</cite>: The request schema containing filter and
 pagination details.</p>
@@ -386,8 +389,10 @@ pagination details.</p>
 - <cite>CollectionListResponse</cite>: The response schema containing the list
 of collections and the total count.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the current user is not authenticated
-or does not have the required <cite>reader</cite> role.
+- <cite>401 Unauthorized</cite>: Raised if the token is invalid or expired,
+or if the current user is not authenticated or does not have the
+required permissions.
+- <cite>403 Forbidden</cite>: Raised if the token is missing.
 - <cite>422 Unprocessable Entity</cite>:  Raised if arguments validation failed.
 - <cite>423 Locked</cite>: Raised if the application is locked.</p>
 <p><strong>Hooks:</strong>
@@ -411,8 +416,9 @@ retrieved from the repository using the provided ID, and its lock
 status is updated. The current user must have an editor role or
 higher. Returns a 200 response on success, a 404 error if the
 collection is not found, a 422 error if arguments validation failed,
-a 403 error if authentication failed or the user does not have the
-required permissions, and a 423 error if the application is locked.</p>
+a 401 error if authentication failed or the user does not have the
+required permissions, a 403 error if the token is missing, and
+a 423 error if the application is locked.</p>
 <p><strong>Args:</strong>
 - <cite>collection_id</cite>: The ID of the collection to update.
 - <cite>CollectionLockUpdateRequest</cite>: The request schema containing the
@@ -421,8 +427,10 @@ new locked state.</p>
 - <cite>CollectionLockUpdateResponse</cite>: The response schema containing the
 ID of the updated collection.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the current user is not authenticated
-or does not have the required permissions.
+- <cite>401 Unauthorized</cite>: Raised if the token is invalid or expired,
+or if the current user is not authenticated or does not have the
+required permissions.
+- <cite>403 Forbidden</cite>: Raised if the token is missing.
 - <cite>404 Not Found</cite>: Raised if the collection with the specified
 ID does not exist.
 - <cite>422 Unprocessable Entity</cite>:  Raised if arguments validation failed.
@@ -447,17 +455,20 @@ status is updated.</p>
 repository using the provided ID, executes related hooks, and
 returns the collection details in a JSON response. The current user
 should have a reader role or higher. Returns a 200 response on
-success, a 404 error if the collection is not found, a 403 error if
+success, a 404 error if the collection is not found, a 401 error if
 authentication failed or the user does not have the required
-permissions, and a 423 error if the application is locked.</p>
+permissions, a 403 error if the token is missing, and a 423 error
+if the application is locked.</p>
 <p><strong>Args:</strong>
 - <cite>collection_id</cite>: The ID of the collection to retrieve.</p>
 <p><strong>Returns:</strong>
 - <cite>CollectionSelectResponse</cite>: The response schema containing the
 details of the selected collection.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the current user is not authenticated
-or does not have the required permissions.
+- <cite>401 Unauthorized</cite>: Raised if the token is invalid or expired,
+or if the current user is not authenticated or does not have the
+required permissions.
+- <cite>403 Forbidden</cite>: Raised if the token is missing.
 - <cite>404 Not Found</cite>: Raised if the collection with the specified ID
 does not exist.
 - <cite>423 Locked</cite>: Raised if the application is locked.</p>
@@ -483,9 +494,10 @@ collection’s attributes, executes related hooks, and returns the
 updated collection ID in a JSON response. The current user must have
 an editor role or higher. Returns a 200 response on success, a 404
 error if the collection is not found, a 422 error if validation
-failed or the collection name is duplicated, a 403 error if
+failed or the collection name is duplicated, a 401 error if
 authentication failed or the user does not have the required
-permissions, and a 423 error if the application is locked.</p>
+permissions, a 403 error if the token is missing, and a 423 error
+if the application is locked.</p>
 <p><strong>Args:</strong>
 - <cite>collection_id</cite>: The ID of the collection to update.
 - <cite>CollectionUpdateRequest</cite>: The request schema containing the
@@ -494,8 +506,10 @@ updated collection data.</p>
 - <cite>CollectionUpdateResponse</cite>: The response schema containing the ID
 of the updated collection.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the current user is not authenticated
-or does not have the required permissions.
+- <cite>401 Unauthorized</cite>: Raised if the token is invalid or expired,
+or if the current user is not authenticated or does not have the
+required permissions.
+- <cite>403 Forbidden</cite>: Raised if the token is missing.
 - <cite>404 Not Found</cite>: Raised if the collection with the specified ID
 does not exist.
 - <cite>422 Unprocessable Entity</cite>: Raised if arguments validation failed.
@@ -525,16 +539,18 @@ related hooks, and returns the ID of the deleted comment in a JSON
 response. The current user should have an editor role or higher.
 Returns a 200 response on success, a 404 error if the comment is not
 found, a 423 error if the collection or the application is locked,
-and a 403  error if authentication failed or the user does not have the
-required permissions.</p>
+and a 401  error if authentication failed or the user does not have
+the required permissions, a 403 error if the token is missing.</p>
 <p><strong>Args:</strong>
 - <cite>comment_id</cite>: The ID of the comment to be deleted.</p>
 <p><strong>Returns:</strong>
 - <cite>CommentDeleteResponse</cite>: The response schema containing the ID of
 the deleted comment.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the current user is not the author of
-the comment or lacks the required permissions.
+- <cite>401 Unauthorized</cite>: Raised if the token is invalid or expired,
+or if the current user is not authenticated or does not have the
+required permissions.
+- <cite>403 Forbidden</cite>: Raised if the token is missing.
 - <cite>404 Not Found</cite>: Raised if the comment with the specified ID does
 not exist.
 - <cite>423 Locked</cite>: Raised if the corresponding collection or the
@@ -557,8 +573,9 @@ repository, executes related hooks, and returns the created comment
 ID in a JSON response. The current user should have a writer role or
 higher. Returns a 201 response on success, a 404 error if the
 document is not found, a 423 error if the collection or the
-application is locked, and a 403 error if authentication failed
-or the user does not have the required permissions.</p>
+application is locked, and a 401 error if authentication failed
+or the user does not have the required permissions, a 403 error if
+the token is missing.</p>
 <p><strong>Args:</strong>
 - <cite>CommentInsertRequest</cite>: The request schema containing the data
 for the new comment.</p>
@@ -566,8 +583,10 @@ for the new comment.</p>
 - <cite>CommentInsertResponse</cite>: The response schema containing the ID
 of the newly created comment.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the user does not have the required
-permissions.
+- <cite>401 Unauthorized</cite>: Raised if the token is invalid or expired,
+or if the current user is not authenticated or does not have the
+required permissions.
+- <cite>403 Forbidden</cite>: Raised if the token is missing.
 - <cite>422 Unprocessable Entity</cite>:  Raised if arguments validation failed.
 - <cite>423 Locked</cite>: Raised if the document’s collection or the
 application is locked.</p>
@@ -588,10 +607,10 @@ router.</p>
 from the repository based on the provided filter criteria, executes
 related hooks, and returns the results in a JSON response. The
 current user should have a reader role or higher. Returns a 200
-response on success, a 403 error if authentication failed or the
-user does not have the required permissions, a 422 error if
-arguments validation failed, and a 423 error if the application
-is locked.</p>
+response on success, a 401 error if authentication failed or the
+user does not have the required permissions, a 403 error if the
+token is missing, a 422 error if arguments validation failed, and
+a 423 error if the application is locked.</p>
 <p><strong>Args:</strong>
 - <cite>CommentListRequest</cite>: The request schema containing the filters
 for the comment list.</p>
@@ -599,8 +618,10 @@ for the comment list.</p>
 - <cite>CommentListResponse</cite>: The response schema containing the list of
 comments and the total count.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the user does not have the required
-permissions.
+- <cite>401 Unauthorized</cite>: Raised if the token is invalid or expired,
+or if the current user is not authenticated or does not have the
+required permissions.
+- <cite>403 Forbidden</cite>: Raised if the token is missing.
 - <cite>422 Unprocessable Entity</cite>: Raised if arguments validation failed.
 - <cite>423 Locked</cite>: Raised if the application is locked.</p>
 <p><strong>Auth:</strong>
@@ -620,17 +641,20 @@ access this router.</p>
 repository using the provided ID, executes related hooks, and
 returns the comment details in a JSON response. The current user
 should have a reader role or higher. Returns a 200 response on
-success, a 404 error if the comment is not found, a 403 error if
+success, a 404 error if the comment is not found, a 401 error if
 authentication failed or the user does not have the required
-permissions, and a 423 error if the application is locked.</p>
+permissions, a 403 error if the token is missing, and a 423 error
+if the application is locked.</p>
 <p><strong>Args:</strong>
 - <cite>comment_id</cite>: The ID of the comment to be retrieved.</p>
 <p><strong>Returns:</strong>
 - <cite>CommentSelectResponse</cite>: The response schema containing the
 comment details.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the user does not have the required
-permissions.
+- <cite>401 Unauthorized</cite>: Raised if the token is invalid or expired,
+or if the current user is not authenticated or does not have the
+required permissions.
+- <cite>403 Forbidden</cite>: Raised if the token is missing.
 - <cite>404 Not Found</cite>: Raised if the comment with the specified ID does
 not exist.
 - <cite>423 Locked</cite>: Raised if the application is locked.</p>
@@ -654,8 +678,9 @@ updates the comment content, executes related hooks, and returns the
 updated comment ID in a JSON response. The current user should have
 an editor role or higher. Returns a 200 response on success, a 404
 error if the comment is not found, a 423 error if the collection or
-the application is locked, and a 403 error if authentication failed
-or the user does not have the required permissions.</p>
+the application is locked, and a 401 error if authentication failed
+or the user does not have the required permissions, a 403 error if
+the token is missing.</p>
 <p><strong>Args:</strong>
 - <cite>comment_id</cite>: The ID of the comment to be updated.
 - <cite>CommentUpdateRequest</cite>: The request schema containing the new
@@ -664,8 +689,10 @@ comment content.</p>
 - <cite>CommentUpdateResponse</cite>: The response schema containing the ID of
 the updated comment.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the current user is not the author of
-the comment or lacks required permissions.
+- <cite>401 Unauthorized</cite>: Raised if the token is invalid or expired,
+or if the current user is not authenticated or does not have the
+required permissions.
+- <cite>403 Forbidden</cite>: Raised if the token is missing.
 - <cite>404 Not Found</cite>: Raised if the comment with the specified ID does
 not exist.
 - <cite>422 Unprocessable Entity</cite>: Raised if arguments validation failed.
@@ -689,16 +716,18 @@ entities, executes related hooks, and returns the deleted document
 ID in a JSON response. The current user should have an admin role.
 Returns a 200 response on success, a 404 error if the document is
 not found, a 423 error if the collection the application is locked,
-and a 403 error if authentication failed or the user does not have
-the required permissions.</p>
+and a 401 error if authentication failed or the user does not have
+the required permissions, a 403 error if the token is missing.</p>
 <p><strong>Args:</strong>
 - <cite>document_id</cite>: The ID of the document to be deleted.</p>
 <p><strong>Returns:</strong>
 - <cite>DocumentDeleteResponse</cite>: The response schema containing the ID of
 the deleted document.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the user does not have the required
-permissions.
+- <cite>401 Unauthorized</cite>: Raised if the token is invalid or expired,
+or if the current user is not authenticated or does not have the
+required permissions.
+- <cite>403 Forbidden</cite>: Raised if the token is missing.
 - <cite>404 Not Found</cite>: Raised if the document with the specified ID does
 not exist.
 - <cite>423 Locked</cite>: Raised if the document or the application is locked.</p>
@@ -719,8 +748,9 @@ revision from the repository, decrypts the associated file, executes
 related hooks, and returns the file as an attachment. The current
 user should have a reader role or higher. Returns a 200 response on
 success, a 404 error if the revision or the document is not found,
-a 403 error if authentication failed or the user does not have the
-required permissions, and a 423 error if the application is locked.</p>
+a 401 error if authentication failed or the user does not have the
+required permissions, a 403 error if the token is missing, and a 423
+error if the application is locked.</p>
 <p><strong>Args:</strong>
 - <cite>document_id</cite>: The ID of the document.
 - <cite>revision_id</cite>: The ID of the revision to download.</p>
@@ -728,8 +758,10 @@ required permissions, and a 423 error if the application is locked.</p>
 - <cite>Response</cite>: A response containing the decrypted file content as
 an attachment.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the user does not have the required
-permissions.
+- <cite>401 Unauthorized</cite>: Raised if the token is invalid or expired,
+or if the current user is not authenticated or does not have the
+required permissions.
+- <cite>403 Forbidden</cite>: Raised if the token is missing.
 - <cite>404 Not Found</cite>: Raised if the revision or the document with the
 specified ID does not exist.
 - <cite>423 Locked</cite>: Raised if the application is locked.</p>
@@ -750,9 +782,9 @@ access this router.</p>
 of downloads from the repository based on the provided filter
 criteria, executes related hooks, and returns the results in a JSON
 response. The current user should have an admin role. Returns a 200
-response on success, a 403 error if authentication failed or the
-user does not have the required permissions, and a 423 error if the
-application is locked.</p>
+response on success, a 401 error if authentication failed or the
+user does not have the required permissions, a 403 error if the
+token is missing, and a 423 error if the application is locked.</p>
 <p><strong>Args:</strong>
 - <cite>document_id</cite>: The ID of the document for which downloads are
 being requested.
@@ -762,8 +794,10 @@ for the download list.</p>
 - <cite>DownloadListResponse</cite>: A response schema containing the list of
 downloads and the total count of downloads.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the user does not have the required
-permissions.
+- <cite>401 Unauthorized</cite>: Raised if the token is invalid or expired,
+or if the current user is not authenticated or does not have the
+required permissions.
+- <cite>403 Forbidden</cite>: Raised if the token is missing.
 - <cite>404 Not Found</cite>: Raised if the document with the specified ID does
 not exist.
 - <cite>422 Unprocessable Entity</cite>: Raised if arguments validation failed.
@@ -784,10 +818,10 @@ the specified ID exists, updates the document’s flagged status based
 on the provided request, executes related hooks, and returns the
 updated document’s ID and revision ID in a JSON response. The
 current user must have the editor role or higher. Returns a 200
-response on success, a 404 error if the document is not found, a 403
+response on success, a 404 error if the document is not found, a 401
 error if authentication failed or the user does not have the
-required permissions, and a 423 error if the collection or the
-application is locked.</p>
+required permissions, a 403 error if the token is missing, and a 423
+error if the collection or the application is locked.</p>
 <p><strong>Args:</strong>
 - <cite>document_id</cite>: The ID of the document to flag or unflag.
 - <cite>DocumentFlagRequest</cite>: The request schema containing the flagged
@@ -796,8 +830,10 @@ status.</p>
 - <cite>DocumentFlagResponse</cite>: A response schema containing the document
 ID and its latest revision ID.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the user does not have the required
-permissions.
+- <cite>401 Unauthorized</cite>: Raised if the token is invalid or expired,
+or if the current user is not authenticated or does not have the
+required permissions.
+- <cite>403 Forbidden</cite>: Raised if the token is missing.
 - <cite>404 Not Found</cite>: Raised if the document with the specified ID does
 not exist.
 - <cite>423 Locked</cite>: Raised if the collection or the application is
@@ -817,10 +853,10 @@ locked.</p>
 from the repository based on the provided filter criteria, executes
 related hooks, and returns the results in a JSON response. The
 current user should have a reader role or higher. Returns a 200
-response on success, a 403 error if authentication failed or the
-user does not have the required permissions, a 422 error if
-arguments validation failed, and a 423 error if the application
-is locked.</p>
+response on success, a 401 error if authentication failed or the
+user does not have the required permissions, a 403 error if the
+token is missing, a 422 error if arguments validation failed, and
+a 423 error if the application is locked.</p>
 <p><strong>Args:</strong>
 - <cite>DocumentListRequest</cite>: The request schema containing the filters
 for the document list.</p>
@@ -828,8 +864,10 @@ for the document list.</p>
 - <cite>DocumentListResponse</cite>: The response schema containing the list of
 documents and the total count.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the user does not have the required
-permissions.
+- <cite>401 Unauthorized</cite>: Raised if the token is invalid or expired,
+or if the current user is not authenticated or does not have the
+required permissions.
+- <cite>403 Forbidden</cite>: Raised if the token is missing.
 - <cite>422 Unprocessable Entity</cite>: Raised if arguments validation failed.
 - <cite>423 Locked</cite>: Raised if the application is locked.</p>
 <p><strong>Auth:</strong>
@@ -848,7 +886,9 @@ access this router.</p>
 and collection exist, verifies that the both collections are not
 locked, moves the document to the specified collection, and executes
 related hooks. The current user must have the editor role or higher.
-Returns a 200 response on success, a 404 error if the document or
+Returns a 200 response on success, a 401 error if authentication
+failed or the user does not have the required permissions, a 403
+error if the token is missing, a 404 error if the document or
 collection is not found, a 423 error if the collection or the
 application is locked.</p>
 <p><strong>Args:</strong>
@@ -859,8 +899,10 @@ will be moved.</p>
 - <cite>DocumentMoveResponse</cite>: The response schema containing the
 document’s ID and the revision ID.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the user does not have the required
-permissions.
+- <cite>401 Unauthorized</cite>: Raised if the token is invalid or expired,
+or if the current user is not authenticated or does not have the
+required permissions.
+- <cite>403 Forbidden</cite>: Raised if the token is missing.
 - <cite>404 Not Found</cite>: Raised if the document or collection with the
 specified ID does not exist.
 - <cite>423 Locked</cite>: Raised if collection or the application is locked.</p>
@@ -880,8 +922,11 @@ upload a new version of the document, replace its latest revision,
 and update the document’s metadata. The file is encrypted, split
 into shards, and stored securely. The current user must have the
 editor role or higher. Returns a 201 response on success, a 404
-error if the document is not found, a 423 error if the collection
-or the application is locked, and a 422 error if the file is invalid.</p>
+error if the document is not found, a 401 error if authentication
+failed or the user does not have the required permissions, a 403
+error if the token is missing, a 423 error if the collection
+or the application is locked, and a 422 error if the file
+is invalid.</p>
 <p><strong>Args:</strong>
 - <cite>document_id</cite>: The ID of the document to be replaced.
 - <cite>file</cite>: The new file to replace the current document revision.</p>
@@ -889,8 +934,10 @@ or the application is locked, and a 422 error if the file is invalid.</p>
 - <cite>DocumentReplaceResponse</cite>: The response schema containing the
 document’s ID and the revision ID of the newly added revision.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the user does not have the required
-permissions.
+- <cite>401 Unauthorized</cite>: Raised if the token is invalid or expired,
+or if the current user is not authenticated or does not have the
+required permissions.
+- <cite>403 Forbidden</cite>: Raised if the token is missing.
 - <cite>404 Not Found</cite>: Raised if the document with the specified ID does
 not exist.
 - <cite>422 Unprocessable Entity</cite>: Raised if the uploaded file is invalid
@@ -911,10 +958,10 @@ or cannot be processed.
 revisions from the repository based on the provided filter criteria,
 executes related hooks, and returns the results in a JSON response.
 The current user should have a reader role or higher. Returns a 200
-response on success, a 403 error if authentication failed or the
-user does not have the required permissions, a 422 error if
-arguments validation failed, and a 423 error if the application
-is locked.</p>
+response on success, a 401 error if authentication failed or the
+user does not have the required permissions, a 403 error if the
+token is missing, a 422 error if arguments validation failed, and
+a 423 error if the application is locked.</p>
 <p><strong>Args:</strong>
 - <cite>document_id</cite>: The document ID whose revisions need to be fetched.
 - <cite>DocumentRevisionsRequest</cite>: The request schema that contains
@@ -923,8 +970,10 @@ filter and pagination options for the revisions list.</p>
 - <cite>DocumentRevisionsResponse</cite>: A response containing a list of
 revisions for the document and the total revision count.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the user does not have the required
-permissions.
+- <cite>401 Unauthorized</cite>: Raised if the token is invalid or expired,
+or if the current user is not authenticated or does not have the
+required permissions.
+- <cite>403 Forbidden</cite>: Raised if the token is missing.
 - <cite>404 Not Found</cite>: Raised if the document with the specified ID does
 not exist.
 - <cite>422 Unprocessable Entity</cite>: Raised if arguments validation failed.
@@ -946,8 +995,9 @@ repository using the provided ID, verifies that the document exists,
 executes related hooks, and returns the document details in a JSON
 response. The current user should have a reader role or higher.
 Returns a 200 response on success, a 404 error if the document is
-not found, a 403 error if authentication failed or the user does not
-have the required role, and a 423 error if the application is locked.</p>
+not found, a 401 error if authentication failed or the user does not
+have the required role, a 403 error if the token is missing, and
+a 423 error if the application is locked.</p>
 <p><strong>Args:</strong>
 - <cite>document_id</cite>: The unique identifier of the document to be
 retrieved.</p>
@@ -955,8 +1005,10 @@ retrieved.</p>
 - <cite>DocumentSelectResponse</cite>: The response schema containing the
 document details.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the user does not have the necessary
-permissions.
+- <cite>401 Unauthorized</cite>: Raised if the token is invalid or expired,
+or if the current user is not authenticated or does not have the
+required permissions.
+- <cite>403 Forbidden</cite>: Raised if the token is missing.
 - <cite>404 Not Found</cite>: Raised if the document with the specified ID does
 not exist.
 - <cite>423 Locked</cite>: Raised if the application is locked.</p>
@@ -979,8 +1031,9 @@ document data and tags. Executes related hooks before and after
 committing the changes. Returns a 200 response on success, a 404
 error if the document is not found, a 423 error if the collection
 or the application is locked, a 422 error if arguments validation
-failed, and a 403 error if authentication failed or the user does
-not have the required permissions.</p>
+failed, and a 401 error if authentication failed or the user does
+not have the required permissions, a 403 error if the token
+is missing.</p>
 <p><strong>Args:</strong>
 - <cite>document_id</cite>: The ID of the document to be updated.
 - <cite>DocumentUpdateRequest</cite>: The request schema containing the updated
@@ -989,8 +1042,10 @@ document information.</p>
 - <cite>DocumentUpdateResponse</cite>: The response schema containing the ID of
 the updated document.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the user does not have the required
-permissions.
+- <cite>401 Unauthorized</cite>: Raised if the token is invalid or expired,
+or if the current user is not authenticated or does not have the
+required permissions.
+- <cite>403 Forbidden</cite>: Raised if the token is missing.
 - <cite>404 Not Found</cite>: Raised if the document with the provided ID does
 - <cite>422 Unprocessable Entity</cite>:  Raised if arguments validation failed.
 not exist.
@@ -1015,9 +1070,9 @@ revision details to the repository. The current user should have a
 writer role or higher. Returns a 201 response on success, a 422
 error if the collection is invalid, a 423 error if the collection
 or the application is locked, a 500 error if an unexpected failure
-occurs during file processing or shard creation, and a 403 error
+occurs during file processing or shard creation, and a 401 error
 if authentication failed or the user does not have the required
-permissions.</p>
+permissions, a 403 error if the token is missing.</p>
 <p><strong>Args:</strong>
 - <cite>collection_id</cite>: The ID of the collection to upload the document to.
 - <cite>file</cite>: The file to be uploaded.</p>
@@ -1025,8 +1080,10 @@ permissions.</p>
 - <cite>DocumentUploadResponse</cite>: The response schema containing the ID of
 the document and the latest revision.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the user does not have the required
-permissions.
+- <cite>401 Unauthorized</cite>: Raised if the token is invalid or expired,
+or if the current user is not authenticated or does not have the
+required permissions.
+- <cite>403 Forbidden</cite>: Raised if the token is missing.
 - <cite>422 Unprocessable Entity</cite>: Raised if the collection does not exist
 or is invalid.
 - <cite>423 Locked</cite>: Raised if the collection or the application is
@@ -1047,9 +1104,9 @@ router.</p>
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.execute_router.</span></span><span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.schemas.html#app.schemas.execute_schemas.ExecuteRequest" title="app.schemas.execute_schemas.ExecuteRequest"><span class="pre">ExecuteRequest</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_admin)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/routers/execute_router.html#execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.execute_router.execute" title="Link to this definition"></a></dt>
 <dd><p>Execute a custom action. The router executes corresponding hooks
 with defined parameters. The current user must have an admin role.
-Returns a 403 error if authentication failed or the user does not
-have the required permissions, a 423 error if the the application
-is locked.</p>
+Returns a 401 error if authentication failed or the user does not
+have the required permissions, a 403 error if the token is missing,
+a 423 error if the the application is locked.</p>
 <p><strong>Args:</strong>
 - <cite>ExecuteRequest</cite>: The request schema containing the action to be
 executed and its parameters.</p>
@@ -1057,8 +1114,10 @@ executed and its parameters.</p>
 - <cite>JSONResponse</cite>: The response object containing the result of the
 executed action.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the user does not have the required
-permissions.
+- <cite>401 Unauthorized</cite>: Raised if the token is invalid or expired,
+or if the current user is not authenticated or does not have the
+required permissions.
+- <cite>403 Forbidden</cite>: Raised if the token is missing.
 - <cite>423 Locked</cite>: Raised if the the application is locked.</p>
 <p><strong>Auth:</strong>
 - The user must provide a valid <cite>JWT token</cite> in the request header.
@@ -1074,8 +1133,9 @@ permissions.
 <dd><p>Change the application lock mode. This router enables or disables
 the application lock based on the provided request. It executes a
 corresponding hook after the lock state is changed. The current user
-must have an admin role. Returns a 403 error if authentication
-failed or the user does not have the required permissions.</p>
+must have an admin role. Returns a 401 error if authentication
+failed or the user does not have the required permissions, a 403
+error if the token is missing.</p>
 <p><strong>Args:</strong>
 - <cite>LockUpdateRequest</cite>: The request schema containing the lock status
 to be updated.</p>
@@ -1083,30 +1143,18 @@ to be updated.</p>
 - <cite>LockUpdateResponse</cite>: The response schema containing the updated
 lock status.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the user does not have the required
-permissions.</p>
+- <cite>401 Unauthorized</cite>: Raised if the token is invalid or expired,
+or if the current user is not authenticated or does not have the
+required permissions.
+- <cite>403 Forbidden</cite>: Raised if the token is missing.</p>
 <p><strong>Auth:</strong>
 - The user must provide a valid <cite>JWT token</cite> in the request header.
 - <cite>admin</cite> role is required to access this router.</p>
 </dd></dl>
 
 </section>
-<section id="module-app.routers.lock_retrieve_router">
-<span id="app-routers-lock-retrieve-router-module"></span><h2>app.routers.lock_retrieve_router module<a class="headerlink" href="#module-app.routers.lock_retrieve_router" title="Link to this heading"></a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="app.routers.lock_retrieve_router.lock_retrieve">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.lock_retrieve_router.</span></span><span class="sig-name descname"><span class="pre">lock_retrieve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.lock_schemas.LockRetrieveResponse" title="app.schemas.lock_schemas.LockRetrieveResponse"><span class="pre">LockRetrieveResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/lock_retrieve_router.html#lock_retrieve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.lock_retrieve_router.lock_retrieve" title="Link to this definition"></a></dt>
-<dd><p>Retrieve the application lock mode. This router checks whether the
-application is locked and retrieves the date when the lock was
-applied. It executes a corresponding hook after retrieving the lock
-state.</p>
-<p><strong>Returns:</strong>
-- <cite>LockRetrieveResponse</cite>: The response schema containing the lock
-status and the date when the application was locked.</p>
-<p><strong>Auth:</strong>
-- No authentication is required to access this router.</p>
-</dd></dl>
-
+<section id="app-routers-lock-retrieve-router-module">
+<h2>app.routers.lock_retrieve_router module<a class="headerlink" href="#app-routers-lock-retrieve-router-module" title="Link to this heading"></a></h2>
 </section>
 <section id="module-app.routers.option_delete_router">
 <span id="app-routers-option-delete-router-module"></span><h2>app.routers.option_delete_router module<a class="headerlink" href="#module-app.routers.option_delete_router" title="Link to this heading"></a></h2>
@@ -1119,17 +1167,20 @@ repository using the provided option key. If the option exists,
 it deletes it from the repository and executes related hooks. The
 router returns the option key of the deleted option in a JSON
 response. The current user should have an admin role. Returns a 200
-response on success, a 404 error if the option is not found, a 403
+response on success, a 404 error if the option is not found, a 401
 error if authentication failed or the user does not have the
-required permissions, a 423 error if the the application is locked.</p>
+required permissions, a 403 error if the token is missing, a 423
+error if the the application is locked.</p>
 <p><strong>Args:</strong>
 - <cite>option_key</cite>: The key of the option to be deleted.</p>
 <p><strong>Returns:</strong>
 - <cite>OptionDeleteResponse</cite>: The response schema containing the key of
 the deleted option.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the user does not have the required
-permissions.
+- <cite>401 Unauthorized</cite>: Raised if the token is invalid or expired,
+or if the current user is not authenticated or does not have the
+required permissions.
+- <cite>403 Forbidden</cite>: Raised if the token is missing.
 - <cite>404 Not Found</cite>: Raised if the option is not found in the
 repository.
 - <cite>423 Locked</cite>: Raised if the the application is locked.</p>
@@ -1149,10 +1200,10 @@ repository.
 the repository based on the provided filter criteria and executes
 related hooks. The router returns a list of options and the total
 count of options in a JSON response. The current user should have
-an admin role. Returns a 200 response on success, a 403 error if
+an admin role. Returns a 200 response on success, a 401 error if
 authentication failed or the user does not have the required role,
-a 422 error if arguments validation failed, a 423 error if the the
-application is locked.</p>
+a 403 error if the token is missing, a 422 error if arguments
+validation failed, a 423 error if the the application is locked.</p>
 <p><strong>Args:</strong>
 - <cite>OptionListRequest</cite>: The request schema containing filter criteria
 for retrieving the list of options.</p>
@@ -1160,8 +1211,10 @@ for retrieving the list of options.</p>
 - <cite>OptionListResponse</cite>: The response schema containing a list of
 options and the total count of options.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the user does not have the required
-permissions.
+- <cite>401 Unauthorized</cite>: Raised if the token is invalid or expired,
+or if the current user is not authenticated or does not have the
+required permissions.
+- <cite>403 Forbidden</cite>: Raised if the token is missing.
 - <cite>422 Unprocessable Entity</cite>: Raised if arguments validation failed.
 - <cite>423 Locked</cite>: Raised if the application is locked.</p>
 <p><strong>Auth:</strong>
@@ -1179,18 +1232,20 @@ permissions.
 <dd><p>Retrieve an option. The router fetches the option from the
 repository using the provided option key and executes related hooks.
 The current user should have an admin role. Returns a 200 response
-on success, a 404 error if the option is not found, a 403 error if
+on success, a 404 error if the option is not found, a 401 error if
 authentication fails or the user does not have the required role,
-a 422 error if arguments validation failed, a 423 error if the the
-application is locked.</p>
+a 403 error if the token is missing, a 422 error if arguments
+validation failed, a 423 error if the the application is locked.</p>
 <p><strong>Args:</strong>
 - <cite>option_key</cite>: The key of the option to retrieve.</p>
 <p><strong>Returns:</strong>
 - <cite>OptionSelectResponse</cite>: The response schema containing the
 retrieved option.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the user does not have the required
-permissions.
+- <cite>401 Unauthorized</cite>: Raised if the token is invalid or expired,
+or if the current user is not authenticated or does not have the
+required permissions.
+- <cite>403 Forbidden</cite>: Raised if the token is missing.
 - <cite>404 Not Found</cite>: Raised if the option is not found.
 - <cite>422 Unprocessable Entity</cite>: Raised if arguments validation failed.
 - <cite>423 Locked</cite>: Raised if the application is locked.</p>
@@ -1210,10 +1265,10 @@ repository using the provided option key. If the option exists, it
 updates the option value, otherwise, it creates a new option. The
 router executes related hooks before and after the option update.
 The current user should have an admin role. Returns a 200 response
-on success, a 403 error if authentication failed or the user does
-not have the required permissions, a 422 error if the provided
-option value is invalid, and a 423 error if the application is
-locked.</p>
+on success, a 401 error if authentication failed or the user does
+not have the required permissions, a 403 error if the token is
+missing, a 422 error if the provided option value is invalid, and
+a 423 error if the application is locked.</p>
 <p><strong>Args:</strong>
 - <cite>option_key</cite>: The key of the option to update.
 - <cite>OptionUpdateRequest</cite>: The request schema containing the updated
@@ -1222,8 +1277,10 @@ option value.</p>
 - <cite>OptionUpdateResponse</cite>: The response schema containing the updated
 option key.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the user does not have the required
-permissions.
+- <cite>401 Unauthorized</cite>: Raised if the token is invalid or expired,
+or if the current user is not authenticated or does not have the
+required permissions.
+- <cite>403 Forbidden</cite>: Raised if the token is missing.
 - <cite>422 Unprocessable Entity</cite>: Raised if the provided option value
 is invalid.
 - <cite>423 Locked</cite>: Raised if the application is locked.</p>
@@ -1243,17 +1300,19 @@ repository using the provided partner ID. If the partner exists,
 it deletes the partner (but not associated documents), and then
 executes the relevant hooks before and after the partner deletion.
 The current user should have an admin role. Returns a 200 response
-on success, a 404 error if the partner is not found, a 403 error if
-the user does not have the required permissions, and a 423 error if
-the application is locked.</p>
+on success, a 404 error if the partner is not found, a 401 error if
+the user does not have the required permissions, a 403 error if the
+token is missing, and a 423 error if the application is locked.</p>
 <p><strong>Args:</strong>
 - <cite>partner_id</cite>: The ID of the partner to delete.</p>
 <p><strong>Returns:</strong>
 - <cite>PartnerDeleteResponse</cite>: The response schema containing the ID of
 the deleted partner.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the user does not have the required
-permissions.
+- <cite>401 Unauthorized</cite>: Raised if the token is invalid or expired,
+or if the current user is not authenticated or does not have the
+required permissions.
+- <cite>403 Forbidden</cite>: Raised if the token is missing.
 - <cite>404 Not Found</cite>: Raised if the partner is not found.
 - <cite>423 Locked</cite>: Raised if the application is locked.</p>
 <p><strong>Auth:</strong>
@@ -1273,9 +1332,10 @@ error. If the partner is unique, it creates the partner and executes
 relevant hooks before and after insertion, and returns the created
 partner ID in a JSON response. The current user should have a writer
 role or higher. Returns a 201 response on success, a 422 error if
-arguments validation failed or the partner name is duplicated, a 403
+arguments validation failed or the partner name is duplicated, a 401
 error if authentication failed or the user does not have the
-required permissions, and a 423 error if the application is locked.</p>
+required permissions, a 403 error if the token is missing, and
+a 423 error if the application is locked.</p>
 <p><strong>Args:</strong>
 - <cite>PartnerInsertRequest</cite>: A request schema containing the details
 for the new partner.</p>
@@ -1283,8 +1343,10 @@ for the new partner.</p>
 - <cite>PartnerInsertResponse</cite>: The response schema containing the ID of
 the newly created partner.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the current user is not authenticated
-or does not have the required permissions.
+- <cite>401 Unauthorized</cite>: Raised if the token is invalid or expired,
+or if the current user is not authenticated or does not have the
+required permissions.
+- <cite>403 Forbidden</cite>: Raised if the token is missing.
 - <cite>422 Unprocessable Entity</cite>: Raised if arguments validation failed
 or the partner name is already exist.
 - <cite>423 Locked</cite>: Raised if the application is locked.</p>
@@ -1303,10 +1365,10 @@ router.</p>
 <dd><p>Retrieve a list of partners. This endpoint fetches all partners from
 the repository based on the provided filter criteria and executes
 related hooks. The current user must have a reader role or higher.
-Returns a 200 response on success, a 403 error if authentication
-failed or the user does not have the required permissions, a 422
-error if arguments validation failed, and a 423 error if the
-application is locked.</p>
+Returns a 200 response on success, a 401 error if authentication
+failed or the user does not have the required permissions, a 403
+error if the token is missing, a 422 error if arguments validation
+failed, and a 423 error if the application is locked.</p>
 <p><strong>Args:</strong>
 - <cite>PartnerListRequest</cite>: The request schema containing filter and
 pagination details.</p>
@@ -1314,8 +1376,10 @@ pagination details.</p>
 - <cite>PartnerListResponse</cite>: The response schema containing the list
 of partners and the total count.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the current user is not authenticated
-or does not have the required <cite>reader</cite> role.
+- <cite>401 Unauthorized</cite>: Raised if the token is invalid or expired,
+or if the current user is not authenticated or does not have the
+required permissions.
+- <cite>403 Forbidden</cite>: Raised if the token is missing.
 - <cite>422 Unprocessable Entity</cite>:  Raised if arguments validation failed.
 - <cite>423 Locked</cite>: Raised if the application is locked.</p>
 <p><strong>Hooks:</strong>
@@ -1337,17 +1401,20 @@ access this router.</p>
 repository using the provided ID, executes related hooks, and
 returns the partner details in a JSON response. The current user
 should have a reader role or higher. Returns a 200 response on
-success, a 404 error if the partner is not found, a 403 error if
+success, a 404 error if the partner is not found, a 401 error if
 authentication failed or the user does not have the required
-permissions, and a 423 error if the application is locked.</p>
+permissions, a 403 error if the token is missing, and a 423 error
+if the application is locked.</p>
 <p><strong>Args:</strong>
 - <cite>partner_id</cite>: The ID of the partner to retrieve.</p>
 <p><strong>Returns:</strong>
 - <cite>PartnerSelectResponse</cite>: The response schema containing the
 details of the selected partner.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the current user is not authenticated
-or does not have the required permissions.
+- <cite>401 Unauthorized</cite>: Raised if the token is invalid or expired,
+or if the current user is not authenticated or does not have the
+required permissions.
+- <cite>403 Forbidden</cite>: Raised if the token is missing.
 - <cite>404 Not Found</cite>: Raised if the partner with the specified ID does
 not exist.
 - <cite>423 Locked</cite>: Raised if the application is locked.</p>
@@ -1373,9 +1440,10 @@ partner’s attributes, executes related hooks, and returns the
 updated partner ID in a JSON response. The current user must have
 an editor role or higher. Returns a 200 response on success, a 404
 error if the partner is not found, a 422 error if validation
-failed or the partner name is duplicated, a 403 error if
+failed or the partner name is duplicated, a 401 error if
 authentication failed or the user does not have the required
-permissions, and a 423 error if the application is locked.</p>
+permissions, a 403 error if the token is missing, and a 423 error
+if the application is locked.</p>
 <p><strong>Args:</strong>
 - <cite>partner_id</cite>: The ID of the partner to update.
 - <cite>PartnerUpdateRequest</cite>: The request schema containing the updated
@@ -1384,8 +1452,10 @@ partner data.</p>
 - <cite>PartnerUpdateResponse</cite>: The response schema containing the ID of
 the updated partner.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the current user is not authenticated
-or does not have the required permissions.
+- <cite>401 Unauthorized</cite>: Raised if the token is invalid or expired,
+or if the current user is not authenticated or does not have the
+required permissions.
+- <cite>403 Forbidden</cite>: Raised if the token is missing.
 - <cite>404 Not Found</cite>: Raised if the partner with the specified ID
 does not exist.
 - <cite>422 Unprocessable Entity</cite>: Raised if arguments validation failed.
@@ -1410,17 +1480,19 @@ with a given partner ID if it exists. It also triggers hooks before
 and after the deletion process, and returns the partner ID in a JSON
 response. The current user must have an editor role or higher.
 Returns a 200 response on success, a 404 error if the partner is
-not found, a 403 error if authentication failed or the user does
-not have the required permissions, and a 423 error if the
-application is locked.</p>
+not found, a 401 error if authentication failed or the user does
+not have the required permissions, a 403 error if the token is
+missing, and a 423 error if the application is locked.</p>
 <p><strong>Args:</strong>
 - <cite>partner_id</cite>: The ID of the partner whose image is to be deleted.</p>
 <p><strong>Returns:</strong>
 - <cite>PartnerpicDeleteResponse</cite>: Response containing the partner ID
 after the image is successfully removed.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the current user is not authenticated
-or does not have the required permissions.
+- <cite>401 Unauthorized</cite>: Raised if the token is invalid or expired,
+or if the current user is not authenticated or does not have the
+required permissions.
+- <cite>403 Forbidden</cite>: Raised if the token is missing.
 - <cite>404 Not Found</cite>: Raised if the partner with the specified ID
 does not exist.
 - <cite>423 Locked</cite>: Raised if the application is locked.</p>
@@ -1444,9 +1516,10 @@ deleted.</p>
 based on the provided partner ID. The image is validated, resized,
 and saved to the server. The current user must have the editor role
 or higher to access this endpoint. Returns a 200 response on
-success, a 404 error if the partner is not found, a 403 error if
+success, a 404 error if the partner is not found, a 401 error if
 authentication failed or the user does not have the required
-permissions, and a 423 error if the application is locked.</p>
+permissions, a 403 error if the token is missing, and a 423 error
+if the application is locked.</p>
 <p><strong>Args:</strong>
 - <cite>partner_id</cite>: The ID of the partner whose image is being uploaded.
 - <cite>file</cite>: The image file to be uploaded.</p>
@@ -1454,8 +1527,10 @@ permissions, and a 423 error if the application is locked.</p>
 - <cite>PartnerpicUploadResponse</cite>: A response schema containing the
 partner ID after the image has been successfully uploaded.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the current user is not authenticated
-or does not have the required permissions.
+- <cite>401 Unauthorized</cite>: Raised if the token is invalid or expired,
+or if the current user is not authenticated or does not have the
+required permissions.
+- <cite>403 Forbidden</cite>: Raised if the token is missing.
 - <cite>404 Not Found</cite>: Raised if the partner with the specified ID
 does not exist.
 - <cite>423 Locked</cite>: Raised if the application is locked.</p>
@@ -1490,15 +1565,18 @@ returns information such as the operating system, platform, Python
 version, disk and memory usage, CPU status, and database details
 like version and size. Executes the corresponding hook and returns
 the telemetry data in a JSON response. The current user should have
-an admin role. Returns a 200 response on success, a 403 error if
+an admin role. Returns a 200 response on success, a 401 error if
 authentication failed or the user does not have the required
-permissions, and a 423 error if the application is locked.</p>
+permissions, a 403 error if the token is missing, and a 423 error
+if the application is locked.</p>
 <p><strong>Returns:</strong>
 - <cite>TelemetryRetrieveResponse</cite>: A response schema containing the
 telemetry data.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the current user is not authenticated
-or does not have the required permissions.
+- <cite>401 Unauthorized</cite>: Raised if the token is invalid or expired,
+or if the current user is not authenticated or does not have the
+required permissions.
+- <cite>403 Forbidden</cite>: Raised if the token is missing.
 - <cite>423 Locked</cite>: Raised if the application is locked.</p>
 <p><strong>Hooks:</strong>
 - <cite>HOOK_ON_TELEMETRY_RETRIEVE</cite>: Executes after the telemetry data is
@@ -1517,15 +1595,18 @@ retrieved.</p>
 <dd><p>Invalidate a token. This router updates the JTI of the current user
 to invalidate their token. It requires the user to have any role.
 The corresponding hooks are executed, and an empty JSON response is
-returned. Returns a 200 status code on success, a 403 status code
+returned. Returns a 200 status code on success, a 401 status code
 if authentication fails or the user does not have the required
-permissions, and a 423 status code if the application is locked.</p>
+permissions, a 403 error if the token is missing, and a 423 status
+code if the application is locked.</p>
 <p><strong>Returns:</strong>
 - <cite>TokenDeleteResponse</cite>: A response schema indicating the user ID
 for which the token was invalidated.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the user is not authenticated or does
-not have the required permissions.
+- <cite>401 Unauthorized</cite>: Raised if the token is invalid or expired,
+or if the current user is not authenticated or does not have the
+required permissions.
+- <cite>403 Forbidden</cite>: Raised if the token is missing.
 - <cite>423 Locked</cite>: Raised if the application is locked.</p>
 <p><strong>Hooks:</strong>
 - <cite>HOOK_BEFORE_TOKEN_INVALIDATE</cite>: Executes before invalidating the
@@ -1547,9 +1628,9 @@ access this router.</p>
 <dd><p>Retrieve a token. This router retrieves a JWT token for the user
 after validating the one-time password (TOTP). The user must be
 active and have accepted the password in the previous step. Returns
-a 200 response with the token on success, a 403 error if the user
-is inactive, a 422 error if the TOTP is incorrect, and a 423 error
-if the application is locked.</p>
+a 200 response with the token on success, a 401 error if the user
+is inactive, a 403 error if the token is missing, a 422 error if the
+TOTP is incorrect, and a 423 error if the application is locked.</p>
 <p><strong>Returns:</strong>
 - <cite>TokenRetrieveResponse</cite>: A response schema containing the
 JWT token upon success.</p>
@@ -1578,15 +1659,17 @@ access this router.</p>
 to delete their own account, retrieves the user from the repository
 using the provided ID, verifies if the user exists, deletes the user,
 and executes related hooks. The current user should have an admin
-role. Returns a 200 response on success, a 403 error if the current
+role. Returns a 200 response on success, a 401 error if the current
 user attempts to delete their own account or if an exception occurs
-during deletion, a 404 error if the user is not found, and a 423
-error if the application is locked.</p>
+during deletion, a 403 error if the token is missing, a 404 error if
+the user is not found, and a 423 error if the application is locked.</p>
 <p><strong>Returns:</strong>
 - <cite>UserDeleteResponse</cite>: The ID of the user to delete.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the current user attempts to delete
-their own account or if the deletion is forbidden.
+- <cite>401 Unauthorized</cite>: Raised if the token is invalid or expired,
+or if the current user is not authenticated or does not have the
+required permissions.
+- <cite>403 Forbidden</cite>: Raised if the token is missing.
 - <cite>404 Not Found</cite>: Raised if the user with the provided ID does not
 exist.
 - <cite>423 Locked</cite>: Raised if the application is locked.</p>
@@ -1607,16 +1690,18 @@ exist.
 <dd><p>Retrieve a list of users. This endpoint fetches all users from
 the repository based on the provided filter criteria and executes
 related hooks. The current user must have a reader role or higher.
-Returns a 200 response on success, a 403 error if authentication
-failed or the user does not have the required permissions, a 422
-error if arguments validation failed, and a 423 error if the
-application is locked.</p>
+Returns a 200 response on success, a 401 error if authentication
+failed or the user does not have the required permissions, a 403
+error if the token is missing, a 422 error if arguments validation
+failed, and a 423 error if the application is locked.</p>
 <p><strong>Returns:</strong>
 - <cite>UserListResponse</cite>: A response schema containing the list of users
 and the total count.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if authentication fails or the user does not
-have the required permissions.
+- <cite>401 Unauthorized</cite>: Raised if the token is invalid or expired,
+or if the current user is not authenticated or does not have the
+required permissions.
+- <cite>403 Forbidden</cite>: Raised if the token is missing.
 - <cite>422 Unprocessable Entity</cite>: Raised if the arguments in the request
 schema are invalid.
 - <cite>423 Locked</cite>: Raised if the application is locked.</p>
@@ -1639,9 +1724,10 @@ authentication. Authenticates a user by validating their login
 credentials. Invalid passwords increase the attempt count and may
 lead to user suspension if the attempt limit is exceeded. Returns
 a 200 response with a confirmation of password acceptance upon
-successful authentication. Returns a 403 error if the user is
-suspended or inactive, a 422 error if the password is invalid, and
-a 423 error if the application is locked.</p>
+successful authentication. Returns a 401 error if the user is
+suspended or inactive, a 403 error if the token is missing, a 422
+error if the password is invalid, and a 423 error if the application
+is locked.</p>
 <p><strong>Returns:</strong>
 - <cite>UserLoginResponse</cite>: A response schema confirming whether the
 password was accepted or not.</p>
@@ -1669,14 +1755,17 @@ and provides the image as a response. The function checks if the
 user exists and validates the provided MFA secret. If any validation
 fails, appropriate errors are raised. The user must not be active,
 and the provided MFA secret must match the one stored for the user.
-Returns a 403 error if the user is active, a 422 error if the user
-does not exist or if the MFA secret does not match, and a 423 error
-if the application is locked.</p>
+Returns a 401 error if the user is active, a 403 error if the token
+is missing, a 422 error if the user does not exist or if the MFA
+secret does not match, and a 423 error if the application is locked.</p>
 <p><strong>Returns:</strong>
 - A QR code image in the response body to be scanned by an MFA
 application.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the user is active.
+- <cite>401 Unauthorized</cite>: Raised if the token is invalid or expired,
+or if the current user is not authenticated or does not have the
+required permissions.
+- <cite>403 Forbidden</cite>: Raised if the token is missing.
 - <cite>422 Unprocessable Entity</cite>: Raised if the user does not exist or
 if the MFA secret does not match.
 - <cite>423 Locked</cite>: Raised if the application is locked.</p>
@@ -1697,16 +1786,18 @@ QR code.
 <dd><p>Change user password. Requires the current user to have a reader
 role or higher. The user ID in the request must match the current
 user ID. Returns a 200 response with the ID of the updated user.
-Raises a 403 error if the user’s token is invalid or if the user
-does not have the required role, a 422 error if the current password
-is incorrect, and a 423 error if the application is locked.</p>
+Raises a 401 error if the user’s token is invalid or if the user
+does not have the required role, a 403 error if the token is missing,
+a 422 error if the current password is incorrect, and a 423 error
+if the application is locked.</p>
 <p><strong>Returns:</strong>
 - <cite>PasswordUpdateResponse</cite>: A response schema containing the ID of
 the updated user.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the user’s token is invalid or if the
-user does not have the required role, or if the user ID does not
+- <cite>401 Unauthorized</cite>: Raised if the user’s token is invalid or if
+the user does not have the required role, or if the user ID does not
 match the current user’s ID.
+- <cite>403 Forbidden</cite>: Raised if the token is missing.
 - <cite>422 Unprocessable Entity</cite>: Raised if the current password is
 incorrect.
 - <cite>423 Locked</cite>: Raised if the application is locked.</p>
@@ -1754,18 +1845,19 @@ already exists (duplicate).
 <dd><p>Change a user role. Requires the current user to have an admin role.
 The user being updated must be different from the current user.
 Returns a 200 response with the ID of the updated user. Raises a 403
-error if the current user tries to update their own role, if the
-user’s token is invalid, or if the user does not have the required
-role. Returns a 404 error if the user to be updated is not found,
-a 422 error if arguments validation failed, a 423 error if the
-application is locked.</p>
+error if the token is missing or if the current user tries to update
+their own role, a 401 error if the user’s token is invalid, or if
+the user does not have the required role. Returns a 404 error if
+the user to be updated is not found, a 422 error if arguments
+validation failed, a 423 error if the application is locked.</p>
 <p><strong>Returns:</strong>
 - <cite>RoleUpdateResponse</cite>: A response schema containing the ID of the
 updated user.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the current user tries to update their
-own role, if the user’s token is invalid, or if the user does not
-have the required role.
+- <cite>401 Unauthorized</cite>: Raised if the current user tries to update
+their own role, if the user’s token is invalid, or if the user does
+not have the required role.
+- <cite>403 Forbidden</cite>: Raised if the token is missing.
 - <cite>404 Not Found</cite>: Raised if the user to be updated is not found.
 - <cite>422 Unprocessable Entity</cite>: Raised if arguments validation failed
 - <cite>423 Locked</cite>: Raised if the application is locked.</p>
@@ -1787,15 +1879,18 @@ have the required role.
 using the provided ID, executes related hooks, and returns the user
 details in a JSON response. Requires the user to have the reader
 role or higher. Returns a 200 response with the user’s details if
-found. Raises a 404 error if the user is not found, a 403 error if
+found. Raises a 404 error if the user is not found, a 401 error if
 the user’s token is invalid or if the user does not have the
-required role, a 423 error if the application is locked.</p>
+required role, a 403 error if the token is missing, a 423 error
+if the application is locked.</p>
 <p><strong>Returns:</strong>
 - <cite>UserSelectResponse</cite>: A response schema containing the details of
 the retrieved user.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the user’s token is invalid or if the
-user does not have the required <cite>reader</cite> role or higher.
+- <cite>401 Unauthorized</cite>: Raised if the token is invalid or expired,
+or if the current user is not authenticated or does not have the
+required permissions.
+- <cite>403 Forbidden</cite>: Raised if the token is missing.
 - <cite>404 Not Found</cite>: Raised if the user with the given ID is not found.
 - <cite>423 Locked</cite>: Raised if the application is locked.</p>
 <p><strong>Hooks:</strong>
@@ -1816,17 +1911,18 @@ access this router.</p>
 <dd><p>Update a user. Modifies the first name, last name, user caption, and
 user contacts for the specified user. Requires the user to have the
 reader role or higher. Returns a 200 response with the updated user’s
-ID. Raises a 403 error if the user does not have the required role
-or if the user is attempting to update a different user’s details,
-a 422 error if arguments validation failed, a 423 error if the
-application is locked.</p>
+ID. Raises a 401 error if the user does not have the required role,
+a 403 error if the token is missing or if the user is attempting to
+update a different user’s details, a 422 error if arguments
+validation failed, a 423 error if the application is locked.</p>
 <p><strong>Returns:</strong>
 - <cite>UserUpdateResponse</cite>: A response schema containing the ID of the
 updated user.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the current user does not have the
-required permissions, or if the user is trying to update another
-user’s information.
+- <cite>401 Unauthorized</cite>: Raised if the current user does not have the
+required permissions.
+- <cite>403 Forbidden</cite>: Raised if the token is missing, or if the user is
+trying to update another user’s information.
 - <cite>404 Not Found</cite>: Raised if the user with the provided ID is not
 found.
 - <cite>422 Unprocessable Entity</cite>: Raised if the provided data does not
@@ -1852,17 +1948,19 @@ access this router.</p>
 <dd><p>Remove a userpic. Deletes the userpic if it exists and updates the
 user’s data to remove the userpic. Allowed for the current user only.
 Requires the user to have a reader role or higher. Returns a 200
-response with the user ID. Raises a 403 error if the user attempts
-to delete a userpic for a different user or if the user’s token is
-invalid, a 404 error if the user is not found, a 423 error if the
-application is locked.</p>
+response with the user ID. Raises a 401 error if the token is
+invalid or if the user does not have the required role, a 403 error
+if the user attempts to delete a userpic for a different user, a 404
+error if the user is not found, a 423 error if the application is
+locked.</p>
 <p><strong>Returns:</strong>
 - <cite>UserpicDeleteResponse</cite>: A response schema containing the ID of
 the user from whom the userpic was deleted.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the current user attempts to delete the
-userpic of another user, or if the user does not have the required
-role or if the user’s token is invalid.
+- <cite>401 Unauthorized</cite>: Raised if the user does not have the
+required role or if the user’s token is invalid.
+- <cite>403 Forbidden</cite>: Raised if the token is missing or if the current
+user attempts to delete the userpic of another user.
 - <cite>404 Not Found</cite>: Raised if the user with the provided ID is not
 found.
 - <cite>423 Locked</cite>: Raised if the application is locked.</p>
@@ -1887,16 +1985,18 @@ access this router.</p>
 and saves a new one, resizes it to the specified dimensions, and
 updates the user’s data with the new userpic. Allowed for the
 current user only. Requires the user to have a reader role or higher.
-Returns a 200 response with the user ID. Raises a 403 error if the
-user attempts to upload a userpic for a different user, or if the
-user’s token is invalid. Raises a 422 error if the file’s MIME type
-is unsupported. Raises a 423 error if the application is locked.</p>
+Returns a 200 response with the user ID. Raises 401 error if the
+user’s token is invalid, a 403 error if the token is missing or if
+the user attempts to upload a userpic for a different user. Raises
+a 422 error if the file’s MIME type is unsupported. Raises a 423
+error if the application is locked.</p>
 <p><strong>Returns:</strong>
 - <cite>UserpicUploadResponse</cite>: A response schema containing the ID of
 the user with the updated userpic.</p>
 <p><strong>Raises:</strong>
-- <cite>403 Forbidden</cite>: Raised if the current user attempts to upload a
-userpic for a different user, or if the user’s token is invalid.
+- <cite>401 Unauthorized</cite>: Raised if the user’s token is invalid.
+- <cite>403 Forbidden</cite>: Raised if the token is missing or if the curren
+user attempts to upload a userpic for a different user.
 - <cite>422 Unprocessable Entity</cite>: Raised if the file’s MIME type is
 unsupported.
 - <cite>404 Not Found</cite>: Raised if the user with the provided ID is not

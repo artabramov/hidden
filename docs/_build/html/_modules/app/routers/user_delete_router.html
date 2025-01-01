@@ -43,12 +43,14 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.html">app package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.decorators.html">app.decorators package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.filters.html">app.filters package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.helpers.html">app.helpers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.managers.html">app.managers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.models.html">app.models package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.plugins.html">app.plugins package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.routers.html">app.routers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.schemas.html">app.schemas package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.triggers.html">app.triggers package</a></li>
 </ul>
 
         </div>
@@ -114,17 +116,19 @@
 <span class="sd">    to delete their own account, retrieves the user from the repository</span>
 <span class="sd">    using the provided ID, verifies if the user exists, deletes the user,</span>
 <span class="sd">    and executes related hooks. The current user should have an admin</span>
-<span class="sd">    role. Returns a 200 response on success, a 403 error if the current</span>
+<span class="sd">    role. Returns a 200 response on success, a 401 error if the current</span>
 <span class="sd">    user attempts to delete their own account or if an exception occurs</span>
-<span class="sd">    during deletion, a 404 error if the user is not found, and a 423</span>
-<span class="sd">    error if the application is locked.</span>
+<span class="sd">    during deletion, a 403 error if the token is missing, a 404 error if</span>
+<span class="sd">    the user is not found, and a 423 error if the application is locked.</span>
 
 <span class="sd">    **Returns:**</span>
 <span class="sd">    - `UserDeleteResponse`: The ID of the user to delete.</span>
 
 <span class="sd">    **Raises:**</span>
-<span class="sd">    - `403 Forbidden`: Raised if the current user attempts to delete</span>
-<span class="sd">    their own account or if the deletion is forbidden.</span>
+<span class="sd">    - `401 Unauthorized`: Raised if the token is invalid or expired,</span>
+<span class="sd">    or if the current user is not authenticated or does not have the</span>
+<span class="sd">    required permissions.</span>
+<span class="sd">    - `403 Forbidden`: Raised if the token is missing.</span>
 <span class="sd">    - `404 Not Found`: Raised if the user with the provided ID does not</span>
 <span class="sd">    exist.</span>
 <span class="sd">    - `423 Locked`: Raised if the application is locked.</span>

@@ -43,12 +43,14 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.html">app package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.decorators.html">app.decorators package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.filters.html">app.filters package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.helpers.html">app.helpers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.managers.html">app.managers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.models.html">app.models package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.plugins.html">app.plugins package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.routers.html">app.routers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.schemas.html">app.schemas package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.triggers.html">app.triggers package</a></li>
 </ul>
 
         </div>
@@ -113,9 +115,9 @@
 <span class="sd">    Retrieve a token. This router retrieves a JWT token for the user</span>
 <span class="sd">    after validating the one-time password (TOTP). The user must be</span>
 <span class="sd">    active and have accepted the password in the previous step. Returns</span>
-<span class="sd">    a 200 response with the token on success, a 403 error if the user</span>
-<span class="sd">    is inactive, a 422 error if the TOTP is incorrect, and a 423 error</span>
-<span class="sd">    if the application is locked.</span>
+<span class="sd">    a 200 response with the token on success, a 401 error if the user</span>
+<span class="sd">    is inactive, a 403 error if the token is missing, a 422 error if the</span>
+<span class="sd">    TOTP is incorrect, and a 423 error if the application is locked.</span>
 
 <span class="sd">    **Returns:**</span>
 <span class="sd">    - `TokenRetrieveResponse`: A response schema containing the</span>
@@ -148,7 +150,7 @@
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="o">.</span><span class="n">is_active</span> <span class="ow">and</span> <span class="n">admin_exists</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">E</span><span class="p">([</span><span class="n">LOC_QUERY</span><span class="p">,</span> <span class="s2">&quot;user_login&quot;</span><span class="p">],</span> <span class="n">schema</span><span class="o">.</span><span class="n">user_login</span><span class="p">,</span>
-                <span class="n">ERR_USER_INACTIVE</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_403_FORBIDDEN</span><span class="p">)</span>
+                <span class="n">ERR_USER_INACTIVE</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_401_UNAUTHORIZED</span><span class="p">)</span>
 
     <span class="k">elif</span> <span class="ow">not</span> <span class="n">user</span><span class="o">.</span><span class="n">password_accepted</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">E</span><span class="p">([</span><span class="n">LOC_QUERY</span><span class="p">,</span> <span class="s2">&quot;user_totp&quot;</span><span class="p">],</span> <span class="n">schema</span><span class="o">.</span><span class="n">user_totp</span><span class="p">,</span>

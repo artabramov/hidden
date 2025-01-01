@@ -43,12 +43,14 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.html">app package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.decorators.html">app.decorators package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.filters.html">app.filters package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.helpers.html">app.helpers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.managers.html">app.managers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.models.html">app.models package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.plugins.html">app.plugins package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.routers.html">app.routers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.schemas.html">app.schemas package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.triggers.html">app.triggers package</a></li>
 </ul>
 
         </div>
@@ -113,9 +115,10 @@
 <span class="sd">    credentials. Invalid passwords increase the attempt count and may</span>
 <span class="sd">    lead to user suspension if the attempt limit is exceeded. Returns</span>
 <span class="sd">    a 200 response with a confirmation of password acceptance upon</span>
-<span class="sd">    successful authentication. Returns a 403 error if the user is</span>
-<span class="sd">    suspended or inactive, a 422 error if the password is invalid, and</span>
-<span class="sd">    a 423 error if the application is locked.</span>
+<span class="sd">    successful authentication. Returns a 401 error if the user is</span>
+<span class="sd">    suspended or inactive, a 403 error if the token is missing, a 422</span>
+<span class="sd">    error if the password is invalid, and a 423 error if the application</span>
+<span class="sd">    is locked.</span>
 
 <span class="sd">    **Returns:**</span>
 <span class="sd">    - `UserLoginResponse`: A response schema confirming whether the</span>
@@ -144,14 +147,14 @@
 
     <span class="k">elif</span> <span class="n">user</span><span class="o">.</span><span class="n">suspended_date</span> <span class="o">&gt;</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()):</span>
         <span class="k">raise</span> <span class="n">E</span><span class="p">([</span><span class="n">LOC_BODY</span><span class="p">,</span> <span class="s2">&quot;user_login&quot;</span><span class="p">],</span> <span class="n">schema</span><span class="o">.</span><span class="n">user_login</span><span class="p">,</span>
-                <span class="n">ERR_USER_SUSPENDED</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_403_FORBIDDEN</span><span class="p">)</span>
+                <span class="n">ERR_USER_SUSPENDED</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_401_UNAUTHORIZED</span><span class="p">)</span>
 
     <span class="n">admin_exists</span> <span class="o">=</span> <span class="k">await</span> <span class="n">user_repository</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span>
         <span class="n">user_role__eq</span><span class="o">=</span><span class="n">UserRole</span><span class="o">.</span><span class="n">admin</span><span class="p">,</span> <span class="n">is_active__eq</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="o">.</span><span class="n">is_active</span> <span class="ow">and</span> <span class="n">admin_exists</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">E</span><span class="p">([</span><span class="n">LOC_BODY</span><span class="p">,</span> <span class="s2">&quot;user_login&quot;</span><span class="p">],</span> <span class="n">schema</span><span class="o">.</span><span class="n">user_login</span><span class="p">,</span>
-                <span class="n">ERR_USER_INACTIVE</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_403_FORBIDDEN</span><span class="p">)</span>
+                <span class="n">ERR_USER_INACTIVE</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_401_UNAUTHORIZED</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">password_hash</span> <span class="o">==</span> <span class="n">get_hash</span><span class="p">(</span><span class="n">schema</span><span class="o">.</span><span class="n">user_password</span><span class="p">):</span>
         <span class="n">user</span><span class="o">.</span><span class="n">password_accepted</span> <span class="o">=</span> <span class="kc">True</span>

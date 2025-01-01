@@ -43,12 +43,14 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.html">app package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.decorators.html">app.decorators package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.filters.html">app.filters package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.helpers.html">app.helpers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.managers.html">app.managers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.models.html">app.models package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.plugins.html">app.plugins package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.routers.html">app.routers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.schemas.html">app.schemas package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.triggers.html">app.triggers package</a></li>
 </ul>
 
         </div>
@@ -77,32 +79,18 @@
              
   <h1>Source code for app.schemas.lock_schemas</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">The module defines Pydantic schemas for managing the lockdown state of</span>
-<span class="sd">the application. Includes schemas for retrieving and updating the</span>
-<span class="sd">lockdown status.</span>
+<span class="sd">The module defines Pydantic schemas for managing the lock status of</span>
+<span class="sd">the application. Includes schemas for updating the lock status.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span>
-
-
-<div class="viewcode-block" id="LockRetrieveResponse">
-<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.lock_schemas.LockRetrieveResponse">[docs]</a>
-<span class="k">class</span> <span class="nc">LockRetrieveResponse</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Pydantic schema for the response when retrieving the application&#39;s</span>
-<span class="sd">    lockdown status. Includes a flag indicating whether the application</span>
-<span class="sd">    is locked and the date of lockdown.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">is_locked</span><span class="p">:</span> <span class="nb">bool</span>
-    <span class="n">locked_date</span><span class="p">:</span> <span class="nb">int</span></div>
-
 
 
 <div class="viewcode-block" id="LockUpdateRequest">
 <a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.lock_schemas.LockUpdateRequest">[docs]</a>
 <span class="k">class</span> <span class="nc">LockUpdateRequest</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Pydantic schema for a request to update the application&#39;s lockdown</span>
+<span class="sd">    Pydantic schema for a request to update the application&#39;s lock</span>
 <span class="sd">    status. Includes a flag to specify whether the application should be</span>
 <span class="sd">    locked or unlocked.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -115,7 +103,7 @@
 <span class="k">class</span> <span class="nc">LockUpdateResponse</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Pydantic schema for the response after updating the application&#39;s</span>
-<span class="sd">    lockdown status. Includes the updated lockdown status flag.</span>
+<span class="sd">    lock status. Includes the updated lockdown status flag.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">is_locked</span><span class="p">:</span> <span class="nb">bool</span></div>
 

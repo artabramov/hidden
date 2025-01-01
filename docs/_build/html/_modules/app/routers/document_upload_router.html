@@ -43,12 +43,14 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.html">app package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.decorators.html">app.decorators package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.filters.html">app.filters package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.helpers.html">app.helpers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.managers.html">app.managers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.models.html">app.models package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.plugins.html">app.plugins package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.routers.html">app.routers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.schemas.html">app.schemas package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.triggers.html">app.triggers package</a></li>
 </ul>
 
         </div>
@@ -127,9 +129,9 @@
 <span class="sd">    writer role or higher. Returns a 201 response on success, a 422</span>
 <span class="sd">    error if the collection is invalid, a 423 error if the collection</span>
 <span class="sd">    or the application is locked, a 500 error if an unexpected failure</span>
-<span class="sd">    occurs during file processing or shard creation, and a 403 error</span>
+<span class="sd">    occurs during file processing or shard creation, and a 401 error</span>
 <span class="sd">    if authentication failed or the user does not have the required</span>
-<span class="sd">    permissions.</span>
+<span class="sd">    permissions, a 403 error if the token is missing.</span>
 
 <span class="sd">    **Args:**</span>
 <span class="sd">    - `collection_id`: The ID of the collection to upload the document to.</span>
@@ -140,8 +142,10 @@
 <span class="sd">    the document and the latest revision.</span>
 
 <span class="sd">    **Raises:**</span>
-<span class="sd">    - `403 Forbidden`: Raised if the user does not have the required</span>
-<span class="sd">    permissions.</span>
+<span class="sd">    - `401 Unauthorized`: Raised if the token is invalid or expired,</span>
+<span class="sd">    or if the current user is not authenticated or does not have the</span>
+<span class="sd">    required permissions.</span>
+<span class="sd">    - `403 Forbidden`: Raised if the token is missing.</span>
 <span class="sd">    - `422 Unprocessable Entity`: Raised if the collection does not exist</span>
 <span class="sd">    or is invalid.</span>
 <span class="sd">    - `423 Locked`: Raised if the collection or the application is</span>

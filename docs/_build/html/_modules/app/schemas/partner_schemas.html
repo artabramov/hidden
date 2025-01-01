@@ -43,12 +43,14 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.html">app package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.decorators.html">app.decorators package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.filters.html">app.filters package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.helpers.html">app.helpers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.managers.html">app.managers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.models.html">app.models package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.plugins.html">app.plugins package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.routers.html">app.routers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.schemas.html">app.schemas package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.triggers.html">app.triggers package</a></li>
 </ul>
 
         </div>
@@ -85,8 +87,7 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
 <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span><span class="p">,</span> <span class="n">field_validator</span>
 <span class="kn">from</span> <span class="nn">app.filters.partner_filters</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">filter_partner_name</span><span class="p">,</span> <span class="n">filter_partner_type</span><span class="p">,</span> <span class="n">filter_partner_region</span><span class="p">,</span>
-    <span class="n">filter_partner_contacts</span><span class="p">,</span> <span class="n">filter_partner_website</span><span class="p">,</span> <span class="n">filter_partner_summary</span><span class="p">)</span>
+    <span class="n">filter_partner_name</span><span class="p">,</span> <span class="n">filter_partner_contacts</span><span class="p">,</span> <span class="n">filter_partner_summary</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="PartnerInsertRequest">
@@ -94,13 +95,10 @@
 <span class="k">class</span> <span class="nc">PartnerInsertRequest</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Pydantic schema for the request to insert a new partner entity.</span>
-<span class="sd">    Requires the partner name, and optionally partner type, region,</span>
-<span class="sd">    website, contacts, and summary.</span>
+<span class="sd">    Requires the partner name, and optionally partner contacts, and</span>
+<span class="sd">    summary.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">partner_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
-    <span class="n">partner_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-    <span class="n">partner_region</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-    <span class="n">partner_website</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
     <span class="n">partner_contacts</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
     <span class="n">partner_summary</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 
@@ -111,32 +109,11 @@
         <span class="k">return</span> <span class="n">filter_partner_name</span><span class="p">(</span><span class="n">partner_name</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="PartnerInsertRequest.filter_partner_type">
-<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.partner_schemas.PartnerInsertRequest.filter_partner_type">[docs]</a>
-    <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;partner_type&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;before&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">filter_partner_type</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">partner_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="n">filter_partner_type</span><span class="p">(</span><span class="n">partner_type</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="PartnerInsertRequest.filter_partner_region">
-<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.partner_schemas.PartnerInsertRequest.filter_partner_region">[docs]</a>
-    <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;partner_region&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;before&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">filter_partner_region</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">partner_region</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="n">filter_partner_region</span><span class="p">(</span><span class="n">partner_region</span><span class="p">)</span></div>
-
-
 <div class="viewcode-block" id="PartnerInsertRequest.filter_partner_contacts">
 <a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.partner_schemas.PartnerInsertRequest.filter_partner_contacts">[docs]</a>
     <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;partner_contacts&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;before&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">filter_partner_contacts</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">partner_contacts</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>  <span class="c1"># noqa E501</span>
         <span class="k">return</span> <span class="n">filter_partner_contacts</span><span class="p">(</span><span class="n">partner_contacts</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="PartnerInsertRequest.filter_partner_website">
-<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.partner_schemas.PartnerInsertRequest.filter_partner_website">[docs]</a>
-    <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;partner_website&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;before&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">filter_partner_website</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">partner_website</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>  <span class="c1"># noqa E501</span>
-        <span class="k">return</span> <span class="n">filter_partner_website</span><span class="p">(</span><span class="n">partner_website</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="PartnerInsertRequest.filter_partner_summary">
@@ -165,7 +142,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Pydantic schema for the response after selecting a partner entity.</span>
 <span class="sd">    Includes the partner ID, creation and update dates, partner name,</span>
-<span class="sd">    type, region, website, contacts, summary, and logo URL.</span>
+<span class="sd">    contacts, summary, and picture URL.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">created_date</span><span class="p">:</span> <span class="nb">int</span>
@@ -173,9 +150,6 @@
     <span class="n">user_id</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">user_name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">partner_name</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">partner_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">partner_region</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">partner_website</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">partner_contacts</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">partner_summary</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">partnerpic_url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
@@ -187,13 +161,10 @@
 <span class="k">class</span> <span class="nc">PartnerUpdateRequest</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Pydantic schema for the request to update an existing partner entity.</span>
-<span class="sd">    Requires the updated partner name, and optionally the partner type,</span>
-<span class="sd">    region, website, contacts, and summary.</span>
+<span class="sd">    Requires the updated partner name, and optionally the partner</span>
+<span class="sd">    contacts, and summary.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">partner_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
-    <span class="n">partner_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-    <span class="n">partner_region</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-    <span class="n">partner_website</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
     <span class="n">partner_contacts</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
     <span class="n">partner_summary</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 
@@ -204,32 +175,11 @@
         <span class="k">return</span> <span class="n">filter_partner_name</span><span class="p">(</span><span class="n">partner_name</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="PartnerUpdateRequest.filter_partner_type">
-<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.partner_schemas.PartnerUpdateRequest.filter_partner_type">[docs]</a>
-    <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;partner_type&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;before&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">filter_partner_type</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">partner_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">filter_partner_type</span><span class="p">(</span><span class="n">partner_type</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="PartnerUpdateRequest.filter_partner_region">
-<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.partner_schemas.PartnerUpdateRequest.filter_partner_region">[docs]</a>
-    <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;partner_region&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;before&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">filter_partner_region</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">partner_region</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">filter_partner_region</span><span class="p">(</span><span class="n">partner_region</span><span class="p">)</span></div>
-
-
 <div class="viewcode-block" id="PartnerUpdateRequest.filter_partner_contacts">
 <a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.partner_schemas.PartnerUpdateRequest.filter_partner_contacts">[docs]</a>
     <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;partner_contacts&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;before&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">filter_partner_contacts</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">partner_contacts</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">filter_partner_contacts</span><span class="p">(</span><span class="n">partner_contacts</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="PartnerUpdateRequest.filter_partner_website">
-<a class="viewcode-back" href="../../../autodoc/app.schemas.html#app.schemas.partner_schemas.PartnerUpdateRequest.filter_partner_website">[docs]</a>
-    <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;partner_website&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;before&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">filter_partner_website</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">partner_website</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">filter_partner_website</span><span class="p">(</span><span class="n">partner_website</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="PartnerUpdateRequest.filter_partner_summary">
@@ -269,17 +219,13 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Pydantic schema for requesting a list of partner entities. Requires</span>
 <span class="sd">    pagination options with offset and limit, and ordering criteria.</span>
-<span class="sd">    Optionally filters by partner name, type, region, or contacts.</span>
+<span class="sd">    Optionally filters by partner name.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">partner_name__ilike</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">partner_type__ilike</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">partner_region__ilike</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">partner_contacts__ilike</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
     <span class="n">order_by</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span>
-        <span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;created_date&quot;</span><span class="p">,</span> <span class="s2">&quot;updated_date&quot;</span><span class="p">,</span> <span class="s2">&quot;user_id&quot;</span><span class="p">,</span> <span class="s2">&quot;partner_name&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;partner_type&quot;</span><span class="p">,</span> <span class="s2">&quot;partner_region&quot;</span><span class="p">,</span> <span class="s2">&quot;partner_contacts&quot;</span><span class="p">]</span>
+        <span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;created_date&quot;</span><span class="p">,</span> <span class="s2">&quot;updated_date&quot;</span><span class="p">,</span> <span class="s2">&quot;user_id&quot;</span><span class="p">,</span> <span class="s2">&quot;partner_name&quot;</span><span class="p">]</span>
     <span class="n">order</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;asc&quot;</span><span class="p">,</span> <span class="s2">&quot;desc&quot;</span><span class="p">,</span> <span class="s2">&quot;rand&quot;</span><span class="p">]</span></div>
 
 

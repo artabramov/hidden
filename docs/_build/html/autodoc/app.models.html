@@ -155,11 +155,8 @@
 <li class="toctree-l4"><a class="reference internal" href="#app.models.partner_model.Partner.partner_contacts"><code class="docutils literal notranslate"><span class="pre">Partner.partner_contacts</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#app.models.partner_model.Partner.partner_documents"><code class="docutils literal notranslate"><span class="pre">Partner.partner_documents</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#app.models.partner_model.Partner.partner_name"><code class="docutils literal notranslate"><span class="pre">Partner.partner_name</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#app.models.partner_model.Partner.partner_region"><code class="docutils literal notranslate"><span class="pre">Partner.partner_region</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#app.models.partner_model.Partner.partner_summary"><code class="docutils literal notranslate"><span class="pre">Partner.partner_summary</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#app.models.partner_model.Partner.partner_type"><code class="docutils literal notranslate"><span class="pre">Partner.partner_type</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#app.models.partner_model.Partner.partner_user"><code class="docutils literal notranslate"><span class="pre">Partner.partner_user</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#app.models.partner_model.Partner.partner_website"><code class="docutils literal notranslate"><span class="pre">Partner.partner_website</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#app.models.partner_model.Partner.partnerpic_filename"><code class="docutils literal notranslate"><span class="pre">Partner.partnerpic_filename</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#app.models.partner_model.Partner.partnerpic_filename_encrypted"><code class="docutils literal notranslate"><span class="pre">Partner.partnerpic_filename_encrypted</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#app.models.partner_model.Partner.partnerpic_path"><code class="docutils literal notranslate"><span class="pre">Partner.partnerpic_path</span></code></a></li>
@@ -770,7 +767,7 @@ the module ensures that the profile picture is deleted when the partner
 entity is removed from the database.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="app.models.partner_model.Partner">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.models.partner_model.</span></span><span class="sig-name descname"><span class="pre">Partner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partner_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partner_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partner_region</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partner_website</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partner_contacts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partner_summary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partnerpic_filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/models/partner_model.html#Partner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.partner_model.Partner" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.models.partner_model.</span></span><span class="sig-name descname"><span class="pre">Partner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partner_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partner_contacts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partner_summary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partnerpic_filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/models/partner_model.html#Partner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.partner_model.Partner" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Base</span></code></p>
 <p>SQLAlchemy model for a partner entity, which includes information
 about the partner such as their name, type, region, website, and
@@ -804,28 +801,13 @@ picture, and ensuring file deletion when the partner is deleted.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="app.models.partner_model.Partner.partner_region">
-<span class="sig-name descname"><span class="pre">partner_region</span></span><a class="headerlink" href="#app.models.partner_model.Partner.partner_region" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
 <dt class="sig sig-object py" id="app.models.partner_model.Partner.partner_summary">
 <span class="sig-name descname"><span class="pre">partner_summary</span></span><a class="headerlink" href="#app.models.partner_model.Partner.partner_summary" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="app.models.partner_model.Partner.partner_type">
-<span class="sig-name descname"><span class="pre">partner_type</span></span><a class="headerlink" href="#app.models.partner_model.Partner.partner_type" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
 <dt class="sig sig-object py" id="app.models.partner_model.Partner.partner_user">
 <span class="sig-name descname"><span class="pre">partner_user</span></span><a class="headerlink" href="#app.models.partner_model.Partner.partner_user" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="app.models.partner_model.Partner.partner_website">
-<span class="sig-name descname"><span class="pre">partner_website</span></span><a class="headerlink" href="#app.models.partner_model.Partner.partner_website" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py property">

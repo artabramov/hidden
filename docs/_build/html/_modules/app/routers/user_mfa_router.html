@@ -43,12 +43,14 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.html">app package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.decorators.html">app.decorators package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.filters.html">app.filters package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.helpers.html">app.helpers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.managers.html">app.managers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.models.html">app.models package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.plugins.html">app.plugins package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.routers.html">app.routers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.schemas.html">app.schemas package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.triggers.html">app.triggers package</a></li>
 </ul>
 
         </div>
@@ -115,16 +117,19 @@
 <span class="sd">    user exists and validates the provided MFA secret. If any validation</span>
 <span class="sd">    fails, appropriate errors are raised. The user must not be active,</span>
 <span class="sd">    and the provided MFA secret must match the one stored for the user.</span>
-<span class="sd">    Returns a 403 error if the user is active, a 422 error if the user</span>
-<span class="sd">    does not exist or if the MFA secret does not match, and a 423 error</span>
-<span class="sd">    if the application is locked.</span>
+<span class="sd">    Returns a 401 error if the user is active, a 403 error if the token</span>
+<span class="sd">    is missing, a 422 error if the user does not exist or if the MFA</span>
+<span class="sd">    secret does not match, and a 423 error if the application is locked.</span>
 
 <span class="sd">    **Returns:**</span>
 <span class="sd">    - A QR code image in the response body to be scanned by an MFA</span>
 <span class="sd">    application.</span>
 
 <span class="sd">    **Raises:**</span>
-<span class="sd">    - `403 Forbidden`: Raised if the user is active.</span>
+<span class="sd">    - `401 Unauthorized`: Raised if the token is invalid or expired,</span>
+<span class="sd">    or if the current user is not authenticated or does not have the</span>
+<span class="sd">    required permissions.</span>
+<span class="sd">    - `403 Forbidden`: Raised if the token is missing.</span>
 <span class="sd">    - `422 Unprocessable Entity`: Raised if the user does not exist or</span>
 <span class="sd">    if the MFA secret does not match.</span>
 <span class="sd">    - `423 Locked`: Raised if the application is locked.</span>

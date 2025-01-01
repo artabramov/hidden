@@ -43,12 +43,14 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.html">app package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.decorators.html">app.decorators package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.filters.html">app.filters package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.helpers.html">app.helpers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.managers.html">app.managers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.models.html">app.models package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.plugins.html">app.plugins package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.routers.html">app.routers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.schemas.html">app.schemas package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.triggers.html">app.triggers package</a></li>
 </ul>
 
         </div>
@@ -107,17 +109,20 @@
 <span class="sd">    Invalidate a token. This router updates the JTI of the current user</span>
 <span class="sd">    to invalidate their token. It requires the user to have any role.</span>
 <span class="sd">    The corresponding hooks are executed, and an empty JSON response is</span>
-<span class="sd">    returned. Returns a 200 status code on success, a 403 status code</span>
+<span class="sd">    returned. Returns a 200 status code on success, a 401 status code</span>
 <span class="sd">    if authentication fails or the user does not have the required</span>
-<span class="sd">    permissions, and a 423 status code if the application is locked.</span>
+<span class="sd">    permissions, a 403 error if the token is missing, and a 423 status</span>
+<span class="sd">    code if the application is locked.</span>
 
 <span class="sd">    **Returns:**</span>
 <span class="sd">    - `TokenDeleteResponse`: A response schema indicating the user ID</span>
 <span class="sd">    for which the token was invalidated.</span>
 
 <span class="sd">    **Raises:**</span>
-<span class="sd">    - `403 Forbidden`: Raised if the user is not authenticated or does</span>
-<span class="sd">    not have the required permissions.</span>
+<span class="sd">    - `401 Unauthorized`: Raised if the token is invalid or expired,</span>
+<span class="sd">    or if the current user is not authenticated or does not have the</span>
+<span class="sd">    required permissions.</span>
+<span class="sd">    - `403 Forbidden`: Raised if the token is missing.</span>
 <span class="sd">    - `423 Locked`: Raised if the application is locked.</span>
 
 <span class="sd">    **Hooks:**</span>

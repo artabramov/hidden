@@ -43,12 +43,14 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.html">app package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.decorators.html">app.decorators package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.filters.html">app.filters package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.helpers.html">app.helpers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.managers.html">app.managers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.models.html">app.models package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.plugins.html">app.plugins package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.routers.html">app.routers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.schemas.html">app.schemas package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.triggers.html">app.triggers package</a></li>
 </ul>
 
         </div>
@@ -78,11 +80,10 @@
   <h1>Source code for app.schemas.telemetry_schemas</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">This module defines Pydantic schemas for retrieving system and</span>
-<span class="sd">environment telemetry data. The schemas include details such as Unix</span>
-<span class="sd">timestamp, time zone, system uptime, version, PostgreSQL version and</span>
-<span class="sd">database size, platform architecture, Python environment details,</span>
-<span class="sd">operating system information, and resource usage metrics such as disk,</span>
-<span class="sd">memory, and CPU statistics.</span>
+<span class="sd">environment telemetry data. The schemas include details such as system</span>
+<span class="sd">uptime, version, PostgreSQL version and database size, platform</span>
+<span class="sd">architecture, Python environment details, operating system information,</span>
+<span class="sd">and resource usage metrics such as disk, memory, and CPU statistics.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span>
@@ -93,15 +94,11 @@
 <span class="k">class</span> <span class="nc">TelemetryRetrieveResponse</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Schema for the response when retrieving system and environment</span>
-<span class="sd">    telemetry data. Includes information such as the current Unix</span>
-<span class="sd">    timestamp, time zone details, system uptime, PostgreSQL information,</span>
-<span class="sd">    platform specifics, Python environment, operating system details,</span>
-<span class="sd">    and resource usage metrics (disk, memory, and CPU).</span>
+<span class="sd">    telemetry data. Includes information such as the system uptime,</span>
+<span class="sd">    PostgreSQL information, platform specifics, Python environment,</span>
+<span class="sd">    operating system details, and resource usage metrics (disk, memory,</span>
+<span class="sd">    and CPU).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">unix_timestamp</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="n">timezone_name</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">timezone_offset</span><span class="p">:</span> <span class="nb">int</span>
-
     <span class="n">hidden_uptime</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">hidden_version</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">hidden_serial</span><span class="p">:</span> <span class="nb">str</span>

@@ -71,10 +71,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#module-app.filters.partner_filters">app.filters.partner_filters module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#app.filters.partner_filters.filter_partner_contacts"><code class="docutils literal notranslate"><span class="pre">filter_partner_contacts()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#app.filters.partner_filters.filter_partner_name"><code class="docutils literal notranslate"><span class="pre">filter_partner_name()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#app.filters.partner_filters.filter_partner_region"><code class="docutils literal notranslate"><span class="pre">filter_partner_region()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#app.filters.partner_filters.filter_partner_summary"><code class="docutils literal notranslate"><span class="pre">filter_partner_summary()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#app.filters.partner_filters.filter_partner_type"><code class="docutils literal notranslate"><span class="pre">filter_partner_type()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#app.filters.partner_filters.filter_partner_website"><code class="docutils literal notranslate"><span class="pre">filter_partner_website()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-app.filters.user_filters">app.filters.user_filters module</a><ul>
@@ -231,36 +228,11 @@ partner name.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="app.filters.partner_filters.filter_partner_region">
-<span class="sig-prename descclassname"><span class="pre">app.filters.partner_filters.</span></span><span class="sig-name descname"><span class="pre">filter_partner_region</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">partner_region</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/app/filters/partner_filters.html#filter_partner_region"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.filters.partner_filters.filter_partner_region" title="Link to this definition"></a></dt>
-<dd><p>Filters a partner region by stripping leading and trailing
-whitespace. If the input is empty or consists only of whitespace,
-returns None. Otherwise, returns the trimmed partner region.</p>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="app.filters.partner_filters.filter_partner_summary">
 <span class="sig-prename descclassname"><span class="pre">app.filters.partner_filters.</span></span><span class="sig-name descname"><span class="pre">filter_partner_summary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">partner_summary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/app/filters/partner_filters.html#filter_partner_summary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.filters.partner_filters.filter_partner_summary" title="Link to this definition"></a></dt>
 <dd><p>Filters a partner summary by stripping leading and trailing
 whitespace. If the input is empty or consists only of whitespace,
 returns None. Otherwise, returns the trimmed partner summary.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="app.filters.partner_filters.filter_partner_type">
-<span class="sig-prename descclassname"><span class="pre">app.filters.partner_filters.</span></span><span class="sig-name descname"><span class="pre">filter_partner_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">partner_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/app/filters/partner_filters.html#filter_partner_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.filters.partner_filters.filter_partner_type" title="Link to this definition"></a></dt>
-<dd><p>Filters a partner type by stripping leading and trailing whitespace.
-If the input is empty or consists only of whitespace, returns None.
-Otherwise, returns the trimmed partner type.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="app.filters.partner_filters.filter_partner_website">
-<span class="sig-prename descclassname"><span class="pre">app.filters.partner_filters.</span></span><span class="sig-name descname"><span class="pre">filter_partner_website</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">partner_website</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/app/filters/partner_filters.html#filter_partner_website"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.filters.partner_filters.filter_partner_website" title="Link to this definition"></a></dt>
-<dd><p>Filters a partner website by stripping leading and trailing
-whitespace, and converting it to lowercase. If the input is empty
-or consists only of whitespace, returns None. Otherwise, returns
-the trimmed and lowercase website.</p>
 </dd></dl>
 
 </section>

@@ -43,12 +43,14 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.html">app package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.decorators.html">app.decorators package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.filters.html">app.filters package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.helpers.html">app.helpers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.managers.html">app.managers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.models.html">app.models package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.plugins.html">app.plugins package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.routers.html">app.routers package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.schemas.html">app.schemas package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc/app.triggers.html">app.triggers package</a></li>
 </ul>
 
         </div>
@@ -109,17 +111,20 @@
 <span class="sd">    using the provided ID, executes related hooks, and returns the user</span>
 <span class="sd">    details in a JSON response. Requires the user to have the reader</span>
 <span class="sd">    role or higher. Returns a 200 response with the user&#39;s details if</span>
-<span class="sd">    found. Raises a 404 error if the user is not found, a 403 error if</span>
+<span class="sd">    found. Raises a 404 error if the user is not found, a 401 error if</span>
 <span class="sd">    the user&#39;s token is invalid or if the user does not have the</span>
-<span class="sd">    required role, a 423 error if the application is locked.</span>
+<span class="sd">    required role, a 403 error if the token is missing, a 423 error</span>
+<span class="sd">    if the application is locked.</span>
 
 <span class="sd">    **Returns:**</span>
 <span class="sd">    - `UserSelectResponse`: A response schema containing the details of</span>
 <span class="sd">    the retrieved user.</span>
 
 <span class="sd">    **Raises:**</span>
-<span class="sd">    - `403 Forbidden`: Raised if the user&#39;s token is invalid or if the</span>
-<span class="sd">    user does not have the required `reader` role or higher.</span>
+<span class="sd">    - `401 Unauthorized`: Raised if the token is invalid or expired,</span>
+<span class="sd">    or if the current user is not authenticated or does not have the</span>
+<span class="sd">    required permissions.</span>
+<span class="sd">    - `403 Forbidden`: Raised if the token is missing.</span>
 <span class="sd">    - `404 Not Found`: Raised if the user with the given ID is not found.</span>
 <span class="sd">    - `423 Locked`: Raised if the application is locked.</span>
 

@@ -29,19 +29,20 @@ async def user_update(
     Update a user. Modifies the first name, last name, user caption, and
     user contacts for the specified user. Requires the user to have the
     reader role or higher. Returns a 200 response with the updated user's
-    ID. Raises a 403 error if the user does not have the required role
-    or if the user is attempting to update a different user's details,
-    a 422 error if arguments validation failed, a 423 error if the
-    application is locked.
+    ID. Raises a 401 error if the user does not have the required role,
+    a 403 error if the token is missing or if the user is attempting to
+    update a different user's details, a 422 error if arguments
+    validation failed, a 423 error if the application is locked.
 
     **Returns:**
     - `UserUpdateResponse`: A response schema containing the ID of the
     updated user.
 
     **Raises:**
-    - `403 Forbidden`: Raised if the current user does not have the
-    required permissions, or if the user is trying to update another
-    user's information.
+    - `401 Unauthorized`: Raised if the current user does not have the
+    required permissions.
+    - `403 Forbidden`: Raised if the token is missing, or if the user is
+    trying to update another user's information.
     - `404 Not Found`: Raised if the user with the provided ID is not
     found.
     - `422 Unprocessable Entity`: Raised if the provided data does not

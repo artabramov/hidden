@@ -32,10 +32,10 @@ async def options_list(
     the repository based on the provided filter criteria and executes
     related hooks. The router returns a list of options and the total
     count of options in a JSON response. The current user should have
-    an admin role. Returns a 200 response on success, a 403 error if
+    an admin role. Returns a 200 response on success, a 401 error if
     authentication failed or the user does not have the required role,
-    a 422 error if arguments validation failed, a 423 error if the the
-    application is locked.
+    a 403 error if the token is missing, a 422 error if arguments
+    validation failed, a 423 error if the the application is locked.
 
     **Args:**
     - `OptionListRequest`: The request schema containing filter criteria
@@ -46,8 +46,10 @@ async def options_list(
     options and the total count of options.
 
     **Raises:**
-    - `403 Forbidden`: Raised if the user does not have the required
-    permissions.
+    - `401 Unauthorized`: Raised if the token is invalid or expired,
+    or if the current user is not authenticated or does not have the
+    required permissions.
+    - `403 Forbidden`: Raised if the token is missing.
     - `422 Unprocessable Entity`: Raised if arguments validation failed.
     - `423 Locked`: Raised if the application is locked.
 

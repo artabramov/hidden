@@ -34,10 +34,10 @@ async def option_update(
     updates the option value, otherwise, it creates a new option. The
     router executes related hooks before and after the option update.
     The current user should have an admin role. Returns a 200 response
-    on success, a 403 error if authentication failed or the user does
-    not have the required permissions, a 422 error if the provided
-    option value is invalid, and a 423 error if the application is
-    locked.
+    on success, a 401 error if authentication failed or the user does
+    not have the required permissions, a 403 error if the token is
+    missing, a 422 error if the provided option value is invalid, and
+    a 423 error if the application is locked.
 
     **Args:**
     - `option_key`: The key of the option to update.
@@ -49,8 +49,10 @@ async def option_update(
     option key.
 
     **Raises:**
-    - `403 Forbidden`: Raised if the user does not have the required
-    permissions.
+    - `401 Unauthorized`: Raised if the token is invalid or expired,
+    or if the current user is not authenticated or does not have the
+    required permissions.
+    - `403 Forbidden`: Raised if the token is missing.
     - `422 Unprocessable Entity`: Raised if the provided option value
     is invalid.
     - `423 Locked`: Raised if the application is locked.

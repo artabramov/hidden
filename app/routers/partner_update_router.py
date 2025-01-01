@@ -35,9 +35,10 @@ async def partner_update(
     updated partner ID in a JSON response. The current user must have
     an editor role or higher. Returns a 200 response on success, a 404
     error if the partner is not found, a 422 error if validation
-    failed or the partner name is duplicated, a 403 error if
+    failed or the partner name is duplicated, a 401 error if
     authentication failed or the user does not have the required
-    permissions, and a 423 error if the application is locked.
+    permissions, a 403 error if the token is missing, and a 423 error
+    if the application is locked.
 
     **Args:**
     - `partner_id`: The ID of the partner to update.
@@ -49,8 +50,10 @@ async def partner_update(
     the updated partner.
 
     **Raises:**
-    - `403 Forbidden`: Raised if the current user is not authenticated
-    or does not have the required permissions.
+    - `401 Unauthorized`: Raised if the token is invalid or expired,
+    or if the current user is not authenticated or does not have the
+    required permissions.
+    - `403 Forbidden`: Raised if the token is missing.
     - `404 Not Found`: Raised if the partner with the specified ID
     does not exist.
     - `422 Unprocessable Entity`: Raised if arguments validation failed.

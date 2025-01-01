@@ -34,17 +34,19 @@ async def user_delete(
     to delete their own account, retrieves the user from the repository
     using the provided ID, verifies if the user exists, deletes the user,
     and executes related hooks. The current user should have an admin
-    role. Returns a 200 response on success, a 403 error if the current
+    role. Returns a 200 response on success, a 401 error if the current
     user attempts to delete their own account or if an exception occurs
-    during deletion, a 404 error if the user is not found, and a 423
-    error if the application is locked.
+    during deletion, a 403 error if the token is missing, a 404 error if
+    the user is not found, and a 423 error if the application is locked.
 
     **Returns:**
     - `UserDeleteResponse`: The ID of the user to delete.
 
     **Raises:**
-    - `403 Forbidden`: Raised if the current user attempts to delete
-    their own account or if the deletion is forbidden.
+    - `401 Unauthorized`: Raised if the token is invalid or expired,
+    or if the current user is not authenticated or does not have the
+    required permissions.
+    - `403 Forbidden`: Raised if the token is missing.
     - `404 Not Found`: Raised if the user with the provided ID does not
     exist.
     - `423 Locked`: Raised if the application is locked.

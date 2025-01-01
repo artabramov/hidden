@@ -43,8 +43,9 @@ async def document_update(
     committing the changes. Returns a 200 response on success, a 404
     error if the document is not found, a 423 error if the collection
     or the application is locked, a 422 error if arguments validation
-    failed, and a 403 error if authentication failed or the user does
-    not have the required permissions.
+    failed, and a 401 error if authentication failed or the user does
+    not have the required permissions, a 403 error if the token
+    is missing.
 
     **Args:**
     - `document_id`: The ID of the document to be updated.
@@ -56,8 +57,10 @@ async def document_update(
     the updated document.
 
     **Raises:**
-    - `403 Forbidden`: Raised if the user does not have the required
-    permissions.
+    - `401 Unauthorized`: Raised if the token is invalid or expired,
+    or if the current user is not authenticated or does not have the
+    required permissions.
+    - `403 Forbidden`: Raised if the token is missing.
     - `404 Not Found`: Raised if the document with the provided ID does
     - `422 Unprocessable Entity`:  Raised if arguments validation failed.
     not exist.

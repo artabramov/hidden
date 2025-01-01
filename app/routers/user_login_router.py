@@ -33,9 +33,10 @@ async def user_login(
     credentials. Invalid passwords increase the attempt count and may
     lead to user suspension if the attempt limit is exceeded. Returns
     a 200 response with a confirmation of password acceptance upon
-    successful authentication. Returns a 403 error if the user is
-    suspended or inactive, a 422 error if the password is invalid, and
-    a 423 error if the application is locked.
+    successful authentication. Returns a 401 error if the user is
+    suspended or inactive, a 403 error if the token is missing, a 422
+    error if the password is invalid, and a 423 error if the application
+    is locked.
 
     **Returns:**
     - `UserLoginResponse`: A response schema confirming whether the
@@ -64,14 +65,14 @@ async def user_login(
 
     elif user.suspended_date > int(time.time()):
         raise E([LOC_BODY, "user_login"], schema.user_login,
-                ERR_USER_SUSPENDED, status.HTTP_403_FORBIDDEN)
+                ERR_USER_SUSPENDED, status.HTTP_401_UNAUTHORIZED)
 
     admin_exists = await user_repository.exists(
         user_role__eq=UserRole.admin, is_active__eq=True)
 
     if not user.is_active and admin_exists:
         raise E([LOC_BODY, "user_login"], schema.user_login,
-                ERR_USER_INACTIVE, status.HTTP_403_FORBIDDEN)
+                ERR_USER_INACTIVE, status.HTTP_401_UNAUTHORIZED)
 
     if user.password_hash == get_hash(schema.user_password):
         user.password_accepted = True

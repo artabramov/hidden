@@ -27,17 +27,20 @@ async def token_invalidate(
     Invalidate a token. This router updates the JTI of the current user
     to invalidate their token. It requires the user to have any role.
     The corresponding hooks are executed, and an empty JSON response is
-    returned. Returns a 200 status code on success, a 403 status code
+    returned. Returns a 200 status code on success, a 401 status code
     if authentication fails or the user does not have the required
-    permissions, and a 423 status code if the application is locked.
+    permissions, a 403 error if the token is missing, and a 423 status
+    code if the application is locked.
 
     **Returns:**
     - `TokenDeleteResponse`: A response schema indicating the user ID
     for which the token was invalidated.
 
     **Raises:**
-    - `403 Forbidden`: Raised if the user is not authenticated or does
-    not have the required permissions.
+    - `401 Unauthorized`: Raised if the token is invalid or expired,
+    or if the current user is not authenticated or does not have the
+    required permissions.
+    - `403 Forbidden`: Raised if the token is missing.
     - `423 Locked`: Raised if the application is locked.
 
     **Hooks:**

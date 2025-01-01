@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.1.15 (2025-01-01)
+- **Added 401 unauthorized error** for auth decorator.
+
 ## Version 0.1.14 (2024-12-27)
 - **Fixed error types** to make error responses more consistent.
 

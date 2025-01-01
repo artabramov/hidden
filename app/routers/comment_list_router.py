@@ -33,10 +33,10 @@ async def comment_list(
     from the repository based on the provided filter criteria, executes
     related hooks, and returns the results in a JSON response. The
     current user should have a reader role or higher. Returns a 200
-    response on success, a 403 error if authentication failed or the
-    user does not have the required permissions, a 422 error if
-    arguments validation failed, and a 423 error if the application
-    is locked.
+    response on success, a 401 error if authentication failed or the
+    user does not have the required permissions, a 403 error if the
+    token is missing, a 422 error if arguments validation failed, and
+    a 423 error if the application is locked.
 
     **Args:**
     - `CommentListRequest`: The request schema containing the filters
@@ -47,8 +47,10 @@ async def comment_list(
     comments and the total count.
 
     **Raises:**
-    - `403 Forbidden`: Raised if the user does not have the required
-    permissions.
+    - `401 Unauthorized`: Raised if the token is invalid or expired,
+    or if the current user is not authenticated or does not have the
+    required permissions.
+    - `403 Forbidden`: Raised if the token is missing.
     - `422 Unprocessable Entity`: Raised if arguments validation failed.
     - `423 Locked`: Raised if the application is locked.
 

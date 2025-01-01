@@ -34,9 +34,10 @@ async def partner_insert(
     relevant hooks before and after insertion, and returns the created
     partner ID in a JSON response. The current user should have a writer
     role or higher. Returns a 201 response on success, a 422 error if
-    arguments validation failed or the partner name is duplicated, a 403
+    arguments validation failed or the partner name is duplicated, a 401
     error if authentication failed or the user does not have the
-    required permissions, and a 423 error if the application is locked.
+    required permissions, a 403 error if the token is missing, and
+    a 423 error if the application is locked.
 
     **Args:**
     - `PartnerInsertRequest`: A request schema containing the details
@@ -47,8 +48,10 @@ async def partner_insert(
     the newly created partner.
 
     **Raises:**
-    - `403 Forbidden`: Raised if the current user is not authenticated
-    or does not have the required permissions.
+    - `401 Unauthorized`: Raised if the token is invalid or expired,
+    or if the current user is not authenticated or does not have the
+    required permissions.
+    - `403 Forbidden`: Raised if the token is missing.
     - `422 Unprocessable Entity`: Raised if arguments validation failed
     or the partner name is already exist.
     - `423 Locked`: Raised if the application is locked.

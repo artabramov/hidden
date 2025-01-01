@@ -39,8 +39,9 @@ async def comment_update(
     updated comment ID in a JSON response. The current user should have
     an editor role or higher. Returns a 200 response on success, a 404
     error if the comment is not found, a 423 error if the collection or
-    the application is locked, and a 403 error if authentication failed
-    or the user does not have the required permissions.
+    the application is locked, and a 401 error if authentication failed
+    or the user does not have the required permissions, a 403 error if
+    the token is missing.
 
     **Args:**
     - `comment_id`: The ID of the comment to be updated.
@@ -52,8 +53,10 @@ async def comment_update(
     the updated comment.
 
     **Raises:**
-    - `403 Forbidden`: Raised if the current user is not the author of
-    the comment or lacks required permissions.
+    - `401 Unauthorized`: Raised if the token is invalid or expired,
+    or if the current user is not authenticated or does not have the
+    required permissions.
+    - `403 Forbidden`: Raised if the token is missing.
     - `404 Not Found`: Raised if the comment with the specified ID does
     not exist.
     - `422 Unprocessable Entity`: Raised if arguments validation failed.

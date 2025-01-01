@@ -24,31 +24,28 @@ LOC_QUERY = "query"
 # Error location is the request body.
 LOC_BODY = "body"
 
-# The token is missing from the request headers (403).
-ERR_TOKEN_MISSING = "token_missing"
-
-# The token has expired and is no longer valid (403).
+# The token has expired and is no longer valid (401).
 ERR_TOKEN_EXPIRED = "token_expired"
 
-# The token is invalid and cannot be processed (403).
+# The token is invalid and cannot be processed (401).
 ERR_TOKEN_INVALID = "token_invalid"
 
-# The token contains an invalid token identifier (403).
+# The token contains an invalid token identifier (401).
 ERR_TOKEN_REJECTED = "token_rejected"
 
-# The user is deleted or could not be found (403).
+# The user is deleted or could not be found (401).
 ERR_TOKEN_ORPHANED = "token_orphaned"
 
-# The user is inactive and cannot access the resource (403).
+# The user is inactive and cannot access the resource (401).
 ERR_USER_INACTIVE = "user_inactive"
 
-# The user is temporarily suspended; try again later (403).
+# The user is temporarily suspended; try again later (401).
 ERR_USER_SUSPENDED = "user_suspended"
 
-# The user role is insufficient for this action (403).
+# The user role is insufficient for this action (401).
 ERR_USER_ROLE_REJECTED = "user_role_rejected"
 
-# The user password is not accepted (HTTP 403).
+# The user password is not accepted (HTTP 401).
 ERR_USER_PASSWORD_NOT_ACCEPTED = "password_not_accepted"
 
 # The user cannot perform this action on the resource (403).

@@ -33,9 +33,9 @@ async def partner_delete(
     it deletes the partner (but not associated documents), and then
     executes the relevant hooks before and after the partner deletion.
     The current user should have an admin role. Returns a 200 response
-    on success, a 404 error if the partner is not found, a 403 error if
-    the user does not have the required permissions, and a 423 error if
-    the application is locked.
+    on success, a 404 error if the partner is not found, a 401 error if
+    the user does not have the required permissions, a 403 error if the
+    token is missing, and a 423 error if the application is locked.
 
     **Args:**
     - `partner_id`: The ID of the partner to delete.
@@ -45,8 +45,10 @@ async def partner_delete(
     the deleted partner.
 
     **Raises:**
-    - `403 Forbidden`: Raised if the user does not have the required
-    permissions.
+    - `401 Unauthorized`: Raised if the token is invalid or expired,
+    or if the current user is not authenticated or does not have the
+    required permissions.
+    - `403 Forbidden`: Raised if the token is missing.
     - `404 Not Found`: Raised if the partner is not found.
     - `423 Locked`: Raised if the application is locked.
 

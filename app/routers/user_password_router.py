@@ -31,18 +31,20 @@ async def user_password(
     Change user password. Requires the current user to have a reader
     role or higher. The user ID in the request must match the current
     user ID. Returns a 200 response with the ID of the updated user.
-    Raises a 403 error if the user's token is invalid or if the user
-    does not have the required role, a 422 error if the current password
-    is incorrect, and a 423 error if the application is locked.
+    Raises a 401 error if the user's token is invalid or if the user
+    does not have the required role, a 403 error if the token is missing,
+    a 422 error if the current password is incorrect, and a 423 error
+    if the application is locked.
 
     **Returns:**
     - `PasswordUpdateResponse`: A response schema containing the ID of
     the updated user.
 
     **Raises:**
-    - `403 Forbidden`: Raised if the user's token is invalid or if the
-    user does not have the required role, or if the user ID does not
+    - `401 Unauthorized`: Raised if the user's token is invalid or if
+    the user does not have the required role, or if the user ID does not
     match the current user's ID.
+    - `403 Forbidden`: Raised if the token is missing.
     - `422 Unprocessable Entity`: Raised if the current password is
     incorrect.
     - `423 Locked`: Raised if the application is locked.

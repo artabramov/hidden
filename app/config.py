@@ -58,6 +58,7 @@ class Config:
     ADDONS_PATH: str
 
     APP_API_VERSION: str
+    APP_URL: str
     APP_SHRED_CYCLES: int
     APP_LOCK_PATH: str
 

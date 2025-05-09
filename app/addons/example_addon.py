@@ -227,3 +227,10 @@ async def after_lock_retrieve(
         lock_exists: bool):
     """Executes after a lock is retrieved."""
     ...
+
+
+async def after_telemetry_retrieve(
+        session: AsyncSession, cache: Redis, current_user: User,
+        telemetry: dict):
+    """Executes after telemetry is retrieved."""
+    ...

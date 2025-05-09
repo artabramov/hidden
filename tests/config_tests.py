@@ -7,7 +7,7 @@ class ConfigTest(unittest.IsolatedAsyncioTestCase):
     async def test_config(self):
         get_config.cache_clear()
         cfg = get_config()
-        self.assertEqual(len(cfg.__dict__), 60)
+        self.assertEqual(len(cfg.__dict__), 61)
 
         self.assertTrue(isinstance(cfg.SECRET_KEY_PATH, str))
 
@@ -54,6 +54,7 @@ class ConfigTest(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(isinstance(cfg.ADDONS_PATH, str))
 
         self.assertTrue(isinstance(cfg.APP_API_VERSION, str))
+        self.assertTrue(isinstance(cfg.APP_URL, str))
         self.assertTrue(isinstance(cfg.APP_SHRED_CYCLES, int))
         self.assertTrue(isinstance(cfg.APP_LOCK_PATH, str))
 

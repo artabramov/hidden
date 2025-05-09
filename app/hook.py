@@ -55,6 +55,8 @@ HOOK_AFTER_SECRET_DELETE = "after_secret_delete"
 HOOK_AFTER_LOCK_CREATE = "after_lock_create"
 HOOK_AFTER_LOCK_RETRIEVE = "after_lock_retrieve"
 
+HOOK_AFTER_TELEMETRY_RETRIEVE = "after_telemetry_retrieve"
+
 
 class Hook:
     """

@@ -41,6 +41,7 @@ RUN pip3 install redis==5.2.1
 RUN pip3 install pyotp==2.9.0
 RUN pip3 install PyJWT==2.10.1
 RUN pip3 install pillow==11.2.1
+RUN pip3 install psutil==7.0.0
 RUN pip3 install cryptography==44.0.2
 RUN pip3 install ffmpeg-python==0.2.0
 RUN pip3 install python-dotenv==1.1.0

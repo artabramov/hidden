@@ -13,6 +13,7 @@ from fastapi.requests import Request
 from fastapi.responses import JSONResponse, HTMLResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.encoders import jsonable_encoder
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import ValidationError
 from app.config import get_config
 from app.context import get_context
@@ -57,6 +58,7 @@ from app.routers import (
     secret_delete_router,
     lock_create_router,
     lock_retrieve_router,
+    telemetry_router,
 )
 
 cfg = get_config()
@@ -78,6 +80,10 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
+app.add_middleware(CORSMiddleware, allow_origins=[
+    cfg.APP_URL, "http://localhost:3000", "http://127.0.0.1:3000"],
+    allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
+
 app.include_router(user_login_router.router, prefix=cfg.APP_API_VERSION)
 app.include_router(token_retrieve_router.router, prefix=cfg.APP_API_VERSION)
 app.include_router(token_invalidate_router.router, prefix=cfg.APP_API_VERSION)
@@ -116,6 +122,8 @@ app.include_router(secret_delete_router.router, prefix=cfg.APP_API_VERSION)
 
 app.include_router(lock_create_router.router, prefix=cfg.APP_API_VERSION)
 app.include_router(lock_retrieve_router.router, prefix=cfg.APP_API_VERSION)
+
+app.include_router(telemetry_router.router, prefix=cfg.APP_API_VERSION)
 
 app.include_router(userpic_retrieve_router.router)
 app.include_router(document_download_router.router)

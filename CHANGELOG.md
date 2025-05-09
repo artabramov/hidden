@@ -1,5 +1,10 @@
 # Changelog
 
+### [0.0.9] - 2025-05-09
+- Added `CORS` for `JavaScript` frontend that is in a different `origin`.
+- Added `psutil` package for process and system monitoring.
+- Added `telemetry` endpoint that returns basic system information. 
+
 ### [0.0.8] - 2025-05-04
 - Added `video helper` to generate thumbnails from uploaded video files.
 - Added support for uploading documents into a specified `collection`.

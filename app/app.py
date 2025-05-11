@@ -1,7 +1,8 @@
 """
-This module initializes and runs the FastAPI app. It sets up middleware
-for logging and context management, handles app startup tasks, serves
-static files, manages exceptions, and includes all API routers.
+The main module initializes and runs the FastAPI app. It sets up
+middleware for logging and context management, handles app startup
+tasks, serves static files, manages exceptions, and includes all
+API routers.
 """
 
 import os
@@ -22,7 +23,10 @@ from app.hook import init_hooks
 from app.log import get_log
 from app.helpers.secret_helper import secret_exists, secret_read
 from app.helpers.lock_helper import lock_exists, lock_disable
-from app.error import ERR_SERVER_LOCKED, ERR_SERVER_FORBIDDEN, ERR_SERVER_ERROR
+from app.helpers.uptime_helper import Uptime
+from app.error import (
+    ERR_SERVER_LOCKED, ERR_SERVER_FORBIDDEN, ERR_SERVER_ERROR,
+    ERR_FILE_NOT_FOUND)
 from app.routers import (
     token_retrieve_router,
     token_invalidate_router,
@@ -58,7 +62,7 @@ from app.routers import (
     secret_delete_router,
     lock_create_router,
     lock_retrieve_router,
-    telemetry_router,
+    telemetry_retrieve_router,
 )
 
 cfg = get_config()
@@ -79,10 +83,11 @@ async def lifespan(app: FastAPI):
     yield
 
 
+uptime = Uptime()
+
 app = FastAPI(lifespan=lifespan)
-app.add_middleware(CORSMiddleware, allow_origins=[
-    cfg.APP_URL, "http://localhost:3000", "http://127.0.0.1:3000"],
-    allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True,
+                   allow_methods=["*"], allow_headers=["*"])
 
 app.include_router(user_login_router.router, prefix=cfg.APP_API_VERSION)
 app.include_router(token_retrieve_router.router, prefix=cfg.APP_API_VERSION)
@@ -123,7 +128,7 @@ app.include_router(secret_delete_router.router, prefix=cfg.APP_API_VERSION)
 app.include_router(lock_create_router.router, prefix=cfg.APP_API_VERSION)
 app.include_router(lock_retrieve_router.router, prefix=cfg.APP_API_VERSION)
 
-app.include_router(telemetry_router.router, prefix=cfg.APP_API_VERSION)
+app.include_router(telemetry_retrieve_router.router, prefix=cfg.APP_API_VERSION)  # noqa E501
 
 app.include_router(userpic_retrieve_router.router)
 app.include_router(document_download_router.router)
@@ -148,7 +153,7 @@ async def catch_all(full_path: str, request: Request):
     else:
         file_path = os.path.join(cfg.HTML_PATH, full_path)
         if not os.path.exists(file_path):
-            raise HTTPException(status_code=404, detail="Item not found")
+            raise HTTPException(status_code=404, detail=ERR_FILE_NOT_FOUND)
         else:
             return FileResponse(file_path)
 
@@ -156,19 +161,15 @@ async def catch_all(full_path: str, request: Request):
 @app.middleware("http")
 async def middleware_handler(request: Request, call_next):
     """
-    Intercepts each HTTP request to check for lock and secret presence,
-    attaches request-related context information, and logs request and
-    response details.
+    Intercepts each HTTP request to check for lock and secret key
+    presence, attaches request-related context information, and logs
+    request and response details.
     """
     if await lock_exists():
-        return JSONResponse(
-            status_code=status.HTTP_423_LOCKED,
-            content=jsonable_encoder({"detail": ERR_SERVER_LOCKED}))
+        raise HTTPException(status_code=423, detail=ERR_SERVER_LOCKED)
 
     elif not await secret_exists():
-        return JSONResponse(
-            status_code=status.HTTP_403_FORBIDDEN,
-            content=jsonable_encoder({"detail": ERR_SERVER_FORBIDDEN}))
+        raise HTTPException(status_code=403, detail=ERR_SERVER_FORBIDDEN)
 
     ctx.request_start_time = time.time()
     ctx.request_uuid = str(uuid4())
@@ -192,19 +193,55 @@ async def middleware_handler(request: Request, call_next):
 @app.exception_handler(Exception)
 async def exception_handler(request: Request, e: Exception):
     """
-    Catches all unhandled exceptions, logs them, and returns a
-    JSON-formatted error response. Validation errors are returned
-    with detailed information.
+    Handles exceptions with special processing for 403, 423 and 404
+    errors raised in a separate middleware. Also handles validation
+    error by returning a 422 status with detailed error information.
+    For other exceptions, it logs the error and returns a 500 internal
+    server error response. All responses are JSON-formatted with error
+    details and include CORS headers for cross-origin requests.
     """
     if isinstance(e, ValidationError):
-        return JSONResponse(
+        response = JSONResponse(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             content=jsonable_encoder({"detail": e.errors()}))
+    
+    elif isinstance(e, HTTPException) and e.status_code == 403:
+        response = JSONResponse(
+            status_code=status.HTTP_403_FORBIDDEN,
+            content=jsonable_encoder({"detail": e.detail}))
+
+    elif isinstance(e, HTTPException) and e.status_code == 423:
+            response = JSONResponse(
+                status_code=status.HTTP_423_LOCKED,
+                content=jsonable_encoder({"detail": e.detail}))
+
+    elif isinstance(e, HTTPException) and e.status_code == 404:
+        response = JSONResponse(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content=jsonable_encoder({"detail": e.detail}))
 
     else:
         elapsed_time = "{0:.6f}".format(time.time() - ctx.request_start_time)
         log.error(f"error raised; elapsed_time={elapsed_time}; e={str(e)};")
 
-        return JSONResponse(
+        response = JSONResponse(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             content=jsonable_encoder({"detail": ERR_SERVER_ERROR}))
+
+    return add_cors_headers(response)
+
+
+def add_cors_headers(response: JSONResponse) -> JSONResponse:
+    """
+    Adds the necessary headers to the response to allow cross-origin
+    requests from any source. This ensures that the response can be
+    accessed by clients from different domains, supports all HTTP
+    methods and headers, and allows credentials to be included in
+    requests. The function modifies and returns the response with
+    these headers to enable proper cross-origin resource sharing.
+    """
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Credentials"] = "true"
+    response.headers["Access-Control-Allow-Headers"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "*"
+    return response

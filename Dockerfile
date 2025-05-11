@@ -7,6 +7,7 @@ WORKDIR /hidden
 RUN mkdir /var/log/hidden
 RUN chmod -R 777 /var/log/hidden
 RUN tr -dc "A-Za-z0-9" < /dev/urandom | head -c 80 > secret.key
+RUN bash -c 'echo "__serial__ = \"$(tr -dc '\''A-Z0-9'\'' < /dev/urandom | head -c 20)\"" > serial.py'
 RUN echo "Hello, world!" > /hidden/html/index.html
 
 RUN apt install -y software-properties-common

@@ -204,7 +204,7 @@ async def after_setting_list(
 
 async def after_secret_retrieve(
         session: AsyncSession, cache: Redis, current_user: User,
-        secret_key: str, secret_path: str):
+        secret_key: str, secret_path: str, created_date: int):
     """Executes after a secret key is retrieved."""
     ...
 

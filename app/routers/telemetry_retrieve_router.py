@@ -9,7 +9,6 @@ from app.models.user_model import User, UserRole
 import platform
 import psutil
 from app.managers.entity_manager import EntityManager
-from app.repository import Repository
 from app.version import __version__
 from app.hook import Hook, HOOK_AFTER_TELEMETRY_RETRIEVE
 from app.schemas.telemetry_retrieve_schema import TelemetryRetrieveResponse
@@ -47,6 +46,9 @@ async def telemetry_retrieve(
     - `HOOK_AFTER_TELEMETRY_RETRIEVE`: Executes after telemetry is
     successfully retrieved.
     """
+    from app.app import uptime
+    from app.serial import __serial__
+
     entity_manager = EntityManager(session)
     postgres_version = await entity_manager.select_rows("SHOW server_version;")
     postgres_size = await entity_manager.select_rows(
@@ -57,6 +59,8 @@ async def telemetry_retrieve(
 
     telemetry = {
         "app_version": __version__,
+        "app_serial": __serial__,
+        "app_uptime": uptime.get_uptime(),
 
         "unix_timestamp": int(time.time()),
         "timezone_name": time.tzname[0],

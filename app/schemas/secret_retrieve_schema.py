@@ -11,5 +11,6 @@ class SecretRetrieveResponse(BaseModel):
     the secret key and the secret path, which are provided after
     successfully retrieving the user's secret.
     """
+    created_date: int
     secret_key: str
     secret_path: str

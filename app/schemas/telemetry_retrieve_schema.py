@@ -12,6 +12,8 @@ class TelemetryRetrieveResponse(BaseModel):
     and resource usage metrics.
     """
     app_version: str
+    app_serial: str
+    app_uptime: int
 
     unix_timestamp: int
     timezone_name: str

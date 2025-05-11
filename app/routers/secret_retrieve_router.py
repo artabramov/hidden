@@ -1,3 +1,4 @@
+import os
 from fastapi import APIRouter, status, Depends
 from fastapi.responses import JSONResponse
 from app.schemas.secret_retrieve_schema import SecretRetrieveResponse
@@ -44,11 +45,14 @@ async def secret_retrieve(
     """
     secret_key = await secret_read()
     secret_path = cfg.SECRET_KEY_PATH
+    created_date = int(os.path.getctime(secret_path))
 
     hook = Hook(session, cache, current_user=current_user)
-    await hook.call(HOOK_AFTER_SECRET_RETRIEVE, secret_key, secret_path)
+    await hook.call(HOOK_AFTER_SECRET_RETRIEVE, secret_key, secret_path,
+                    created_date)
 
     return {
+        "created_date": created_date,
         "secret_key": secret_key,
         "secret_path": secret_path,
     }

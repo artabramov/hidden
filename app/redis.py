@@ -21,3 +21,9 @@ async def get_cache():
     finally:
         if conn:
             await conn.close()
+
+
+async def init_cache():
+    cache_gen = get_cache()
+    async for cache in cache_gen:
+        await cache.flushdb()

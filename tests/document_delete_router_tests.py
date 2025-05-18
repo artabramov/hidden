@@ -41,12 +41,15 @@ class DocumentDeleteRouterTest(unittest.IsolatedAsyncioTestCase):
 
     @patch("app.routers.document_delete_router.Repository")
     @patch("app.routers.document_delete_router.Hook")
-    async def test_document_delete_success(self, HookMock, RepositoryMock):
+    @patch("app.routers.document_delete_router.CollectionLibrary")
+    async def test_document_delete_success(self, CollectionLibraryMock,
+                                           HookMock, RepositoryMock):
         session_mock = AsyncMock()
         cache_mock = AsyncMock()
         current_user_mock = AsyncMock()
 
         document_mock = MagicMock(id=123)
+        document_mock.document_collection = MagicMock(id=1)
 
         repository_mock = AsyncMock()
         repository_mock.select.return_value = document_mock
@@ -55,13 +58,14 @@ class DocumentDeleteRouterTest(unittest.IsolatedAsyncioTestCase):
         hook_mock = AsyncMock()
         HookMock.return_value = hook_mock
 
+        collection_library_mock = AsyncMock()
+        CollectionLibraryMock.return_value = collection_library_mock
+
         result = await document_delete(
             123, session=session_mock, cache=cache_mock,
             current_user=current_user_mock)
 
-        self.assertDictEqual(result, {
-            "document_id": document_mock.id
-        })
+        self.assertDictEqual(result, {"document_id": document_mock.id})
 
         repository_mock.select.assert_called_with(id=123)
         repository_mock.delete.assert_called_with(document_mock)
@@ -70,6 +74,10 @@ class DocumentDeleteRouterTest(unittest.IsolatedAsyncioTestCase):
             session_mock, cache_mock, current_user=current_user_mock)
         hook_mock.call.assert_called_with(
             HOOK_AFTER_DOCUMENT_DELETE, document_mock)
+
+        CollectionLibraryMock.assert_called_with(session_mock, cache_mock)
+        collection_library_mock.create_thumbnail.assert_called_with(
+            document_mock.document_collection.id)
 
 
 if __name__ == "__main__":

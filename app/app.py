@@ -19,6 +19,7 @@ from pydantic import ValidationError
 from app.config import get_config
 from app.context import get_context
 from app.postgres import init_database
+from app.redis import init_cache
 from app.hook import init_hooks
 from app.log import get_log
 from app.helpers.secret_helper import secret_exists, secret_read
@@ -79,6 +80,7 @@ async def lifespan(app: FastAPI):
     """
     await lock_disable()
     await init_database()
+    await init_cache()
     await init_hooks()
     yield
 
@@ -204,16 +206,16 @@ async def exception_handler(request: Request, e: Exception):
         response = JSONResponse(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             content=jsonable_encoder({"detail": e.errors()}))
-    
+
     elif isinstance(e, HTTPException) and e.status_code == 403:
         response = JSONResponse(
             status_code=status.HTTP_403_FORBIDDEN,
             content=jsonable_encoder({"detail": e.detail}))
 
     elif isinstance(e, HTTPException) and e.status_code == 423:
-            response = JSONResponse(
-                status_code=status.HTTP_423_LOCKED,
-                content=jsonable_encoder({"detail": e.detail}))
+        response = JSONResponse(
+            status_code=status.HTTP_423_LOCKED,
+            content=jsonable_encoder({"detail": e.detail}))
 
     elif isinstance(e, HTTPException) and e.status_code == 404:
         response = JSONResponse(

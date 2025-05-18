@@ -67,6 +67,7 @@ class CollectionModelTest(unittest.IsolatedAsyncioTestCase):
             "collection_name": "collection name",
             "collection_summary": "collection summary",
             "thumbnail_url": None,
+            "documents_count": None,
             "collection_meta": {},
         })
 

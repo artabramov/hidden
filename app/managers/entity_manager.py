@@ -271,15 +271,12 @@ class EntityManager:
             if hasattr(cls, column_name):
                 value = kwargs[key]
 
-                if value is not None:
+                if value is not None or operator == "ne":
                     if operator == "in":
                         value = [x.strip() for x in value.split(",")]
 
                     elif operator in ["like", "ilike"]:
                         value = "%" + value + "%"
-
-                    else:
-                        value = value
 
                     column = getattr(cls, column_name)
                     operation = getattr(

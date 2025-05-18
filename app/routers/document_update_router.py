@@ -13,6 +13,7 @@ from app.auth import auth
 from app.repository import Repository
 from app.config import get_config
 from app.error import E, LOC_PATH, LOC_BODY, ERR_VALUE_NOT_FOUND
+from app.libraries.collection_library import CollectionLibrary
 
 cfg = get_config()
 router = APIRouter()
@@ -30,6 +31,8 @@ async def document_update(
     Updates a document. Retrieves the document from the repository using
     the provided ID, ensures that the document exists, and updates the
     documents's original filename, summary, and collection reference.
+    If a collection is specified, its thumbnail will be regenerated
+    after the update.
 
     **Auth:**
     - The token must be included in the request header and contain auth
@@ -56,6 +59,7 @@ async def document_update(
         raise E([LOC_PATH, "document_id"], document_id,
                 ERR_VALUE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
 
+    collection = None
     if schema.collection_id:
         collection_repository = Repository(session, cache, Collection)
         collection = await collection_repository.select(
@@ -70,6 +74,10 @@ async def document_update(
     document.document_summary = schema.document_summary
     document.sum_meta(META_UPDATES_COUNT)
     await document_repository.update(document)
+
+    if collection:
+        collection_library = CollectionLibrary(session, cache)
+        await collection_library.create_thumbnail(collection.id)
 
     hook = Hook(session, cache, current_user=current_user)
     await hook.call(HOOK_AFTER_DOCUMENT_UPDATE, document)

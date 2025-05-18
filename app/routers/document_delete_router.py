@@ -10,6 +10,7 @@ from app.hook import Hook, HOOK_AFTER_DOCUMENT_DELETE
 from app.auth import auth
 from app.repository import Repository
 from app.error import E, LOC_PATH, ERR_VALUE_NOT_FOUND
+from app.libraries.collection_library import CollectionLibrary
 
 router = APIRouter()
 
@@ -24,7 +25,8 @@ async def document_delete(
     """
     Deletes a document. Retrieves the document from the repository using
     the provided ID, checks if the document exists and deletes the
-    document.
+    document. If the document is associated with a collection, its
+    thumbnail is also updated.
 
     **Auth:**
     - The token must be included in the request header and contain auth
@@ -52,6 +54,11 @@ async def document_delete(
                 ERR_VALUE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
 
     await document_repository.delete(document)
+
+    if document.document_collection:
+        collection_library = CollectionLibrary(session, cache)
+        await collection_library.create_thumbnail(
+            document.document_collection.id)
 
     hook = Hook(session, cache, current_user=current_user)
     await hook.call(HOOK_AFTER_DOCUMENT_DELETE, document)

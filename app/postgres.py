@@ -5,10 +5,12 @@ database connections and sessions for an asynchronous environment.
 """
 
 from asyncio import current_task
+from sqlalchemy import text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.asyncio import (
     create_async_engine, async_scoped_session, async_sessionmaker)
 from app.config import get_config
+from app.triggers import triggers
 
 cfg = get_config()
 Base = declarative_base()
@@ -101,3 +103,6 @@ async def init_database():
     """
     async with sessionmanager.async_engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+
+        for sql in triggers:
+            await conn.execute(text(sql))

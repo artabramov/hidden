@@ -68,12 +68,13 @@ class DocumentUpdateRouterTest(unittest.IsolatedAsyncioTestCase):
         HookMock.assert_not_called()
         hook_mock.call.assert_not_called()
 
+    @patch("app.routers.document_update_router.CollectionLibrary")
     @patch("app.routers.document_update_router.Collection")
     @patch("app.routers.document_update_router.Document")
     @patch("app.routers.document_update_router.Repository")
     @patch("app.routers.document_update_router.Hook")
     async def test_update_success(self, HookMock, RepositoryMock, DocumentMock,
-                                  CollectionMock):
+                                  CollectionMock, CollectionLibraryMock):
         schema_mock = AsyncMock(original_filename="original filename",
                                 document_summary="document summary",
                                 collection_id=123)
@@ -90,6 +91,9 @@ class DocumentUpdateRouterTest(unittest.IsolatedAsyncioTestCase):
         repository_mock = AsyncMock()
         repository_mock.select.side_effect = [document_mock, collection_mock]
         RepositoryMock.return_value = repository_mock
+
+        collection_library_mock = AsyncMock()
+        CollectionLibraryMock.return_value = collection_library_mock
 
         await document_update(
             234, schema=schema_mock, session=session_mock,
@@ -114,6 +118,9 @@ class DocumentUpdateRouterTest(unittest.IsolatedAsyncioTestCase):
                                     current_user=current_user_mock)
         hook_mock.call.assert_called_with(HOOK_AFTER_DOCUMENT_UPDATE,
                                           document_mock)
+
+        collection_library_mock.create_thumbnail.assert_called_with(
+            collection_mock.id)
 
 
 if __name__ == "__main__":

@@ -1,62 +1,70 @@
 # Changelog
 
+### [0.0.11] - 2025-05-18
+- Changed default width and height for `userpics` and `thumbnails`.
+- Fixed an issue with the `collection model` thumbnail path definition.
+- Added `collection library` for complex operations on collections.
+- Added `create_thumbnail` to the `collection library` to generate collection thumbnails by merging 1 to 4 document thumbnails.
+- Enabled automatic collection thumbnail generation when a document is uploaded, updated, or deleted.
+- Added a `documents_count` field to the `collection model` to store the number of documents in a collection.
+- Added `PostgreSQL` triggers to automatically maintain `documents_count` in the `collections` table when documents are inserted, updated, or deleted.
+- Prevented `SQLAlchemy` from writing to `documents_count`, ensuring it remains read-only at the ORM level.
+- Split the document upload endpoint into two separate routes: one with the collection ID passed in the path, and one without the collection ID.
+
 ### [0.0.10] - 2025-05-11
-- Added `uptime` helper and included app uptime in telemetry data.
-- Added `serial` number generation and included it in telemetry data.
-- Added `secret key` creation date to secret key retrieval router.
-- Added special handling for `403`, `423`, `404` errors with `CORS` headers.
+- Added `uptime` helper and included app uptime in telemetry output.
+- Introduced `serial` number generation and included it in telemetry data.
+- Added `secret key` creation date to the `secret key` API endpoint.
+- Improved handling of HTTP errors `403`, `404`, and `423` with proper `CORS` headers.
 
 ### [0.0.9] - 2025-05-09
-- Added `CORS` support for the `JavaScript` frontend with a different `origin`.
-- Added `psutil` package for process and system monitoring.
-- Added `telemetry` endpoint that returns basic system information.
+- Added `CORS` support for the JavaScript frontend with a different origin.
+- Integrated `psutil` package for monitoring system-level metrics.
+- Introduced `/telemetry` endpoint to provide basic system information.
 
 ### [0.0.8] - 2025-05-04
-- Added `video helper` to generate thumbnails from uploaded video files.
-- Added support for uploading documents to a specified `collection`.
-- Added updates to `docstrings`, unit tests, and renamed several functions.
+- Added video thumbnail generation with the new `video helper`.
+- Enabled uploading documents to specific collections.
+- Improved docstrings, increased unit test coverage, and renamed several helper functions.
 
 ### [0.0.7] - 2025-05-01
-- Added static routers for serving `document`, `thumbnail`, and `userpic`.
-- Added `*_meta` classes and a `meta mixin` for handling extra metadata.
+- Added static routers for serving document, thumbnail, and userpic files.
+- Introduced `*_meta` classes and a `MetaMixin` to support flexible metadata handling.
 
 ### [0.0.6] - 2025-04-27
-- Added support for uploading `userpics` to user profiles via the API.
-- Added `validators` for `username`, `password`, `user summary`, and `totp`.
-- Added `image helper` to resize, validate, and transform image files.
+- Added support for uploading and managing user profile pictures through the API.
+- Implemented input validators for username, password, user summary, and TOTP codes.
+- Introduced an image helper utility for resizing, validating, and transforming image files.
 
 ### [0.0.5] - 2025-04-20
-- Added role-based `auth` with `reader`, `writer`, `editor`, and `admin` roles.
-- Added `LRU` cache for efficient loading of static files with limits.
-- Added `html` directory to serve static content for the frontend.
-- Added routers and schemas for `token`, `user`, `secret`, and `lock`.
-- Added `token retrieval` and `token invalidation` functionality.
+- Implemented role-based authentication with `reader`, `writer`, `editor`, and `admin` roles.
+- Added `LRU` cache to optimize static file access with bounded memory usage.
+- Introduced `html` directory to serve frontend static assets.
+- Added API routers for managing `token`, `user`, `secret`, and `lock` entities.
+- Implemented support for secure token issuance and invalidation workflows.
 
 ### [0.0.4] - 2025-04-06
-- Added `timed` decorator to log async function execution durations.
-- Added `secret key` generation during image build via `Dockerfile`.
-- Added `file manager` to simplify file and directory operations.
-- Added `hook` module and defined triggers for internal event handling.
+- Introduced `timed` decorator to measure and log execution time of async functions.
+- Enabled automatic `secret.key` generation during Docker image builds.
+- Added `FileManager` module to centralize and simplify file and directory operations.
+- Implemented `hook` module for internal event handling via trigger-like mechanisms.
 
 ### [0.0.3] - 2025-03-30
-- Added `cache manager` to manage SQLAlchemy entities in Redis cache.
-- Added `entity manager` for managing Postgres-based SQLAlchemy records.
-- Added `repository` combining entity and cache management logic.
-- Added `sort helper` for generating sortable numeric string indices.
-- Added `secret.key` and generator that runs at application startup.
+- Added `CacheManager` for managing SQLAlchemy entities using Redis.
+- Added `EntityManager` to handle ORM operations backed by PostgreSQL.
+- Implemented a unified `Repository` layer combining cache and database logic.
+- Added `sort helper` to generate sortable numeric indexes for encrypted values.
+- Introduced persistent `secret.key` generation during application startup.
 
 ### [0.0.2] - 2025-03-22
-- Added metric exporters for `node`, `postgres`, and `redis` services.
-- Added ports `9100`, `9187`, and `9121` for Prometheus metrics scraping.
-- Added `Sphinx` documentation accessible at the `/autodoc` endpoint.
-- Added automatic documentation generation on application startup.
+- Integrated Prometheus exporters for `node`, `PostgreSQL`, and `Redis` monitoring.
+- Exposed ports `9100`, `9187`, and `9121` for Prometheus metric scraping.
+- Added `Sphinx`-based documentation accessible at the `/autodoc` endpoint.
+- Enabled automatic generation of project documentation on application startup.
 
 ### [0.0.1] - 2025-03-09
-- Created basic `FastAPI` application and directories for static files.
-- Added `launch.json` and `settings.json` for Visual Studio Code.
-- Added `Makefile`, `Dockerfile`, `entrypoint.sh`, and pinned versions.
-- Added `config` module to read values from the `.env` file.
-- Added `context` module to provide values passed within the application.
-- Added `encrypt_helper` module for encryption and hashing.
-- Added `redis` and `postgres` modules to connect to database and cache.
-- Added `log` module to handle log messages.
+- Created initial `FastAPI` application with a structured project layout.
+- Added `launch.json` and `settings.json` for Visual Studio Code integration.
+- Introduced `Makefile`, `Dockerfile`, and `entrypoint.sh` for streamlined development and deployment.
+- Added core modules: `config`, `context`, `postgres`, `redis`, and `log`.
+- Pinned Python package versions for reproducible builds.

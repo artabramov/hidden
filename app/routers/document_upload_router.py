@@ -17,6 +17,7 @@ from app.helpers.image_helper import image_resize, IMAGE_MIMETYPES
 from app.helpers.video_helper import video_capture, VIDEO_MIMETYPES
 from app.helpers.encrypt_helper import encrypt_bytes
 from app.error import E, LOC_BODY, ERR_VALUE_NOT_FOUND
+from app.libraries.collection_library import CollectionLibrary
 
 cfg = get_config()
 router = APIRouter()
@@ -26,7 +27,7 @@ router = APIRouter()
              response_class=JSONResponse, status_code=status.HTTP_201_CREATED,
              response_model=DocumentUploadResponse, tags=["Documents"])
 async def document_upload(
-    file: UploadFile = File(...), collection_id: int = None,
+    file: UploadFile = File(...),
     session=Depends(get_session), cache=Depends(get_cache),
     current_user: User = Depends(auth(UserRole.writer))
 ) -> DocumentUploadResponse:
@@ -35,7 +36,8 @@ async def document_upload(
     secure unique filename, encrypting its contents, and optionally
     generating and encrypting a thumbnail if the file is an image or
     video. Creates a new document and associates it with the specified
-    collection, if provided.
+    collection, if provided. If the document is linked to a collection,
+    the collection's thumbnail is also regenerated after upload.
 
     **Auth:**
     - The token must be included in the request header and contain auth
@@ -56,6 +58,25 @@ async def document_upload(
     - `HOOK_AFTER_DOCUMENT_UPLOAD`: Executes after the document is
     successfully created.
     """
+    return await _document_upload(file, session, cache, current_user)
+
+
+@router.post("/collection/{collection_id}/document",
+             summary="Upload a document to the collection.",
+             response_class=JSONResponse, status_code=status.HTTP_201_CREATED,
+             response_model=DocumentUploadResponse, tags=["Collections"])
+async def document_upload_to_collection(
+    file: UploadFile = File(...), collection_id: int = None,
+    session=Depends(get_session), cache=Depends(get_cache),
+    current_user: User = Depends(auth(UserRole.writer))
+) -> DocumentUploadResponse:
+    return await _document_upload(
+        file, session, cache, current_user, collection_id)
+
+
+async def _document_upload(file: UploadFile, session, cache,
+                           current_user: User, collection_id: int = None):
+    collection = None
     if collection_id:
         collection_repository = Repository(session, cache, Collection)
         collection = await collection_repository.select(id=collection_id)
@@ -64,17 +85,21 @@ async def document_upload(
             raise E([LOC_BODY, "collection_id"], collection_id,
                     ERR_VALUE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
 
+    document_filename = str(uuid.uuid4())
+    document_path = os.path.join(cfg.DOCUMENTS_PATH, document_filename)
+    thumbnail_filename, thumbnail_path = None, None
+
     original_filename = file.filename
     document_mimetype = await FileManager.mimetype(file.filename)
     document_filesize = file.size
-    document_filename = str(uuid.uuid4())
-    document_path = os.path.join(cfg.DOCUMENTS_PATH, document_filename)
-
-    thumbnail_filename = str(uuid.uuid4())
-    thumbnail_path = os.path.join(cfg.THUMBNAILS_PATH, thumbnail_filename)
 
     try:
         await FileManager.upload(file, document_path)
+
+        if document_mimetype in IMAGE_MIMETYPES + VIDEO_MIMETYPES:
+            thumbnail_filename = str(uuid.uuid4())
+            thumbnail_path = os.path.join(
+                cfg.THUMBNAILS_PATH, thumbnail_filename)
 
         if document_mimetype in IMAGE_MIMETYPES:
             await FileManager.copy(document_path, thumbnail_path)
@@ -102,12 +127,17 @@ async def document_upload(
             thumbnail_filename=thumbnail_filename)
         await document_repository.insert(document)
 
+        if collection:
+            collection_library = CollectionLibrary(session, cache)
+            await collection_library.create_thumbnail(collection_id)
+
         hook = Hook(session, cache, current_user=current_user)
         await hook.call(HOOK_AFTER_DOCUMENT_UPLOAD, document)
 
     except Exception as e:
         await FileManager.delete(document_path)
-        await FileManager.delete(thumbnail_path)
+        if thumbnail_path:
+            await FileManager.delete(thumbnail_path)
 
         raise e
 

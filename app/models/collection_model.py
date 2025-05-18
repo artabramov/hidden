@@ -11,7 +11,7 @@ import os
 import time
 from typing import Union
 from sqlalchemy.orm import relationship
-from sqlalchemy import Column, BigInteger, ForeignKey, String
+from sqlalchemy import Column, BigInteger, Integer, ForeignKey, String
 from app.postgres import Base
 from app.mixins.meta_mixin import MetaMixin
 from app.models.collection_meta_model import CollectionMeta
@@ -63,6 +63,14 @@ class Collection(Base, MetaMixin):
 
     # original length up to 79
     thumbnail_filename_encrypted = Column(String(152), nullable=True)
+
+    # The number of documents related to the collection. It manages
+    # entirely by database triggers to ensure its accuracy. It is a
+    # read-only field and it should not be modified by SQLAlchemy.
+    # The value is automatically updated by triggers in the PostgreSQL
+    # when documents are added, updated, or deleted from the collection.
+    documents_count = Column(
+        Integer, nullable=False, default=0, server_default="0")
 
     collection_user = relationship(
         "User", back_populates="user_collections", lazy="joined")
@@ -123,16 +131,25 @@ class Collection(Base, MetaMixin):
     @property
     def thumbnail_url(self):
         if self.has_thumbnail:
-            return cfg.USERPICS_URL + self.thumbnail_filename
+            return cfg.THUMBNAILS_URL + self.thumbnail_filename
 
     @property
     def thumbnail_path(self):
         if self.has_thumbnail:
-            return os.path.join(cfg.USERPICS_PATH, self.thumbnail_filename)
+            return os.path.join(cfg.THUMBNAILS_PATH, self.thumbnail_filename)
 
     @property
     def has_thumbnail(self):
         return self.thumbnail_filename is not None
+
+    def __setattr__(self, key, value):
+        """
+        Exclude the counter from insert/update operations, as it is
+        managed by PostgreSQL triggers and should not be manually
+        updated via SQLAlchemy.
+        """
+        if key != "documents_count":
+            super().__setattr__(key, value)
 
     async def to_dict(self):
         return {
@@ -144,6 +161,7 @@ class Collection(Base, MetaMixin):
             "collection_name": self.collection_name,
             "collection_summary": self.collection_summary,
             "thumbnail_url": self.thumbnail_url,
+            "documents_count": self.documents_count,
             "collection_meta": {
                 meta.meta_key: meta.meta_value
                 for meta in self.collection_meta},

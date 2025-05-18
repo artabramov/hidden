@@ -21,4 +21,5 @@ class CollectionSelectResponse(BaseModel):
     collection_name: str
     collection_summary: Optional[str] = None
     thumbnail_url: Optional[str] = None
+    documents_count: int
     collection_meta: dict

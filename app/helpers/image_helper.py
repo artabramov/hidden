@@ -32,8 +32,8 @@ async def image_resize(path: str, width: int, height: int, quality: int):
 async def images_merge(image_data_list: List[bytes], width: int,
                        height: int, quality: int) -> bytes:
     """
-    Asynchronously merges 1 to 4 images into a single horizontal or grid
-    layout image by offloading the operation to a background thread.
+    Asynchronously merges images into a single horizontal layout image
+    by offloading the operation to a background thread.
     """
     loop = asyncio.get_event_loop()
     return await loop.run_in_executor(
@@ -70,18 +70,20 @@ def _image_resize_sync(path: str, width: int, height: int, quality: int):
 def _image_concat_horizontal_sync(image_data_list: List[bytes], width: int,
                                   height: int, quality: int) -> bytes:
     """
-    Merges 1 to 4 images into a single horizontal or grid layout image
-    of the specified dimensions. Each image is resized and cropped as
-    needed to fit the layout. The result is returned as a JPEG byte
-    stream with the given quality.
+    Combines up to 2 images into a single horizontal image of the
+    specified height. Each image is resized to match the target height
+    and center-cropped horizontally. The resulting image is returned as
+    a JPEG byte stream with the given quality. If one image is provided,
+    it is returned as-is. If two images are provided, they are
+    concatenated side by side. More than two images are ignored.
     """
     if not image_data_list:
         return None
 
-    if len(image_data_list) == 1:
+    elif len(image_data_list) == 1:
         return image_data_list[0]
 
-    if len(image_data_list) == 2:
+    elif len(image_data_list) >= 2:
         im1 = _crop_center_half(_resize_to_height(
             _create_image(image_data_list[0]), height))
         im2 = _crop_center_half(_resize_to_height(
@@ -91,30 +93,6 @@ def _image_concat_horizontal_sync(image_data_list: List[bytes], width: int,
         new_im = Image.new("RGB", (result_width, height))
         new_im.paste(im1, (0, 0))
         new_im.paste(im2, (im1.width, 0))
-
-    elif len(image_data_list) == 3:
-        left_size = (width // 2, height)
-        right_size = (width // 2, height // 2)
-
-        im_left = _prepare_area_crop(image_data_list[0], left_size)
-        im_top_right = _prepare_area_crop(image_data_list[1], right_size)
-        im_bottom_right = _prepare_area_crop(image_data_list[2], right_size)
-
-        new_im = Image.new("RGB", (width, height))
-        new_im.paste(im_left, (0, 0))
-        new_im.paste(im_top_right, (width // 2, 0))
-        new_im.paste(im_bottom_right, (width // 2, height // 2))
-
-    else:
-        square_size = (width // 2, height // 2)
-        prepared = [_prepare_area_crop(
-            image_data_list[i], square_size) for i in range(4)]
-
-        new_im = Image.new("RGB", (width, height))
-        new_im.paste(prepared[0], (0, 0))
-        new_im.paste(prepared[1], (width // 2, 0))
-        new_im.paste(prepared[2], (0, height // 2))
-        new_im.paste(prepared[3], (width // 2, height // 2))
 
     buffer = io.BytesIO()
     new_im.save(buffer, format="JPEG", quality=quality)

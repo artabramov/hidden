@@ -20,10 +20,10 @@ class CollectionLibrary:
 
     async def create_thumbnail(self, collection_id: int):
         """
-        Generates a new thumbnail for a collection by selecting up
-        to four documents with existing thumbnails, merging their
-        images into a single composite, and saving the result as
-        the collection's new encrypted thumbnail. If the collection
+        Generates a new thumbnail for a collection by selecting first
+        two documents with existing thumbnails, merging their images
+        into a single composite, and saving the result as the
+        collection's new encrypted thumbnail. If the collection
         already has a thumbnail, it is removed before updating. The
         method uses an LRU cache to optimize thumbnail loading and
         ensures the merged image meets configured dimensions and
@@ -37,9 +37,9 @@ class CollectionLibrary:
         documents = await document_repository.select_all(
             thumbnail_filename_encrypted__ne=None,
             collection_id__eq=collection_id,
-            order_by="id", order="asc", offset=0, limit=4)
+            order_by="id", order="asc", offset=0, limit=2)
 
-        if len(documents) <= 4:
+        if len(documents) <= 2:
             # To maintain the consistency of the documents_count, we
             # should select the model from the Postgres without the
             # cache. Therefore, instead of "id", we use "id__eq" here.

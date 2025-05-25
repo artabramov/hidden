@@ -53,7 +53,7 @@ class CollectionLibraryTest(unittest.IsolatedAsyncioTestCase):
         document_repository_mock.select_all.assert_called_once_with(
             thumbnail_filename_encrypted__ne=None,
             collection_id__eq=collection_mock.id,
-            order_by="id", order="asc", offset=0, limit=4)
+            order_by="id", order="asc", offset=0, limit=2)
 
         FileManagerMock.delete.assert_called_once_with(
             collection_mock.thumbnail_path)

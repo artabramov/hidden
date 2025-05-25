@@ -1,5 +1,8 @@
 # Changelog
 
+### [0.0.12] - 2025-05-25
+- Limited `create_thumbnail` to merge a maximum of 2 images, down from 4.
+
 ### [0.0.11] - 2025-05-18
 - Changed default width and height for `userpics` and `thumbnails`.
 - Fixed an issue with the `collection model` thumbnail path definition.

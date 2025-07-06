@@ -20,7 +20,7 @@ router = APIRouter()
 @router.get("/telemetry", summary="Retrieve telemetry.",
             response_class=JSONResponse, status_code=status.HTTP_200_OK,
             response_model=TelemetryRetrieveResponse,
-            tags=["Telemetry"])
+            tags=["Services"])
 async def telemetry_retrieve(
     session=Depends(get_session), cache=Depends(get_cache),
     current_user: User = Depends(auth(UserRole.admin))

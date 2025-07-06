@@ -11,7 +11,7 @@ class SettingInsertRequest(BaseModel):
     Request schema for updating a setting value.
     """
     setting_key: str = Field(..., min_length=1, max_length=47)
-    setting_value: Optional[str] = Field(max_length=511, default=None)
+    setting_value: Optional[str] = Field(default=None)
 
     class Config:
         """Strips whitespaces at the beginning and end of all values."""

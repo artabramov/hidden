@@ -21,8 +21,8 @@ class CollectionListRequest(BaseModel):
     user_id__eq: Optional[int] = None
     offset: Optional[int] = Field(ge=0, default=None)
     limit: Optional[int] = Field(ge=1, default=None)
-    order_by: Optional[
-        Literal["id", "user_id", "collection_name_index"]] = None
+    order_by: Optional[Literal[
+        "id", "user_id", "collection_name_index", "documents_count"]] = None
     order: Optional[Literal["asc", "desc", "rand"]] = None
 
     class Config:

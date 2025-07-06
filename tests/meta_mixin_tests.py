@@ -51,16 +51,6 @@ class MetaMixinTest(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(test.parent_meta[2].meta_value, "3")
         self.assertEqual(test.parent_meta[3].meta_value, "4")
 
-    def test_sum_meta(self):
-        test = TestClass()
-        test.sum_meta("key2")
-        test.sum_meta("key3", 2)
-        test.sum_meta("key4", -2)
-
-        self.assertEqual(test.parent_meta[1].meta_value, "3")
-        self.assertEqual(test.parent_meta[2].meta_value, "5")
-        self.assertEqual(test.parent_meta[3].meta_value, "2")
-
 
 if __name__ == "__main__":
     unittest.main()

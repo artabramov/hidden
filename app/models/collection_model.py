@@ -89,6 +89,7 @@ class Collection(Base, MetaMixin):
         self.collection_name = collection_name
         self.collection_summary = collection_summary
         self.thumbnail_filename = None
+        self.collection_meta = []
 
     @property
     def created_date(self) -> int:

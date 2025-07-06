@@ -188,6 +188,13 @@ async def after_tag_delete(
     ...
 
 
+async def after_tag_list(
+        session: AsyncSession, cache: Redis, current_user: User,
+        tags: List[str]):
+    """Executes after a tag list is retrieved."""
+    ...
+
+
 async def after_setting_insert(
         session: AsyncSession, cache: Redis, current_user: User,
         setting: Setting):
@@ -233,4 +240,11 @@ async def after_telemetry_retrieve(
         session: AsyncSession, cache: Redis, current_user: User,
         telemetry: dict):
     """Executes after telemetry is retrieved."""
+    ...
+
+
+async def on_execute(
+    session: AsyncSession, cache: Redis,
+    current_user: User, action: str, params: dict, response: dict):
+    """Executes when custom action is triggered."""
     ...

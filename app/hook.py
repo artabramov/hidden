@@ -45,6 +45,7 @@ HOOK_AFTER_DOCUMENT_LIST = "after_document_list"
 
 HOOK_AFTER_TAG_INSERT = "after_tag_insert"
 HOOK_AFTER_TAG_DELETE = "after_tag_delete"
+HOOK_AFTER_TAG_LIST = "after_tag_list"
 
 HOOK_AFTER_SETTING_INSERT = "after_setting_insert"
 HOOK_AFTER_SETTING_LIST = "after_setting_list"
@@ -56,6 +57,8 @@ HOOK_AFTER_LOCK_CREATE = "after_lock_create"
 HOOK_AFTER_LOCK_RETRIEVE = "after_lock_retrieve"
 
 HOOK_AFTER_TELEMETRY_RETRIEVE = "after_telemetry_retrieve"
+
+HOOK_ON_EXECUTE = "on_execute"
 
 
 class Hook:

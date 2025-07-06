@@ -57,6 +57,7 @@ from app.routers import (
     thumbnail_retrieve_router,
     tag_insert_router,
     tag_delete_router,
+    tag_list_router,
     setting_insert_router,
     setting_list_router,
     secret_retrieve_router,
@@ -64,6 +65,7 @@ from app.routers import (
     lock_create_router,
     lock_retrieve_router,
     telemetry_retrieve_router,
+    execute_router,
 )
 
 cfg = get_config()
@@ -120,6 +122,7 @@ app.include_router(document_list_router.router, prefix=cfg.APP_API_VERSION)
 
 app.include_router(tag_insert_router.router, prefix=cfg.APP_API_VERSION)
 app.include_router(tag_delete_router.router, prefix=cfg.APP_API_VERSION)
+app.include_router(tag_list_router.router, prefix=cfg.APP_API_VERSION)
 
 app.include_router(setting_insert_router.router, prefix=cfg.APP_API_VERSION)
 app.include_router(setting_list_router.router, prefix=cfg.APP_API_VERSION)
@@ -131,6 +134,7 @@ app.include_router(lock_create_router.router, prefix=cfg.APP_API_VERSION)
 app.include_router(lock_retrieve_router.router, prefix=cfg.APP_API_VERSION)
 
 app.include_router(telemetry_retrieve_router.router, prefix=cfg.APP_API_VERSION)  # noqa E501
+app.include_router(execute_router.router, prefix=cfg.APP_API_VERSION)
 
 app.include_router(userpic_retrieve_router.router)
 app.include_router(document_download_router.router)

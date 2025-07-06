@@ -112,6 +112,7 @@ class Document(Base, MetaMixin):
         self.document_mimetype = document_mimetype
         self.document_summary = document_summary
         self.thumbnail_filename = thumbnail_filename
+        self.document_meta = []
 
     @property
     def created_date(self):

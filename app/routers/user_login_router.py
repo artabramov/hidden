@@ -71,7 +71,6 @@ async def user_login(
     elif user.password_hash == hash_str(schema.password):
         user.password_accepted = True
         user.password_attempts = 0
-        user.set_meta(META_LAST_LOGIN_DATE, str(int(time.time())))
         await user_repository.update(user, commit=False)
 
         hook = Hook(session, cache, current_user=user)

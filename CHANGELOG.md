@@ -1,17 +1,35 @@
 # Changelog
 
-### [0.0.12] - 2025-05-25
-- Limited `create_thumbnail` to merge a maximum of 2 images, down from 4.
+### [0.0.18] - 2025-07-06
+- Added `Dropbox addon` for file upload and synchronization.
+- Added an `execute` router to handle and run custom actions defined by addons.
 
-### [0.0.11] - 2025-05-18
+### [0.0.17] - 2025-06-29
+- Added `tag list` router to retrieve a list of document tags grouped by name.
+- Improved sorting for `document list` and `collection list`.
+
+### [0.0.16] - 2025-06-22
+- Added `value_empty` error type for handling validation of missing values.
+- Set `setting_value` to allow undefined text length.
+
+### [0.0.15] - 2025-06-15
+- Limited `create_thumbnail` to merge a maximum of 2 images, down from 4.
 - Changed default width and height for `userpics` and `thumbnails`.
+
+### [0.0.14] - 2025-06-08
 - Fixed an issue with the `collection model` thumbnail path definition.
 - Added `collection library` for complex operations on collections.
 - Added `create_thumbnail` to the `collection library` to generate collection thumbnails by merging 1 to 4 document thumbnails.
+
+### [0.0.13] - 2025-06-01
 - Enabled automatic collection thumbnail generation when a document is uploaded, updated, or deleted.
+
+### [0.0.12] - 2025-05-25
 - Added a `documents_count` field to the `collection model` to store the number of documents in a collection.
 - Added `PostgreSQL` triggers to automatically maintain `documents_count` in the `collections` table when documents are inserted, updated, or deleted.
 - Prevented `SQLAlchemy` from writing to `documents_count`, ensuring it remains read-only at the ORM level.
+
+### [0.0.11] - 2025-05-18
 - Split the document upload endpoint into two separate routes: one with the collection ID passed in the path, and one without the collection ID.
 
 ### [0.0.10] - 2025-05-11

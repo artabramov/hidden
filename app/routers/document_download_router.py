@@ -62,7 +62,6 @@ async def document_download(
         raise E([LOC_PATH, "document_filename"], document_filename,
                 ERR_FILE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
 
-    document.sum_meta(META_DOWNLOADS_COUNT)
     await document_repository.update(document)
 
     filename = document.original_filename

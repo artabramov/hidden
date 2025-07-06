@@ -6,7 +6,7 @@ encryption for sensitive data fields.
 """
 
 import time
-from sqlalchemy import Column, BigInteger, String, ForeignKey
+from sqlalchemy import Column, BigInteger, String, ForeignKey, Text
 from sqlalchemy.orm import relationship
 from app.config import get_config
 from app.postgres import Base
@@ -46,8 +46,7 @@ class Setting(Base):
     setting_key_encrypted = Column(String(108), nullable=False)
     setting_key_hash = Column(String(128), nullable=False, index=True)
 
-    # value length up to 511
-    setting_value_encrypted = Column(String(728), nullable=True)
+    setting_value_encrypted = Column(Text, nullable=True)
 
     setting_user = relationship(
         "User", back_populates="user_settings", lazy="joined")

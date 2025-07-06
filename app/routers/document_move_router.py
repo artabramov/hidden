@@ -67,7 +67,6 @@ async def document_move(
                     ERR_VALUE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
 
     document.collection_id = schema.collection_id
-    document.sum_meta(META_UPDATES_COUNT)
     await document_repository.update(document)
 
     hook = Hook(session, cache, current_user=current_user)

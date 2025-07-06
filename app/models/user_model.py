@@ -138,6 +138,7 @@ class User(Base, MetaMixin):
         self.jti = generate_jti()
         self.user_summary = user_summary
         self.userpic_filename = None
+        self.user_meta = []
 
     @property
     def created_date(self) -> int:

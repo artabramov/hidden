@@ -102,7 +102,6 @@ class DocumentUpdateRouterTest(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(document_mock.original_filename, "original filename")
         self.assertEqual(document_mock.document_summary, "document summary")
         self.assertEqual(document_mock.collection_id, 123)
-        document_mock.sum_meta.assert_called_with("updates_count")
 
         self.assertListEqual(RepositoryMock.call_args_list, [
             call(session_mock, cache_mock, DocumentMock),

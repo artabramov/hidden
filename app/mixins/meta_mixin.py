@@ -50,13 +50,3 @@ class MetaMixin:
             getattr(self, self.meta_relationship).append(meta)
         else:
             meta.meta_value = meta_value
-
-    def sum_meta(self, meta_key: str, value: int = 1):
-        """
-        Increments the integer metadata value associated with the
-        given key by the specified amount, or sets it if not previously
-        defined.
-        """
-        meta = self.get_meta(meta_key)
-        meta_value = int(meta.meta_value) + value if meta else value
-        self.set_meta(meta_key, str(meta_value))

@@ -67,7 +67,6 @@ async def collection_update(
 
     collection.collection_name = schema.collection_name
     collection.collection_summary = schema.collection_summary
-    collection.sum_meta(META_UPDATES_COUNT)
     await collection_repository.update(collection)
 
     hook = Hook(session, cache, current_user=current_user)

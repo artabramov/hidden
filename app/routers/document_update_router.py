@@ -72,7 +72,6 @@ async def document_update(
     document.collection_id = schema.collection_id
     document.original_filename = schema.original_filename
     document.document_summary = schema.document_summary
-    document.sum_meta(META_UPDATES_COUNT)
     await document_repository.update(document)
 
     if collection:

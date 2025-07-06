@@ -28,6 +28,7 @@ ERR_USER_INACTIVE = "user_inactive"
 
 ERR_VALUE_NOT_FOUND = "value_not_found"
 ERR_VALUE_EXISTS = "value_exists"
+ERR_VALUE_EMPTY = "value_empty"
 ERR_VALUE_ERROR = "value_error"
 
 ERR_FILE_NOT_FOUND = "file_not_found"

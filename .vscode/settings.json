@@ -1,0 +1,17 @@
+{
+    "window.zoomLevel": 0,
+    "editor.rulers": [72, 79],
+    "editor.minimap.scale": 1,
+    "python.languageServer": "Pylance",
+    "python.testing.pytestEnabled": false,
+    "python.testing.unittestEnabled": true,
+    "python.testing.unittestArgs": [
+        "-v",
+        "-s", "./tests",
+        "-p", "*_tests.py"
+    ],
+    "search.exclude": {
+        "**/docs/_build/**": true,
+        "**/docs/autodoc/**": true,
+    }
+}

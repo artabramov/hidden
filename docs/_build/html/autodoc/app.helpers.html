@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>app.helpers package &#8212; hidden 1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
+    <script src="../_static/documentation_options.js?v=29a6c3e3"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="app.libraries package" href="app.libraries.html" />
+    <link rel="prev" title="app.decorators package" href="app.decorators.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="app-helpers-package">
+<h1>app.helpers package<a class="headerlink" href="#app-helpers-package" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-app.helpers.encrypt_helper">
+<span id="app-helpers-encrypt-helper-module"></span><h2>app.helpers.encrypt_helper module<a class="headerlink" href="#module-app.helpers.encrypt_helper" title="Link to this heading">¶</a></h2>
+<p>The module provides functions for encrypting and decrypting data of
+types such as bytes, strings, integers, and booleans using AES
+encryption with PBKDF2 key derivation. It also includes functionality
+for generating cryptographic salts and hashing string values using
+the SHA-512 algorithm.</p>
+<p>Original | Encrypted
+length   | length
+———<a href="#id1"><span class="problematic" id="id2">|</span></a>———-
+15       | 64
+31       | 88
+47       | 108
+63       | 128
+79       | 152
+95       | 172
+111      | 192
+127      | 216
+255      | 384
+511      | 728
+1023     | 1408
+2047     | 2776
+4095     | 5504
+16383    | 21888
+32767    | 43736</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.helpers.encrypt_helper.decrypt_bool">
+<span class="sig-prename descclassname"><span class="pre">app.helpers.encrypt_helper.</span></span><span class="sig-name descname"><span class="pre">decrypt_bool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">encrypted_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/app/helpers/encrypt_helper.html#decrypt_bool"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.encrypt_helper.decrypt_bool" title="Link to this definition">¶</a></dt>
+<dd><p>Decrypts a base64-encoded string representing an encrypted boolean
+and returns the original boolean value.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.helpers.encrypt_helper.decrypt_bytes">
+<span class="sig-prename descclassname"><span class="pre">app.helpers.encrypt_helper.</span></span><span class="sig-name descname"><span class="pre">decrypt_bytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">encrypted_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bytes</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/app/helpers/encrypt_helper.html#decrypt_bytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.encrypt_helper.decrypt_bytes" title="Link to this definition">¶</a></dt>
+<dd><p>Decrypts a byte sequence previously encrypted with AES by extracting
+the salt and IV, deriving the key, and removing padding from the
+plaintext.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.helpers.encrypt_helper.decrypt_int">
+<span class="sig-prename descclassname"><span class="pre">app.helpers.encrypt_helper.</span></span><span class="sig-name descname"><span class="pre">decrypt_int</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">encrypted_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/app/helpers/encrypt_helper.html#decrypt_int"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.encrypt_helper.decrypt_int" title="Link to this definition">¶</a></dt>
+<dd><p>Decrypts a base64-encoded string representing an encrypted integer
+and returns the original integer value.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.helpers.encrypt_helper.decrypt_str">
+<span class="sig-prename descclassname"><span class="pre">app.helpers.encrypt_helper.</span></span><span class="sig-name descname"><span class="pre">decrypt_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">encrypted_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/app/helpers/encrypt_helper.html#decrypt_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.encrypt_helper.decrypt_str" title="Link to this definition">¶</a></dt>
+<dd><p>Decodes a base64-encoded encrypted string, decrypts it using AES,
+and returns the original string.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.helpers.encrypt_helper.encrypt_bool">
+<span class="sig-prename descclassname"><span class="pre">app.helpers.encrypt_helper.</span></span><span class="sig-name descname"><span class="pre">encrypt_bool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/app/helpers/encrypt_helper.html#encrypt_bool"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.encrypt_helper.encrypt_bool" title="Link to this definition">¶</a></dt>
+<dd><p>Encrypts a boolean value by converting it to an integer and
+encrypting the result as a base64-encoded string.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.helpers.encrypt_helper.encrypt_bytes">
+<span class="sig-prename descclassname"><span class="pre">app.helpers.encrypt_helper.</span></span><span class="sig-name descname"><span class="pre">encrypt_bytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bytes</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/app/helpers/encrypt_helper.html#encrypt_bytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.encrypt_helper.encrypt_bytes" title="Link to this definition">¶</a></dt>
+<dd><p>Encrypts a byte sequence using AES in CBC mode with PKCS7 padding
+and returns the encrypted data, which includes the salt, IV, and
+ciphertext.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.helpers.encrypt_helper.encrypt_int">
+<span class="sig-prename descclassname"><span class="pre">app.helpers.encrypt_helper.</span></span><span class="sig-name descname"><span class="pre">encrypt_int</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/app/helpers/encrypt_helper.html#encrypt_int"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.encrypt_helper.encrypt_int" title="Link to this definition">¶</a></dt>
+<dd><p>Encrypts an integer by converting it to a string and applying string
+encryption, returning a base64-encoded result.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.helpers.encrypt_helper.encrypt_str">
+<span class="sig-prename descclassname"><span class="pre">app.helpers.encrypt_helper.</span></span><span class="sig-name descname"><span class="pre">encrypt_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/app/helpers/encrypt_helper.html#encrypt_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.encrypt_helper.encrypt_str" title="Link to this definition">¶</a></dt>
+<dd><p>Encrypts a string using AES and returns the result as a
+base64-encoded string.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.helpers.encrypt_helper.extract_aes_key">
+<span class="sig-prename descclassname"><span class="pre">app.helpers.encrypt_helper.</span></span><span class="sig-name descname"><span class="pre">extract_aes_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">secret_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">salt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bytes</span></span></span><a class="reference internal" href="../_modules/app/helpers/encrypt_helper.html#extract_aes_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.encrypt_helper.extract_aes_key" title="Link to this definition">¶</a></dt>
+<dd><p>Derives a cryptographic AES key from a given secret string and salt
+using the PBKDF2 algorithm with HMAC-SHA256.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.helpers.encrypt_helper.generate_encryption_salt">
+<span class="sig-prename descclassname"><span class="pre">app.helpers.encrypt_helper.</span></span><span class="sig-name descname"><span class="pre">generate_encryption_salt</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bytes</span></span></span><a class="reference internal" href="../_modules/app/helpers/encrypt_helper.html#generate_encryption_salt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.encrypt_helper.generate_encryption_salt" title="Link to this definition">¶</a></dt>
+<dd><p>Generates a random byte sequence to be used as a salt for AES key
+derivation.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.helpers.encrypt_helper.hash_str">
+<span class="sig-prename descclassname"><span class="pre">app.helpers.encrypt_helper.</span></span><span class="sig-name descname"><span class="pre">hash_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/app/helpers/encrypt_helper.html#hash_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.encrypt_helper.hash_str" title="Link to this definition">¶</a></dt>
+<dd><p>Hashes a string concatenated with the application’s secret key using
+SHA-512 and returns the hexadecimal digest.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.helpers.image_helper">
+<span id="app-helpers-image-helper-module"></span><h2>app.helpers.image_helper module<a class="headerlink" href="#module-app.helpers.image_helper" title="Link to this heading">¶</a></h2>
+<p>The module contains utility functions for working with image files,
+including support for resizing images and defining supported image
+MIME types.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.helpers.image_helper.image_resize">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.helpers.image_helper.</span></span><span class="sig-name descname"><span class="pre">image_resize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/helpers/image_helper.html#image_resize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.image_helper.image_resize" title="Link to this definition">¶</a></dt>
+<dd><p>Asynchronously resizes an image by offloading the resizing task to
+a background thread to avoid blocking the event loop.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.helpers.image_helper.images_merge">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.helpers.image_helper.</span></span><span class="sig-name descname"><span class="pre">images_merge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_data_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">bytes</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bytes</span></span></span><a class="reference internal" href="../_modules/app/helpers/image_helper.html#images_merge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.image_helper.images_merge" title="Link to this definition">¶</a></dt>
+<dd><p>Asynchronously merges images into a single horizontal layout image
+by offloading the operation to a background thread.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.helpers.jwt_helper">
+<span id="app-helpers-jwt-helper-module"></span><h2>app.helpers.jwt_helper module<a class="headerlink" href="#module-app.helpers.jwt_helper" title="Link to this heading">¶</a></h2>
+<p>The module provides utility functions for handling JSON web tokens (JWT),
+including creating unique identifiers (JTI), encoding user information
+into a JWT, and decoding a JWT to retrieve the payload.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.helpers.jwt_helper.generate_jti">
+<span class="sig-prename descclassname"><span class="pre">app.helpers.jwt_helper.</span></span><span class="sig-name descname"><span class="pre">generate_jti</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/app/helpers/jwt_helper.html#generate_jti"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.jwt_helper.generate_jti" title="Link to this definition">¶</a></dt>
+<dd><p>Generates a JSON web token identifier (JTI) by creating a random
+string consisting of alphanumeric characters with a length specified
+in the configuration.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.helpers.jwt_helper.jwt_decode">
+<span class="sig-prename descclassname"><span class="pre">app.helpers.jwt_helper.</span></span><span class="sig-name descname"><span class="pre">jwt_decode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">jwt_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="../_modules/app/helpers/jwt_helper.html#jwt_decode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.jwt_helper.jwt_decode" title="Link to this definition">¶</a></dt>
+<dd><p>Decodes a JSON web token (JWT) to extract its payload, including
+user ID, role, username, issue time, and optional expiration time.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.helpers.jwt_helper.jwt_encode">
+<span class="sig-prename descclassname"><span class="pre">app.helpers.jwt_helper.</span></span><span class="sig-name descname"><span class="pre">jwt_encode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token_exp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/app/helpers/jwt_helper.html#jwt_encode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.jwt_helper.jwt_encode" title="Link to this definition">¶</a></dt>
+<dd><p>Encodes user data into a JSON web token (JWT) with an optional
+expiration time. The token includes user ID, role, username, unique
+token identifier (JTI) and issue time (IAT).</p>
+</dd></dl>
+
+</section>
+<section id="module-app.helpers.lock_helper">
+<span id="app-helpers-lock-helper-module"></span><h2>app.helpers.lock_helper module<a class="headerlink" href="#module-app.helpers.lock_helper" title="Link to this heading">¶</a></h2>
+<p>The module provides asynchronous functions for managing the app lock
+file, including checking its existence, creating it, and deleting it.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.helpers.lock_helper.lock_disable">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.helpers.lock_helper.</span></span><span class="sig-name descname"><span class="pre">lock_disable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/helpers/lock_helper.html#lock_disable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.lock_helper.lock_disable" title="Link to this definition">¶</a></dt>
+<dd><p>Deletes the app lock file if it exists.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.helpers.lock_helper.lock_enable">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.helpers.lock_helper.</span></span><span class="sig-name descname"><span class="pre">lock_enable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/helpers/lock_helper.html#lock_enable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.lock_helper.lock_enable" title="Link to this definition">¶</a></dt>
+<dd><p>Creates the application lock file if it does not already exist.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.helpers.lock_helper.lock_exists">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.helpers.lock_helper.</span></span><span class="sig-name descname"><span class="pre">lock_exists</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/helpers/lock_helper.html#lock_exists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.lock_helper.lock_exists" title="Link to this definition">¶</a></dt>
+<dd><p>Checks whether the app lock file exists at the configured path.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.helpers.mfa_helper">
+<span id="app-helpers-mfa-helper-module"></span><h2>app.helpers.mfa_helper module<a class="headerlink" href="#module-app.helpers.mfa_helper" title="Link to this heading">¶</a></h2>
+<p>The module provides a function for generating a random secret key used
+for multi-factor authentication (MFA).</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.helpers.mfa_helper.generate_mfa_secret">
+<span class="sig-prename descclassname"><span class="pre">app.helpers.mfa_helper.</span></span><span class="sig-name descname"><span class="pre">generate_mfa_secret</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/app/helpers/mfa_helper.html#generate_mfa_secret"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.mfa_helper.generate_mfa_secret" title="Link to this definition">¶</a></dt>
+<dd><p>Generates and returns a random base32-encoded secret suitable for
+use with time-based one-time password (TOTP) MFA systems.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.helpers.secret_helper">
+<span id="app-helpers-secret-helper-module"></span><h2>app.helpers.secret_helper module<a class="headerlink" href="#module-app.helpers.secret_helper" title="Link to this heading">¶</a></h2>
+<p>The module contains asynchronous functions for working with the app’s
+secret key, including checking for its existence and reading its value.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.helpers.secret_helper.secret_exists">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.helpers.secret_helper.</span></span><span class="sig-name descname"><span class="pre">secret_exists</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/app/helpers/secret_helper.html#secret_exists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.secret_helper.secret_exists" title="Link to this definition">¶</a></dt>
+<dd><p>Checks whether the app’s secret key file exists at the configured
+path.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.helpers.secret_helper.secret_read">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.helpers.secret_helper.</span></span><span class="sig-name descname"><span class="pre">secret_read</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/app/helpers/secret_helper.html#secret_read"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.secret_helper.secret_read" title="Link to this definition">¶</a></dt>
+<dd><p>Reads the secret key from the configured file path and returns it
+as a decoded string.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.helpers.shuffle_helper">
+<span id="app-helpers-shuffle-helper-module"></span><h2>app.helpers.shuffle_helper module<a class="headerlink" href="#module-app.helpers.shuffle_helper" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.helpers.shuffle_helper.shuffle_shards">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.helpers.shuffle_helper.</span></span><span class="sig-name descname"><span class="pre">shuffle_shards</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AsyncSession</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Redis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/helpers/shuffle_helper.html#shuffle_shards"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.shuffle_helper.shuffle_shards" title="Link to this definition">¶</a></dt>
+<dd><p>Handles the process of shuffling files by copying, deleting, and
+renaming shard files. It retrieves shard information from the
+database and optionally enables a lock to prevent concurrent
+operations during the shuffle process.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.helpers.sort_helper">
+<span id="app-helpers-sort-helper-module"></span><h2>app.helpers.sort_helper module<a class="headerlink" href="#module-app.helpers.sort_helper" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.helpers.sort_helper.get_index">
+<span class="sig-prename descclassname"><span class="pre">app.helpers.sort_helper.</span></span><span class="sig-name descname"><span class="pre">get_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="../_modules/app/helpers/sort_helper.html#get_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.sort_helper.get_index" title="Link to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Compute a quantized sorting index for ORDER BY.</p>
+</div></blockquote>
+<p>Goal:
+- Allow DB-side ORDER BY without decrypting values.
+- Leak as little as possible about the plaintext.</p>
+<p>Approach:
+- Take the first N Unicode code points after case-insensitive</p>
+<blockquote>
+<div><p>canonicalization (casefold + NORMALIZATION_FORM). We sort by code
+point order, not by locale/collation.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>Compute a positional integer index with WEIGHT_FACTOR so earlier
+code points dominate later ones.</p></li>
+<li><p>Quantize the result by dropping COARSE_SHIFT least significant bits.
+This keeps the mapping monotonic (DB can still ORDER BY a single
+column) but makes the index many-to-one, which reduces
+reconstructability of the prefix.</p></li>
+</ul>
+</dd></dl>
+
+</section>
+<section id="module-app.helpers.uptime_helper">
+<span id="app-helpers-uptime-helper-module"></span><h2>app.helpers.uptime_helper module<a class="headerlink" href="#module-app.helpers.uptime_helper" title="Link to this heading">¶</a></h2>
+<p>The module provides functionality for tracking the app’s uptime.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="app.helpers.uptime_helper.Uptime">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.helpers.uptime_helper.</span></span><span class="sig-name descname"><span class="pre">Uptime</span></span><a class="reference internal" href="../_modules/app/helpers/uptime_helper.html#Uptime"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.uptime_helper.Uptime" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Tracks the uptime of the app by recording the start time and
+providing a method to calculate the elapsed time since start.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="app.helpers.uptime_helper.Uptime.get_uptime">
+<span class="sig-name descname"><span class="pre">get_uptime</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/helpers/uptime_helper.html#Uptime.get_uptime"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.uptime_helper.Uptime.get_uptime" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the uptime in seconds as an integer by calculating the
+difference between the current time and the recorded start time.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-app.helpers.video_helper">
+<span id="app-helpers-video-helper-module"></span><h2>app.helpers.video_helper module<a class="headerlink" href="#module-app.helpers.video_helper" title="Link to this heading">¶</a></h2>
+<p>The module provides functionality for capturing a frame from a video
+file using FFmpeg and saving it as an image, with support for specific
+video MIME types.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.helpers.video_helper.video_capture">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.helpers.video_helper.</span></span><span class="sig-name descname"><span class="pre">video_capture</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">video_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/helpers/video_helper.html#video_capture"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.helpers.video_helper.video_capture" title="Link to this definition">¶</a></dt>
+<dd><p>Captures a single frame from the beginning of a video file using
+FFmpeg, saves it as a temporary JPEG file, and then renames it to
+the desired output path.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.helpers">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-app.helpers" title="Link to this heading">¶</a></h2>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">hidden</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="app.html">app package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app.decorators.html">app.decorators package</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">app.helpers package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.helpers.encrypt_helper">app.helpers.encrypt_helper module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.encrypt_helper.decrypt_bool"><code class="docutils literal notranslate"><span class="pre">decrypt_bool()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.encrypt_helper.decrypt_bytes"><code class="docutils literal notranslate"><span class="pre">decrypt_bytes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.encrypt_helper.decrypt_int"><code class="docutils literal notranslate"><span class="pre">decrypt_int()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.encrypt_helper.decrypt_str"><code class="docutils literal notranslate"><span class="pre">decrypt_str()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.encrypt_helper.encrypt_bool"><code class="docutils literal notranslate"><span class="pre">encrypt_bool()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.encrypt_helper.encrypt_bytes"><code class="docutils literal notranslate"><span class="pre">encrypt_bytes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.encrypt_helper.encrypt_int"><code class="docutils literal notranslate"><span class="pre">encrypt_int()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.encrypt_helper.encrypt_str"><code class="docutils literal notranslate"><span class="pre">encrypt_str()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.encrypt_helper.extract_aes_key"><code class="docutils literal notranslate"><span class="pre">extract_aes_key()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.encrypt_helper.generate_encryption_salt"><code class="docutils literal notranslate"><span class="pre">generate_encryption_salt()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.encrypt_helper.hash_str"><code class="docutils literal notranslate"><span class="pre">hash_str()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.helpers.image_helper">app.helpers.image_helper module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.image_helper.image_resize"><code class="docutils literal notranslate"><span class="pre">image_resize()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.image_helper.images_merge"><code class="docutils literal notranslate"><span class="pre">images_merge()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.helpers.jwt_helper">app.helpers.jwt_helper module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.jwt_helper.generate_jti"><code class="docutils literal notranslate"><span class="pre">generate_jti()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.jwt_helper.jwt_decode"><code class="docutils literal notranslate"><span class="pre">jwt_decode()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.jwt_helper.jwt_encode"><code class="docutils literal notranslate"><span class="pre">jwt_encode()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.helpers.lock_helper">app.helpers.lock_helper module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.lock_helper.lock_disable"><code class="docutils literal notranslate"><span class="pre">lock_disable()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.lock_helper.lock_enable"><code class="docutils literal notranslate"><span class="pre">lock_enable()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.lock_helper.lock_exists"><code class="docutils literal notranslate"><span class="pre">lock_exists()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.helpers.mfa_helper">app.helpers.mfa_helper module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.mfa_helper.generate_mfa_secret"><code class="docutils literal notranslate"><span class="pre">generate_mfa_secret()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.helpers.secret_helper">app.helpers.secret_helper module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.secret_helper.secret_exists"><code class="docutils literal notranslate"><span class="pre">secret_exists()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.secret_helper.secret_read"><code class="docutils literal notranslate"><span class="pre">secret_read()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.helpers.shuffle_helper">app.helpers.shuffle_helper module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.shuffle_helper.shuffle_shards"><code class="docutils literal notranslate"><span class="pre">shuffle_shards()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.helpers.sort_helper">app.helpers.sort_helper module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.sort_helper.get_index"><code class="docutils literal notranslate"><span class="pre">get_index()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.helpers.uptime_helper">app.helpers.uptime_helper module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.uptime_helper.Uptime"><code class="docutils literal notranslate"><span class="pre">Uptime</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#app.helpers.uptime_helper.Uptime.get_uptime"><code class="docutils literal notranslate"><span class="pre">Uptime.get_uptime()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.helpers.video_helper">app.helpers.video_helper module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.helpers.video_helper.video_capture"><code class="docutils literal notranslate"><span class="pre">video_capture()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.helpers">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="app.managers.html">app.managers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app.models.html">app.models package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app.routers.html">app.routers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app.schemas.html">app.schemas package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="app.html">app package</a><ul>
+      <li>Previous: <a href="app.decorators.html" title="previous chapter">app.decorators package</a></li>
+      <li>Next: <a href="app.libraries.html" title="next chapter">app.libraries package</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Artem Abramov.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="../_sources/autodoc/app.helpers.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>app.routers package &#8212; hidden 1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
+    <script src="../_static/documentation_options.js?v=29a6c3e3"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="app.schemas package" href="app.schemas.html" />
+    <link rel="prev" title="app.models package" href="app.models.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="app-routers-package">
+<h1>app.routers package<a class="headerlink" href="#app-routers-package" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-app.routers.collection_delete_router">
+<span id="app-routers-collection-delete-router-module"></span><h2>app.routers.collection_delete_router module<a class="headerlink" href="#module-app.routers.collection_delete_router" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.collection_delete_router.collection_delete">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.collection_delete_router.</span></span><span class="sig-name descname"><span class="pre">collection_delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collection_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_admin)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.collection_delete_schema.CollectionDeleteResponse" title="app.schemas.collection_delete_schema.CollectionDeleteResponse"><span class="pre">CollectionDeleteResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/collection_delete_router.html#collection_delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.collection_delete_router.collection_delete" title="Link to this definition">¶</a></dt>
+<dd><p>Deletes a collection. Retrieves the collection from the repository
+using the provided ID, verifies that it exists, and deletes the
+collection. The associated documents are also deleted from the
+repository.</p>
+<p><strong>Auth:</strong>
+- The token must be included in the request header and contain auth
+data for an active user with the <cite>admin</cite> role.</p>
+<p><strong>Returns:</strong>
+- <cite>CollectionDeleteResponse</cite>: Contains the ID of the deleted
+collection.</p>
+<p><strong>Responses:</strong>
+- <cite>200 OK</cite>: If the collection is successfully deleted.
+- <cite>401 Unauthorized</cite>: If the token is invalid or lacks permissions.
+- <cite>403 Forbidden</cite>: If the secret key is missing.
+- <cite>404 Not Found</cite>: If the collection is not found.
+- <cite>423 Locked</cite>: If the app is locked.</p>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_AFTER_COLLECTION_DELETE</cite>: Executes after the collection is
+successfully deleted.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.routers.collection_insert_router">
+<span id="app-routers-collection-insert-router-module"></span><h2>app.routers.collection_insert_router module<a class="headerlink" href="#module-app.routers.collection_insert_router" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.collection_insert_router.collection_insert">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.collection_insert_router.</span></span><span class="sig-name descname"><span class="pre">collection_insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.schemas.html#app.schemas.collection_insert_schema.CollectionInsertRequest" title="app.schemas.collection_insert_schema.CollectionInsertRequest"><span class="pre">CollectionInsertRequest</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_write)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.collection_insert_schema.CollectionInsertResponse" title="app.schemas.collection_insert_schema.CollectionInsertResponse"><span class="pre">CollectionInsertResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/collection_insert_router.html#collection_insert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.collection_insert_router.collection_insert" title="Link to this definition">¶</a></dt>
+<dd><p>Creates a new collection. Checks if the collection name is unique,
+and creates a new collection with the provided name and summary.</p>
+<p><strong>Auth:</strong>
+- The token must be included in the request header and contain auth
+data for an active user with the <cite>writer</cite>, <cite>editor</cite>, or <cite>admin</cite> role.</p>
+<p><strong>Returns:</strong>
+- <cite>CollectionInsertResponse</cite>: Contains the newly created collection’s
+ID on success.</p>
+<p><strong>Responses:</strong>
+- <cite>201 Created</cite>: If the collection is successfully created.
+- <cite>401 Unauthorized</cite>: If the token is invalid or lacks permissions.
+- <cite>403 Forbidden</cite>: If the secret key is missing.
+- <cite>422 Unprocessable Entity</cite>: If parameters validation fails.
+- <cite>423 Locked</cite>: If the app is locked.</p>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_AFTER_COLLECTION_INSERT</cite>: Executes after the collection is
+successfully created.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.routers.collection_list_router">
+<span id="app-routers-collection-list-router-module"></span><h2>app.routers.collection_list_router module<a class="headerlink" href="#module-app.routers.collection_list_router" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.collection_list_router.collection_list">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.collection_list_router.</span></span><span class="sig-name descname"><span class="pre">collection_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(CollectionListRequest)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_read)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.collection_list_schema.CollectionListResponse" title="app.schemas.collection_list_schema.CollectionListResponse"><span class="pre">CollectionListResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/collection_list_router.html#collection_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.collection_list_router.collection_list" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves a list of collections. Fetches collections from the
+repository based on the provided filter criteria, and includes
+a counter field to indicate the total number of matching
+collections.</p>
+<p><strong>Auth:</strong>
+- The token must be included in the request header and contain auth
+data for an active user with the <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite>, or
+<cite>admin</cite> role.</p>
+<p><strong>Returns:</strong>
+- <cite>CollectionListResponse</cite>: Contains the list of collections and the
+total count.</p>
+<p><strong>Responses:</strong>
+- <cite>200 OK</cite>: If the collections are successfully fetched.
+- <cite>401 Unauthorized</cite>: If the token is invalid or lacks permissions.
+- <cite>403 Forbidden</cite>: If the token or secret key is missing.
+- <cite>423 Locked</cite>: If the app is locked.</p>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_AFTER_COLLECTION_LIST</cite>: Executes after the collections are
+successfully fetched.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.routers.collection_select_router">
+<span id="app-routers-collection-select-router-module"></span><h2>app.routers.collection_select_router module<a class="headerlink" href="#module-app.routers.collection_select_router" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.collection_select_router.collection_select">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.collection_select_router.</span></span><span class="sig-name descname"><span class="pre">collection_select</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collection_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_read)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.collection_select_schema.CollectionSelectResponse" title="app.schemas.collection_select_schema.CollectionSelectResponse"><span class="pre">CollectionSelectResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/collection_select_router.html#collection_select"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.collection_select_router.collection_select" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves a collection. Fetches the collection from the repository
+using the provided ID and returns the collection details.</p>
+<p><strong>Auth:</strong>
+- The token must be included in the request header and contain auth
+data for an active user with the <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite>, or
+<cite>admin</cite> role.</p>
+<p><strong>Returns:</strong>
+- <cite>CollectionSelectResponse</cite>: Collection details on success.</p>
+<p><strong>Responses:</strong>
+- <cite>200 OK</cite>: If the collection is successfully retrieved.
+- <cite>401 Unauthorized</cite>: If the token is invalid or lacks permissions.
+- <cite>403 Forbidden</cite>: If the token or secret key is missing.
+- <cite>404 Not Found</cite>: If the collection is not found.
+- <cite>423 Locked</cite>: If the app is locked.</p>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_AFTER_COLLECTION_SELECT</cite>: Executes after the collection is
+successfully retrieved.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.routers.collection_update_router">
+<span id="app-routers-collection-update-router-module"></span><h2>app.routers.collection_update_router module<a class="headerlink" href="#module-app.routers.collection_update_router" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.collection_update_router.collection_update">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.collection_update_router.</span></span><span class="sig-name descname"><span class="pre">collection_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collection_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.schemas.html#app.schemas.collection_update_schema.CollectionUpdateRequest" title="app.schemas.collection_update_schema.CollectionUpdateRequest"><span class="pre">CollectionUpdateRequest</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_edit)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.collection_update_schema.CollectionUpdateResponse" title="app.schemas.collection_update_schema.CollectionUpdateResponse"><span class="pre">CollectionUpdateResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/collection_update_router.html#collection_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.collection_update_router.collection_update" title="Link to this definition">¶</a></dt>
+<dd><p>Updates a collection. Retrieves the collection from the repository
+using the provided ID, ensures that the collection exists, and
+checks that the new collection name is unique. It updates the
+collection’s name and summary, and returns the updated collection ID.</p>
+<p><strong>Auth:</strong>
+- The token must be included in the request header and contain auth
+data for an active user with the <cite>editor</cite> or <cite>admin</cite> role.</p>
+<p><strong>Returns:</strong>
+- <cite>CollectionUpdateResponse</cite>: Contains the ID of the updated
+collection.</p>
+<p><strong>Responses:</strong>
+- <cite>200 OK</cite>: If the collection is successfully updated.
+- <cite>401 Unauthorized</cite>: If the token is invalid or lacks permissions.
+- <cite>403 Forbidden</cite>: If the token or secret key is missing.
+- <cite>404 Not Found</cite>: If the collection is not found.
+- <cite>423 Locked</cite>: If the app is locked.</p>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_AFTER_COLLECTION_UPDATE</cite>: Executes after the colleciton is
+successfully updated.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.routers.document_delete_router">
+<span id="app-routers-document-delete-router-module"></span><h2>app.routers.document_delete_router module<a class="headerlink" href="#module-app.routers.document_delete_router" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.document_delete_router.document_delete">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.document_delete_router.</span></span><span class="sig-name descname"><span class="pre">document_delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">document_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_admin)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.document_delete_schema.DocumentDeleteResponse" title="app.schemas.document_delete_schema.DocumentDeleteResponse"><span class="pre">DocumentDeleteResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/document_delete_router.html#document_delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.document_delete_router.document_delete" title="Link to this definition">¶</a></dt>
+<dd><p>Deletes a document. Retrieves the document from the repository using
+the provided ID, checks if the document exists and deletes the
+document. If the document is associated with a collection, its
+thumbnail is also updated.</p>
+<p><strong>Auth:</strong>
+- The token must be included in the request header and contain auth
+data for an active user with the <cite>admin</cite> role.</p>
+<p><strong>Returns:</strong>
+- <cite>DocumentDeleteResponse</cite>: Contains the ID of the deleted document.</p>
+<p><strong>Responses:</strong>
+- <cite>200 OK</cite>: If the document is successfully deleted.
+- <cite>401 Unauthorized</cite>: If the token is invalid or lacks permissions.
+- <cite>403 Forbidden</cite>: If the secret key is missing.
+- <cite>404 Not Found</cite>: If the document is not found.
+- <cite>423 Locked</cite>: If the app is locked.</p>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_AFTER_DOCUMENT_DELETE</cite>: Executes after the document is
+successfully deleted.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.routers.document_download_router">
+<span id="app-routers-document-download-router-module"></span><h2>app.routers.document_download_router module<a class="headerlink" href="#module-app.routers.document_download_router" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.document_download_router.document_download">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.document_download_router.</span></span><span class="sig-name descname"><span class="pre">document_download</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">document_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_read)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">StreamingResponse</span></span></span><a class="reference internal" href="../_modules/app/routers/document_download_router.html#document_download"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.document_download_router.document_download" title="Link to this definition">¶</a></dt>
+<dd><p>Download a document. Loads the original file by its ID from storage
+(using an LRU cache), and returns the file in the response with
+appropriate headers.</p>
+<p><strong>Auth:</strong>
+- The token must be included in the request header and contain auth
+data for an active user with the <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite>, or
+<cite>admin</cite> role.</p>
+<p><strong>Returns:</strong>
+- <cite>Response</cite>: File content on success.</p>
+<p><strong>Responses:</strong>
+- <cite>200 OK</cite>: If the file is successfully returned.
+- <cite>401 Unauthorized</cite>: If the token is invalid or lacks permissions.
+- <cite>403 Forbidden</cite>: If the token or secret key is missing.
+- <cite>404 Not Found</cite>: If the file is not found.
+- <cite>423 Locked</cite>: If the app is locked.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.routers.document_list_router">
+<span id="app-routers-document-list-router-module"></span><h2>app.routers.document_list_router module<a class="headerlink" href="#module-app.routers.document_list_router" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.document_list_router.document_list">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.document_list_router.</span></span><span class="sig-name descname"><span class="pre">document_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(DocumentListRequest)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_read)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.document_list_schema.DocumentListResponse" title="app.schemas.document_list_schema.DocumentListResponse"><span class="pre">DocumentListResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/document_list_router.html#document_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.document_list_router.document_list" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves a list of documents. Fetches documents from the repository
+based on the provided filter criteria, and includes a counter field
+to indicate the total number of matching documents.</p>
+<p><strong>Auth:</strong>
+- The token must be included in the request header and contain auth
+data for an active user with the <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite>, or
+<cite>admin</cite> role.</p>
+<p><strong>Returns:</strong>
+- <cite>DocumentListResponse</cite>: Contains the list of documents and the
+total count.</p>
+<p><strong>Responses:</strong>
+- <cite>200 OK</cite>: If the documents are successfully fetched.
+- <cite>401 Unauthorized</cite>: If the token is invalid or lacks permissions.
+- <cite>403 Forbidden</cite>: If the token or secret key is missing.
+- <cite>423 Locked</cite>: If the app is locked.</p>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_AFTER_DOCUMENT_LIST</cite>: Executes after the documents are
+successfully fetched.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.routers.document_move_router">
+<span id="app-routers-document-move-router-module"></span><h2>app.routers.document_move_router module<a class="headerlink" href="#module-app.routers.document_move_router" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.document_move_router.document_move">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.document_move_router.</span></span><span class="sig-name descname"><span class="pre">document_move</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">document_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.schemas.html#app.schemas.document_move_schema.DocumentMoveRequest" title="app.schemas.document_move_schema.DocumentMoveRequest"><span class="pre">DocumentMoveRequest</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_edit)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.document_move_schema.DocumentMoveResponse" title="app.schemas.document_move_schema.DocumentMoveResponse"><span class="pre">DocumentMoveResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/document_move_router.html#document_move"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.document_move_router.document_move" title="Link to this definition">¶</a></dt>
+<dd><p>Moves a document to a different collection. Retrieves the document
+by its ID, ensures it exists, and optionally verifies the target
+collection exists if a new collection ID is provided. Updates the
+document’s collection reference.</p>
+<p><strong>Auth:</strong>
+- The token must be included in the request header and contain auth
+data for an active user with the <cite>editor</cite> or <cite>admin</cite> role.</p>
+<p><strong>Returns:</strong>
+- <cite>DocumentMoveResponse</cite>: Contains the ID of the moved document.</p>
+<p><strong>Responses:</strong>
+- <cite>200 OK</cite>: If the document is successfully moved.
+- <cite>401 Unauthorized</cite>: If the token is invalid or lacks permissions.
+- <cite>403 Forbidden</cite>: If the token or secret key is missing.
+- <cite>404 Not Found</cite>: If the collection is not found.
+- <cite>423 Locked</cite>: If the app is locked.</p>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_AFTER_DOCUMENT_MOVE</cite>: Executes after the document is
+successfully moved.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.routers.document_select_router">
+<span id="app-routers-document-select-router-module"></span><h2>app.routers.document_select_router module<a class="headerlink" href="#module-app.routers.document_select_router" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.document_select_router.document_select">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.document_select_router.</span></span><span class="sig-name descname"><span class="pre">document_select</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">document_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_read)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.document_select_schema.DocumentSelectResponse" title="app.schemas.document_select_schema.DocumentSelectResponse"><span class="pre">DocumentSelectResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/document_select_router.html#document_select"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.document_select_router.document_select" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves a document. Fetches the document from the repository using
+the provided ID, verifies that the document exists, and returns the
+document details.</p>
+<p><strong>Auth:</strong>
+- The token must be included in the request header and contain auth
+data for an active user with the <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite>, or
+<cite>admin</cite> role.</p>
+<p><strong>Returns:</strong>
+- <cite>DocumentSelectResponse</cite>: Document details on success.</p>
+<p><strong>Responses:</strong>
+- <cite>200 OK</cite>: If the document is successfully retrieved.
+- <cite>401 Unauthorized</cite>: If the token is invalid or lacks permissions.
+- <cite>403 Forbidden</cite>: If the token or secret key is missing.
+- <cite>404 Not Found</cite>: If the document is not found.
+- <cite>423 Locked</cite>: If the app is locked.</p>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_AFTER_DOCUMENT_SELECT</cite>: Executes after the document is
+successfully retrieved.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.routers.document_update_router">
+<span id="app-routers-document-update-router-module"></span><h2>app.routers.document_update_router module<a class="headerlink" href="#module-app.routers.document_update_router" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.document_update_router.document_update">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.document_update_router.</span></span><span class="sig-name descname"><span class="pre">document_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">document_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.schemas.html#app.schemas.document_update_schema.DocumentUpdateRequest" title="app.schemas.document_update_schema.DocumentUpdateRequest"><span class="pre">DocumentUpdateRequest</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_edit)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.document_update_schema.DocumentUpdateResponse" title="app.schemas.document_update_schema.DocumentUpdateResponse"><span class="pre">DocumentUpdateResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/document_update_router.html#document_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.document_update_router.document_update" title="Link to this definition">¶</a></dt>
+<dd><p>Updates a document. Retrieves the document from the repository using
+the provided ID, ensures that the document exists, and updates the
+documents’s original filename, summary, and collection reference.
+If a collection is specified, its thumbnail will be regenerated
+after the update.</p>
+<p><strong>Auth:</strong>
+- The token must be included in the request header and contain auth
+data for an active user with the <cite>editor</cite> or <cite>admin</cite> role.</p>
+<p><strong>Returns:</strong>
+- <cite>DocumentUpdateResponse</cite>: Contains the ID of the updated document.</p>
+<p><strong>Responses:</strong>
+- <cite>200 OK</cite>: If the document is successfully updated.
+- <cite>401 Unauthorized</cite>: If the token is invalid or lacks permissions.
+- <cite>403 Forbidden</cite>: If the token or secret key is missing.
+- <cite>404 Not Found</cite>: If the document is not found.
+- <cite>423 Locked</cite>: If the app is locked.</p>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_AFTER_DOCUMENT_UPDATE</cite>: Executes after the document is
+successfully updated.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.routers.document_upload_router">
+<span id="app-routers-document-upload-router-module"></span><h2>app.routers.document_upload_router module<a class="headerlink" href="#module-app.routers.document_upload_router" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.document_upload_router.document_upload">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.document_upload_router.</span></span><span class="sig-name descname"><span class="pre">document_upload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">UploadFile</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">File(PydanticUndefined)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_write)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.document_upload_schema.DocumentUploadResponse" title="app.schemas.document_upload_schema.DocumentUploadResponse"><span class="pre">DocumentUploadResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/document_upload_router.html#document_upload"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.document_upload_router.document_upload" title="Link to this definition">¶</a></dt>
+<dd><p>Uploads a document. Processes the uploaded file by generating a
+secure unique filename, encrypting its contents, and optionally
+generating and encrypting a thumbnail if the file is an image or
+video. Creates a new document and associates it with the specified
+collection, if provided. If the document is linked to a collection,
+the collection’s thumbnail is also regenerated after upload.</p>
+<p><strong>Auth:</strong>
+- The token must be included in the request header and contain auth
+data for an active user with the <cite>writer</cite>, <cite>editor</cite>, or <cite>admin</cite> role.</p>
+<p><strong>Returns:</strong>
+- <cite>DocumentUploadResponse</cite>: Response on success.</p>
+<p><strong>Responses:</strong>
+- <cite>201 Created</cite>: If the document is successfully uploaded and saved.
+- <cite>401 Unauthorized</cite>: If the token is invalid or lacks permissions.
+- <cite>403 Forbidden</cite>: If the secret key is missing.
+- <cite>404 Not Found</cite>: If the specified collection does not exist.
+- <cite>422 Unprocessable Entity</cite>: If validation of the file fails.
+- <cite>423 Locked</cite>: If the app is locked.</p>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_AFTER_DOCUMENT_UPLOAD</cite>: Executes after the document is
+successfully created.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.document_upload_router.document_upload_to_collection">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.document_upload_router.</span></span><span class="sig-name descname"><span class="pre">document_upload_to_collection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">UploadFile</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">File(PydanticUndefined)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_write)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.document_upload_schema.DocumentUploadResponse" title="app.schemas.document_upload_schema.DocumentUploadResponse"><span class="pre">DocumentUploadResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/document_upload_router.html#document_upload_to_collection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.document_upload_router.document_upload_to_collection" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-app.routers.execute_router">
+<span id="app-routers-execute-router-module"></span><h2>app.routers.execute_router module<a class="headerlink" href="#module-app.routers.execute_router" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.execute_router.execute">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.execute_router.</span></span><span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.schemas.html#app.schemas.execute_schema.ExecuteRequest" title="app.schemas.execute_schema.ExecuteRequest"><span class="pre">ExecuteRequest</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_admin)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/routers/execute_router.html#execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.execute_router.execute" title="Link to this definition">¶</a></dt>
+<dd><p>Executes a custom action. The router executes corresponding hooks
+with defined parameters and returns custom response.</p>
+<p><strong>Args:</strong>
+- <cite>ExecuteRequest</cite>: The request schema containing the action to be
+executed and its parameters.</p>
+<p><strong>Returns:</strong>
+- <cite>JSONResponse</cite>: The response object containing the result of the
+executed action.</p>
+<p><strong>Raises:</strong>
+- <cite>401 Unauthorized</cite>: Raised if the token is invalid or expired,
+or if the current user is not authenticated or does not have the
+required permissions.
+- <cite>403 Forbidden</cite>: Raised if the token is missing.
+- <cite>423 Locked</cite>: Raised if the the application is locked.</p>
+<p><strong>Auth:</strong>
+- The user must provide a valid <cite>JWT token</cite> in the request header.
+- <cite>admin</cite> roles is required to access this router.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.routers.lock_create_router">
+<span id="app-routers-lock-create-router-module"></span><h2>app.routers.lock_create_router module<a class="headerlink" href="#module-app.routers.lock_create_router" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.lock_create_router.lock_create">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.lock_create_router.</span></span><span class="sig-name descname"><span class="pre">lock_create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_admin)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.lock_create_schema.LockCreateResponse" title="app.schemas.lock_create_schema.LockCreateResponse"><span class="pre">LockCreateResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/lock_create_router.html#lock_create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.lock_create_router.lock_create" title="Link to this definition">¶</a></dt>
+<dd><p>Locks the app. Creates a lock that prevents the app from any
+operations. The lock can only be disabled programmatically or
+after app restart.</p>
+<p><strong>Auth:</strong>
+- The token must be included in the request header and contain auth
+data for an active user with the <cite>admin</cite> role.</p>
+<p><strong>Returns:</strong>
+- <cite>LockCreateResponse</cite>: Response on success.</p>
+<p><strong>Responses:</strong>
+- <cite>200 OK</cite>: If the app is successfully locked.
+- <cite>401 Unauthorized</cite>: If the token is invalid or lacks permissions.
+- <cite>403 Forbidden</cite>: If the token or secret key is missing.
+- <cite>423 Locked</cite>: If the app is already locked.</p>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_AFTER_LOCK_CREATE</cite>: Executes after the lock is successfully
+created.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.routers.lock_retrieve_router">
+<span id="app-routers-lock-retrieve-router-module"></span><h2>app.routers.lock_retrieve_router module<a class="headerlink" href="#module-app.routers.lock_retrieve_router" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.lock_retrieve_router.lock_retrieve">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.lock_retrieve_router.</span></span><span class="sig-name descname"><span class="pre">lock_retrieve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.lock_retrieve_schema.LockRetrieveResponse" title="app.schemas.lock_retrieve_schema.LockRetrieveResponse"><span class="pre">LockRetrieveResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/lock_retrieve_router.html#lock_retrieve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.lock_retrieve_router.lock_retrieve" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves a lock status. It checks if the app is locked, preventing
+further operations. This endpoint allows to determine whether the
+app is in a locked state.</p>
+<p><strong>Auth:</strong>
+- No authentication required.</p>
+<p><strong>Returns:</strong>
+- <cite>LockRetrieveResponse</cite>: Response on success.</p>
+<p><strong>Responses:</strong>
+- <cite>200 OK</cite>: Successfully retrieves the lock status.
+- <cite>403 Forbidden</cite>: If the secret key is missing.
+- <cite>423 Locked</cite>: If the app is already locked.</p>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_AFTER_LOCK_RETRIEVE</cite>: Executes after the lock status is
+successfully retrieved.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.routers.secret_delete_router">
+<span id="app-routers-secret-delete-router-module"></span><h2>app.routers.secret_delete_router module<a class="headerlink" href="#module-app.routers.secret_delete_router" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.secret_delete_router.secret_delete">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.secret_delete_router.</span></span><span class="sig-name descname"><span class="pre">secret_delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_admin)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.secret_delete_schema.SecretDeleteResponse" title="app.schemas.secret_delete_schema.SecretDeleteResponse"><span class="pre">SecretDeleteResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/secret_delete_router.html#secret_delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.secret_delete_router.secret_delete" title="Link to this definition">¶</a></dt>
+<dd><p>Deletes the secret key. Removes the secret key file from the
+specified path.</p>
+<p><strong>Auth:</strong>
+- The token must be included in the request header and contain auth
+data for an active user with the <cite>admin</cite> role.</p>
+<p><strong>Returns:</strong>
+- <cite>SecretDeleteResponse</cite>: Contains the path of the deleted secret
+key.</p>
+<p><strong>Responses:</strong>
+- <cite>200 OK</cite>: If the secret key is successfully deleted.
+- <cite>401 Unauthorized</cite>: If the token is invalid or lacks permissions.
+- <cite>403 Forbidden</cite>: If the token or secret key is missing.
+- <cite>423 Locked</cite>: If the app is locked.</p>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_AFTER_SECRET_DELETE</cite>: Executes after the secret key is
+successfully deleted.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.routers.secret_retrieve_router">
+<span id="app-routers-secret-retrieve-router-module"></span><h2>app.routers.secret_retrieve_router module<a class="headerlink" href="#module-app.routers.secret_retrieve_router" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.secret_retrieve_router.secret_retrieve">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.secret_retrieve_router.</span></span><span class="sig-name descname"><span class="pre">secret_retrieve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_admin)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.secret_retrieve_schema.SecretRetrieveResponse" title="app.schemas.secret_retrieve_schema.SecretRetrieveResponse"><span class="pre">SecretRetrieveResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/secret_retrieve_router.html#secret_retrieve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.secret_retrieve_router.secret_retrieve" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves a secret key. Fetches the secret key from the stored path
+and returns the key along with its location.</p>
+<p><strong>Auth:</strong>
+- The token must be included in the request header and contain auth
+data for an active user with the <cite>admin</cite> role.</p>
+<p><strong>Returns:</strong>
+- <cite>SecretRetrieveResponse</cite>: Response on success.</p>
+<p><strong>Responses:</strong>
+- <cite>200 OK</cite>: If the secret key is successfully retrieved.
+- <cite>401 Unauthorized</cite>: If the token is invalid or lacks permissions.
+- <cite>403 Forbidden</cite>: If the token or secret key is missing.
+- <cite>423 Locked</cite>: If the app is locked.</p>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_AFTER_SECRET_RETRIEVE</cite>: Executes after the secret key is
+successfully retrieved.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.routers.setting_insert_router">
+<span id="app-routers-setting-insert-router-module"></span><h2>app.routers.setting_insert_router module<a class="headerlink" href="#module-app.routers.setting_insert_router" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.setting_insert_router.setting_insert">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.setting_insert_router.</span></span><span class="sig-name descname"><span class="pre">setting_insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.schemas.html#app.schemas.setting_insert_schema.SettingInsertRequest" title="app.schemas.setting_insert_schema.SettingInsertRequest"><span class="pre">SettingInsertRequest</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_admin)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.setting_insert_schema.SettingInsertResponse" title="app.schemas.setting_insert_schema.SettingInsertResponse"><span class="pre">SettingInsertResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/setting_insert_router.html#setting_insert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.setting_insert_router.setting_insert" title="Link to this definition">¶</a></dt>
+<dd><p>Updates a setting. If the setting exists, its value will be updated.
+Otherwise, a new setting will be created. If the setting value is
+not provided, the setting will be deleted.</p>
+<p><strong>Auth:</strong>
+- The token must be included in the request header and contain auth
+data for an active user with the`admin` role.</p>
+<p><strong>Returns:</strong>
+- <cite>SettingInsertResponse</cite>: Contains the setting key.</p>
+<p><strong>Responses:</strong>
+- <cite>200 OK</cite>: If the setting is successfully created, updated or
+deleted.
+- <cite>401 Unauthorized</cite>: If the token is invalid or lacks permissions.
+- <cite>403 Forbidden</cite>: If the token or secret key is missing.
+- <cite>422 Unprocessable Entity</cite>: If parameters validation fails.
+- <cite>423 Locked</cite>: If the app is locked.</p>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_AFTER_SETTING_INSERT</cite>: Executes after the setting is
+successfully created, updated or deleted.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.routers.setting_list_router">
+<span id="app-routers-setting-list-router-module"></span><h2>app.routers.setting_list_router module<a class="headerlink" href="#module-app.routers.setting_list_router" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.setting_list_router.setting_list">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.setting_list_router.</span></span><span class="sig-name descname"><span class="pre">setting_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_admin)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.setting_list_schema.SettingListResponse" title="app.schemas.setting_list_schema.SettingListResponse"><span class="pre">SettingListResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/setting_list_router.html#setting_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.setting_list_router.setting_list" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieve a list of settings. Fetches all existing settings from
+the repository. Each setting is returned as a key-value pair
+representing the configuration options for the app.</p>
+<p><strong>Auth:</strong>
+- The token must be included in the request header and contain auth
+data for an active user with the <cite>admin</cite> role.</p>
+<p><strong>Returns:</strong>
+- <cite>SettingListResponse</cite>: Contains a dictionary of settings where
+each key is a setting name and each value is its corresponding value.</p>
+<p><strong>Responses:</strong>
+- <cite>200 OK</cite>: If the settings are successfully retrieved.
+- <cite>401 Unauthorized</cite>: If the token is invalid or lacks permissions.
+- <cite>403 Forbidden</cite>: If the token or secret key is missing.
+- <cite>423 Locked</cite>: If the app is locked.</p>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_AFTER_SETTING_LIST</cite>: Executes after the settings are
+successfully fetched.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.routers.tag_delete_router">
+<span id="app-routers-tag-delete-router-module"></span><h2>app.routers.tag_delete_router module<a class="headerlink" href="#module-app.routers.tag_delete_router" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.tag_delete_router.tag_delete">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.tag_delete_router.</span></span><span class="sig-name descname"><span class="pre">tag_delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">document_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(TagDeleteRequest)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_edit)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.tag_delete_schema.TagDeleteResponse" title="app.schemas.tag_delete_schema.TagDeleteResponse"><span class="pre">TagDeleteResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/tag_delete_router.html#tag_delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.tag_delete_router.tag_delete" title="Link to this definition">¶</a></dt>
+<dd><p>Deletes a tag. Retrieves the specified document using its ID,
+verifies that the tag exists for the document, and removes it.</p>
+<p><strong>Auth:</strong>
+- The token must be included in the request header and contain auth
+data for an active user with the <cite>editor</cite> or <cite>admin</cite> role.</p>
+<p><strong>Returns:</strong>
+- <cite>TagDeleteResponse</cite>: Contains the ID of the deleted tag.</p>
+<p><strong>Responses:</strong>
+- <cite>200 OK</cite>: If the tag is successfully deleted.
+- <cite>401 Unauthorized</cite>: If the token is invalid or lacks permissions.
+- <cite>403 Forbidden</cite>: If the secret key is missing.
+- <cite>404 Not Found</cite>: If the document or tag is not found.
+- <cite>423 Locked</cite>: If the app is locked.</p>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_AFTER_TAG_DELETE</cite>: Executes after the tag is successfully
+deleted.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.routers.tag_insert_router">
+<span id="app-routers-tag-insert-router-module"></span><h2>app.routers.tag_insert_router module<a class="headerlink" href="#module-app.routers.tag_insert_router" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.tag_insert_router.tag_insert">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.tag_insert_router.</span></span><span class="sig-name descname"><span class="pre">tag_insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">document_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.schemas.html#app.schemas.tag_insert_schema.TagInsertRequest" title="app.schemas.tag_insert_schema.TagInsertRequest"><span class="pre">TagInsertRequest</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_edit)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.tag_insert_schema.TagInsertResponse" title="app.schemas.tag_insert_schema.TagInsertResponse"><span class="pre">TagInsertResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/tag_insert_router.html#tag_insert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.tag_insert_router.tag_insert" title="Link to this definition">¶</a></dt>
+<dd><p>Creates a tag. Validates the document by its ID, checks if the tag
+already exists, and creates a new tag if it does not. Associates the
+tag with the document.</p>
+<p><strong>Auth:</strong>
+- The token must be included in the request header and contain auth
+data for an active user with the <cite>editor</cite> or <cite>admin</cite> role.</p>
+<p><strong>Returns:</strong>
+- <cite>TagInsertResponse</cite>: Contains the ID of the created (or existing)
+tag.</p>
+<p><strong>Responses:</strong>
+- <cite>201 Created</cite>: If the tag is successfully created.
+- <cite>401 Unauthorized</cite>: If the token is invalid or lacks permissions.
+- <cite>403 Forbidden</cite>: If the secret key is missing.
+- <cite>422 Unprocessable Entity</cite>: If parameters validation fails.
+- <cite>423 Locked</cite>: If the app is locked.</p>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_AFTER_TAG_INSERT</cite>: Executes after the tag is successfully
+created.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.routers.tag_list_router">
+<span id="app-routers-tag-list-router-module"></span><h2>app.routers.tag_list_router module<a class="headerlink" href="#module-app.routers.tag_list_router" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.tag_list_router.tag_list">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.tag_list_router.</span></span><span class="sig-name descname"><span class="pre">tag_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_read)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/routers/tag_list_router.html#tag_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.tag_list_router.tag_list" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves a list of tags.</p>
+<p><strong>Auth:</strong>
+- The token must be included in the request header and contain auth
+data for an active user with the <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite>, or
+<cite>admin</cite> role.</p>
+<p><strong>Returns:</strong>
+- <cite>TagListResponse</cite>: Contains the list of tags.</p>
+<p><strong>Raises:</strong>
+- <cite>200 OK</cite>: If tags are successfully retrieved.
+- <cite>401 Unauthorized</cite>: If the token is invalid or lacks permissions.
+- <cite>403 Forbidden</cite>: If the token or secret key is missing.
+- <cite>423 Locked</cite>: If the app is locked.</p>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_AFTER_TAG_RETRIEVE</cite>: Executes after tag list is successfully
+retrieved.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.routers.telemetry_retrieve_router">
+<span id="app-routers-telemetry-retrieve-router-module"></span><h2>app.routers.telemetry_retrieve_router module<a class="headerlink" href="#module-app.routers.telemetry_retrieve_router" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.telemetry_retrieve_router.telemetry_retrieve">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.telemetry_retrieve_router.</span></span><span class="sig-name descname"><span class="pre">telemetry_retrieve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_admin)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/routers/telemetry_retrieve_router.html#telemetry_retrieve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.telemetry_retrieve_router.telemetry_retrieve" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves telemetry. Aggregates system metrics and configuration
+details.</p>
+<p><strong>Auth:</strong>
+- The token must be included in the request header and contain auth
+data for an active user with the <cite>admin</cite> role.</p>
+<p><strong>Returns:</strong>
+- <cite>UserSelectResponse</cite>: Telemetry details on success.</p>
+<p><strong>Raises:</strong>
+- <cite>200 OK</cite>: If telemetry is successfully retrieved.
+- <cite>401 Unauthorized</cite>: If the token is invalid or lacks permissions.
+- <cite>403 Forbidden</cite>: If the token or secret key is missing.
+- <cite>423 Locked</cite>: If the app is locked.</p>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_AFTER_TELEMETRY_RETRIEVE</cite>: Executes after telemetry is
+successfully retrieved.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.routers.thumbnail_retrieve_router">
+<span id="app-routers-thumbnail-retrieve-router-module"></span><h2>app.routers.thumbnail_retrieve_router module<a class="headerlink" href="#module-app.routers.thumbnail_retrieve_router" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.thumbnail_retrieve_router.thumbnail_retrieve">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.thumbnail_retrieve_router.</span></span><span class="sig-name descname"><span class="pre">thumbnail_retrieve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thumbnail_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_read)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/routers/thumbnail_retrieve_router.html#thumbnail_retrieve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.thumbnail_retrieve_router.thumbnail_retrieve" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves a thumbnail. Attempts to load the file by filename from
+the configured thumbnail directory, optionally using an in-memory
+LRU cache for performance.</p>
+<p><strong>Auth:</strong>
+- The token must be included in the request header and contain auth
+data for an active user with the <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite>, or
+<cite>admin</cite> role.</p>
+<p><strong>Returns:</strong>
+- <cite>Response</cite>: The raw thumbnail image content.</p>
+<p><strong>Responses:</strong>
+- <cite>200 OK</cite>: If the thumbnail is successfully retrieved.
+- <cite>401 Unauthorized</cite>: If the token is invalid or lacks permissions.
+- <cite>403 Forbidden</cite>: If the token or secret key is missing.
+- <cite>404 Not Found</cite>: If the thumbnail is not found.
+- <cite>423 Locked</cite>: If the app is locked.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.routers.token_invalidate_router">
+<span id="app-routers-token-invalidate-router-module"></span><h2>app.routers.token_invalidate_router module<a class="headerlink" href="#module-app.routers.token_invalidate_router" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.token_invalidate_router.token_invalidate">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.token_invalidate_router.</span></span><span class="sig-name descname"><span class="pre">token_invalidate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_read)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.token_invalidate_schema.TokenInvalidateResponse" title="app.schemas.token_invalidate_schema.TokenInvalidateResponse"><span class="pre">TokenInvalidateResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/token_invalidate_router.html#token_invalidate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.token_invalidate_router.token_invalidate" title="Link to this definition">¶</a></dt>
+<dd><p>Invalidates a token. It generates a new token identifier for the
+current user. The user will need to authenticate again to obtain
+a new valid token.</p>
+<p><strong>Auth:</strong>
+- The token must be included in the request header and contain auth
+data for an active user with the <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite>, or
+<cite>admin</cite> role.</p>
+<p><strong>Returns:</strong>
+- <cite>TokenInvalidateResponse</cite>: Contains the ID of the user whose
+token was invalidated.</p>
+<p><strong>Responses:</strong>
+- <cite>200 OK</cite>: If the token is successfully invalidated.
+- <cite>401 Unauthorized</cite>: If the token is invalid or lacks permissions.
+- <cite>403 Forbidden</cite>: If the token or secret key is missing.
+- <cite>423 Locked</cite>: If the app is locked.</p>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_AFTER_USER_ROLE</cite>: Executes after the token is successfully
+invalidated.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.routers.token_retrieve_router">
+<span id="app-routers-token-retrieve-router-module"></span><h2>app.routers.token_retrieve_router module<a class="headerlink" href="#module-app.routers.token_retrieve_router" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.token_retrieve_router.token_retrieve">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.token_retrieve_router.</span></span><span class="sig-name descname"><span class="pre">token_retrieve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(TokenRetrieveRequest)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.token_retrieve_schema.TokenRetrieveResponse" title="app.schemas.token_retrieve_schema.TokenRetrieveResponse"><span class="pre">TokenRetrieveResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/token_retrieve_router.html#token_retrieve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.token_retrieve_router.token_retrieve" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves a token. Validates the username and the provided
+time-based one-time password (TOTP). If authentication is
+successful, returns a new JWT token.</p>
+<p><strong>Auth:</strong>
+- No authentication required.</p>
+<p><strong>Returns:</strong>
+- <cite>TokenRetrieveResponse</cite>: Contains a signed JWT token.</p>
+<p><strong>Responses:</strong>
+- <cite>200 OK</cite>: Token issued successfully.
+- <cite>403 Forbidden</cite>: If the secret key is missing.
+- <cite>422 Unprocessable Entity</cite>: If parameters validation fails.
+- <cite>423 Locked</cite>: If the app is locked.</p>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_AFTER_TOKEN_RETRIEVE</cite>: Executes after the token is
+successfully retrieved.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.routers.user_delete_router">
+<span id="app-routers-user-delete-router-module"></span><h2>app.routers.user_delete_router module<a class="headerlink" href="#module-app.routers.user_delete_router" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.user_delete_router.user_delete">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.user_delete_router.</span></span><span class="sig-name descname"><span class="pre">user_delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_admin)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.user_delete_schema.UserDeleteResponse" title="app.schemas.user_delete_schema.UserDeleteResponse"><span class="pre">UserDeleteResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/user_delete_router.html#user_delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.user_delete_router.user_delete" title="Link to this definition">¶</a></dt>
+<dd><p>Deletes a user. The operation is restricted to admins and cannot be
+performed on the currently authenticated user. The user to delete
+should not have any relationships with other app objects.</p>
+<p><strong>Auth:</strong>
+- The token must be included in the request header and contain auth
+data for an active user with the <cite>admin</cite> role.</p>
+<p><strong>Returns:</strong>
+- <cite>UserDeleteResponse</cite>: Contains the ID of the deleted user.</p>
+<p><strong>Responses:</strong>
+- <cite>200 OK</cite>: If the user is successfully deleted.
+- <cite>401 Unauthorized</cite>: If the token is invalid or lacks permissions.
+- <cite>403 Forbidden</cite>: If the token or secret key is missing.
+- <cite>404 Not Found</cite>: If the user is not found.
+- <cite>422 Unprocessable Entity</cite>: If deletion fails.
+- <cite>423 Locked</cite>: If the app is locked.</p>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_AFTER_USER_DELETE</cite>: Executes after the user is successfully
+deleted.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.routers.user_list_router">
+<span id="app-routers-user-list-router-module"></span><h2>app.routers.user_list_router module<a class="headerlink" href="#module-app.routers.user_list_router" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.user_list_router.user_list">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.user_list_router.</span></span><span class="sig-name descname"><span class="pre">user_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(UserListRequest)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_read)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.user_list_schema.UserListResponse" title="app.schemas.user_list_schema.UserListResponse"><span class="pre">UserListResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/user_list_router.html#user_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.user_list_router.user_list" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves a list of users. Fetches users from the repository based
+on the provided filter criteria, and includes a counter field to
+indicate the total number of matching users.</p>
+<p><strong>Auth:</strong>
+- The token must be included in the request header and contain auth
+data for an active user with the <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite>, or
+<cite>admin</cite> role.</p>
+<p><strong>Returns:</strong>
+- <cite>UserListResponse</cite>: Contains the list of users and the total count.</p>
+<p><strong>Responses:</strong>
+- <cite>200 OK</cite>: If the users are successfully fetched.
+- <cite>401 Unauthorized</cite>: If the token is invalid or lacks permissions.
+- <cite>403 Forbidden</cite>: If the token or secret key is missing.
+- <cite>423 Locked</cite>: If the app is locked.</p>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_AFTER_USER_LIST</cite>: Executes after the users are successfully
+fetched.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.routers.user_login_router">
+<span id="app-routers-user-login-router-module"></span><h2>app.routers.user_login_router module<a class="headerlink" href="#module-app.routers.user_login_router" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.user_login_router.user_login">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.user_login_router.</span></span><span class="sig-name descname"><span class="pre">user_login</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.schemas.html#app.schemas.user_login_schema.UserLoginRequest" title="app.schemas.user_login_schema.UserLoginRequest"><span class="pre">UserLoginRequest</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.user_login_schema.UserLoginResponse" title="app.schemas.user_login_schema.UserLoginResponse"><span class="pre">UserLoginResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/user_login_router.html#user_login"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.user_login_router.user_login" title="Link to this definition">¶</a></dt>
+<dd><p>Logs in a user. Authenticates the user by username and password.
+If successful, it grants access to the second step of authentication
+and returns an indication of successful login. In case of incorrect
+login attempts, it handles password attempts and can temporarily
+suspend the user if they reached the maximum number of allowed
+failed attempts.</p>
+<p><strong>Auth:</strong>
+- No authentication required.</p>
+<p><strong>Returns:</strong>
+- <cite>UserLoginResponse</cite>: Contains the login status on success.</p>
+<p><strong>Responses:</strong>
+- <cite>200 OK</cite>: If the login is successful, indicating the user’s
+credentials are correct.
+- <cite>403 Forbidden</cite>: If the secret key is missing.
+- <cite>422 Unprocessable Entity</cite>: If parameters validation fails.
+- <cite>423 Locked</cite>: If the app is locked.</p>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_AFTER_USER_LOGIN</cite>: Executes after the user is successfully
+logged in.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.routers.user_password_router">
+<span id="app-routers-user-password-router-module"></span><h2>app.routers.user_password_router module<a class="headerlink" href="#module-app.routers.user_password_router" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.user_password_router.user_password">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.user_password_router.</span></span><span class="sig-name descname"><span class="pre">user_password</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.schemas.html#app.schemas.user_password_schema.UserPasswordRequest" title="app.schemas.user_password_schema.UserPasswordRequest"><span class="pre">UserPasswordRequest</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_read)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.user_password_schema.UserPasswordResponse" title="app.schemas.user_password_schema.UserPasswordResponse"><span class="pre">UserPasswordResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/user_password_router.html#user_password"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.user_password_router.user_password" title="Link to this definition">¶</a></dt>
+<dd><p>Changes a password. Fetches the user from the authentication,
+validates the current and new passwords, and updates the password.
+The current user can only change their own password.</p>
+<p><strong>Auth:</strong>
+- The token must be included in the request header and contain auth
+data for an active user with the <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite>, or
+<cite>admin</cite> role.</p>
+<p><strong>Returns:</strong>
+- <cite>UserPasswordResponse</cite>: Containing the ID of the user whose
+password is updated.</p>
+<p><strong>Responses:</strong>
+- <cite>200 OK</cite>: If the password change is successful.
+- <cite>401 Unauthorized</cite>: If the token is invalid or lacks permissions.
+- <cite>403 Forbidden</cite>: If the token or secret key is missing.
+- <cite>422 Unprocessable Entity</cite>: If parameters validation fails.
+- <cite>423 Locked</cite>: If the app is locked.</p>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_AFTER_USER_ROLE</cite>: Executes after the password is
+successfully changed.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.routers.user_register_router">
+<span id="app-routers-user-register-router-module"></span><h2>app.routers.user_register_router module<a class="headerlink" href="#module-app.routers.user_register_router" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.user_register_router.user_register">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.user_register_router.</span></span><span class="sig-name descname"><span class="pre">user_register</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.schemas.html#app.schemas.user_register_schema.UserRegisterRequest" title="app.schemas.user_register_schema.UserRegisterRequest"><span class="pre">UserRegisterRequest</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.user_register_schema.UserRegisterResponse" title="app.schemas.user_register_schema.UserRegisterResponse"><span class="pre">UserRegisterResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/user_register_router.html#user_register"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.user_register_router.user_register" title="Link to this definition">¶</a></dt>
+<dd><p>Registers a new user. Checks if the username is unique, and creates
+a new user with the provided details and credentials. If this is
+the first registered user, then he is active and gets the admin
+role. Otherwise, this user is created inactive with the reader
+role and should be activated by admin user.</p>
+<p><strong>Auth:</strong>
+- No authentication required.</p>
+<p><strong>Returns:</strong>
+- <cite>UserRegisterResponse</cite>: Response on success.</p>
+<p><strong>Responses:</strong>
+- <cite>201 Created</cite>: If the user is successfully created.
+- <cite>403 Forbidden</cite>: If the secret key is missing.
+- <cite>422 Unprocessable Entity</cite>: If parameters validation fails.
+- <cite>423 Locked</cite>: If the app is locked.</p>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_AFTER_USER_REGISTER</cite>: Executes after the user is
+successfully created.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.routers.user_role_router">
+<span id="app-routers-user-role-router-module"></span><h2>app.routers.user_role_router module<a class="headerlink" href="#module-app.routers.user_role_router" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.user_role_router.user_role">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.user_role_router.</span></span><span class="sig-name descname"><span class="pre">user_role</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.schemas.html#app.schemas.user_role_schema.UserRoleRequest" title="app.schemas.user_role_schema.UserRoleRequest"><span class="pre">UserRoleRequest</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_admin)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.user_role_schema.UserRoleResponse" title="app.schemas.user_role_schema.UserRoleResponse"><span class="pre">UserRoleResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/user_role_router.html#user_role"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.user_role_router.user_role" title="Link to this definition">¶</a></dt>
+<dd><p>Changes a role and activity status of a user. Fetches the user from
+the repository using the provided ID and changes its activity status
+and role. The current user cannot update their own role or activity
+status.</p>
+<p><strong>Auth:</strong>
+- The token must be included in the request header and contain auth
+data for an active user with the <cite>admin</cite> role.</p>
+<p><strong>Returns:</strong>
+- <cite>UserRoleResponse</cite>: Contains the ID of the updated user.</p>
+<p><strong>Responses:</strong>
+- <cite>200 OK</cite>: If the user role is successfully updated.
+- <cite>401 Unauthorized</cite>: If the token is invalid or lacks permissions.
+- <cite>403 Forbidden</cite>: If the token or secret key is missing.
+- <cite>404 Not Found</cite>: If the user is not found.
+- <cite>422 Unprocessable Entity</cite>: If parameters validation fails.
+- <cite>423 Locked</cite>: If the app is locked.</p>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_AFTER_USER_ROLE</cite>: Executes after the role and activity
+status are successfully changed.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.routers.user_select_router">
+<span id="app-routers-user-select-router-module"></span><h2>app.routers.user_select_router module<a class="headerlink" href="#module-app.routers.user_select_router" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.user_select_router.user_select">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.user_select_router.</span></span><span class="sig-name descname"><span class="pre">user_select</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_read)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.user_select_schema.UserSelectResponse" title="app.schemas.user_select_schema.UserSelectResponse"><span class="pre">UserSelectResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/user_select_router.html#user_select"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.user_select_router.user_select" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves a user. Fetches the user from the repository using the
+provided ID and returns the user details.</p>
+<p><strong>Auth:</strong>
+- The token must be included in the request header and contain auth
+data for an active user with the <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite>, or
+<cite>admin</cite> role.</p>
+<p><strong>Returns:</strong>
+- <cite>UserSelectResponse</cite>: User details on success.</p>
+<p><strong>Responses:</strong>
+- <cite>200 OK</cite>: If the user is successfully retrieved.
+- <cite>401 Unauthorized</cite>: If the token is invalid or lacks permissions.
+- <cite>403 Forbidden</cite>: If the token or secret key is missing.
+- <cite>404 Not Found</cite>: If the user is not found.
+- <cite>423 Locked</cite>: If the app is locked.</p>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_AFTER_USER_SELECT</cite>: Executes after the user is successfully
+retrieved.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.routers.user_update_router">
+<span id="app-routers-user-update-router-module"></span><h2>app.routers.user_update_router module<a class="headerlink" href="#module-app.routers.user_update_router" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.user_update_router.user_update">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.user_update_router.</span></span><span class="sig-name descname"><span class="pre">user_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.schemas.html#app.schemas.user_update_schema.UserUpdateRequest" title="app.schemas.user_update_schema.UserUpdateRequest"><span class="pre">UserUpdateRequest</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_read)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.user_update_schema.UserUpdateResponse" title="app.schemas.user_update_schema.UserUpdateResponse"><span class="pre">UserUpdateResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/user_update_router.html#user_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.user_update_router.user_update" title="Link to this definition">¶</a></dt>
+<dd><p>Updates a user. Updates the current user information, such a their
+first name, last name, and user summary.</p>
+<p><strong>Auth:</strong>
+- The token must be included in the request header and contain auth
+data for an active user with the <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite>, or
+<cite>admin</cite> role.</p>
+<p><strong>Returns:</strong>
+- <cite>UserUpdateResponse</cite>: Contains the ID of the updated user.</p>
+<p><strong>Responses:</strong>
+- <cite>200 OK</cite>: If the user is successfully updated.
+- <cite>401 Unauthorized</cite>: If the token is invalid or lacks permissions.
+- <cite>403 Forbidden</cite>: If the token or secret key is missing.
+- <cite>422 Unprocessable Entity</cite>: If parameters validation fails.
+- <cite>423 Locked</cite>: If the app is locked.</p>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_AFTER_USER_UPDATE</cite>: Executes after the user is successfully
+updated.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.routers.userpic_delete_router">
+<span id="app-routers-userpic-delete-router-module"></span><h2>app.routers.userpic_delete_router module<a class="headerlink" href="#module-app.routers.userpic_delete_router" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.userpic_delete_router.userpic_delete">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.userpic_delete_router.</span></span><span class="sig-name descname"><span class="pre">userpic_delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_read)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.userpic_delete_schema.UserpicDeleteResponse" title="app.schemas.userpic_delete_schema.UserpicDeleteResponse"><span class="pre">UserpicDeleteResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/userpic_delete_router.html#userpic_delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.userpic_delete_router.userpic_delete" title="Link to this definition">¶</a></dt>
+<dd><p>Deletes a userpic. Removes the current user’s profile picture and
+updates the user record accordingly.</p>
+<p><strong>Auth:</strong>
+- The token must be included in the request header and contain auth
+data for an active user with the <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite>, or
+<cite>admin</cite> role.</p>
+<p><strong>Returns:</strong>
+- <cite>UserpicDeleteResponse</cite>: Contains the ID of the user whose profile
+picture was deleted.</p>
+<p><strong>Responses:</strong>
+- <cite>200 OK</cite>: If the profile picture is successfully deleted.
+- <cite>401 Unauthorized</cite>: If the token is invalid or lacks permissions.
+- <cite>403 Forbidden</cite>: If the token or secret key is missing.
+- <cite>422 Unprocessable Entity</cite>: If parameters validation fails.
+- <cite>423 Locked</cite>: If the app is locked.</p>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_AFTER_USERPIC_DELETE</cite>: Executes after the profile picture is
+successfully deleted.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.routers.userpic_retrieve_router">
+<span id="app-routers-userpic-retrieve-router-module"></span><h2>app.routers.userpic_retrieve_router module<a class="headerlink" href="#module-app.routers.userpic_retrieve_router" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.userpic_retrieve_router.userpic_retrieve">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.userpic_retrieve_router.</span></span><span class="sig-name descname"><span class="pre">userpic_retrieve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">userpic_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_read)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app/routers/userpic_retrieve_router.html#userpic_retrieve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.userpic_retrieve_router.userpic_retrieve" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves a userpic. If the userpic exists in LRU cache, it will be
+served directly. Otherwise, it will fetch the image from the file
+system.</p>
+<p><strong>Auth:</strong>
+- The token must be included in the request header and contain auth
+data for an active user with the <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite>, or
+<cite>admin</cite> role.</p>
+<p><strong>Returns:</strong>
+- <cite>Response</cite>: Response on success.</p>
+<p><strong>Responses:</strong>
+- <cite>200 OK</cite>: If the userpic is found and returned successfully.
+- <cite>401 Unauthorized</cite>: If the token is invalid or lacks permissions.
+- <cite>403 Forbidden</cite>: If the token or secret key is missing.
+- <cite>404 Not Found</cite>: If the userpic file does not exist.
+- <cite>423 Locked</cite>: If the app is locked.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.routers.userpic_upload_router">
+<span id="app-routers-userpic-upload-router-module"></span><h2>app.routers.userpic_upload_router module<a class="headerlink" href="#module-app.routers.userpic_upload_router" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routers.userpic_upload_router.userpic_upload">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.routers.userpic_upload_router.</span></span><span class="sig-name descname"><span class="pre">userpic_upload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">UploadFile</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">File(PydanticUndefined)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_session)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_cache)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.user_model.User" title="app.models.user_model.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(_can_read)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="app.schemas.html#app.schemas.userpic_upload_schema.UserpicUploadResponse" title="app.schemas.userpic_upload_schema.UserpicUploadResponse"><span class="pre">UserpicUploadResponse</span></a></span></span><a class="reference internal" href="../_modules/app/routers/userpic_upload_router.html#userpic_upload"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routers.userpic_upload_router.userpic_upload" title="Link to this definition">¶</a></dt>
+<dd><p>Uploads a userpic. Allows the current user to upload a new profile
+picture. If a userpic already exists, it is replaced with the new
+one.</p>
+<p><strong>Auth:</strong>
+- The token must be included in the request header and contain auth
+data for an active user with the <cite>reader</cite>, <cite>writer</cite>, <cite>editor</cite>, or
+<cite>admin</cite> role.</p>
+<p><strong>Returns:</strong>
+- <cite>UserpicUploadResponse</cite>: Contains the ID of the user whose profile
+picture was uploaded.</p>
+<p><strong>Responses:</strong>
+- <cite>200 OK</cite>: If the the profile picture is successfully uploaded.
+- <cite>401 Unauthorized</cite>: If the token is invalid or lacks permissions.
+- <cite>403 Forbidden</cite>: If the token or secret key is missing.
+- <cite>422 Unprocessable Entity</cite>: If parameters validation fails.
+- <cite>423 Locked</cite>: If the app is locked.</p>
+<p><strong>Hooks:</strong>
+- <cite>HOOK_AFTER_USERPIC_UPLOAD</cite>: Executes after the profile picture is
+successfully created.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.routers">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-app.routers" title="Link to this heading">¶</a></h2>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">hidden</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="app.html">app package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app.decorators.html">app.decorators package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app.helpers.html">app.helpers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app.managers.html">app.managers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app.models.html">app.models package</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">app.routers package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.collection_delete_router">app.routers.collection_delete_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.collection_delete_router.collection_delete"><code class="docutils literal notranslate"><span class="pre">collection_delete()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.collection_insert_router">app.routers.collection_insert_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.collection_insert_router.collection_insert"><code class="docutils literal notranslate"><span class="pre">collection_insert()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.collection_list_router">app.routers.collection_list_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.collection_list_router.collection_list"><code class="docutils literal notranslate"><span class="pre">collection_list()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.collection_select_router">app.routers.collection_select_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.collection_select_router.collection_select"><code class="docutils literal notranslate"><span class="pre">collection_select()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.collection_update_router">app.routers.collection_update_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.collection_update_router.collection_update"><code class="docutils literal notranslate"><span class="pre">collection_update()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.document_delete_router">app.routers.document_delete_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.document_delete_router.document_delete"><code class="docutils literal notranslate"><span class="pre">document_delete()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.document_download_router">app.routers.document_download_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.document_download_router.document_download"><code class="docutils literal notranslate"><span class="pre">document_download()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.document_list_router">app.routers.document_list_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.document_list_router.document_list"><code class="docutils literal notranslate"><span class="pre">document_list()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.document_move_router">app.routers.document_move_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.document_move_router.document_move"><code class="docutils literal notranslate"><span class="pre">document_move()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.document_select_router">app.routers.document_select_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.document_select_router.document_select"><code class="docutils literal notranslate"><span class="pre">document_select()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.document_update_router">app.routers.document_update_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.document_update_router.document_update"><code class="docutils literal notranslate"><span class="pre">document_update()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.document_upload_router">app.routers.document_upload_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.document_upload_router.document_upload"><code class="docutils literal notranslate"><span class="pre">document_upload()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.document_upload_router.document_upload_to_collection"><code class="docutils literal notranslate"><span class="pre">document_upload_to_collection()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.execute_router">app.routers.execute_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.execute_router.execute"><code class="docutils literal notranslate"><span class="pre">execute()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.lock_create_router">app.routers.lock_create_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.lock_create_router.lock_create"><code class="docutils literal notranslate"><span class="pre">lock_create()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.lock_retrieve_router">app.routers.lock_retrieve_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.lock_retrieve_router.lock_retrieve"><code class="docutils literal notranslate"><span class="pre">lock_retrieve()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.secret_delete_router">app.routers.secret_delete_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.secret_delete_router.secret_delete"><code class="docutils literal notranslate"><span class="pre">secret_delete()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.secret_retrieve_router">app.routers.secret_retrieve_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.secret_retrieve_router.secret_retrieve"><code class="docutils literal notranslate"><span class="pre">secret_retrieve()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.setting_insert_router">app.routers.setting_insert_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.setting_insert_router.setting_insert"><code class="docutils literal notranslate"><span class="pre">setting_insert()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.setting_list_router">app.routers.setting_list_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.setting_list_router.setting_list"><code class="docutils literal notranslate"><span class="pre">setting_list()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.tag_delete_router">app.routers.tag_delete_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.tag_delete_router.tag_delete"><code class="docutils literal notranslate"><span class="pre">tag_delete()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.tag_insert_router">app.routers.tag_insert_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.tag_insert_router.tag_insert"><code class="docutils literal notranslate"><span class="pre">tag_insert()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.tag_list_router">app.routers.tag_list_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.tag_list_router.tag_list"><code class="docutils literal notranslate"><span class="pre">tag_list()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.telemetry_retrieve_router">app.routers.telemetry_retrieve_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.telemetry_retrieve_router.telemetry_retrieve"><code class="docutils literal notranslate"><span class="pre">telemetry_retrieve()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.thumbnail_retrieve_router">app.routers.thumbnail_retrieve_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.thumbnail_retrieve_router.thumbnail_retrieve"><code class="docutils literal notranslate"><span class="pre">thumbnail_retrieve()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.token_invalidate_router">app.routers.token_invalidate_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.token_invalidate_router.token_invalidate"><code class="docutils literal notranslate"><span class="pre">token_invalidate()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.token_retrieve_router">app.routers.token_retrieve_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.token_retrieve_router.token_retrieve"><code class="docutils literal notranslate"><span class="pre">token_retrieve()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.user_delete_router">app.routers.user_delete_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.user_delete_router.user_delete"><code class="docutils literal notranslate"><span class="pre">user_delete()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.user_list_router">app.routers.user_list_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.user_list_router.user_list"><code class="docutils literal notranslate"><span class="pre">user_list()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.user_login_router">app.routers.user_login_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.user_login_router.user_login"><code class="docutils literal notranslate"><span class="pre">user_login()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.user_password_router">app.routers.user_password_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.user_password_router.user_password"><code class="docutils literal notranslate"><span class="pre">user_password()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.user_register_router">app.routers.user_register_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.user_register_router.user_register"><code class="docutils literal notranslate"><span class="pre">user_register()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.user_role_router">app.routers.user_role_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.user_role_router.user_role"><code class="docutils literal notranslate"><span class="pre">user_role()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.user_select_router">app.routers.user_select_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.user_select_router.user_select"><code class="docutils literal notranslate"><span class="pre">user_select()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.user_update_router">app.routers.user_update_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.user_update_router.user_update"><code class="docutils literal notranslate"><span class="pre">user_update()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.userpic_delete_router">app.routers.userpic_delete_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.userpic_delete_router.userpic_delete"><code class="docutils literal notranslate"><span class="pre">userpic_delete()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.userpic_retrieve_router">app.routers.userpic_retrieve_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.userpic_retrieve_router.userpic_retrieve"><code class="docutils literal notranslate"><span class="pre">userpic_retrieve()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers.userpic_upload_router">app.routers.userpic_upload_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.routers.userpic_upload_router.userpic_upload"><code class="docutils literal notranslate"><span class="pre">userpic_upload()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routers">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="app.schemas.html">app.schemas package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="app.html">app package</a><ul>
+      <li>Previous: <a href="app.models.html" title="previous chapter">app.models package</a></li>
+      <li>Next: <a href="app.schemas.html" title="next chapter">app.schemas package</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Artem Abramov.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="../_sources/autodoc/app.routers.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

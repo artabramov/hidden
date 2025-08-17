@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>app.hook &#8212; hidden 1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=27fed22d" />
+    <script src="../../_static/documentation_options.js?v=29a6c3e3"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for app.hook</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The module defines a system for executing various hooks based on</span>
+<span class="sd">specific actions within the app. The hook class operates with event</span>
+<span class="sd">operations.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">importlib.util</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">redis</span><span class="w"> </span><span class="kn">import</span> <span class="n">Redis</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.ext.asyncio</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncSession</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">app.models.user_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">User</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">app.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_config</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">app.context</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_context</span>
+
+<span class="n">cfg</span> <span class="o">=</span> <span class="n">get_config</span><span class="p">()</span>
+<span class="n">ctx</span> <span class="o">=</span> <span class="n">get_context</span><span class="p">()</span>
+
+<span class="n">HOOK_AFTER_TOKEN_RETRIEVE</span> <span class="o">=</span> <span class="s2">&quot;after_token_retrieve&quot;</span>
+<span class="n">HOOK_AFTER_TOKEN_INVALIDATE</span> <span class="o">=</span> <span class="s2">&quot;after_token_invalidate&quot;</span>
+
+<span class="n">HOOK_AFTER_USER_REGISTER</span> <span class="o">=</span> <span class="s2">&quot;after_user_register&quot;</span>
+<span class="n">HOOK_AFTER_USER_LOGIN</span> <span class="o">=</span> <span class="s2">&quot;after_user_login&quot;</span>
+<span class="n">HOOK_AFTER_USER_SELECT</span> <span class="o">=</span> <span class="s2">&quot;after_user_select&quot;</span>
+<span class="n">HOOK_AFTER_USER_UPDATE</span> <span class="o">=</span> <span class="s2">&quot;after_user_update&quot;</span>
+<span class="n">HOOK_AFTER_USER_PASSWORD</span> <span class="o">=</span> <span class="s2">&quot;after_user_password&quot;</span>
+<span class="n">HOOK_AFTER_USER_ROLE</span> <span class="o">=</span> <span class="s2">&quot;after_user_role&quot;</span>
+<span class="n">HOOK_AFTER_USER_DELETE</span> <span class="o">=</span> <span class="s2">&quot;after_user_delete&quot;</span>
+<span class="n">HOOK_AFTER_USER_LIST</span> <span class="o">=</span> <span class="s2">&quot;after_user_list&quot;</span>
+<span class="n">HOOK_AFTER_USERPIC_UPLOAD</span> <span class="o">=</span> <span class="s2">&quot;after_userpic_upload&quot;</span>
+<span class="n">HOOK_AFTER_USERPIC_DELETE</span> <span class="o">=</span> <span class="s2">&quot;after_userpic_delete&quot;</span>
+
+<span class="n">HOOK_AFTER_COLLECTION_INSERT</span> <span class="o">=</span> <span class="s2">&quot;after_collection_insert&quot;</span>
+<span class="n">HOOK_AFTER_COLLECTION_SELECT</span> <span class="o">=</span> <span class="s2">&quot;after_collection_select&quot;</span>
+<span class="n">HOOK_AFTER_COLLECTION_UPDATE</span> <span class="o">=</span> <span class="s2">&quot;after_collection_update&quot;</span>
+<span class="n">HOOK_AFTER_COLLECTION_DELETE</span> <span class="o">=</span> <span class="s2">&quot;after_collection_delete&quot;</span>
+<span class="n">HOOK_AFTER_COLLECTION_LIST</span> <span class="o">=</span> <span class="s2">&quot;after_collection_list&quot;</span>
+
+<span class="n">HOOK_AFTER_DOCUMENT_UPLOAD</span> <span class="o">=</span> <span class="s2">&quot;after_document_upload&quot;</span>
+<span class="n">HOOK_AFTER_DOCUMENT_SELECT</span> <span class="o">=</span> <span class="s2">&quot;after_document_select&quot;</span>
+<span class="n">HOOK_AFTER_DOCUMENT_UPDATE</span> <span class="o">=</span> <span class="s2">&quot;after_document_update&quot;</span>
+<span class="n">HOOK_AFTER_DOCUMENT_MOVE</span> <span class="o">=</span> <span class="s2">&quot;after_document_move&quot;</span>
+<span class="n">HOOK_AFTER_DOCUMENT_DELETE</span> <span class="o">=</span> <span class="s2">&quot;after_document_delete&quot;</span>
+<span class="n">HOOK_AFTER_DOCUMENT_LIST</span> <span class="o">=</span> <span class="s2">&quot;after_document_list&quot;</span>
+
+<span class="n">HOOK_AFTER_TAG_INSERT</span> <span class="o">=</span> <span class="s2">&quot;after_tag_insert&quot;</span>
+<span class="n">HOOK_AFTER_TAG_DELETE</span> <span class="o">=</span> <span class="s2">&quot;after_tag_delete&quot;</span>
+<span class="n">HOOK_AFTER_TAG_LIST</span> <span class="o">=</span> <span class="s2">&quot;after_tag_list&quot;</span>
+
+<span class="n">HOOK_AFTER_SETTING_INSERT</span> <span class="o">=</span> <span class="s2">&quot;after_setting_insert&quot;</span>
+<span class="n">HOOK_AFTER_SETTING_LIST</span> <span class="o">=</span> <span class="s2">&quot;after_setting_list&quot;</span>
+
+<span class="n">HOOK_AFTER_SECRET_RETRIEVE</span> <span class="o">=</span> <span class="s2">&quot;after_secret_retrieve&quot;</span>
+<span class="n">HOOK_AFTER_SECRET_DELETE</span> <span class="o">=</span> <span class="s2">&quot;after_secret_delete&quot;</span>
+
+<span class="n">HOOK_AFTER_LOCK_CREATE</span> <span class="o">=</span> <span class="s2">&quot;after_lock_create&quot;</span>
+<span class="n">HOOK_AFTER_LOCK_RETRIEVE</span> <span class="o">=</span> <span class="s2">&quot;after_lock_retrieve&quot;</span>
+
+<span class="n">HOOK_AFTER_TELEMETRY_RETRIEVE</span> <span class="o">=</span> <span class="s2">&quot;after_telemetry_retrieve&quot;</span>
+
+<span class="n">HOOK_ON_EXECUTE</span> <span class="o">=</span> <span class="s2">&quot;on_execute&quot;</span>
+
+
+<div class="viewcode-block" id="Hook">
+<a class="viewcode-back" href="../../autodoc/app.html#app.hook.Hook">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Hook</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Manages and executes hooks for handling post-event operations within</span>
+<span class="sd">    the app. The class initializes with entity manager, cache manager,</span>
+<span class="sd">    request, and optionally current user. The execute method runs the</span>
+<span class="sd">    appropriate hook functions based on the specified hook action,</span>
+<span class="sd">    processing data as required and returning the result.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span>
+                 <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="n">session</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cache</span> <span class="o">=</span> <span class="n">cache</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_user</span> <span class="o">=</span> <span class="n">current_user</span>
+
+<div class="viewcode-block" id="Hook.call">
+<a class="viewcode-back" href="../../autodoc/app.html#app.hook.Hook.call">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hook</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">hook</span> <span class="ow">in</span> <span class="n">ctx</span><span class="o">.</span><span class="n">hooks</span><span class="p">:</span>
+            <span class="n">hook_functions</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">hooks</span><span class="p">[</span><span class="n">hook</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">func</span> <span class="ow">in</span> <span class="n">hook_functions</span><span class="p">:</span>
+                <span class="k">await</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_user</span><span class="p">,</span>
+                           <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="init_hooks">
+<a class="viewcode-back" href="../../autodoc/app.html#app.hook.init_hooks">[docs]</a>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">init_hooks</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Loads and registers functions from addon modules as hooks. The</span>
+<span class="sd">    addon modules are specified in the configuration, and their</span>
+<span class="sd">    functions are registered by name in the context&#39;s hooks dictionary.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ctx</span><span class="o">.</span><span class="n">hooks</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># Load and register functions from addon modules.</span>
+    <span class="n">filenames</span> <span class="o">=</span> <span class="p">[</span><span class="n">file</span> <span class="o">+</span> <span class="s2">&quot;.py&quot;</span> <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">cfg</span><span class="o">.</span><span class="n">ADDONS_ENABLED</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">filenames</span><span class="p">:</span>
+        <span class="n">module_name</span> <span class="o">=</span> <span class="n">filename</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">module_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">ADDONS_PATH</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+
+        <span class="c1"># Load the module from the specified file path.</span>
+        <span class="n">spec</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">spec_from_file_location</span><span class="p">(</span>
+            <span class="n">module_name</span><span class="p">,</span> <span class="n">module_path</span><span class="p">)</span>
+        <span class="n">module</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">module_from_spec</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span>
+        <span class="n">spec</span><span class="o">.</span><span class="n">loader</span><span class="o">.</span><span class="n">exec_module</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
+
+        <span class="c1"># Register functions from the module as hooks.</span>
+        <span class="n">func_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">attr</span> <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
+                      <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isfunction</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">attr</span><span class="p">))]</span>
+        <span class="k">for</span> <span class="n">func_name</span> <span class="ow">in</span> <span class="n">func_names</span><span class="p">:</span>
+            <span class="n">func</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">func_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">func_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ctx</span><span class="o">.</span><span class="n">hooks</span><span class="p">:</span>
+                <span class="n">ctx</span><span class="o">.</span><span class="n">hooks</span><span class="p">[</span><span class="n">func_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">func</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ctx</span><span class="o">.</span><span class="n">hooks</span><span class="p">[</span><span class="n">func_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">func</span><span class="p">)</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">hidden</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../autodoc/app.html">app package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autodoc/app.decorators.html">app.decorators package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autodoc/app.helpers.html">app.helpers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autodoc/app.managers.html">app.managers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autodoc/app.models.html">app.models package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autodoc/app.routers.html">app.routers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autodoc/app.schemas.html">app.schemas package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Artem Abramov.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

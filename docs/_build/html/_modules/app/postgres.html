@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>app.postgres &#8212; hidden 1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=27fed22d" />
+    <script src="../../_static/documentation_options.js?v=29a6c3e3"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for app.postgres</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The module sets up and manages the asynchronous database session and</span>
+<span class="sd">engine using SQLAlchemy. It provides functions to create and manage</span>
+<span class="sd">database connections and sessions for an asynchronous environment.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">asyncio</span><span class="w"> </span><span class="kn">import</span> <span class="n">current_task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">text</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.ext.declarative</span><span class="w"> </span><span class="kn">import</span> <span class="n">declarative_base</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.ext.asyncio</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">create_async_engine</span><span class="p">,</span> <span class="n">async_scoped_session</span><span class="p">,</span> <span class="n">async_sessionmaker</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">app.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_config</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">app.triggers</span><span class="w"> </span><span class="kn">import</span> <span class="n">triggers</span>
+
+<span class="n">cfg</span> <span class="o">=</span> <span class="n">get_config</span><span class="p">()</span>
+<span class="n">Base</span> <span class="o">=</span> <span class="n">declarative_base</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="SessionManager">
+<a class="viewcode-back" href="../../autodoc/app.html#app.postgres.SessionManager">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SessionManager</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Manages asynchronous SQLAlchemy sessions and engine creation for the</span>
+<span class="sd">    application. Handles configuration and provides methods to create</span>
+<span class="sd">    and retrieve database sessions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Manages asynchronous SQLAlchemy sessions and engine creation for</span>
+<span class="sd">        the application. Handles configuration and provides methods to</span>
+<span class="sd">        create and retrieve database sessions.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">async_engine</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_engine</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">async_sessionmaker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_sessionmaker</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">connection_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generates the PostgreSQL database connection string used by</span>
+<span class="sd">        SQLAlchemy. This URL includes the username, password, host,</span>
+<span class="sd">        port, and database name as configured.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;postgresql+asyncpg://</span><span class="si">%s</span><span class="s2">:</span><span class="si">%s</span><span class="s2">@</span><span class="si">%s</span><span class="s2">:</span><span class="si">%s</span><span class="s2">/</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="n">cfg</span><span class="o">.</span><span class="n">POSTGRES_USERNAME</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">POSTGRES_PASSWORD</span><span class="p">,</span>
+            <span class="n">cfg</span><span class="o">.</span><span class="n">POSTGRES_HOST</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">POSTGRES_PORT</span><span class="p">,</span>
+            <span class="n">cfg</span><span class="o">.</span><span class="n">POSTGRES_DATABASE</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SessionManager.create_engine">
+<a class="viewcode-back" href="../../autodoc/app.html#app.postgres.SessionManager.create_engine">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_engine</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates an asynchronous database engine. In the context of</span>
+<span class="sd">        FastAPI and SQLAlchemy, this engine handles database connections</span>
+<span class="sd">        and communication.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">create_async_engine</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">connection_string</span><span class="p">,</span> <span class="n">echo</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">future</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">pool_size</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">POSTGRES_POOL_SIZE</span><span class="p">,</span>
+            <span class="n">max_overflow</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">POSTGRES_POOL_OVERFLOW</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SessionManager.create_sessionmaker">
+<a class="viewcode-back" href="../../autodoc/app.html#app.postgres.SessionManager.create_sessionmaker">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_sessionmaker</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates an asynchronous session class. It&#39;s similar to the</span>
+<span class="sd">        regular sessionmaker but adapted for asynchronous operations.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">async_sessionmaker</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">async_engine</span><span class="p">,</span> <span class="n">autoflush</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                  <span class="n">autocommit</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">expire_on_commit</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SessionManager.get_session">
+<a class="viewcode-back" href="../../autodoc/app.html#app.postgres.SessionManager.get_session">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_session</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates a scoped session for the current context. It allows to</span>
+<span class="sd">        work with a single session within a particular scope, such as</span>
+<span class="sd">        a request in FastAPI.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">async_session</span> <span class="o">=</span> <span class="n">async_scoped_session</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">async_sessionmaker</span><span class="p">,</span>
+                                             <span class="n">scopefunc</span><span class="o">=</span><span class="n">current_task</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">async_session</span><span class="p">()</span></div>
+</div>
+
+
+
+<span class="n">sessionmanager</span> <span class="o">=</span> <span class="n">SessionManager</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="get_session">
+<a class="viewcode-back" href="../../autodoc/app.html#app.postgres.get_session">[docs]</a>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_session</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates an asynchronous scoped session. This session is scoped to</span>
+<span class="sd">    the current task, allowing for consistent session management within</span>
+<span class="sd">    a particular context, such as a request in FastAPI.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">session</span> <span class="o">=</span> <span class="n">sessionmanager</span><span class="o">.</span><span class="n">get_session</span><span class="p">()</span>
+        <span class="k">yield</span> <span class="n">session</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+        <span class="k">raise</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="init_database">
+<a class="viewcode-back" href="../../autodoc/app.html#app.postgres.init_database">[docs]</a>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">init_database</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Initializes the database by creating all the tables defined in the</span>
+<span class="sd">    SQLAlchemy Base metadata. This function is typically called during</span>
+<span class="sd">    the application startup to ensure the database schema is created.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">sessionmanager</span><span class="o">.</span><span class="n">async_engine</span><span class="o">.</span><span class="n">begin</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+        <span class="k">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">run_sync</span><span class="p">(</span><span class="n">Base</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">create_all</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">sql</span> <span class="ow">in</span> <span class="n">triggers</span><span class="p">:</span>
+            <span class="k">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">text</span><span class="p">(</span><span class="n">sql</span><span class="p">))</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">hidden</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../autodoc/app.html">app package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autodoc/app.decorators.html">app.decorators package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autodoc/app.helpers.html">app.helpers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autodoc/app.managers.html">app.managers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autodoc/app.models.html">app.models package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autodoc/app.routers.html">app.routers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autodoc/app.schemas.html">app.schemas package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Artem Abramov.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

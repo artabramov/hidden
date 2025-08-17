@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+
+secret.key
+serial.py
+
+app/lock/*
+!app/lock/.gitkeep
+
+data/userpics/*
+!data/userpics/.gitkeep
+
+data/documents/*
+!data/documents/.gitkeep
+
+data/thumbnails/*
+!data/thumbnails/.gitkeep

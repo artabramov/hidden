@@ -1,8 +1,11 @@
 # Changelog
 
+### [0.1.3] - 2025-08-24
+- Minor fixes and improvements.
+
 ### [0.1.2] - 2025-08-17
 - Tuned parameters for **safer and more accurate indexing** of encrypted fields.
-- Updated documentation and **opened the repository for public access** (source-available).
+- Updated documentation and **opened the repository for public access**.
 - Changed license to a **non-commercial software license** (source-available, no commercial use).
 
 ### [0.1.1] - 2025-08-10

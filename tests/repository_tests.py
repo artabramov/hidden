@@ -1,5 +1,6 @@
 import unittest
-from unittest.mock import MagicMock, AsyncMock, call, patch
+from types import SimpleNamespace
+from unittest.mock import MagicMock, AsyncMock, call
 from app.repository import Repository
 
 
@@ -13,7 +14,11 @@ class RepositoryTest(unittest.IsolatedAsyncioTestCase):
         cache_mock = MagicMock()
         dummy_class_mock = MagicMock()
 
-        repository = Repository(session_mock, cache_mock, dummy_class_mock)
+        config = SimpleNamespace(REDIS_ENABLED=True, REDIS_EXPIRE=60)
+
+        repository = Repository(
+            session_mock, cache_mock, dummy_class_mock, config
+        )
 
         self.assertTrue(isinstance(repository.entity_manager, EntityManager))
         self.assertEqual(repository.entity_manager.session, session_mock)
@@ -25,7 +30,8 @@ class RepositoryTest(unittest.IsolatedAsyncioTestCase):
         dummy_class_mock = MagicMock(__tablename__="dummies")
         dummy_mock = MagicMock()
 
-        repository = Repository(None, None, dummy_class_mock)
+        config = SimpleNamespace(REDIS_ENABLED=True, REDIS_EXPIRE=60)
+        repository = Repository(None, None, dummy_class_mock, config)
         repository.entity_manager = AsyncMock()
         repository.cache_manager = AsyncMock()
 
@@ -39,7 +45,8 @@ class RepositoryTest(unittest.IsolatedAsyncioTestCase):
         dummy_class_mock = MagicMock(__tablename__="dummies")
         dummy_mock = MagicMock()
 
-        repository = Repository(None, None, dummy_class_mock)
+        config = SimpleNamespace(REDIS_ENABLED=True, REDIS_EXPIRE=60)
+        repository = Repository(None, None, dummy_class_mock, config)
         repository.entity_manager = AsyncMock()
         repository.cache_manager = AsyncMock()
 
@@ -50,13 +57,12 @@ class RepositoryTest(unittest.IsolatedAsyncioTestCase):
             dummy_mock, commit=False)
         repository.cache_manager.set.assert_not_called()
 
-    @patch("app.repository.cfg")
-    async def test_select_redis_enabled(self, cfg_mock):
-        cfg_mock.REDIS_ENABLED = True
+    async def test_select_redis_enabled(self):
         dummy_class_mock = MagicMock(__tablename__="dummies", _cacheable=True)
         dummy_mock = MagicMock(id=123)
 
-        repository = Repository(None, None, dummy_class_mock)
+        config = SimpleNamespace(REDIS_ENABLED=True, REDIS_EXPIRE=60)
+        repository = Repository(None, None, dummy_class_mock, config)
         repository.entity_manager = AsyncMock()
         repository.cache_manager = AsyncMock()
         repository.cache_manager.get.return_value = dummy_mock
@@ -70,13 +76,12 @@ class RepositoryTest(unittest.IsolatedAsyncioTestCase):
             dummy_class_mock, dummy_mock.id)
         repository.cache_manager.set.assert_called_once_with(dummy_mock)
 
-    @patch("app.repository.cfg")
-    async def test_select_redis_disabled(self, cfg_mock):
-        cfg_mock.REDIS_ENABLED = False
+    async def test_select_redis_disabled(self):
         dummy_class_mock = MagicMock(__tablename__="dummies", _cacheable=True)
         dummy_mock = MagicMock(id=123)
 
-        repository = Repository(None, None, dummy_class_mock)
+        config = SimpleNamespace(REDIS_ENABLED=False, REDIS_EXPIRE=60)
+        repository = Repository(None, None, dummy_class_mock, config)
         repository.entity_manager = AsyncMock()
         repository.entity_manager.select.return_value = dummy_mock
         repository.cache_manager = AsyncMock()
@@ -90,13 +95,12 @@ class RepositoryTest(unittest.IsolatedAsyncioTestCase):
         repository.cache_manager.get.assert_not_called()
         repository.cache_manager.set.assert_not_called()
 
-    @patch("app.repository.cfg")
-    async def test_select_cacheable_true(self, cfg_mock):
-        cfg_mock.REDIS_ENABLED = True
+    async def test_select_cacheable_true(self):
         dummy_class_mock = MagicMock(__tablename__="dummies", _cacheable=True)
         dummy_mock = MagicMock(id=123)
 
-        repository = Repository(None, None, dummy_class_mock)
+        config = SimpleNamespace(REDIS_ENABLED=True, REDIS_EXPIRE=60)
+        repository = Repository(None, None, dummy_class_mock, config)
         repository.entity_manager = AsyncMock()
         repository.entity_manager.select.return_value = dummy_mock
         repository.cache_manager = AsyncMock()
@@ -112,13 +116,12 @@ class RepositoryTest(unittest.IsolatedAsyncioTestCase):
             dummy_class_mock, dummy_mock.id)
         repository.cache_manager.set.assert_called_once_with(dummy_mock)
 
-    @patch("app.repository.cfg")
-    async def test_select_cacheable_false(self, cfg_mock):
-        cfg_mock.REDIS_ENABLED = True
+    async def test_select_cacheable_false(self):
         dummy_class_mock = MagicMock(__tablename__="dummies", _cacheable=False)
         dummy_mock = MagicMock(id=123)
 
-        repository = Repository(None, None, dummy_class_mock)
+        config = SimpleNamespace(REDIS_ENABLED=True, REDIS_EXPIRE=60)
+        repository = Repository(None, None, dummy_class_mock, config)
         repository.entity_manager = AsyncMock()
         repository.entity_manager.select.return_value = dummy_mock
         repository.cache_manager = AsyncMock()
@@ -132,13 +135,12 @@ class RepositoryTest(unittest.IsolatedAsyncioTestCase):
         repository.cache_manager.get.assert_not_called()
         repository.cache_manager.set.assert_not_called()
 
-    @patch("app.repository.cfg")
-    async def test_select_by_cacheable_true(self, cfg_mock):
-        cfg_mock.REDIS_ENABLED = True
+    async def test_select_by_cacheable_true(self):
         dummy_class_mock = MagicMock(__tablename__="dummies", _cacheable=True)
         dummy_mock = MagicMock(key="value")
 
-        repository = Repository(None, None, dummy_class_mock)
+        config = SimpleNamespace(REDIS_ENABLED=True, REDIS_EXPIRE=60)
+        repository = Repository(None, None, dummy_class_mock, config)
         repository.entity_manager = AsyncMock()
         repository.entity_manager.select_by.return_value = dummy_mock
         repository.cache_manager = AsyncMock()
@@ -153,13 +155,12 @@ class RepositoryTest(unittest.IsolatedAsyncioTestCase):
         repository.cache_manager.get.assert_not_called()
         repository.cache_manager.set.assert_called_once_with(dummy_mock)
 
-    @patch("app.repository.cfg")
-    async def test_select_by_cacheable_false(self, cfg_mock):
-        cfg_mock.REDIS_ENABLED = True
+    async def test_select_by_cacheable_false(self):
         dummy_class_mock = MagicMock(__tablename__="dummies", _cacheable=False)
         dummy_mock = MagicMock(key="value")
 
-        repository = Repository(None, None, dummy_class_mock)
+        config = SimpleNamespace(REDIS_ENABLED=True, REDIS_EXPIRE=60)
+        repository = Repository(None, None, dummy_class_mock, config)
         repository.entity_manager = AsyncMock()
         repository.entity_manager.select_by.return_value = dummy_mock
         repository.cache_manager = AsyncMock()
@@ -174,13 +175,12 @@ class RepositoryTest(unittest.IsolatedAsyncioTestCase):
         repository.cache_manager.get.assert_not_called()
         repository.cache_manager.set.assert_not_called()
 
-    @patch("app.repository.cfg")
-    async def test_select_by_redis_enabled(self, cfg_mock):
-        cfg_mock.REDIS_ENABLED = True
+    async def test_select_by_redis_enabled(self):
         dummy_class_mock = MagicMock(__tablename__="dummies", _cacheable=True)
         dummy_mock = MagicMock(key="value")
 
-        repository = Repository(None, None, dummy_class_mock)
+        config = SimpleNamespace(REDIS_ENABLED=True, REDIS_EXPIRE=60)
+        repository = Repository(None, None, dummy_class_mock, config)
         repository.entity_manager = AsyncMock()
         repository.entity_manager.select_by.return_value = dummy_mock
         repository.cache_manager = AsyncMock()
@@ -195,13 +195,12 @@ class RepositoryTest(unittest.IsolatedAsyncioTestCase):
         repository.cache_manager.get.assert_not_called()
         repository.cache_manager.set.assert_called_once_with(dummy_mock)
 
-    @patch("app.repository.cfg")
-    async def test_select_by_redis_disabled(self, cfg_mock):
-        cfg_mock.REDIS_ENABLED = False
+    async def test_select_by_redis_disabled(self):
         dummy_class_mock = MagicMock(__tablename__="dummies", _cacheable=True)
         dummy_mock = MagicMock(key="value")
 
-        repository = Repository(None, None, dummy_class_mock)
+        config = SimpleNamespace(REDIS_ENABLED=False, REDIS_EXPIRE=60)
+        repository = Repository(None, None, dummy_class_mock, config)
         repository.entity_manager = AsyncMock()
         repository.entity_manager.select_by.return_value = dummy_mock
         repository.cache_manager = AsyncMock()
@@ -216,13 +215,12 @@ class RepositoryTest(unittest.IsolatedAsyncioTestCase):
         repository.cache_manager.get.assert_not_called()
         repository.cache_manager.set.assert_not_called()
 
-    @patch("app.repository.cfg")
-    async def test_select_all_cacheable_true(self, cfg_mock):
-        cfg_mock.REDIS_ENABLED = True
+    async def test_select_all_cacheable_true(self):
         dummy_class_mock = MagicMock(__tablename__="dummies", _cacheable=True)
         dummy_mocks = [MagicMock(key="value"), MagicMock(key="value")]
 
-        repository = Repository(None, None, dummy_class_mock)
+        config = SimpleNamespace(REDIS_ENABLED=True, REDIS_EXPIRE=60)
+        repository = Repository(None, None, dummy_class_mock, config)
         repository.entity_manager = AsyncMock()
         repository.entity_manager.select_all.return_value = dummy_mocks
         repository.cache_manager = AsyncMock()
@@ -237,13 +235,12 @@ class RepositoryTest(unittest.IsolatedAsyncioTestCase):
             repository.cache_manager.set.call_args_list,
             [call(dummy_mocks[0]), call(dummy_mocks[1])])
 
-    @patch("app.repository.cfg")
-    async def test_select_all_cacheable_false(self, cfg_mock):
-        cfg_mock.REDIS_ENABLED = True
+    async def test_select_all_cacheable_false(self):
         dummy_class_mock = MagicMock(__tablename__="dummies", _cacheable=False)
         dummy_mocks = [MagicMock(key="value"), MagicMock(key="value")]
 
-        repository = Repository(None, None, dummy_class_mock)
+        config = SimpleNamespace(REDIS_ENABLED=True, REDIS_EXPIRE=60)
+        repository = Repository(None, None, dummy_class_mock, config)
         repository.entity_manager = AsyncMock()
         repository.entity_manager.select_all.return_value = dummy_mocks
         repository.cache_manager = AsyncMock()
@@ -255,13 +252,12 @@ class RepositoryTest(unittest.IsolatedAsyncioTestCase):
             dummy_class_mock, key__eq=dummy_mocks[0].key)
         repository.cache_manager.set.assert_not_called()
 
-    @patch("app.repository.cfg")
-    async def test_select_all_redis_enabled(self, cfg_mock):
-        cfg_mock.REDIS_ENABLED = True
+    async def test_select_all_redis_enabled(self):
         dummy_class_mock = MagicMock(__tablename__="dummies", _cacheable=True)
         dummy_mocks = [MagicMock(key="value"), MagicMock(key="value")]
 
-        repository = Repository(None, None, dummy_class_mock)
+        config = SimpleNamespace(REDIS_ENABLED=True, REDIS_EXPIRE=60)
+        repository = Repository(None, None, dummy_class_mock, config)
         repository.entity_manager = AsyncMock()
         repository.entity_manager.select_all.return_value = dummy_mocks
         repository.cache_manager = AsyncMock()
@@ -276,13 +272,12 @@ class RepositoryTest(unittest.IsolatedAsyncioTestCase):
             repository.cache_manager.set.call_args_list,
             [call(dummy_mocks[0]), call(dummy_mocks[1])])
 
-    @patch("app.repository.cfg")
-    async def test_select_all_redis_disabled(self, cfg_mock):
-        cfg_mock.REDIS_ENABLED = False
+    async def test_select_all_redis_disabled(self):
         dummy_class_mock = MagicMock(__tablename__="dummies", _cacheable=True)
         dummy_mocks = [MagicMock(key="value"), MagicMock(key="value")]
 
-        repository = Repository(None, None, dummy_class_mock)
+        config = SimpleNamespace(REDIS_ENABLED=False, REDIS_EXPIRE=60)
+        repository = Repository(None, None, dummy_class_mock, config)
         repository.entity_manager = AsyncMock()
         repository.entity_manager.select_all.return_value = dummy_mocks
         repository.cache_manager = AsyncMock()
@@ -294,13 +289,12 @@ class RepositoryTest(unittest.IsolatedAsyncioTestCase):
             dummy_class_mock, key__eq=dummy_mocks[0].key)
         repository.cache_manager.set.assert_not_called()
 
-    @patch("app.repository.cfg")
-    async def test_update_cacheable_commit_true(self, cfg_mock):
-        cfg_mock.REDIS_ENABLED = True
+    async def test_update_cacheable_commit_true(self):
         dummy_class_mock = MagicMock(__tablename__="dummies", _cacheable=True)
         dummy_mock = MagicMock()
 
-        repository = Repository(None, None, dummy_class_mock)
+        config = SimpleNamespace(REDIS_ENABLED=True, REDIS_EXPIRE=60)
+        repository = Repository(None, None, dummy_class_mock, config)
         repository.entity_manager = AsyncMock()
         repository.cache_manager = AsyncMock()
 
@@ -311,13 +305,12 @@ class RepositoryTest(unittest.IsolatedAsyncioTestCase):
             dummy_mock, commit=True)
         repository.cache_manager.delete.assert_called_once_with(dummy_mock)
 
-    @patch("app.repository.cfg")
-    async def test_update_cacheable_commit_false(self, cfg_mock):
-        cfg_mock.REDIS_ENABLED = True
+    async def test_update_cacheable_commit_false(self):
         dummy_class_mock = MagicMock(__tablename__="dummies", _cacheable=True)
         dummy_mock = MagicMock()
 
-        repository = Repository(None, None, dummy_class_mock)
+        config = SimpleNamespace(REDIS_ENABLED=True, REDIS_EXPIRE=60)
+        repository = Repository(None, None, dummy_class_mock, config)
         repository.entity_manager = AsyncMock()
         repository.cache_manager = AsyncMock()
 
@@ -328,13 +321,12 @@ class RepositoryTest(unittest.IsolatedAsyncioTestCase):
             dummy_mock, commit=False)
         repository.cache_manager.delete.assert_called_once_with(dummy_mock)
 
-    @patch("app.repository.cfg")
-    async def test_update_uncacheable_commit_true(self, cfg_mock):
-        cfg_mock.REDIS_ENABLED = True
+    async def test_update_uncacheable_commit_true(self):
         dummy_class_mock = MagicMock(__tablename__="dummies", _cacheable=False)
         dummy_mock = MagicMock()
 
-        repository = Repository(None, None, dummy_class_mock)
+        config = SimpleNamespace(REDIS_ENABLED=True, REDIS_EXPIRE=60)
+        repository = Repository(None, None, dummy_class_mock, config)
         repository.entity_manager = AsyncMock()
         repository.cache_manager = AsyncMock()
 
@@ -346,13 +338,12 @@ class RepositoryTest(unittest.IsolatedAsyncioTestCase):
         repository.cache_manager.set.assert_not_called()
         repository.cache_manager.delete.assert_not_called()
 
-    @patch("app.repository.cfg")
-    async def test_update_uncacheable_commit_false(self, cfg_mock):
-        cfg_mock.REDIS_ENABLED = True
+    async def test_update_uncacheable_commit_false(self):
         dummy_class_mock = MagicMock(__tablename__="dummies", _cacheable=False)
         dummy_mock = MagicMock()
 
-        repository = Repository(None, None, dummy_class_mock)
+        config = SimpleNamespace(REDIS_ENABLED=True, REDIS_EXPIRE=60)
+        repository = Repository(None, None, dummy_class_mock, config)
         repository.entity_manager = AsyncMock()
         repository.cache_manager = AsyncMock()
 
@@ -364,13 +355,12 @@ class RepositoryTest(unittest.IsolatedAsyncioTestCase):
         repository.cache_manager.set.assert_not_called()
         repository.cache_manager.delete.assert_not_called()
 
-    @patch("app.repository.cfg")
-    async def test_update_redis_enabled(self, cfg_mock):
-        cfg_mock.REDIS_ENABLED = True
+    async def test_update_redis_enabled(self):
         dummy_class_mock = MagicMock(__tablename__="dummies", _cacheable=True)
         dummy_mock = MagicMock()
 
-        repository = Repository(None, None, dummy_class_mock)
+        config = SimpleNamespace(REDIS_ENABLED=True, REDIS_EXPIRE=60)
+        repository = Repository(None, None, dummy_class_mock, config)
         repository.entity_manager = AsyncMock()
         repository.cache_manager = AsyncMock()
 
@@ -382,13 +372,12 @@ class RepositoryTest(unittest.IsolatedAsyncioTestCase):
         repository.cache_manager.set.assert_not_called()
         repository.cache_manager.delete.assert_called_once_with(dummy_mock)
 
-    @patch("app.repository.cfg")
-    async def test_update_redis_disabled(self, cfg_mock):
-        cfg_mock.REDIS_ENABLED = False
+    async def test_update_redis_disabled(self):
         dummy_class_mock = MagicMock(__tablename__="dummies", _cacheable=True)
         dummy_mock = MagicMock()
 
-        repository = Repository(None, None, dummy_class_mock)
+        config = SimpleNamespace(REDIS_ENABLED=False, REDIS_EXPIRE=60)
+        repository = Repository(None, None, dummy_class_mock, config)
         repository.entity_manager = AsyncMock()
         repository.cache_manager = AsyncMock()
 
@@ -400,13 +389,12 @@ class RepositoryTest(unittest.IsolatedAsyncioTestCase):
         repository.cache_manager.set.assert_not_called()
         repository.cache_manager.delete.assert_not_called()
 
-    @patch("app.repository.cfg")
-    async def test_delete_cacheable_commit_true(self, cfg_mock):
-        cfg_mock.REDIS_ENABLED = True
+    async def test_delete_cacheable_commit_true(self):
         dummy_class_mock = MagicMock(__tablename__="dummies", _cacheable=True)
         dummy_mock = MagicMock()
 
-        repository = Repository(None, None, dummy_class_mock)
+        config = SimpleNamespace(REDIS_ENABLED=True, REDIS_EXPIRE=60)
+        repository = Repository(None, None, dummy_class_mock, config)
         repository.entity_manager = AsyncMock()
         repository.cache_manager = AsyncMock()
 
@@ -417,13 +405,12 @@ class RepositoryTest(unittest.IsolatedAsyncioTestCase):
             dummy_mock, commit=True)
         repository.cache_manager.delete.assert_called_once_with(dummy_mock)
 
-    @patch("app.repository.cfg")
-    async def test_delete_cacheable_commit_false(self, cfg_mock):
-        cfg_mock.REDIS_ENABLED = True
+    async def test_delete_cacheable_commit_false(self):
         dummy_class_mock = MagicMock(__tablename__="dummies", _cacheable=True)
         dummy_mock = MagicMock()
 
-        repository = Repository(None, None, dummy_class_mock)
+        config = SimpleNamespace(REDIS_ENABLED=True, REDIS_EXPIRE=60)
+        repository = Repository(None, None, dummy_class_mock, config)
         repository.entity_manager = AsyncMock()
         repository.cache_manager = AsyncMock()
 
@@ -434,13 +421,12 @@ class RepositoryTest(unittest.IsolatedAsyncioTestCase):
             dummy_mock, commit=False)
         repository.cache_manager.delete.assert_called_once_with(dummy_mock)
 
-    @patch("app.repository.cfg")
-    async def test_delete_uncacheable_commit_true(self, cfg_mock):
-        cfg_mock.REDIS_ENABLED = True
+    async def test_delete_uncacheable_commit_true(self):
         dummy_class_mock = MagicMock(__tablename__="dummies", _cacheable=False)
         dummy_mock = MagicMock()
 
-        repository = Repository(None, None, dummy_class_mock)
+        config = SimpleNamespace(REDIS_ENABLED=True, REDIS_EXPIRE=60)
+        repository = Repository(None, None, dummy_class_mock, config)
         repository.entity_manager = AsyncMock()
         repository.cache_manager = AsyncMock()
 
@@ -451,13 +437,12 @@ class RepositoryTest(unittest.IsolatedAsyncioTestCase):
             dummy_mock, commit=True)
         repository.cache_manager.delete.assert_not_called()
 
-    @patch("app.repository.cfg")
-    async def test_delete_uncacheable_commit_false(self, cfg_mock):
-        cfg_mock.REDIS_ENABLED = True
+    async def test_delete_uncacheable_commit_false(self):
         dummy_class_mock = MagicMock(__tablename__="dummies", _cacheable=False)
         dummy_mock = MagicMock()
 
-        repository = Repository(None, None, dummy_class_mock)
+        config = SimpleNamespace(REDIS_ENABLED=True, REDIS_EXPIRE=60)
+        repository = Repository(None, None, dummy_class_mock, config)
         repository.entity_manager = AsyncMock()
         repository.cache_manager = AsyncMock()
 
@@ -468,13 +453,12 @@ class RepositoryTest(unittest.IsolatedAsyncioTestCase):
             dummy_mock, commit=False)
         repository.cache_manager.delete.assert_not_called()
 
-    @patch("app.repository.cfg")
-    async def test_delete_redis_enabled(self, cfg_mock):
-        cfg_mock.REDIS_ENABLED = True
+    async def test_delete_redis_enabled(self):
         dummy_class_mock = MagicMock(__tablename__="dummies", _cacheable=True)
         dummy_mock = MagicMock()
 
-        repository = Repository(None, None, dummy_class_mock)
+        config = SimpleNamespace(REDIS_ENABLED=True, REDIS_EXPIRE=60)
+        repository = Repository(None, None, dummy_class_mock, config)
         repository.entity_manager = AsyncMock()
         repository.cache_manager = AsyncMock()
 
@@ -485,13 +469,12 @@ class RepositoryTest(unittest.IsolatedAsyncioTestCase):
             dummy_mock, commit=True)
         repository.cache_manager.delete.assert_called_once_with(dummy_mock)
 
-    @patch("app.repository.cfg")
-    async def test_delete_redis_disabled(self, cfg_mock):
-        cfg_mock.REDIS_ENABLED = False
+    async def test_delete_redis_disabled(self):
         dummy_class_mock = MagicMock(__tablename__="dummies", _cacheable=True)
         dummy_mock = MagicMock()
 
-        repository = Repository(None, None, dummy_class_mock)
+        config = SimpleNamespace(REDIS_ENABLED=False, REDIS_EXPIRE=60)
+        repository = Repository(None, None, dummy_class_mock, config)
         repository.entity_manager = AsyncMock()
         repository.cache_manager = AsyncMock()
 
@@ -502,13 +485,12 @@ class RepositoryTest(unittest.IsolatedAsyncioTestCase):
             dummy_mock, commit=True)
         repository.cache_manager.delete.assert_not_called()
 
-    @patch("app.repository.cfg")
-    async def test_delete_from_cache_entity_cacheable(self, cfg_mock):
-        cfg_mock.REDIS_ENABLED = True
+    async def test_delete_from_cache_entity_cacheable(self):
         dummy_class_mock = MagicMock(__tablename__="dummies", _cacheable=True)
         dummy_mock = MagicMock()
 
-        repository = Repository(None, None, dummy_class_mock)
+        config = SimpleNamespace(REDIS_ENABLED=True, REDIS_EXPIRE=60)
+        repository = Repository(None, None, dummy_class_mock, config)
         repository.entity_manager = AsyncMock()
         repository.cache_manager = AsyncMock()
 
@@ -518,13 +500,12 @@ class RepositoryTest(unittest.IsolatedAsyncioTestCase):
         self.assertListEqual(repository.entity_manager.mock_calls, [])
         repository.cache_manager.delete.assert_called_once_with(dummy_mock)
 
-    @patch("app.repository.cfg")
-    async def test_delete_from_cache_entity_uncacheable(self, cfg_mock):
-        cfg_mock.REDIS_ENABLED = True
+    async def test_delete_from_cache_entity_uncacheable(self):
         dummy_class_mock = MagicMock(__tablename__="dummies", _cacheable=False)
         dummy_mock = MagicMock()
 
-        repository = Repository(None, None, dummy_class_mock)
+        config = SimpleNamespace(REDIS_ENABLED=True, REDIS_EXPIRE=60)
+        repository = Repository(None, None, dummy_class_mock, config)
         repository.entity_manager = AsyncMock()
         repository.cache_manager = AsyncMock()
 
@@ -534,13 +515,12 @@ class RepositoryTest(unittest.IsolatedAsyncioTestCase):
         self.assertListEqual(repository.entity_manager.mock_calls, [])
         repository.cache_manager.delete.assert_not_called()
 
-    @patch("app.repository.cfg")
-    async def test_delete_from_cache_redis_enabled(self, cfg_mock):
-        cfg_mock.REDIS_ENABLED = True
+    async def test_delete_from_cache_redis_enabled(self):
         dummy_class_mock = MagicMock(__tablename__="dummies", _cacheable=True)
         dummy_mock = MagicMock()
 
-        repository = Repository(None, None, dummy_class_mock)
+        config = SimpleNamespace(REDIS_ENABLED=True, REDIS_EXPIRE=60)
+        repository = Repository(None, None, dummy_class_mock, config)
         repository.entity_manager = AsyncMock()
         repository.cache_manager = AsyncMock()
 
@@ -550,13 +530,12 @@ class RepositoryTest(unittest.IsolatedAsyncioTestCase):
         self.assertListEqual(repository.entity_manager.mock_calls, [])
         repository.cache_manager.delete.assert_called_once_with(dummy_mock)
 
-    @patch("app.repository.cfg")
-    async def test_delete_from_cache_redis_disabled(self, cfg_mock):
-        cfg_mock.REDIS_ENABLED = False
+    async def test_delete_from_cache_redis_disabled(self):
         dummy_class_mock = MagicMock(__tablename__="dummies", _cacheable=True)
         dummy_mock = MagicMock()
 
-        repository = Repository(None, None, dummy_class_mock)
+        config = SimpleNamespace(REDIS_ENABLED=False, REDIS_EXPIRE=60)
+        repository = Repository(None, None, dummy_class_mock, config)
         repository.entity_manager = AsyncMock()
         repository.cache_manager = AsyncMock()
 
@@ -566,12 +545,11 @@ class RepositoryTest(unittest.IsolatedAsyncioTestCase):
         self.assertListEqual(repository.entity_manager.mock_calls, [])
         repository.cache_manager.delete.assert_not_called()
 
-    @patch("app.repository.cfg")
-    async def test_delete_all_commit_true(self, cfg_mock):
-        cfg_mock.REDIS_ENABLED = True
+    async def test_delete_all_commit_true(self):
         dummy_class_mock = MagicMock(__tablename__="dummies", _cacheable=True)
 
-        repository = Repository(None, None, dummy_class_mock)
+        config = SimpleNamespace(REDIS_ENABLED=True, REDIS_EXPIRE=60)
+        repository = Repository(None, None, dummy_class_mock, config)
         repository.entity_manager = AsyncMock()
         repository.cache_manager = AsyncMock()
 
@@ -583,12 +561,11 @@ class RepositoryTest(unittest.IsolatedAsyncioTestCase):
         repository.cache_manager.delete_all.assert_called_once_with(
             dummy_class_mock)
 
-    @patch("app.repository.cfg")
-    async def test_delete_all_commit_false(self, cfg_mock):
-        cfg_mock.REDIS_ENABLED = True
+    async def test_delete_all_commit_false(self):
         dummy_class_mock = MagicMock(__tablename__="dummies", _cacheable=True)
 
-        repository = Repository(None, None, dummy_class_mock)
+        config = SimpleNamespace(REDIS_ENABLED=True, REDIS_EXPIRE=60)
+        repository = Repository(None, None, dummy_class_mock, config)
         repository.entity_manager = AsyncMock()
         repository.cache_manager = AsyncMock()
 
@@ -600,12 +577,11 @@ class RepositoryTest(unittest.IsolatedAsyncioTestCase):
         repository.cache_manager.delete_all.assert_called_once_with(
             dummy_class_mock)
 
-    @patch("app.repository.cfg")
-    async def test_delete_all_cacheable(self, cfg_mock):
-        cfg_mock.REDIS_ENABLED = True
+    async def test_delete_all_cacheable(self):
         dummy_class_mock = MagicMock(__tablename__="dummies", _cacheable=True)
 
-        repository = Repository(None, None, dummy_class_mock)
+        config = SimpleNamespace(REDIS_ENABLED=True, REDIS_EXPIRE=60)
+        repository = Repository(None, None, dummy_class_mock, config)
         repository.entity_manager = AsyncMock()
         repository.cache_manager = AsyncMock()
 
@@ -617,12 +593,11 @@ class RepositoryTest(unittest.IsolatedAsyncioTestCase):
         repository.cache_manager.delete_all.assert_called_once_with(
             dummy_class_mock)
 
-    @patch("app.repository.cfg")
-    async def test_delete_all_uncacheable(self, cfg_mock):
-        cfg_mock.REDIS_ENABLED = True
+    async def test_delete_all_uncacheable(self):
         dummy_class_mock = MagicMock(__tablename__="dummies", _cacheable=False)
 
-        repository = Repository(None, None, dummy_class_mock)
+        config = SimpleNamespace(REDIS_ENABLED=True, REDIS_EXPIRE=60)
+        repository = Repository(None, None, dummy_class_mock, config)
         repository.entity_manager = AsyncMock()
         repository.cache_manager = AsyncMock()
 
@@ -633,12 +608,11 @@ class RepositoryTest(unittest.IsolatedAsyncioTestCase):
             dummy_class_mock, commit=True, key__eq="value")
         repository.cache_manager.delete_all.assert_not_called()
 
-    @patch("app.repository.cfg")
-    async def test_delete_all_redis_enabled(self, cfg_mock):
-        cfg_mock.REDIS_ENABLED = True
+    async def test_delete_all_redis_enabled(self):
         dummy_class_mock = MagicMock(__tablename__="dummies", _cacheable=True)
 
-        repository = Repository(None, None, dummy_class_mock)
+        config = SimpleNamespace(REDIS_ENABLED=True, REDIS_EXPIRE=60)
+        repository = Repository(None, None, dummy_class_mock, config)
         repository.entity_manager = AsyncMock()
         repository.cache_manager = AsyncMock()
 
@@ -650,12 +624,11 @@ class RepositoryTest(unittest.IsolatedAsyncioTestCase):
         repository.cache_manager.delete_all.assert_called_once_with(
             dummy_class_mock)
 
-    @patch("app.repository.cfg")
-    async def test_delete_all_redis_disabled(self, cfg_mock):
-        cfg_mock.REDIS_ENABLED = False
+    async def test_delete_all_redis_disabled(self):
         dummy_class_mock = MagicMock(__tablename__="dummies", _cacheable=True)
 
-        repository = Repository(None, None, dummy_class_mock)
+        config = SimpleNamespace(REDIS_ENABLED=False, REDIS_EXPIRE=60)
+        repository = Repository(None, None, dummy_class_mock, config)
         repository.entity_manager = AsyncMock()
         repository.cache_manager = AsyncMock()
 
@@ -666,12 +639,11 @@ class RepositoryTest(unittest.IsolatedAsyncioTestCase):
             dummy_class_mock, commit=True, key__eq="value")
         repository.cache_manager.delete_all.assert_not_called()
 
-    @patch("app.repository.cfg")
-    async def test_delete_all_from_cache_entity_cacheable(self, cfg_mock):
-        cfg_mock.REDIS_ENABLED = True
+    async def test_delete_all_from_cache_entity_cacheable(self):
         dummy_class_mock = MagicMock(__tablename__="dummies", _cacheable=True)
 
-        repository = Repository(None, None, dummy_class_mock)
+        config = SimpleNamespace(REDIS_ENABLED=True, REDIS_EXPIRE=60)
+        repository = Repository(None, None, dummy_class_mock, config)
         repository.entity_manager = AsyncMock()
         repository.cache_manager = AsyncMock()
 
@@ -679,14 +651,15 @@ class RepositoryTest(unittest.IsolatedAsyncioTestCase):
         self.assertIsNone(result)
 
         repository.entity_manager.delete_all.assert_not_called()
-        repository.cache_manager.delete_all.assert_called_once()
+        repository.cache_manager.delete_all.assert_called_once_with(
+            dummy_class_mock
+        )
 
-    @patch("app.repository.cfg")
-    async def test_delete_all_from_cache_entity_uncacheable(self, cfg_mock):
-        cfg_mock.REDIS_ENABLED = True
+    async def test_delete_all_from_cache_entity_uncacheable(self):
         dummy_class_mock = MagicMock(__tablename__="dummies", _cacheable=False)
 
-        repository = Repository(None, None, dummy_class_mock)
+        config = SimpleNamespace(REDIS_ENABLED=True, REDIS_EXPIRE=60)
+        repository = Repository(None, None, dummy_class_mock, config)
         repository.entity_manager = AsyncMock()
         repository.cache_manager = AsyncMock()
 
@@ -696,12 +669,11 @@ class RepositoryTest(unittest.IsolatedAsyncioTestCase):
         repository.entity_manager.delete_all.assert_not_called()
         repository.cache_manager.delete_all.assert_not_called()
 
-    @patch("app.repository.cfg")
-    async def test_delete_all_from_cache_redis_enabled(self, cfg_mock):
-        cfg_mock.REDIS_ENABLED = True
+    async def test_delete_all_from_cache_redis_enabled(self):
         dummy_class_mock = MagicMock(__tablename__="dummies", _cacheable=True)
 
-        repository = Repository(None, None, dummy_class_mock)
+        config = SimpleNamespace(REDIS_ENABLED=True, REDIS_EXPIRE=60)
+        repository = Repository(None, None, dummy_class_mock, config)
         repository.entity_manager = AsyncMock()
         repository.cache_manager = AsyncMock()
 
@@ -709,14 +681,15 @@ class RepositoryTest(unittest.IsolatedAsyncioTestCase):
         self.assertIsNone(result)
 
         repository.entity_manager.delete_all.assert_not_called()
-        repository.cache_manager.delete_all.assert_called_once()
+        repository.cache_manager.delete_all.assert_called_once_with(
+            dummy_class_mock
+        )
 
-    @patch("app.repository.cfg")
-    async def test_delete_all_from_cache_redis_disabled(self, cfg_mock):
-        cfg_mock.REDIS_ENABLED = False
+    async def test_delete_all_from_cache_redis_disabled(self):
         dummy_class_mock = MagicMock(__tablename__="dummies", _cacheable=True)
 
-        repository = Repository(None, None, dummy_class_mock)
+        config = SimpleNamespace(REDIS_ENABLED=False, REDIS_EXPIRE=60)
+        repository = Repository(None, None, dummy_class_mock, config)
         repository.entity_manager = AsyncMock()
         repository.cache_manager = AsyncMock()
 
@@ -730,7 +703,8 @@ class RepositoryTest(unittest.IsolatedAsyncioTestCase):
         dummy_class_mock = MagicMock()
         dummies_count = 123
 
-        repository = Repository(None, None, dummy_class_mock)
+        config = SimpleNamespace(REDIS_ENABLED=False, REDIS_EXPIRE=60)
+        repository = Repository(None, None, dummy_class_mock, config)
         repository.entity_manager = AsyncMock()
         repository.entity_manager.count_all.return_value = dummies_count
 
@@ -744,7 +718,8 @@ class RepositoryTest(unittest.IsolatedAsyncioTestCase):
         dummy_class_mock = MagicMock()
         dummies_sum = 123
 
-        repository = Repository(None, None, dummy_class_mock)
+        config = SimpleNamespace(REDIS_ENABLED=False, REDIS_EXPIRE=60)
+        repository = Repository(None, None, dummy_class_mock, config)
         repository.entity_manager = AsyncMock()
         repository.entity_manager.sum_all.return_value = dummies_sum
 
@@ -755,7 +730,9 @@ class RepositoryTest(unittest.IsolatedAsyncioTestCase):
             dummy_class_mock, "key", key__eq="value")
 
     async def test_commit(self):
-        repository = Repository(None, None, None)
+        dummy_class_mock = MagicMock()
+        config = SimpleNamespace(REDIS_ENABLED=False, REDIS_EXPIRE=60)
+        repository = Repository(None, None, dummy_class_mock, config)
         repository.entity_manager = AsyncMock()
 
         result = await repository.commit()
@@ -764,14 +741,12 @@ class RepositoryTest(unittest.IsolatedAsyncioTestCase):
         repository.entity_manager.commit.assert_called_once()
 
     async def test_rollback(self):
-        repository = Repository(None, None, None)
+        dummy_class_mock = MagicMock()
+        config = SimpleNamespace(REDIS_ENABLED=False, REDIS_EXPIRE=60)
+        repository = Repository(None, None, dummy_class_mock, config)
         repository.entity_manager = AsyncMock()
 
         result = await repository.rollback()
         self.assertIsNone(result)
 
         repository.entity_manager.rollback.assert_called_once()
-
-
-if __name__ == "__main__":
-    unittest.main()

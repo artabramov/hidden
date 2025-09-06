@@ -1,91 +1,119 @@
 import unittest
-from app.config import get_config
+from unittest.mock import patch
+from dataclasses import fields
+from app.config import get_config, Config
 
 
 class ConfigTest(unittest.IsolatedAsyncioTestCase):
-
-    async def test_config(self):
+    def setUp(self):
         get_config.cache_clear()
+
+    def build_env(self, **overrides) -> dict[str, str]:
+        env: dict[str, str] = {}
+        for f in fields(Config):
+            if f.type is str:
+                env[f.name] = "value"
+            elif f.type is int:
+                env[f.name] = "123"
+            elif f.type is bool:
+                env[f.name] = "true"
+            elif f.type is list:
+                env[f.name] = "a, b, c"
+            elif f.type is bytes:
+                env[f.name] = "bytes-value"
+        env.update({k: str(v) for k, v in overrides.items()})
+        return env
+
+    @patch("app.config.dotenv_values")
+    async def test_parses_and_trims(self, dotenv_mock):
+        env = self.build_env(
+            LOG_NAME="  MyApp  ",
+            LOG_FILESIZE="  4096  ",
+            REDIS_ENABLED="  TRUE  ",
+            CRYPTO_HKDF_INFO="  aesgcm-v1  ",
+        )
+        dotenv_mock.return_value = env
+
         cfg = get_config()
-        self.assertEqual(len(cfg.__dict__), 62)
+        self.assertEqual(cfg.LOG_NAME, "MyApp")
+        self.assertEqual(cfg.LOG_FILESIZE, 4096)
+        self.assertTrue(cfg.REDIS_ENABLED)
+        self.assertEqual(cfg.CRYPTO_HKDF_INFO, b"aesgcm-v1")
 
-        self.assertTrue(isinstance(cfg.SECRET_KEY_PATH, str))
+        self.assertIsInstance(cfg.LOG_NAME, str)
+        self.assertIsInstance(cfg.LOG_FILESIZE, int)
+        self.assertIsInstance(cfg.REDIS_ENABLED, bool)
+        self.assertIsInstance(cfg.CRYPTO_HKDF_INFO, bytes)
 
-        self.assertTrue(isinstance(cfg.CRYPTOGRAPHY_SALT_LENGTH, int))
-        self.assertTrue(isinstance(cfg.CRYPTOGRAPHY_KEY_LENGTH, int))
-        self.assertTrue(isinstance(cfg.CRYPTOGRAPHY_IV_LENGTH, int))
-        self.assertTrue(isinstance(cfg.CRYPTOGRAPHY_PBKDF2_ITERATIONS, int))
+    @patch("app.config.dotenv_values")
+    async def test_missing_key_raises_keyerror(self, dotenv_mock):
+        env = self.build_env()
+        env.pop("SECRET_KEY_PATH", None)
+        dotenv_mock.return_value = env
 
-        self.assertTrue(isinstance(cfg.LOG_LEVEL, str))
-        self.assertTrue(isinstance(cfg.LOG_NAME, str))
-        self.assertTrue(isinstance(cfg.LOG_FORMAT, str))
-        self.assertTrue(isinstance(cfg.LOG_FILENAME, str))
-        self.assertTrue(isinstance(cfg.LOG_FILESIZE, int))
-        self.assertTrue(isinstance(cfg.LOG_FILES_LIMIT, int))
+        with self.assertRaises(KeyError):
+            get_config()
 
-        self.assertTrue(isinstance(cfg.UVICORN_HOST, str))
-        self.assertTrue(isinstance(cfg.UVICORN_PORT, int))
-        self.assertTrue(isinstance(cfg.UVICORN_WORKERS, int))
+    @patch("app.config.dotenv_values")
+    async def test_invalid_int_raises_valueerror(self, dotenv_mock):
+        env = self.build_env(LOG_FILESIZE="not-an-int")
+        dotenv_mock.return_value = env
 
-        self.assertTrue(isinstance(cfg.POSTGRES_HOST, str))
-        self.assertTrue(isinstance(cfg.POSTGRES_PORT, int))
-        self.assertTrue(isinstance(cfg.POSTGRES_DATABASE, str))
-        self.assertTrue(isinstance(cfg.POSTGRES_USERNAME, str))
-        self.assertTrue(isinstance(cfg.POSTGRES_PASSWORD, str))
-        self.assertTrue(isinstance(cfg.POSTGRES_POOL_SIZE, int))
-        self.assertTrue(isinstance(cfg.POSTGRES_POOL_OVERFLOW, int))
+        with self.assertRaises(ValueError):
+            get_config()
 
-        self.assertTrue(isinstance(cfg.REDIS_ENABLED, bool))
-        self.assertTrue(isinstance(cfg.REDIS_HOST, str))
-        self.assertTrue(isinstance(cfg.REDIS_PORT, int))
-        self.assertTrue(isinstance(cfg.REDIS_DECODE_RESPONSES, bool))
-        self.assertTrue(isinstance(cfg.REDIS_EXPIRE, int))
+    @patch("app.config.dotenv_values")
+    async def test_invalid_bool_raises_keyerror(self, dotenv_mock):
+        env = self.build_env(REDIS_ENABLED="yes")
+        dotenv_mock.return_value = env
 
-        self.assertTrue(isinstance(cfg.SPHINX_PATH, str))
-        self.assertTrue(isinstance(cfg.SPHINX_NAME, str))
-        self.assertTrue(isinstance(cfg.SPHINX_URL, str))
+        with self.assertRaises(KeyError):
+            get_config()
 
-        self.assertTrue(isinstance(cfg.JTI_LENGTH, int))
-        self.assertTrue(isinstance(cfg.JWT_EXPIRES, int))
-        self.assertTrue(isinstance(cfg.JWT_ALGORITHM, str))
-        self.assertTrue(isinstance(cfg.JWT_SECRET, str))
+    @patch("app.config.dotenv_values")
+    async def test_lru_cache_memoizes(self, dotenv_mock):
+        env1 = self.build_env(LOG_LEVEL="info")
+        dotenv_mock.return_value = env1
+        cfg1 = get_config()
+        self.assertEqual(cfg1.LOG_LEVEL, "info")
 
-        self.assertTrue(isinstance(cfg.ADDONS_ENABLED, list))
-        self.assertTrue(isinstance(cfg.ADDONS_PATH, str))
+        env2 = self.build_env(LOG_LEVEL="debug")
+        dotenv_mock.return_value = env2
+        cfg2 = get_config()
+        self.assertIs(cfg1, cfg2)
+        self.assertEqual(cfg2.LOG_LEVEL, "info")
 
-        self.assertTrue(isinstance(cfg.APP_API_VERSION, str))
-        self.assertTrue(isinstance(cfg.APP_URL, str))
-        self.assertTrue(isinstance(cfg.APP_SHRED_CYCLES, int))
-        self.assertTrue(isinstance(cfg.APP_SHUFFLE_LIMIT, int))
-        self.assertTrue(isinstance(cfg.APP_LOCK_PATH, str))
+        get_config.cache_clear()
+        cfg3 = get_config()
+        self.assertEqual(cfg3.LOG_LEVEL, "debug")
 
-        self.assertTrue(isinstance(cfg.HTML_PATH, str))
-        self.assertTrue(isinstance(cfg.HTML_FILE, str))
+    @patch("app.config.dotenv_values")
+    async def test_bytes_and_none_mapping(self, dotenv_mock):
+        env = self.build_env(
+            CRYPTO_HKDF_INFO="  aesgcm-v1  ",
+            CRYPTO_AAD_DEFAULT="None",
+            LOG_FILENAME="None",
+        )
+        dotenv_mock.return_value = env
 
-        self.assertTrue(isinstance(cfg.USER_PASSWORD_ATTEMPTS, int))
-        self.assertTrue(isinstance(cfg.USER_TOTP_ATTEMPTS, int))
-        self.assertTrue(isinstance(cfg.USER_SUSPENDED_TIME, int))
+        cfg = get_config()
+        self.assertEqual(cfg.CRYPTO_HKDF_INFO, b"aesgcm-v1")
+        self.assertIsNone(cfg.CRYPTO_AAD_DEFAULT)
+        self.assertIsNone(cfg.LOG_FILENAME)
 
-        self.assertTrue(isinstance(cfg.USERPICS_PATH, str))
-        self.assertTrue(isinstance(cfg.USERPICS_URL, str))
-        self.assertTrue(isinstance(cfg.USERPICS_PREFIX, str))
-        self.assertTrue(isinstance(cfg.USERPICS_WIDTH, int))
-        self.assertTrue(isinstance(cfg.USERPICS_HEIGHT, int))
-        self.assertTrue(isinstance(cfg.USERPICS_QUALITY, int))
-        self.assertTrue(isinstance(cfg.USERPICS_LRU_SIZE, int))
+    @patch("app.config.dotenv_values")
+    async def test_list_parsing_and_none(self, dotenv_mock):
+        env = self.build_env(
+            JWT_ALGORITHMS="",
+        )
+        dotenv_mock.return_value = env
+        cfg_empty = get_config()
+        self.assertEqual(cfg_empty.JWT_ALGORITHMS, [])
 
-        self.assertTrue(isinstance(cfg.THUMBNAILS_PATH, str))
-        self.assertTrue(isinstance(cfg.THUMBNAILS_URL, str))
-        self.assertTrue(isinstance(cfg.THUMBNAILS_PREFIX, str))
-        self.assertTrue(isinstance(cfg.THUMBNAILS_WIDTH, int))
-        self.assertTrue(isinstance(cfg.THUMBNAILS_HEIGHT, int))
-        self.assertTrue(isinstance(cfg.THUMBNAILS_QUALITY, int))
-        self.assertTrue(isinstance(cfg.THUMBNAILS_LRU_SIZE, int))
-
-        self.assertTrue(isinstance(cfg.DOCUMENTS_PATH, str))
-        self.assertTrue(isinstance(cfg.DOCUMENTS_URL, str))
-        self.assertTrue(isinstance(cfg.DOCUMENTS_LRU_SIZE, int))
-
-
-if __name__ == "__main__":
-    unittest.main()
+        get_config.cache_clear()
+        env = self.build_env(
+            JWT_ALGORITHMS="None",
+        )
+        dotenv_mock.return_value = env
+        cfg_none = get_config()
+        self.assertIsNone(cfg_none.JWT_ALGORITHMS)

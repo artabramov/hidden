@@ -1,67 +1,57 @@
 """
-The module provides utility functions for handling JSON web tokens (JWT),
-including creating unique identifiers (JTI), encoding user information
-into a JWT, and decoding a JWT to retrieve the payload.
+Helpers for JSON Web Tokens (JWT): generate a JTI, build a user payload,
+and encode/decode JWTs via PyJWT.
 """
 
-import jwt
 import time
 import string
-import random
-from app.config import get_config
+import secrets
+import jwt
+from app.models.user import User
 
-cfg = get_config()
 
-
-def generate_jti() -> str:
+def generate_jti(key_length: int) -> str:
     """
-    Generates a JSON web token identifier (JTI) by creating a random
-    string consisting of alphanumeric characters with a length specified
-    in the configuration.
+    Generates a cryptographically random alphanumeric JTI of the given
+    length for uniquely identifying and potentially revoking tokens.
     """
     jti_symbols = string.ascii_letters + string.digits
-    return "".join(random.choices(jti_symbols, k=cfg.JTI_LENGTH))
+    return "".join(secrets.choice(jti_symbols) for _ in range(key_length))
 
 
-def jwt_encode(user, token_exp: int = None) -> str:
+def create_payload(user: User, jti: str, exp: int = None):
     """
-    Encodes user data into a JSON web token (JWT) with an optional
-    expiration time. The token includes user ID, role, username, unique
-    token identifier (JTI) and issue time (IAT).
+    Builds a JWT claims payload for the given user including user_id,
+    role, username, jti, and iat (Unix seconds); if exp is provided it
+    is used as an absolute expiration timestamp, otherwise the payload
+    is created without an exp claim.
     """
-    current_time = int(time.time())
-    token_payload = {
+    payload = {
         "user_id": user.id,
-        "user_role": user.user_role,
+        "role": user.role,
         "username": user.username,
-        "jti": user.jti,
-        "iat": current_time,
+        "jti": jti,
+        "iat": int(time.time())
     }
-    if token_exp:
-        token_payload["exp"] = token_exp
+    if exp:
+        payload["exp"] = exp
 
-    token_encoded = jwt.encode(
-        token_payload, cfg.JWT_SECRET, algorithm=cfg.JWT_ALGORITHM)
-    return token_encoded
+    return payload
 
 
-def jwt_decode(jwt_token: str) -> dict:
+def encode_jwt(payload: dict, jwt_secret: str, jwt_algorithm: str) -> str:
     """
-    Decodes a JSON web token (JWT) to extract its payload, including
-    user ID, role, username, issue time, and optional expiration time.
+    Encodes and signs the given claims payload into a compact JWT using
+    the supplied secret and algorithm via PyJWT.
     """
-    token_decoded = jwt.decode(
-        jwt_token, cfg.JWT_SECRET, algorithms=cfg.JWT_ALGORITHM)
+    return jwt.encode(payload, jwt_secret, algorithm=jwt_algorithm)
 
-    token_payload = {
-        "user_id": token_decoded["user_id"],
-        "user_role": token_decoded["user_role"],
-        "username": token_decoded["username"],
-        "iat": token_decoded["iat"],
-        "jti": token_decoded["jti"],
-    }
 
-    if "exp" in token_decoded:
-        token_payload["exp"] = token_decoded["exp"]
-
-    return token_payload
+def decode_jwt(jwt_token: str, jwt_secret: str, jwt_algorithms: list) -> dict:
+    """
+    Decodes a JWT using the given secret and allowed algorithms,
+    validating the signature and standard claims (such as exp and iat)
+    and returning the claims dictionary, raising PyJWT exceptions on
+    invalid or expired tokens.
+    """
+    return jwt.decode(jwt_token, jwt_secret, algorithms=jwt_algorithms)

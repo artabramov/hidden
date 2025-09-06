@@ -1,122 +1,23 @@
 import unittest
 from pydantic import ValidationError
-from app.schemas.user_role_schema import UserRoleRequest
+from app.schemas.user_role import UserRoleRequest, UserRoleResponse
 
+class UserRoleSchemasTest(unittest.TestCase):
+    def test_request_normalizes_and_accepts_literal(self):
+        m = UserRoleRequest(role=" Admin ", active=True)
+        self.assertEqual(m.role, "admin")
+        self.assertTrue(m.active)
 
-class TestRoleUpdateRequest(unittest.TestCase):
-
-    def test_user_role_admin(self):
-        valid_data = {
-            "user_role": "admin",
-            "is_active": True
-        }
-
-        try:
-            request = UserRoleRequest(**valid_data)
-            self.assertEqual(request.user_role, "admin")
-            self.assertTrue(request.is_active)
-        except ValidationError as e:
-            self.fail(f"Validation failed for admin: {e}")
-
-    def test_user_role_writer(self):
-        valid_data = {
-            "user_role": "writer",
-            "is_active": True
-        }
-
-        try:
-            request = UserRoleRequest(**valid_data)
-            self.assertEqual(request.user_role, "writer")
-            self.assertTrue(request.is_active)
-        except ValidationError as e:
-            self.fail(f"Validation failed for writer: {e}")
-
-    def test_user_role_editor(self):
-        valid_data = {
-            "user_role": "editor",
-            "is_active": True
-        }
-
-        try:
-            request = UserRoleRequest(**valid_data)
-            self.assertEqual(request.user_role, "editor")
-            self.assertTrue(request.is_active)
-        except ValidationError as e:
-            self.fail(f"Validation failed for editor: {e}")
-
-    def test_user_role_reader(self):
-        valid_data = {
-            "user_role": "reader",
-            "is_active": True
-        }
-
-        try:
-            request = UserRoleRequest(**valid_data)
-            self.assertEqual(request.user_role, "reader")
-            self.assertTrue(request.is_active)
-        except ValidationError as e:
-            self.fail(f"Validation failed for reader: {e}")
-
-    def test_user_role_invalid(self):
-        invalid_data = {
-            "user_role": "invalid_role",
-            "is_active": True
-        }
-
+    def test_request_rejects_invalid_role(self):
         with self.assertRaises(ValidationError):
-            UserRoleRequest(**invalid_data)
+            UserRoleRequest(role="owner", is_active=False)
 
-    def test_user_role_missing(self):
-        invalid_data = {
-            "is_active": True
-        }
+    def test_request_case_insensitive_variants(self):
+        for raw in ["EDITOR", " editor ", "EdItOr"]:
+            with self.subTest(raw=raw):
+                m = UserRoleRequest(role=raw, active=False)
+                self.assertEqual(m.role, "editor")
 
-        with self.assertRaises(ValidationError):
-            UserRoleRequest(**invalid_data)
-
-    def test_is_active_true(self):
-        valid_data = {
-            "user_role": "editor",
-            "is_active": True
-        }
-
-        try:
-            request = UserRoleRequest(**valid_data)
-            self.assertEqual(request.user_role, "editor")
-            self.assertTrue(request.is_active)
-        except ValidationError as e:
-            self.fail(f"Validation failed for is_active=True: {e}")
-
-    def test_is_active_false(self):
-        valid_data = {
-            "user_role": "editor",
-            "is_active": False
-        }
-
-        try:
-            request = UserRoleRequest(**valid_data)
-            self.assertEqual(request.user_role, "editor")
-            self.assertFalse(request.is_active)
-        except ValidationError as e:
-            self.fail(f"Validation failed for is_active=False: {e}")
-
-    def test_is_active_invalid(self):
-        invalid_data = {
-            "user_role": "reader",
-            "is_active": "not_a_bool"
-        }
-
-        with self.assertRaises(ValidationError):
-            UserRoleRequest(**invalid_data)
-
-    def test_is_active_missing(self):
-        invalid_data = {
-            "user_role": "writer"
-        }
-
-        with self.assertRaises(ValidationError):
-            UserRoleRequest(**invalid_data)
-
-
-if __name__ == "__main__":
-    unittest.main()
+    def test_response_schema(self):
+        r = UserRoleResponse(user_id=42)
+        self.assertEqual(r.user_id, 42)

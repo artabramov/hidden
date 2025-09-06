@@ -1,125 +1,107 @@
 """
-Defines a system for registering and executing hooks on application
-events, loading addon modules specified in the configuration and
-binding their functions as handlers for post-event processing.
+Provides an application hook system: loads add-on modules listed in the
+config, discovers async handlers named after known hooks, and registers
+them for post-event execution.
 """
 
 import os
 import importlib.util
 import inspect
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.models.user_model import User
-from app.config import get_config
-
-cfg = get_config()
+from app.models.user import User
 
 HOOK_AFTER_TOKEN_RETRIEVE = "after_token_retrieve"
 HOOK_AFTER_TOKEN_INVALIDATE = "after_token_invalidate"
 
 HOOK_AFTER_USER_REGISTER = "after_user_register"
 HOOK_AFTER_USER_LOGIN = "after_user_login"
+HOOK_AFTER_USER_ROLE = "after_user_role"
+HOOK_AFTER_USER_PASSWORD = "after_user_password"
 HOOK_AFTER_USER_SELECT = "after_user_select"
 HOOK_AFTER_USER_UPDATE = "after_user_update"
-HOOK_AFTER_USER_PASSWORD = "after_user_password"
-HOOK_AFTER_USER_ROLE = "after_user_role"
 HOOK_AFTER_USER_DELETE = "after_user_delete"
 HOOK_AFTER_USER_LIST = "after_user_list"
 HOOK_AFTER_USERPIC_UPLOAD = "after_userpic_upload"
 HOOK_AFTER_USERPIC_DELETE = "after_userpic_delete"
+HOOK_AFTER_USERPIC_RETRIEVE = "after_userpic_retrieve"
 
 HOOK_AFTER_COLLECTION_INSERT = "after_collection_insert"
-HOOK_AFTER_COLLECTION_SELECT = "after_collection_select"
-HOOK_AFTER_COLLECTION_UPDATE = "after_collection_update"
-HOOK_AFTER_COLLECTION_DELETE = "after_collection_delete"
-HOOK_AFTER_COLLECTION_LIST = "after_collection_list"
 
-HOOK_AFTER_DOCUMENT_UPLOAD = "after_document_upload"
-HOOK_AFTER_DOCUMENT_SELECT = "after_document_select"
-HOOK_AFTER_DOCUMENT_UPDATE = "after_document_update"
-HOOK_AFTER_DOCUMENT_MOVE = "after_document_move"
-HOOK_AFTER_DOCUMENT_DELETE = "after_document_delete"
-HOOK_AFTER_DOCUMENT_LIST = "after_document_list"
+ENABLED_HOOKS = {
+    HOOK_AFTER_TOKEN_RETRIEVE,
+    HOOK_AFTER_TOKEN_INVALIDATE,
 
-HOOK_AFTER_TAG_INSERT = "after_tag_insert"
-HOOK_AFTER_TAG_DELETE = "after_tag_delete"
-HOOK_AFTER_TAG_LIST = "after_tag_list"
+    HOOK_AFTER_USER_REGISTER,
+    HOOK_AFTER_USER_LOGIN,
+    HOOK_AFTER_USER_ROLE,
+    HOOK_AFTER_USER_PASSWORD,
+    HOOK_AFTER_USER_SELECT,
+    HOOK_AFTER_USER_UPDATE,
+    HOOK_AFTER_USER_DELETE,
+    HOOK_AFTER_USER_LIST,
+    HOOK_AFTER_USERPIC_UPLOAD,
+    HOOK_AFTER_USERPIC_DELETE,
+    HOOK_AFTER_USERPIC_RETRIEVE,
 
-HOOK_AFTER_SETTING_INSERT = "after_setting_insert"
-HOOK_AFTER_SETTING_LIST = "after_setting_list"
-
-HOOK_AFTER_SECRET_RETRIEVE = "after_secret_retrieve"
-HOOK_AFTER_SECRET_DELETE = "after_secret_delete"
-
-HOOK_AFTER_LOCK_CREATE = "after_lock_create"
-HOOK_AFTER_LOCK_RETRIEVE = "after_lock_retrieve"
-
-HOOK_AFTER_TELEMETRY_RETRIEVE = "after_telemetry_retrieve"
-
-HOOK_ON_EXECUTE = "on_execute"
-
+    HOOK_AFTER_COLLECTION_INSERT,
+}
 
 class Hook:
     """
-    Manages and executes application hook handlers by referencing the
-    registry stored in app state and providing a call interface that
-    passes the session, cache, current user, and any additional
-    arguments to registered functions.
+    Executes registered hook handlers from app state, passing the
+    request session, Redis cache, the current user, and any extra
+    arguments.
     """
 
-    def __init__(self, app: FastAPI, session: AsyncSession, cache: Redis,
-                 current_user: User = None):
+    def __init__(self, request: Request, session: AsyncSession, cache: Redis,
+                 current_user: User):
         """
-        Binds the hook manager to the application's hook registry
-        and stores the database session, cache instance, and optional
-        current user for use during hook execution.
+        Binds to the app's hook registry and stores the session, cache,
+        and optional current user for later execution.
         """
-        self.hooks = app.state.hooks
+        self.request = request
         self.session = session
         self.cache = cache
         self.current_user = current_user
 
     async def call(self, hook: str, *args, **kwargs):
         """
-        Invokes all handlers registered for the given hook name in
-        sequence, passing the active session, cache, current user, and
-        supplied arguments to each asynchronous function.
+        Runs all handlers registered for the given hook in order,
+        passing session, cache, current user, and provided args/kwargs.
         """
-        if hook in self.hooks:
-            hook_functions = self.hooks[hook]
-            for func in hook_functions:
-                await func(self.session, self.cache, self.current_user,
-                           *args, **kwargs)
+        for func in self.request.app.state.hooks.get(hook, ()):
+            await func(self.request, self.session, self.cache,
+                       self.current_user, *args, **kwargs)
 
 
-async def init_hooks(app):
+def init_hooks(app: FastAPI) -> None:
     """
-    Initializes the hook registry by loading addon modules from
-    the configured directory, discovering their functions through
-    reflection, and registering them under their function names in
-    app state for later invocation.
+    Builds the hook registry by importing add-on modules from the
+    configured path and registering async functions whose names match
+    constants in enabled hooks.
     """
     app.state.hooks = {}
 
-    # Load and register functions from addon modules.
-    filenames = [file + ".py" for file in cfg.ADDONS_ENABLED]
-    for filename in filenames:
-        module_name = filename.split(".")[0]
-        module_path = os.path.join(cfg.ADDONS_PATH, filename)
+    # Load and register functions from addon modules
+    filenames = [f if f.endswith(".py") else f + ".py"
+                 for f in app.state.config.ADDONS_LIST]
 
-        # Load the module from the specified file path.
+    for filename in filenames:
+        module_name = os.path.splitext(os.path.basename(filename))[0]
+        module_path = os.path.join(app.state.config.ADDONS_PATH, filename)
+
+        # Load the module from the specified file path
         spec = importlib.util.spec_from_file_location(
             module_name, module_path)
+        if spec is None or spec.loader is None:
+            raise ImportError(f"Cannot load addon: {module_path}")
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
 
-        # Register functions from the module as hooks.
-        func_names = [attr for attr in dir(module)
-                      if inspect.isfunction(getattr(module, attr))]
-        for func_name in func_names:
-            func = getattr(module, func_name)
-            if func_name not in app.state.hooks:
-                app.state.hooks[func_name] = [func]
-            else:
-                app.state.hooks[func_name].append(func)
+        # Register functions from the module as hooks
+        for hook_name in ENABLED_HOOKS:
+            func = getattr(module, hook_name, None)
+            if func and inspect.iscoroutinefunction(func):
+                app.state.hooks.setdefault(hook_name, []).append(func)

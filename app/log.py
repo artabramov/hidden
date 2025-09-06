@@ -1,53 +1,50 @@
 """
-Configures the application logger with a rotating file handler and a
-contextual filter that injects the request UUID into log records for
-better traceability.
+Initializes a global app logger and provides a request-scoped adapter
+that logs with the current request UUID, using only FastAPI context.
 """
 
+import time
 import logging
-from functools import lru_cache
-from logging import Filter
-from logging.handlers import RotatingFileHandler
-from app.config import get_config
-from app.context import get_context
-
-cfg = get_config()
-ctx = get_context()
+from uuid import uuid4
+from concurrent_log_handler import ConcurrentRotatingFileHandler
+from fastapi import FastAPI, Request
 
 
-class ContextualFilter(Filter):
+def init_logger(app: FastAPI) -> logging.Logger:
     """
-    Logging filter that injects the current request UUID from the app
-    context into each log record to improve correlation and traceability
-    across related log entries.
+    Creates a logger from config, attaches a rotating handler,
+    sets level, stores it in app state, and returns it.
     """
-
-    def filter(self, message: object):
-        """
-        Attaches the request UUID from the context to the provided log
-        record and returns True to allow the message to be processed by
-        subsequent handlers and formatters.
-        """
-        message.request_uuid = ctx.request_uuid
-        return True
-
-
-@lru_cache
-def get_log():
-    """
-    Creates or returns a cached logger configured with a rotating file
-    handler, custom formatting, a contextual filter for request UUIDs,
-    and a log level derived from application settings.
-    """
-    handler = RotatingFileHandler(
+    cfg = app.state.config
+    handler = ConcurrentRotatingFileHandler(
         filename=cfg.LOG_FILENAME,
         maxBytes=cfg.LOG_FILESIZE,
-        backupCount=cfg.LOG_FILES_LIMIT
+        backupCount=cfg.LOG_FILES_LIMIT,
+        encoding="utf-8",
     )
     handler.setFormatter(logging.Formatter(cfg.LOG_FORMAT))
-
     log = logging.getLogger(cfg.LOG_NAME)
-    log.addHandler(handler)
-    log.addFilter(ContextualFilter())
+    if not any(getattr(h, "baseFilename", None) == cfg.LOG_FILENAME
+               for h in log.handlers):
+        log.addHandler(handler)
+
     log.setLevel(cfg.LOG_LEVEL)
+    log.propagate = False
+    app.state.log = log
     return log
+
+
+def bind_request_logger(request: Request) -> logging.LoggerAdapter:
+    """
+    Returns a LoggerAdapter bound to request_uuid; if missing, sets
+    request_uuid and request_start_time on request.state.
+    """
+    if not getattr(request.state, "request_uuid", None):
+        request.state.request_uuid = str(uuid4())
+
+    if not hasattr(request.state, "request_start_time"):
+        request.state.request_start_time = time.time()
+
+    base = request.app.state.log
+    return logging.LoggerAdapter(base, {
+        "request_uuid": request.state.request_uuid})

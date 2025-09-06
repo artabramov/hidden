@@ -1,41 +1,57 @@
-"""
-Implements an in-memory least recently used (LRU) cache for storing
-decrypted file data with automatic eviction of the oldest entries
-when the cache exceeds the configured size.
-"""
-
 from collections import OrderedDict
+from typing import Optional
 
 
 class LRU:
-    def __init__(self, cache_size: int):
-        """
-        Initializes the cache with a maximum number of entities that
-        can be stored before eviction occurs.
-        """
-        self.cache_size = cache_size
-        self.cache: OrderedDict[int, bytes] = OrderedDict()
+    """
+    LRU cache that stores bytes under string keys.
+    Limited both by total size in bytes and optional per-item size.
+    """
 
-    async def save(self, key: str, value: bytes):
-        """
-        Stores the given value under the specified key, updates its
-        position as most recently used and evicts the oldest entry if
-        the cache exceeds its capacity.
-        """
-        if key in self.cache:
-            self.cache.move_to_end(key)
-        self.cache[key] = value
+    def __init__(self, cache_size_bytes: int,
+                 item_size_bytes: Optional[int] = None):
+        self.cache_size_bytes = cache_size_bytes
+        self.item_size_bytes = item_size_bytes
+        self.cache: OrderedDict[str, bytes] = OrderedDict()
 
-        if len(self.cache) > self.cache_size:
+    @property
+    def size(self) -> int:
+        """Total size of all cached entries in bytes."""
+        return sum(len(v) for v in self.cache.values())
+
+    @property
+    def count(self) -> int:
+        """Number of cached entries."""
+        return len(self.cache)
+
+    def save(self, path: str, value: bytes) -> None:
+        """Insert or update a key, enforcing size limits."""
+        # Skip oversized values (and remove old if existed)
+        if (self.item_size_bytes is not None
+                and len(value) > self.item_size_bytes):
+            self.cache.pop(path, None)
+            return
+
+        if path in self.cache:
+            self.cache.move_to_end(path)
+
+        self.cache[path] = value
+
+        # Evict until within total size
+        while self.size > self.cache_size_bytes and self.cache:
             self.cache.popitem(last=False)
 
-    async def load(self, key: str) -> bytes | None:
-        """
-        Retrieves the value associated with the specified key, returns
-        None if it is not present, and marks it as most recently used.
-        """
-        if key not in self.cache:
+    def load(self, path: str) -> Optional[bytes]:
+        """Return cached value or None if not found."""
+        if path not in self.cache:
             return None
+        self.cache.move_to_end(path)
+        return self.cache[path]
 
-        self.cache.move_to_end(key)
-        return self.cache[key]
+    def delete(self, path: str) -> None:
+        """Remove a key if present."""
+        self.cache.pop(path, None)
+
+    def clear(self) -> None:
+        """Clear cache completely."""
+        self.cache.clear()

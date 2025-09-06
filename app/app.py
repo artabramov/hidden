@@ -1,250 +1,213 @@
-"""
-Main FastAPI application entrypoint that initializes the app,
-configures middleware for request validation, logging and context
-management, performs startup tasks, mounts static assets and
-documentation, registers all API routers and installs a global
-exception handler.
-"""
-
-
-import os
 import time
-from uuid import uuid4
-from contextlib import asynccontextmanager
-from fastapi import FastAPI, status, HTTPException
-from fastapi.requests import Request
-from fastapi.responses import JSONResponse, HTMLResponse, FileResponse
-from fastapi.staticfiles import StaticFiles
-from fastapi.encoders import jsonable_encoder
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import ValidationError
+from fastapi import FastAPI, Request, status, HTTPException
 from app.config import get_config
-from app.context import get_context
-from app.postgres import init_database
-from app.redis import init_cache
+from app.openapi import OPENAPI_TAGS, OPENAPI_DESCRIPTION, OPENAPI_PREFIX
+from app.sqlite import SessionManager, init_database
+from app.redis import RedisClient, init_cache
+from app.managers.file_manager import FileManager
+from app.lru import LRU
 from app.hook import init_hooks
-from app.log import get_log
-from app.helpers.secret_helper import secret_exists, secret_read
-from app.helpers.lock_helper import lock_exists, lock_disable
-from app.helpers.uptime_helper import Uptime
-from app.error import ERR_SERVER_LOCKED, ERR_SERVER_FORBIDDEN, ERR_SERVER_ERROR
-from app.version import __version__
+from app.log import init_logger, bind_request_logger
+from contextlib import asynccontextmanager
 from app.routers import (
-    token_retrieve_router,
-    token_invalidate_router,
-    user_register_router,
-    user_login_router,
-    user_select_router,
-    user_update_router,
-    user_password_router,
-    user_role_router,
-    user_delete_router,
-    user_list_router,
-    userpic_upload_router,
-    userpic_retrieve_router,
-    userpic_delete_router,
-    collection_insert_router,
-    collection_select_router,
-    collection_update_router,
-    collection_delete_router,
-    collection_list_router,
-    document_upload_router,
-    document_select_router,
-    document_update_router,
-    document_move_router,
-    document_delete_router,
-    document_list_router,
-    document_download_router,
-    thumbnail_retrieve_router,
-    tag_insert_router,
-    tag_delete_router,
-    tag_list_router,
-    setting_insert_router,
-    setting_list_router,
-    secret_retrieve_router,
-    secret_delete_router,
-    lock_create_router,
-    lock_retrieve_router,
-    telemetry_retrieve_router,
-    execute_router,
+    token_retrieve,
+    token_invalidate,
+    user_register,
+    user_login,
+    user_role,
+    user_password,
+    user_select,
+    user_update,
+    user_delete,
+    user_list,
+    userpic_upload,
+    userpic_delete,
+    userpic_retrieve,
+    collection_insert
 )
-
-cfg = get_config()
-ctx = get_context()
-log = get_log()
-
+from cryptography.exceptions import (
+    InvalidTag,
+    InvalidSignature,
+    InvalidKey,
+    UnsupportedAlgorithm,
+    AlreadyFinalized,
+    NotYetFinalized,
+    AlreadyUpdated,
+    InternalError,
+)
+from fastapi.responses import JSONResponse
+from fastapi.encoders import jsonable_encoder
+from fastapi.exceptions import RequestValidationError
+from pydantic import ValidationError
+from app.version import __version__
+from app.error import (
+    HTTP_498_SECRET_KEY_MISSING, HTTP_499_SECRET_KEY_INVALID,
+    ERR_SECRET_KEY_MISSING, ERR_SECRET_KEY_INVALID, ERR_LOCKED,
+    ERR_SERVER_ERROR
+)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """
-    Handles application startup by disabling the lock if present,
-    initializing the database and cache, running registered hooks
-    and then yielding control back to FastAPI.
+    Initializes core services and a shared file manager on startup. On
+    shutdown, disposes database resources and closes cache connections.
     """
-    await lock_disable()
-    await init_database()
-    await init_cache()
-    await init_hooks(app)
-    yield
+    config = get_config()
+    app.state.config = config
+
+    app.state.sessionmanager = SessionManager(
+        sqlite_path=config.SQLITE_PATH,
+        sql_echo=config.SQLITE_SQL_ECHO,
+    )
+    await init_database(app.state.sessionmanager)
+
+    app.state.redis_client = RedisClient(
+        host=config.REDIS_HOST,
+        port=config.REDIS_PORT,
+        decode_responses=config.REDIS_DECODE_RESPONSES,
+    )
+    await init_cache(app.state.redis_client)
+
+    init_hooks(app)
+    init_logger(app)
+
+    file_manager = FileManager(config)
+    app.state.file_manager = file_manager
+
+    app.state.lru = LRU(
+        config.LRU_TOTAL_SIZE_BYTES,
+        item_size_bytes=config.LRU_ITEM_SIZE_LIMIT_BYTES
+    )
+
+    lock_path = config.LOCK_FILE_PATH
+    if await file_manager.isfile(lock_path):
+        await file_manager.delete(lock_path)
+
+    try:
+        yield
+    finally:
+        await app.state.sessionmanager.async_engine.dispose()
+        await app.state.redis_client.close()
 
 
-uptime = Uptime()
+app = FastAPI(
+    title="Hidden",
+    version=__version__,
+    openapi_tags=OPENAPI_TAGS,
+    description=OPENAPI_DESCRIPTION,
+    openapi_prefix=OPENAPI_PREFIX,
+    lifespan=lifespan,
+    swagger_ui_parameters={
+        "persistAuthorization": True,
+        "displayRequestDuration": True,
+        "tryItOutEnabled": True,
+    },
+)
 
-app = FastAPI(lifespan=lifespan, title="Hidden", version=__version__)
-app.add_middleware(
-    CORSMiddleware, allow_origins=["*"], allow_credentials=True,
-    allow_methods=["*"], allow_headers=["*"])
-
-app.include_router(user_login_router.router, prefix=cfg.APP_API_VERSION)
-app.include_router(token_retrieve_router.router, prefix=cfg.APP_API_VERSION)
-app.include_router(token_invalidate_router.router, prefix=cfg.APP_API_VERSION)
-
-app.include_router(user_register_router.router, prefix=cfg.APP_API_VERSION)
-app.include_router(user_select_router.router, prefix=cfg.APP_API_VERSION)
-app.include_router(user_update_router.router, prefix=cfg.APP_API_VERSION)
-app.include_router(user_password_router.router, prefix=cfg.APP_API_VERSION)
-app.include_router(user_role_router.router, prefix=cfg.APP_API_VERSION)
-app.include_router(user_delete_router.router, prefix=cfg.APP_API_VERSION)
-app.include_router(user_list_router.router, prefix=cfg.APP_API_VERSION)
-app.include_router(userpic_upload_router.router, prefix=cfg.APP_API_VERSION)
-app.include_router(userpic_delete_router.router, prefix=cfg.APP_API_VERSION)
-
-app.include_router(collection_insert_router.router, prefix=cfg.APP_API_VERSION)
-app.include_router(collection_select_router.router, prefix=cfg.APP_API_VERSION)
-app.include_router(collection_update_router.router, prefix=cfg.APP_API_VERSION)
-app.include_router(collection_delete_router.router, prefix=cfg.APP_API_VERSION)
-app.include_router(collection_list_router.router, prefix=cfg.APP_API_VERSION)
-
-app.include_router(document_upload_router.router, prefix=cfg.APP_API_VERSION)
-app.include_router(document_select_router.router, prefix=cfg.APP_API_VERSION)
-app.include_router(document_update_router.router, prefix=cfg.APP_API_VERSION)
-app.include_router(document_move_router.router, prefix=cfg.APP_API_VERSION)
-app.include_router(document_delete_router.router, prefix=cfg.APP_API_VERSION)
-app.include_router(document_list_router.router, prefix=cfg.APP_API_VERSION)
-
-app.include_router(tag_insert_router.router, prefix=cfg.APP_API_VERSION)
-app.include_router(tag_delete_router.router, prefix=cfg.APP_API_VERSION)
-app.include_router(tag_list_router.router, prefix=cfg.APP_API_VERSION)
-
-app.include_router(setting_insert_router.router, prefix=cfg.APP_API_VERSION)
-app.include_router(setting_list_router.router, prefix=cfg.APP_API_VERSION)
-
-app.include_router(secret_retrieve_router.router, prefix=cfg.APP_API_VERSION)
-app.include_router(secret_delete_router.router, prefix=cfg.APP_API_VERSION)
-
-app.include_router(lock_create_router.router, prefix=cfg.APP_API_VERSION)
-app.include_router(lock_retrieve_router.router, prefix=cfg.APP_API_VERSION)
-
-app.include_router(telemetry_retrieve_router.router, prefix=cfg.APP_API_VERSION)  # noqa E501
-app.include_router(execute_router.router, prefix=cfg.APP_API_VERSION)
-
-app.include_router(userpic_retrieve_router.router)
-app.include_router(document_download_router.router)
-app.include_router(thumbnail_retrieve_router.router)
-
-app.mount(cfg.SPHINX_URL, StaticFiles(directory=cfg.SPHINX_PATH, html=True),
-          name=cfg.SPHINX_NAME)
-
-
-@app.get("/{full_path:path}", include_in_schema=False,)
-async def catch_all(full_path: str, request: Request):
-    """
-    Serves static content for unmatched routes by returning the
-    requested file if it exists under HTML_PATH or falling back to the
-    main HTML file as the entry point for the single-page application.
-    """
-    file_path = os.path.join(cfg.HTML_PATH, full_path)
-
-    if os.path.exists(file_path) and os.path.isfile(file_path):
-        return FileResponse(file_path)
-
-    with open(os.path.join(cfg.HTML_PATH, cfg.HTML_FILE)) as f:
-        return HTMLResponse(content=f.read())
-
-
-app.mount("/", StaticFiles(directory=cfg.HTML_PATH, html=True), name="/")
+app.include_router(user_login.router)
+app.include_router(token_retrieve.router)
+app.include_router(token_invalidate.router)
+app.include_router(user_register.router)
+app.include_router(user_role.router)
+app.include_router(user_password.router)
+app.include_router(user_select.router)
+app.include_router(user_update.router)
+app.include_router(user_delete.router)
+app.include_router(user_list.router)
+app.include_router(userpic_upload.router)
+app.include_router(userpic_delete.router)
+app.include_router(userpic_retrieve.router)
+app.include_router(collection_insert.router)
 
 
 @app.middleware("http")
 async def middleware_handler(request: Request, call_next):
     """
-    Processes each request by checking for a server lock or missing
-    secret key, attaching context such as start time, UUID, request
-    object and secret key, and logging basic request and response
-    information with elapsed time.
+    Binds a request-scoped logger, logs request timing, checks lockdown
+    state, reads the secret key, appends X-Request-ID to the response.
     """
-    if await lock_exists():
-        raise HTTPException(status_code=423, detail=ERR_SERVER_LOCKED)
+    file_manager = request.app.state.file_manager
 
-    elif not await secret_exists():
-        raise HTTPException(status_code=403, detail=ERR_SERVER_FORBIDDEN)
+    request.state.log = bind_request_logger(request)
+    request.state.log.debug(
+        f"request received; elapsed_time=0; "
+        f"method={request.method}; url={request.url.path};"
+    )
 
-    ctx.request_start_time = time.time()
-    ctx.request_uuid = str(uuid4())
-    ctx.secret_key = await secret_read()
-    ctx.request = request
+    lock_path = request.app.state.config.LOCK_FILE_PATH
+    if await file_manager.isfile(lock_path):
+        raise HTTPException(
+            status_code=status.HTTP_423_LOCKED,
+            detail=[{"type": ERR_LOCKED,
+                     "msg": "Application is locked"}])
 
-    log.debug(
-        "request received; module=app; function=middleware_handler; "
-        f"elapsed_time=0; method={request.method}; url={request.url.path};")
+    secret_path = request.app.state.config.SECRET_KEY_PATH
+    if not await file_manager.isfile(secret_path):
+        request.app.state.lru.clear()
+        raise HTTPException(
+            status_code=HTTP_498_SECRET_KEY_MISSING,
+            detail=[{"type": ERR_SECRET_KEY_MISSING,
+                     "msg": "Secret key is missing"}])
 
+    secret_key = (await file_manager.read(secret_path)).strip()
+    secret_length = request.app.state.config.SECRET_KEY_LENGTH
+    if not secret_key or len(secret_key) != secret_length:
+        request.app.state.lru.clear()
+        raise HTTPException(
+            status_code=HTTP_499_SECRET_KEY_INVALID,
+            detail=[{"type": ERR_SECRET_KEY_INVALID,
+                     "msg": "Secret key is invalid"}])
+
+    request.state.secret_key = secret_key
     response = await call_next(request)
 
-    elapsed_time = "{0:.6f}".format(time.time() - ctx.request_start_time)
-    log.debug(
-        "response sent; module=app; function=middleware_handler; "
-        f"elapsed_time={elapsed_time}; status={response.status_code};")
+    elapsed_time = f"{time.time() - request.state.request_start_time:.6f}"
+    request.state.log.debug(
+        f"response sent; elapsed_time={elapsed_time}; "
+        f"status_code={response.status_code};"
+    )
 
+    response.headers["X-Request-ID"] = request.state.request_uuid
     return response
 
 
 @app.exception_handler(Exception)
 async def exception_handler(request: Request, e: Exception):
     """
-    Handles exceptions by returning JSON responses for validation
-    errors, selected HTTP errors and unexpected failures, logging
-    server-side errors when necessary and appending permissive CORS
-    headers to all responses.
+    Handles exceptions and returns consistent JSON errors; logs elapsed
+    time (with stack trace for server errors) and appends X-Request-ID.
     """
-    if isinstance(e, ValidationError):
-        response = JSONResponse(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            content=jsonable_encoder({"detail": e.errors()}))
+    if isinstance(e, (RequestValidationError, ValidationError)):
+        status_code = status.HTTP_422_UNPROCESSABLE_ENTITY
+        detail = getattr(e, "errors", lambda: [])()
 
-    elif isinstance(e, HTTPException) and e.status_code == 403:
-        response = JSONResponse(
-            status_code=status.HTTP_403_FORBIDDEN,
-            content=jsonable_encoder({"detail": e.detail}))
+    elif isinstance(e, (
+        InvalidTag, InvalidSignature, InvalidKey, UnsupportedAlgorithm,
+        AlreadyFinalized, NotYetFinalized, AlreadyUpdated, InternalError)
+    ):
+        request.app.state.lru.clear()
+        status_code = HTTP_499_SECRET_KEY_INVALID
+        detail=[{"type": ERR_SECRET_KEY_INVALID,
+                 "msg": "Secret key is invalid"}]
 
-    elif isinstance(e, HTTPException) and e.status_code == 423:
-        response = JSONResponse(
-            status_code=status.HTTP_423_LOCKED,
-            content=jsonable_encoder({"detail": e.detail}))
-
-    elif isinstance(e, HTTPException) and e.status_code == 404:
-        response = JSONResponse(
-            status_code=status.HTTP_404_NOT_FOUND,
-            content=jsonable_encoder({"detail": e.detail}))
+    elif isinstance(e, HTTPException):
+        status_code = e.status_code
+        detail = e.detail
 
     else:
-        elapsed_time = "{0:.6f}".format(time.time() - ctx.request_start_time)
-        log.error(f"error raised; elapsed_time={elapsed_time}; e={str(e)};")
+        status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        detail=[{"type": ERR_SERVER_ERROR,
+                 "msg": "Internal server error"}]
 
-        response = JSONResponse(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            content=jsonable_encoder({"detail": ERR_SERVER_ERROR}))
+    elapsed_time = f"{time.time() - request.state.request_start_time:.6f}"
+    request.state.log.error(
+        "request failed; elapsed_time=%s; status_code=%s; e=%s;",
+        elapsed_time, status_code, str(e), exc_info=True,
+    )
 
-    return add_cors_headers(response)
-
-
-def add_cors_headers(response: JSONResponse) -> JSONResponse:
-    """
-    Adds permissive CORS headers to the response, effectively
-    duplicating the behavior of CORSMiddleware and allowing any
-    origin with credentials.
-    """
-    response.headers["Access-Control-Allow-Origin"] = "*"
-    response.headers["Access-Control-Allow-Credentials"] = "true"
-    response.headers["Access-Control-Allow-Headers"] = "*"
-    response.headers["Access-Control-Allow-Methods"] = "*"
+    response = JSONResponse(
+        status_code=status_code,
+        content=jsonable_encoder({"detail": detail}),
+    )
+    response.headers["X-Request-ID"] = request.state.request_uuid
     return response

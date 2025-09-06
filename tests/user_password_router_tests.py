@@ -1,146 +1,148 @@
 import unittest
 from unittest.mock import AsyncMock, MagicMock, patch
-from app.routers.user_password_router import user_password
-from app.hook import HOOK_AFTER_USER_PASSWORD
+from app.config import get_config
 from app.error import E
+from app.hook import HOOK_AFTER_USER_PASSWORD
+from app.routers.user_password import User as UserModel
+from app.routers.user_password import user_password
+
+cfg = get_config()
+
+
+def _req():
+    req = MagicMock()
+    req.app = MagicMock()
+    req.app.state = MagicMock()
+    req.app.state.config = cfg
+    req.state = MagicMock()
+    req.state.secret_key = "test-secret"
+    req.state.log = MagicMock()
+    req.state.log.debug = MagicMock()
+    return req
 
 
 class UserPasswordRouterTest(unittest.IsolatedAsyncioTestCase):
 
-    @patch("app.routers.user_password_router.hash_str")
-    @patch("app.routers.user_password_router.Hook")
-    @patch("app.routers.user_password_router.Repository")
-    async def test_user_password_success(self, RepositoryMock, HookMock,
-                                         hash_str_mock):
-        request_mock = MagicMock()
-        schema_mock = AsyncMock(current_password="current",
-                                updated_password="updated")
-        session_mock = AsyncMock()
-        cache_mock = AsyncMock()
-        current_user_mock = AsyncMock(id=123, password_hash="current-hashed")
+    @patch("app.routers.user_password.EncryptionManager")
+    @patch("app.routers.user_password.Repository")
+    @patch("app.routers.user_password.Hook")
+    async def test_change_password_success(self, HookMock, RepositoryMock, EncMgrMock):
+        request = _req()
+        session = AsyncMock()
+        cache = AsyncMock()
 
-        repository_mock = AsyncMock()
-        RepositoryMock.return_value = repository_mock
+        current_user = AsyncMock(id=123, password_hash="cur_hash")
 
-        hook_mock = AsyncMock()
-        HookMock.return_value = hook_mock
+        enc = MagicMock()
+        enc.get_hash.side_effect = lambda s: "cur_hash" if s == "OldP@ss1" else "new_hash"
+        EncMgrMock.return_value = enc
 
-        hash_str_mock.side_effect = ["current-hashed", "updated-hashed"]
+        repo = AsyncMock()
+        RepositoryMock.return_value = repo
+
+        hook = AsyncMock()
+        HookMock.return_value = hook
+
+        class Schema:
+            current_password = "OldP@ss1"
+            updated_password = "NewP@ss1"
 
         result = await user_password(
-            123, schema_mock, request_mock, session=session_mock,
-            cache=cache_mock, current_user=current_user_mock)
+            123, Schema, request, session=session, cache=cache, current_user=current_user
+        )
 
         self.assertEqual(result, {"user_id": 123})
+        self.assertEqual(current_user.password_hash, "new_hash")
 
-        self.assertEqual(current_user_mock.password_hash, "updated-hashed")
-        repository_mock.update.assert_called_with(current_user_mock)
+        EncMgrMock.assert_called_once_with(cfg, "test-secret")
+        RepositoryMock.assert_called_once_with(session, cache, UserModel, cfg)
+        repo.update.assert_awaited_with(current_user)
 
-        HookMock.assert_called_with(
-            request_mock.app, session_mock, cache_mock,
-            current_user=current_user_mock)
-        hook_mock.call.assert_called_with(HOOK_AFTER_USER_PASSWORD,
-                                          current_user_mock)
+        HookMock.assert_called_with(request, session, cache, current_user=current_user)
+        hook.call.assert_awaited_with(HOOK_AFTER_USER_PASSWORD)
 
-    @patch("app.routers.user_password_router.Hook")
-    @patch("app.routers.user_password_router.Repository")
-    async def test_user_password_user_not_found(self, RepositoryMock,
-                                                HookMock):
-        request_mock = MagicMock()
-        schema_mock = AsyncMock(current_password="current",
-                                updated_password="updated")
-        session_mock = AsyncMock()
-        cache_mock = AsyncMock()
-        current_user_mock = AsyncMock(id=123, password_hash="current-hashed")
+        request.state.log.debug.assert_called()
 
-        repository_mock = AsyncMock()
-        RepositoryMock.return_value = repository_mock
+    @patch("app.routers.user_password.EncryptionManager")
+    @patch("app.routers.user_password.Repository")
+    @patch("app.routers.user_password.Hook")
+    async def test_path_user_mismatch_422(self, HookMock, RepositoryMock, EncMgrMock):
+        request = _req()
+        session = AsyncMock()
+        cache = AsyncMock()
+        current_user = AsyncMock(id=999)
 
-        hook_mock = AsyncMock()
-        HookMock.return_value = hook_mock
+        class Schema:
+            current_password = "OldP@ss1"
+            updated_password = "NewP@ss1"
 
-        with self.assertRaises(E) as context:
+        with self.assertRaises(E) as ctx:
             await user_password(
-                234, schema_mock, request_mock, session=session_mock,
-                cache=cache_mock, current_user=current_user_mock)
+                123, Schema, request, session=session, cache=cache, current_user=current_user
+            )
 
-        repository_mock.update.assert_not_called()
+        self.assertEqual(ctx.exception.status_code, 422)
+        self.assertEqual(ctx.exception.detail[0]["type"], "value_invalid")
+        self.assertIn("user_id", ctx.exception.detail[0]["loc"])
 
-        self.assertEqual(context.exception.status_code, 422)
-        self.assertEqual(context.exception.detail[0]["type"], "value_error")
-        self.assertTrue("user_id" in context.exception.detail[0]["loc"])
-
+        EncMgrMock.assert_not_called()
+        RepositoryMock.assert_not_called()
         HookMock.assert_not_called()
-        hook_mock.call.assert_not_called()
 
-    @patch("app.routers.user_password_router.hash_str")
-    @patch("app.routers.user_password_router.Hook")
-    @patch("app.routers.user_password_router.Repository")
-    async def test_user_password_password_invalid(self, RepositoryMock,
-                                                  HookMock, hash_str_mock):
-        request_mock = MagicMock()
-        schema_mock = AsyncMock(current_password="current",
-                                updated_password="updated")
-        session_mock = AsyncMock()
-        cache_mock = AsyncMock()
-        current_user_mock = AsyncMock(id=123, password_hash="invalid-hashed")
+    @patch("app.routers.user_password.EncryptionManager")
+    @patch("app.routers.user_password.Repository")
+    @patch("app.routers.user_password.Hook")
+    async def test_wrong_current_password_422(self, HookMock, RepositoryMock, EncMgrMock):
+        request = _req()
+        session = AsyncMock()
+        cache = AsyncMock()
+        current_user = AsyncMock(id=123, password_hash="cur_hash")
 
-        repository_mock = AsyncMock()
-        RepositoryMock.return_value = repository_mock
+        enc = MagicMock()
+        enc.get_hash.return_value = "wrong_hash"
+        EncMgrMock.return_value = enc
 
-        hash_str_mock.return_value = "current-hashed"
+        class Schema:
+            current_password = "bad"
+            updated_password = "NewP@ss1"
 
-        hook_mock = AsyncMock()
-        HookMock.return_value = hook_mock
-
-        with self.assertRaises(E) as context:
+        with self.assertRaises(E) as ctx:
             await user_password(
-                123, schema_mock, request_mock, session=session_mock,
-                cache=cache_mock, current_user=current_user_mock)
+                123, Schema, request, session=session, cache=cache, current_user=current_user
+            )
 
-        repository_mock.update.assert_not_called()
+        self.assertEqual(ctx.exception.status_code, 422)
+        self.assertEqual(ctx.exception.detail[0]["type"], "value_invalid")
+        self.assertIn("current_password", ctx.exception.detail[0]["loc"])
 
-        self.assertEqual(context.exception.status_code, 422)
-        self.assertEqual(context.exception.detail[0]["type"], "value_error")
-        self.assertTrue("current_password" in context.exception.detail[0]["loc"])  # noqa E501
-
+        RepositoryMock.assert_not_called()
         HookMock.assert_not_called()
-        hook_mock.call.assert_not_called()
 
-    @patch("app.routers.user_password_router.hash_str")
-    @patch("app.routers.user_password_router.Hook")
-    @patch("app.routers.user_password_router.Repository")
-    async def test_user_password_passwords_equal(self, RepositoryMock,
-                                                 HookMock, hash_str_mock):
-        request_mock = MagicMock()
-        schema_mock = AsyncMock(current_password="current",
-                                updated_password="current")
-        session_mock = AsyncMock()
-        cache_mock = AsyncMock()
-        current_user_mock = AsyncMock(id=123, password_hash="current-hashed")
+    @patch("app.routers.user_password.EncryptionManager")
+    @patch("app.routers.user_password.Repository")
+    @patch("app.routers.user_password.Hook")
+    async def test_same_password_422(self, HookMock, RepositoryMock, EncMgrMock):
+        request = _req()
+        session = AsyncMock()
+        cache = AsyncMock()
+        current_user = AsyncMock(id=123, password_hash="cur_hash")
 
-        repository_mock = AsyncMock()
-        RepositoryMock.return_value = repository_mock
+        enc = MagicMock()
+        enc.get_hash.return_value = "cur_hash"
+        EncMgrMock.return_value = enc
 
-        hash_str_mock.side_effect = ["current-hashed", "current-hashed"]
+        class Schema:
+            current_password = "SameP@ss1"
+            updated_password = "SameP@ss1"
 
-        hook_mock = AsyncMock()
-        HookMock.return_value = hook_mock
-
-        with self.assertRaises(E) as context:
+        with self.assertRaises(E) as ctx:
             await user_password(
-                123, schema_mock, request_mock, session=session_mock,
-                cache=cache_mock, current_user=current_user_mock)
+                123, Schema, request, session=session, cache=cache, current_user=current_user
+            )
 
-        repository_mock.update.assert_not_called()
+        self.assertEqual(ctx.exception.status_code, 422)
+        self.assertEqual(ctx.exception.detail[0]["type"], "value_invalid")
+        self.assertIn("updated_password", ctx.exception.detail[0]["loc"])
 
-        self.assertEqual(context.exception.status_code, 422)
-        self.assertEqual(context.exception.detail[0]["type"], "value_error")
-        self.assertTrue("updated_password" in context.exception.detail[0]["loc"])  # noqa E501
-
+        RepositoryMock.assert_not_called()
         HookMock.assert_not_called()
-        hook_mock.call.assert_not_called()
-
-
-if __name__ == "__main__":
-    unittest.main()

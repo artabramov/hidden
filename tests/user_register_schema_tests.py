@@ -1,286 +1,124 @@
 import unittest
 from pydantic import ValidationError
-from app.schemas.user_register_schema import UserRegisterRequest
+from app.schemas.user_register import UserRegisterRequest, UserRegisterResponse
 
 
 class UserRegisterSchemaTest(unittest.TestCase):
+    def test_request_successful_build_and_normalization(self):
+        m = UserRegisterRequest(
+            username="John_Doe",
+            password="Aa1!aaaa",
+            first_name=" John ",
+            last_name=" Doe ",
+            summary="  Hello  ",
+        )
+        self.assertEqual(m.first_name, "John")
+        self.assertEqual(m.last_name, "Doe")
+        self.assertEqual(m.username, "john_doe")
+        self.assertEqual(m.password.get_secret_value(), "Aa1!aaaa")
+        self.assertEqual(m.summary, "Hello")
+        self.assertIn("SecretStr", repr(m))
 
-    def test_username_empty(self):
-        data = {
-            "username": "",
-            "password": "Qwer1!",
-            "first_name": "John",
-            "last_name": "Doe"
-        }
+    def test_request_username_with_outer_spaces_rejected_when_before(self):
         with self.assertRaises(ValidationError):
-            UserRegisterRequest(**data)
+            UserRegisterRequest(
+                username=" John_Doe ",
+                password="Aa1!aaaa",
+                first_name="A",
+                last_name="B",
+            )
 
-    def test_username_too_short(self):
-        data = {
-            "username": "a",
-            "password": "Qwer1!",
-            "first_name": "John",
-            "last_name": "Doe"
-        }
+    def test_request_username_length_constraints(self):
         with self.assertRaises(ValidationError):
-            UserRegisterRequest(**data)
-
-    def test_username_too_long(self):
-        data = {
-            "username": "a" * 48,
-            "password": "Qwer1!",
-            "first_name": "John",
-            "last_name": "Doe"
-        }
+            UserRegisterRequest(
+                username="a",
+                password="Aa1!aaaa",
+                first_name="A",
+                last_name="B",
+            )
         with self.assertRaises(ValidationError):
-            UserRegisterRequest(**data)
+            UserRegisterRequest(
+                username="a" * 41,
+                password="Aa1!aaaa",
+                first_name="A",
+                last_name="B",
+            )
 
-    def test_username_length_min(self):
-        data = {
-            "username": "qwer",
-            "password": "Qwer1!",
-            "first_name": "John",
-            "last_name": "Doe"
-        }
-        res = UserRegisterRequest(**data)
-        self.assertEqual(res.username, data["username"])
-
-    def test_username_length_max(self):
-        data = {
-            "username": "q" * 47,
-            "password": "Qwer1!",
-            "first_name": "John",
-            "last_name": "Doe"
-        }
-        res = UserRegisterRequest(**data)
-        self.assertEqual(res.username, data["username"])
-
-    def test_password_empty(self):
-        data = {
-            "username": "johndoe",
-            "password": "",
-            "first_name": "John",
-            "last_name": "Doe"
-        }
+    def test_request_first_last_name_constraints(self):
         with self.assertRaises(ValidationError):
-            UserRegisterRequest(**data)
-
-    def test_password_too_short(self):
-        data = {
-            "username": "johndoe",
-            "password": "Qwe1!",
-            "first_name": "John",
-            "last_name": "Doe"
-        }
+            UserRegisterRequest(
+                username="user_1",
+                password="Aa1!aaaa",
+                first_name="",
+                last_name="B",
+            )
         with self.assertRaises(ValidationError):
-            UserRegisterRequest(**data)
-
-    def test_password_length_min(self):
-        data = {
-            "username": "johndoe",
-            "password": "Qwer1!",
-            "first_name": "John",
-            "last_name": "Doe"
-        }
-        schema = UserRegisterRequest(**data)
-        self.assertEqual(schema.password, "Qwer1!")
-
-    def test_first_name_empty(self):
-        data = {
-            "username": "johndoe",
-            "password": "Qwer1!",
-            "first_name": "",
-            "last_name": "Doe"
-        }
+            UserRegisterRequest(
+                username="user_1",
+                password="Aa1!aaaa",
+                first_name="A",
+                last_name="",
+            )
         with self.assertRaises(ValidationError):
-            UserRegisterRequest(**data)
+            UserRegisterRequest(
+                username="user_1",
+                password="Aa1!aaaa",
+                first_name="A" * 41,
+                last_name="B",
+            )
 
-    def test_first_name_whitespaces(self):
-        data = {
-            "username": "    ",
-            "password": "Qwer1!",
-            "first_name": "",
-            "last_name": "Doe"
-        }
+    def test_request_summary_max_length(self):
+        ok = "x" * 4096
+        m = UserRegisterRequest(
+            username="user_1",
+            password="Aa1!aaaa",
+            first_name="A",
+            last_name="B",
+            summary=ok,
+        )
+        self.assertEqual(m.summary, ok)
+
+        too_long = "x" * 4097
         with self.assertRaises(ValidationError):
-            UserRegisterRequest(**data)
+            UserRegisterRequest(
+                username="user_1",
+                password="Aa1!aaaa",
+                first_name="A",
+                last_name="B",
+                summary=too_long,
+            )
 
-    def test_first_name_strip(self):
-        data = {
-            "username": "johndoe",
-            "password": "Qwer1!",
-            "first_name": "  John  ",
-            "last_name": "Doe",
-            "user_summary": "lorem ipsum"
-        }
-        schema = UserRegisterRequest(**data)
-        self.assertEqual(schema.first_name, "John")
+    def test_request_summary_blank_to_none(self):
+        m = UserRegisterRequest(
+            username="user_1",
+            password="Aa1!aaaa",
+            first_name="A",
+            last_name="B",
+            summary="   ",
+        )
+        self.assertIsNone(m.summary)
 
-    def test_first_name_too_long(self):
-        data = {
-            "username": "johndoe",
-            "password": "Qwer1!",
-            "first_name": "a" * 48,
-            "last_name": "Doe"
-        }
+    def test_request_password_min_length_and_complexity(self):
         with self.assertRaises(ValidationError):
-            UserRegisterRequest(**data)
-
-    def test_first_name_length_min(self):
-        data = {
-            "username": "johndoe",
-            "password": "Qwer1!",
-            "first_name": "Jo",
-            "last_name": "Doe",
-            "user_summary": "lorem ipsum"
-        }
-        schema = UserRegisterRequest(**data)
-        self.assertEqual(schema.first_name, "Jo")
-
-    def test_first_name_length_max(self):
-        data = {
-            "username": "johndoe",
-            "password": "Qwer1!",
-            "first_name": "J" * 47,
-            "last_name": "Doe",
-            "user_summary": "lorem ipsum"
-        }
-        schema = UserRegisterRequest(**data)
-        self.assertEqual(schema.first_name, "J" * 47)
-
-    def test_last_name_empty(self):
-        data = {
-            "username": "johndoe",
-            "password": "Qwer1!",
-            "first_name": "John",
-            "last_name": ""
-        }
+            UserRegisterRequest(
+                username="user_1",
+                password="Aa1!",
+                first_name="A",
+                last_name="B",
+            )
         with self.assertRaises(ValidationError):
-            UserRegisterRequest(**data)
+            UserRegisterRequest(
+                username="user_1",
+                password="aaaaaaa!",
+                first_name="A",
+                last_name="B",
+            )
 
-    def test_last_name_whitespaces(self):
-        data = {
-            "username": "johndoe",
-            "password": "Qwer1!",
-            "first_name": "John",
-            "last_name": "    "
-        }
+    def test_response_success(self):
+        r = UserRegisterResponse(user_id=123, mfa_secret="BASE32SECRET")
+        self.assertEqual(r.user_id, 123)
+        self.assertEqual(r.mfa_secret, "BASE32SECRET")
+
+    def test_response_types_enforced(self):
         with self.assertRaises(ValidationError):
-            UserRegisterRequest(**data)
-
-    def test_last_name_strip(self):
-        data = {
-            "username": "johndoe",
-            "password": "Qwer1!",
-            "first_name": "  John  ",
-            "last_name": "    Doe    ",
-            "user_summary": "lorem ipsum"
-        }
-        schema = UserRegisterRequest(**data)
-        self.assertEqual(schema.last_name, "Doe")
-
-    def test_last_name_too_long(self):
-        data = {
-            "username": "johndoe",
-            "password": "Qwer1!",
-            "first_name": "John",
-            "last_name": "a" * 1024
-        }
-        with self.assertRaises(ValidationError):
-            UserRegisterRequest(**data)
-
-    def test_last_name_length_min(self):
-        data = {
-            "username": "johndoe",
-            "password": "Qwer1!",
-            "first_name": "  John  ",
-            "last_name": "Do",
-            "user_summary": "lorem ipsum"
-        }
-        schema = UserRegisterRequest(**data)
-        self.assertEqual(schema.last_name, "Do")
-
-    def test_last_name_length_max(self):
-        data = {
-            "username": "johndoe",
-            "password": "Qwer1!",
-            "first_name": "  John  ",
-            "last_name": "D" * 47,
-            "user_summary": "lorem ipsum"
-        }
-        user = UserRegisterRequest(**data)
-        self.assertEqual(user.last_name, "D" * 47)
-
-    def test_user_summary_empty(self):
-        data = {
-            "username": "johndoe",
-            "password": "Qwer1!",
-            "first_name": "John",
-            "last_name": "Doe",
-            "user_summary": ""
-        }
-        schema = UserRegisterRequest(**data)
-        self.assertIsNone(schema.user_summary)
-
-    def test_user_summary_whitespaces(self):
-        data = {
-            "username": "johndoe",
-            "password": "Qwer1!",
-            "first_name": "John",
-            "last_name": "Doe",
-            "user_summary": "    "
-        }
-        user = UserRegisterRequest(**data)
-        self.assertIsNone(user.user_summary)
-
-    def test_user_summary_strip(self):
-        data = {
-            "username": "johndoe",
-            "password": "Qwer1!",
-            "first_name": "John",
-            "last_name": "Doe",
-            "user_summary": "  Lorem ipsum  "
-        }
-        schema = UserRegisterRequest(**data)
-        self.assertEqual(schema.user_summary, "Lorem ipsum")
-
-    def test_user_summary_too_long(self):
-        data = {
-            "username": "johndoe",
-            "password": "Qwer1!",
-            "first_name": "John",
-            "last_name": "Doe",
-            "user_summary": "a" * 4096
-        }
-        with self.assertRaises(ValidationError):
-            UserRegisterRequest(**data)
-
-    def test_user_summary_length_max(self):
-        data = {
-            "username": "johndoe",
-            "password": "Qwer1!",
-            "first_name": "John",
-            "last_name": "Doe",
-            "user_summary": "s" * 4095
-        }
-        schema = UserRegisterRequest(**data)
-        self.assertEqual(schema.user_summary, "s" * 4095)
-
-    def test_success(self):
-        data = {
-            "username": "johndoe",
-            "password": "Qwer1!",
-            "first_name": "John",
-            "last_name": "Doe",
-            "user_summary": "Lorem ipsum"
-        }
-        schema = UserRegisterRequest(**data)
-        self.assertEqual(schema.username, "johndoe")
-        self.assertEqual(schema.password, "Qwer1!")
-        self.assertEqual(schema.first_name, "John")
-        self.assertEqual(schema.last_name, "Doe")
-        self.assertEqual(schema.user_summary, "Lorem ipsum")
-
-
-if __name__ == "__main__":
-    unittest.main()
+            UserRegisterResponse(user_id="not-int", mfa_secret="X")

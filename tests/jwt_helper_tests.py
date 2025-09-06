@@ -1,84 +1,150 @@
 import unittest
 import string
-from unittest.mock import patch, MagicMock
-from app.helpers.jwt_helper import generate_jti, jwt_encode, jwt_decode
+import jwt
+import time
+from unittest.mock import MagicMock, patch
+from app.helpers.jwt_helper import (
+    create_payload, generate_jti, encode_jwt, decode_jwt)
 
 
-class JwtHelperTestCase(unittest.TestCase):
+class JWTHelperTest(unittest.TestCase):
 
-    @patch("app.helpers.jwt_helper.random")
-    @patch("app.helpers.jwt_helper.cfg")
-    def test_generate_jti(self, cfg_mock, random_mock):
-        cfg_mock.JTI_LENGTH = 40
-        random_mock.choices.return_value = "random"
+    def test_generate_jti_length_and_charset(self):
+        length = 32
+        result = generate_jti(length)
+        self.assertEqual(len(result), length)
+        allowed = set(string.ascii_letters + string.digits)
+        self.assertTrue(set(result).issubset(allowed))
 
-        result = generate_jti()
-        self.assertEqual(result, random_mock.choices.return_value)
+    def test_generate_jti_uniqueness(self):
+        results = set()
+        for _ in range(200):
+            result = generate_jti(24)
+            self.assertNotIn(result, results)
+            results.add(result)
 
-        random_mock.choices.assert_called_with(
-            string.ascii_letters + string.digits, k=cfg_mock.JTI_LENGTH)
+    @patch("app.helpers.jwt_helper.time")
+    def test_create_payload_with_exp(self, time_mock):
+        time_mock.time.return_value = 1756730933
+        user_mock = MagicMock(id=1234, role="reader", username="johndoe")
+        jti = "hUhnS4nB05g1up3zGz8o1riDGJoTlAbDeQPeb7Sz"
+        exp = 2072253193
 
-    @patch("app.helpers.jwt_helper.cfg.JWT_SECRET", "supersecretkey")
-    @patch("app.helpers.jwt_helper.cfg.JWT_ALGORITHM", "HS256")
-    @patch("app.helpers.jwt_helper.time.time")
-    @patch("app.helpers.jwt_helper.jwt.encode")
-    def test_jwt_encode(self, encode_mock, time_mock):
-        user = MagicMock()
-        user.id = 123
-        user.user_role = "admin"
-        user.username = "test_user"
-        user.jti = "jti"
+        result = create_payload(user_mock, jti, exp=exp)
+        self.assertDictEqual(result, {
+            "user_id": user_mock.id,
+            "role": user_mock.role,
+            "username": user_mock.username,
+            "jti": jti,
+            "exp": exp,
+            "iat": time_mock.time.return_value
+        })
 
-        encode_mock.return_value = "encoded_token"
-        time_mock.return_value = 123456
+    @patch("app.helpers.jwt_helper.time")
+    def test_create_payload_without_exp(self, time_mock):
+        time_mock.time.return_value = 1756730933
+        user_mock = MagicMock(id=1234, role="reader", username="johndoe")
+        jti = "hUhnS4nB05g1up3zGz8o1riDGJoTlAbDeQPeb7Sz"
 
-        jwt_token = jwt_encode(user)
+        result = create_payload(user_mock, jti)
+        self.assertDictEqual(result, {
+            "user_id": user_mock.id,
+            "role": user_mock.role,
+            "username": user_mock.username,
+            "jti": jti,
+            "iat": time_mock.time.return_value
+        })
 
-        expected_payload = {
-            "user_id": 123,
-            "user_role": "admin",
-            "username": "test_user",
-            "jti": "jti",
-            "iat": time_mock.return_value
-        }
+    def test_decode_jwt_raises_on_immature_signature(self):
+        secret, alg = "test-secret", "HS256"
+        payload = {"sub": "1", "nbf": int(time.time()) + 60}
+        token = jwt.encode(payload, secret, algorithm=alg)
+        with self.assertRaises(jwt.ImmatureSignatureError):
+            decode_jwt(token, secret, [alg])
 
-        encode_mock.assert_called_once_with(
-            expected_payload,
-            "supersecretkey",
-            algorithm="HS256"
-        )
-
-        self.assertEqual(jwt_token, "encoded_token")
-
-    @patch("app.helpers.jwt_helper.cfg.JWT_SECRET", "supersecretkey")
-    @patch("app.helpers.jwt_helper.cfg.JWT_ALGORITHM", "HS256")
-    @patch("app.helpers.jwt_helper.jwt.decode")
-    def test_jwt_decode(self, decode_mock):
-        decoded_payload = {
-            "user_id": 123,
-            "user_role": "admin",
-            "username": "test_user",
-            "iat": 1609459200,
-            "jti": "random_jti_string",
-            "exp": 1609462800
-        }
-        decode_mock.return_value = decoded_payload
-
-        result = jwt_decode("mocked_jwt_token")
-
-        decode_mock.assert_called_once_with(
-            "mocked_jwt_token", "supersecretkey", algorithms="HS256")
-
-        expected_result = {
-            "user_id": 123,
-            "user_role": "admin",
-            "username": "test_user",
-            "iat": 1609459200,
-            "jti": "random_jti_string",
-            "exp": 1609462800
-        }
-        self.assertEqual(result, expected_result)
+    def test_decode_jwt_raises_on_future_iat(self):
+        secret, alg = "test-secret", "HS256"
+        payload = {"sub": "1", "iat": int(time.time()) + 60}
+        token = jwt.encode(payload, secret, algorithm=alg)
+        with self.assertRaises(jwt.ImmatureSignatureError):
+            decode_jwt(token, secret, [alg])
 
 
-if __name__ == "__main__":
-    unittest.main()
+    def test_decode_jwt_raises_on_non_integer_iat(self):
+        secret, alg = "test-secret", "HS256"
+        payload = {"sub": "1", "iat": "not-an-int"}
+        token = jwt.encode(payload, secret, algorithm=alg)
+        with self.assertRaises(jwt.InvalidIssuedAtError):
+            decode_jwt(token, secret, [alg])
+
+    def test_decode_jwt_raises_on_invalid_audience(self):
+        secret, alg = "test-secret", "HS256"
+        payload = {"sub": "1", "aud": "expected"}
+        token = jwt.encode(payload, secret, algorithm=alg)
+        with self.assertRaises(jwt.InvalidAudienceError):
+            decode_jwt(token, secret, [alg])
+
+    def test_decode_jwt_raises_on_expired(self):
+        secret = "test-secret"
+        alg = "HS256"
+        payload = {"sub": "1", "exp": int(time.time()) - 10}
+        token = jwt.encode(payload, secret, algorithm=alg)
+
+        with self.assertRaises(jwt.ExpiredSignatureError):
+            decode_jwt(token, secret, [alg])
+
+    def test_decode_jwt_raises_on_invalid_signature(self):
+        secret = "correct-secret"
+        wrong_secret = "wrong-secret"
+        alg = "HS256"
+        payload = {"sub": "1", "exp": int(time.time()) + 60}
+        token = jwt.encode(payload, wrong_secret, algorithm=alg)
+
+        with self.assertRaises(jwt.InvalidSignatureError):
+            decode_jwt(token, secret, [alg])
+
+    def test_decode_jwt_raises_on_unsupported_algorithm(self):
+        secret = "test-secret"
+        token = jwt.encode({"sub": "1", "exp": int(time.time()) + 60},
+                           secret, algorithm="HS512")
+
+        with self.assertRaises(jwt.InvalidAlgorithmError):
+            decode_jwt(token, secret, ["HS256"])
+
+    def test_decode_jwt_raises_on_malformed_token(self):
+        secret = "test-secret"
+        algs = ["HS256"]
+        malformed = "not.a.valid.jwt"
+
+        with self.assertRaises(jwt.DecodeError):
+            decode_jwt(malformed, secret, algs)
+
+    def test_decode_jwt_raises_on_empty_algorithms_list(self):
+        secret = "test-secret"
+        payload = {"sub": "1"}
+        token = encode_jwt(payload, secret, "HS256")
+        with self.assertRaises(Exception):
+            decode_jwt(token, secret, [])
+
+    def test_encode_jwt_raises_on_unsupported_algorithm(self):
+        secret = "test-secret"
+        payload = {"sub": "1"}
+        with self.assertRaises(NotImplementedError):
+            encode_jwt(payload, secret, "HS1024")
+
+    def test_encode_decode_roundtrip_without_exp(self):
+        secret, alg = "test-secret", "HS256"
+        payload = {"user_id": 42, "role": "reader", "jti": "abc",
+                   "iat": int(time.time())}
+        token = encode_jwt(payload, secret, alg)
+        decoded = decode_jwt(token, secret, [alg])
+        self.assertNotIn("exp", decoded)
+        for k in ("user_id", "role", "jti", "iat"):
+            self.assertEqual(decoded[k], payload[k])
+
+    def test_encode_decode_roundtrip_with_exp_in_future(self):
+        secret, alg = "test-secret", "HS256"
+        payload = {"sub": "1", "exp": int(time.time()) + 60}
+        token = encode_jwt(payload, secret, alg)
+        decoded = decode_jwt(token, secret, [alg])
+        self.assertEqual(decoded["sub"], "1")

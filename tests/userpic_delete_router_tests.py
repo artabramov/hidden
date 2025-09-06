@@ -1,104 +1,81 @@
 import unittest
+from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock, patch
-from app.routers.userpic_delete_router import userpic_delete
-from app.hook import HOOK_AFTER_USERPIC_DELETE
-from app.error import E
-from app.config import get_config
-
-cfg = get_config()
+import os
+from app.routers.userpic_delete import userpic_delete
 
 
-class UserpicDeleteRouterTest(unittest.IsolatedAsyncioTestCase):
+class UserpicDeleteRouterTests(unittest.IsolatedAsyncioTestCase):
+    def _mk_request(self, thumbs_dir="/tmp/thumbs", lru=None, fm=None, log=None):
+        config = SimpleNamespace(THUMBNAILS_DIR=thumbs_dir)
+        state = SimpleNamespace(config=config, lru=lru or MagicMock(), file_manager=fm or AsyncMock())
+        if log is None:
+            log = MagicMock()
+        state.log = log
+        app = SimpleNamespace(state=state)
+        return SimpleNamespace(app=app, state=state)
 
-    @patch("app.routers.userpic_delete_router.Hook")
-    async def test_userpic_delete_user_invalid(self, HookMock):
-        request_mock = MagicMock()
-        session_mock = AsyncMock()
-        cache_mock = AsyncMock()
-        current_user_mock = AsyncMock(id=123)
+    async def test_422_when_user_id_mismatch(self):
+        request = self._mk_request()
+        session = MagicMock()
+        cache = MagicMock()
+        current_user = SimpleNamespace(id=1, has_thumbnail=True,
+                                       user_thumbnail=SimpleNamespace(filename="a.jpg"))
 
-        hook_mock = AsyncMock()
-        HookMock.return_value = hook_mock
-
-        with self.assertRaises(E) as context:
+        with self.assertRaises(Exception) as ctx:
             await userpic_delete(
-                234, request_mock, session=session_mock, cache=cache_mock,
-                current_user=current_user_mock)
+                user_id=2, request=request, session=session, cache=cache, current_user=current_user
+            )
+        self.assertEqual(getattr(ctx.exception, "status_code", None), 422)
 
-        self.assertEqual(context.exception.status_code, 422)
-        self.assertEqual(context.exception.detail[0]["type"], "value_error")
-        self.assertTrue("user_id" in context.exception.detail[0]["loc"])
+        request.app.state.lru.delete.assert_not_called()
+        request.app.state.file_manager.delete.assert_not_awaited()
 
-        HookMock.assert_not_called()
-        hook_mock.call.assert_not_called()
+    async def test_404_when_no_thumbnail(self):
+        request = self._mk_request()
+        session = MagicMock()
+        cache = MagicMock()
+        current_user = SimpleNamespace(id=7, has_thumbnail=False, user_thumbnail=None)
 
-    @patch("app.routers.userpic_delete_router.FileManager",
-           new_callable=AsyncMock)
-    @patch("app.routers.userpic_delete_router.Repository")
-    @patch("app.routers.userpic_delete_router.Hook")
-    async def test_userpic_delete_none(self, HookMock, RepositoryMock,
-                                       FileManagerMock):
-        request_mock = MagicMock()
-        session_mock = AsyncMock()
-        cache_mock = AsyncMock()
-        current_user_mock = AsyncMock(id=123, has_userpic=False,
-                                      userpic_filename=None)
+        with self.assertRaises(Exception) as ctx:
+            await userpic_delete(
+                user_id=7, request=request, session=session, cache=cache, current_user=current_user
+            )
+        self.assertEqual(getattr(ctx.exception, "status_code", None), 404)
 
-        repository_mock = AsyncMock()
-        RepositoryMock.return_value = repository_mock
+        request.app.state.lru.delete.assert_not_called()
+        request.app.state.file_manager.delete.assert_not_awaited()
 
-        hook_mock = AsyncMock()
-        HookMock.return_value = hook_mock
+    @patch("app.routers.userpic_delete.Hook")
+    @patch("app.routers.userpic_delete.Repository")
+    async def test_success_deletes_from_lru_disk_updates_user_and_calls_hook(self, RepoMock, HookMock):
+        repo_inst = AsyncMock()
+        RepoMock.return_value = repo_inst
 
-        result = await userpic_delete(
-            123, request_mock, session=session_mock, cache=cache_mock,
-            current_user=current_user_mock)
-        self.assertDictEqual(result, {"user_id": 123})
+        hook_inst = AsyncMock()
+        HookMock.return_value = hook_inst
 
-        FileManagerMock.delete.assert_not_called()
-        self.assertIsNone(current_user_mock.userpic_filename)
-        repository_mock.update.assert_not_called()
-
-        HookMock.assert_called_with(
-            request_mock.app, session_mock, cache_mock,
-            current_user=current_user_mock)
-        hook_mock.call.assert_called_with(HOOK_AFTER_USERPIC_DELETE,
-                                          current_user_mock)
-
-    @patch("app.routers.userpic_delete_router.FileManager",
-           new_callable=AsyncMock)
-    @patch("app.routers.userpic_delete_router.Repository")
-    @patch("app.routers.userpic_delete_router.Hook")
-    async def test_userpic_delete_success(self, HookMock, RepositoryMock,
-                                          FileManagerMock):
-        request_mock = MagicMock()
-        session_mock = AsyncMock()
-        cache_mock = AsyncMock()
-        current_user_mock = AsyncMock(id=123, has_userpic=True,
-                                      userpic_filename="filename")
-
-        repository_mock = AsyncMock()
-        RepositoryMock.return_value = repository_mock
-
-        hook_mock = AsyncMock()
-        HookMock.return_value = hook_mock
+        thumbs_dir = "/var/app/thumbs"
+        request = self._mk_request(thumbs_dir=thumbs_dir)
+        session = MagicMock()
+        cache = MagicMock()
+        current_user = SimpleNamespace(
+            id=42,
+            has_thumbnail=True,
+            user_thumbnail=SimpleNamespace(filename="pic.jpg"),
+        )
 
         result = await userpic_delete(
-            123, request_mock, session=session_mock, cache=cache_mock,
-            current_user=current_user_mock)
-        self.assertDictEqual(result, {"user_id": 123})
+            user_id=42, request=request, session=session, cache=cache, current_user=current_user
+        )
 
-        FileManagerMock.delete.assert_called_with(
-            current_user_mock.userpic_path)
-        self.assertIsNone(current_user_mock.userpic_filename)
-        repository_mock.update.assert_called_with(current_user_mock)
+        expected_path = os.path.join(thumbs_dir, "pic.jpg")
 
-        HookMock.assert_called_with(
-            request_mock.app, session_mock, cache_mock,
-            current_user=current_user_mock)
-        hook_mock.call.assert_called_with(HOOK_AFTER_USERPIC_DELETE,
-                                          current_user_mock)
+        request.app.state.lru.delete.assert_called_once_with(expected_path)
+        request.app.state.file_manager.delete.assert_awaited_once_with(expected_path)
+        repo_inst.update.assert_awaited_once()
+        HookMock.assert_called_once()
+        hook_inst.call.assert_awaited_once()
 
-
-if __name__ == "__main__":
-    unittest.main()
+        self.assertIsNone(current_user.user_thumbnail)
+        self.assertEqual(result, {"user_id": 42})

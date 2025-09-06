@@ -12,9 +12,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import DeclarativeBase
 from app.managers.entity_manager import EntityManager, ID
 from app.managers.cache_manager import CacheManager
-from app.config import get_config
-
-cfg = get_config()
+from app.config import Config
 
 
 class Repository:
@@ -24,14 +22,24 @@ class Repository:
     """
 
     def __init__(self, session: AsyncSession, cache: Redis,
-                 entity_class: Type[DeclarativeBase]):
+                 entity_class: Type[DeclarativeBase], config: Config):
         """
         Initializes the class with a database session connection, cache
         connection and SQLAlchemy model class.
         """
         self.entity_manager = EntityManager(session)
-        self.cache_manager = CacheManager(cache)
         self.entity_class = entity_class
+
+        self.cache_enabled = config.REDIS_ENABLED
+        self.cache_manager = None
+
+        if config.REDIS_ENABLED:
+            self.cache_manager = CacheManager(cache, config.REDIS_EXPIRE)
+
+    @property
+    def _do_cache(self) -> bool:
+        return (self.cache_enabled and self.cache_manager is not None
+                and self.entity_class._cacheable)
 
     async def exists(self, **kwargs) -> bool:
         """
@@ -54,8 +62,7 @@ class Repository:
         """
         entity_id, entity = kwargs.get(ID), None
 
-        if (self.entity_class._cacheable and entity_id is not None
-                and cfg.REDIS_ENABLED):
+        if self._do_cache and entity_id is not None:
             entity = await self.cache_manager.get(self.entity_class, entity_id)
 
         if not entity and entity_id is not None:
@@ -66,7 +73,7 @@ class Repository:
             entity = await self.entity_manager.select_by(
                 self.entity_class, **kwargs)
 
-        if entity and self.entity_class._cacheable and cfg.REDIS_ENABLED:
+        if entity and self.entity_class._cacheable and self.cache_enabled:
             await self.cache_manager.set(entity)
 
         return entity
@@ -79,7 +86,7 @@ class Repository:
         entities = await self.entity_manager.select_all(
             self.entity_class, **kwargs)
 
-        if self.entity_class._cacheable and cfg.REDIS_ENABLED:
+        if self.entity_class._cacheable and self.cache_enabled:
             for entity in entities:
                 await self.cache_manager.set(entity)
 
@@ -92,7 +99,7 @@ class Repository:
         """
         await self.entity_manager.update(entity, commit=commit)
 
-        if self.entity_class._cacheable and cfg.REDIS_ENABLED:
+        if self._do_cache:
             await self.cache_manager.delete(entity)
 
     async def delete(self, entity: DeclarativeBase, commit: bool = True):
@@ -102,7 +109,7 @@ class Repository:
         """
         await self.entity_manager.delete(entity, commit=commit)
 
-        if self.entity_class._cacheable and cfg.REDIS_ENABLED:
+        if self._do_cache:
             await self.cache_manager.delete(entity)
 
     async def delete_from_cache(self, entity: DeclarativeBase):
@@ -110,7 +117,7 @@ class Repository:
         Deletes an entity of the managed SQLAlchemy model from the cache
         without affecting the database.
         """
-        if self.entity_class._cacheable and cfg.REDIS_ENABLED:
+        if self._do_cache:
             await self.cache_manager.delete(entity)
 
     async def delete_all(self, commit: bool = False, **kwargs):
@@ -121,7 +128,7 @@ class Repository:
         await self.entity_manager.delete_all(
             self.entity_class, commit=commit, **kwargs)
 
-        if self.entity_class._cacheable and cfg.REDIS_ENABLED:
+        if self._do_cache:
             await self.cache_manager.delete_all(self.entity_class)
 
     async def delete_all_from_cache(self):
@@ -129,7 +136,7 @@ class Repository:
         Deletes all entities of the managed SQLAlchemy model matching
         the criteria from the database and clears them from the cache.
         """
-        if self.entity_class._cacheable and cfg.REDIS_ENABLED:
+        if self._do_cache:
             await self.cache_manager.delete_all(self.entity_class)
 
     async def count_all(self, **kwargs) -> int:

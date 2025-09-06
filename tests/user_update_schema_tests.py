@@ -1,191 +1,53 @@
 import unittest
 from pydantic import ValidationError
-from app.schemas.user_update_schema import UserUpdateRequest
+from app.schemas.user_update import UserUpdateRequest, UserUpdateResponse
 
 
-class UserUpdateRequestTest(unittest.TestCase):
+class UserUpdateSchemasTest(unittest.TestCase):
+    def test_request_valid_and_trimming(self):
+        m = UserUpdateRequest(
+            first_name="  John  ",
+            last_name="  Doe ",
+            summary="  hello world  ",
+        )
+        self.assertEqual(m.first_name, "John")
+        self.assertEqual(m.last_name, "Doe")
+        self.assertEqual(m.summary, "hello world")
 
-    def test_first_name_missing(self):
-        data = {
-            "last_name": "Doe",
-            "user_summary": "Lorem ipsum",
-        }
+    def test_request_summary_blank_to_none(self):
+        m1 = UserUpdateRequest(first_name="John", last_name="Doe", summary="")
+        m2 = UserUpdateRequest(first_name="John", last_name="Doe", summary="   ")
+        m3 = UserUpdateRequest(first_name="John", last_name="Doe", summary="\n\t")
+        self.assertIsNone(m1.summary)
+        self.assertIsNone(m2.summary)
+        self.assertIsNone(m3.summary)
 
+    def test_request_summary_none_ok(self):
+        m = UserUpdateRequest(first_name="John", last_name="Doe", summary=None)
+        self.assertIsNone(m.summary)
+
+    def test_request_first_last_min_length(self):
         with self.assertRaises(ValidationError):
-            UserUpdateRequest(**data)
-
-    def test_first_name_length_min(self):
-        data = {
-            "first_name": "J",
-            "last_name": "Doe",
-            "user_summary": "Lorem ipsum",
-        }
-
-        user = UserUpdateRequest(**data)
-        self.assertEqual(user.first_name, "J")
-
-    def test_first_name_length_max(self):
-        data = {
-            "first_name": "J" * 47,
-            "last_name": "Doe",
-            "user_summary": "Lorem ipsum",
-        }
-
-        user = UserUpdateRequest(**data)
-        self.assertEqual(user.first_name, "J" * 47)
-
-    def test_first_name_too_short(self):
-        data = {
-            "first_name": "",
-            "last_name": "Doe",
-            "user_summary": "Lorem ipsum",
-        }
-
+            UserUpdateRequest(first_name="", last_name="Doe")
         with self.assertRaises(ValidationError):
-            UserUpdateRequest(**data)
+            UserUpdateRequest(first_name="John", last_name="")
 
-    def test_first_name_too_long(self):
-        data = {
-            "first_name": "J" * 48,
-            "last_name": "D",
-            "user_summary": "Lorem ipsum",
-        }
-
+    def test_request_first_last_max_length(self):
+        long = "x" * 41
         with self.assertRaises(ValidationError):
-            UserUpdateRequest(**data)
-
-    def test_first_name_strip(self):
-        data = {
-            "first_name": "  John  ",
-            "last_name": "Doe",
-            "user_summary": "Lorem ipsum",
-        }
-
-        user = UserUpdateRequest(**data)
-        self.assertEqual(user.first_name, "John")
-
-    def test_last_name_missing(self):
-        data = {
-            "first_name": "John",
-            "user_summary": "Lorem ipsum",
-        }
-
+            UserUpdateRequest(first_name=long, last_name="Doe")
         with self.assertRaises(ValidationError):
-            UserUpdateRequest(**data)
+            UserUpdateRequest(first_name="John", last_name=long)
 
-    def test_last_name_length_min(self):
-        data = {
-            "first_name": "J",
-            "last_name": "Do",
-            "user_summary": "Lorem ipsum",
-        }
-
-        user = UserUpdateRequest(**data)
-        self.assertEqual(user.last_name, "Do")
-
-    def test_last_name_length_max(self):
-        data = {
-            "first_name": "John",
-            "last_name": "D" * 47,
-            "user_summary": "Lorem ipsum",
-        }
-
-        user = UserUpdateRequest(**data)
-        self.assertEqual(user.last_name, "D" * 47)
-
-    def test_last_name_too_short(self):
-        data = {
-            "first_name": "",
-            "last_name": "D",
-            "user_summary": "Lorem ipsum",
-        }
-
+    def test_request_summary_max_length(self):
+        too_long = "x" * 4097
         with self.assertRaises(ValidationError):
-            UserUpdateRequest(**data)
+            UserUpdateRequest(first_name="John", last_name="Doe", summary=too_long)
 
-    def test_last_name_too_long(self):
-        data = {
-            "first_name": "John",
-            "last_name": "D" * 48,
-            "user_summary": "Lorem ipsum",
-        }
+    def test_response_valid(self):
+        r = UserUpdateResponse(user_id=123)
+        self.assertEqual(r.user_id, 123)
 
-        with self.assertRaises(ValidationError):
-            UserUpdateRequest(**data)
-
-    def test_last_name_strip(self):
-        data = {
-            "first_name": "John",
-            "last_name": "  Doe  ",
-            "user_summary": "Lorem ipsum",
-        }
-
-        user = UserUpdateRequest(**data)
-        self.assertEqual(user.last_name, "Doe")
-
-    def test_user_summary_none(self):
-        data = {
-            "first_name": "John",
-            "last_name": "Doe",
-        }
-
-        user = UserUpdateRequest(**data)
-        self.assertEqual(user.first_name, "John")
-        self.assertEqual(user.last_name, "Doe")
-        self.assertIsNone(user.user_summary)
-
-    def test_user_summary_too_long(self):
-        data = {
-            "first_name": "John",
-            "last_name": "Doe",
-            "user_summary": "a" * 4096
-        }
-
-        with self.assertRaises(ValidationError):
-            UserUpdateRequest(**data)
-
-    def test_user_summary_length_max(self):
-        data = {
-            "first_name": "John",
-            "last_name": "Doe",
-            "user_summary": "a" * 4095
-        }
-
-        user = UserUpdateRequest(**data)
-        self.assertEqual(user.user_summary, "a" * 4095)
-
-    def test_user_summary_strip(self):
-        data = {
-            "first_name": "John",
-            "last_name": "Doe",
-            "user_summary": "  Lorem ipsum  "
-        }
-
-        user = UserUpdateRequest(**data)
-        self.assertEqual(user.user_summary, "Lorem ipsum")
-
-    def test_user_summary_whitespaces(self):
-        data = {
-            "first_name": "John",
-            "last_name": "Doe",
-            "user_summary": "    "
-        }
-
-        user = UserUpdateRequest(**data)
-        self.assertIsNone(user.user_summary)
-
-    def test_request_correct(self):
-        data = {
-            "first_name": "John",
-            "last_name": "Doe",
-            "user_summary": "Lorem ipsum",
-        }
-
-        user = UserUpdateRequest(**data)
-        self.assertEqual(user.first_name, "John")
-        self.assertEqual(user.last_name, "Doe")
-        self.assertEqual(user.user_summary, "Lorem ipsum")
-
-
-if __name__ == "__main__":
-    unittest.main()
+    def test_response_user_id_coercion(self):
+        r = UserUpdateResponse(user_id="42")
+        self.assertEqual(r.user_id, 42)

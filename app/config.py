@@ -1,24 +1,40 @@
 """
-Defines the application configuration by loading values from a .env
-file, converting them to appropriate types, and caching the result
-for efficient reuse.
+Defines the application configuration as a dataclass and loads values
+from an `.env` file using the `python-dotenv` library, converting them
+to the appropriate types; uses `lru_cache` to memoize the resulting
+configuration object for efficient reuse.
 """
 
-from dotenv import dotenv_values
 from dataclasses import dataclass, fields
 from functools import lru_cache
+from dotenv import dotenv_values
 
 DOTENV_PATH = "/hidden/.env"
 
 
 @dataclass
 class Config:
+    """
+    Strongly typed configuration where field names must match keys
+    in the `.env` file; values are trimmed and converted according to
+    their annotated types.
+    """
     SECRET_KEY_PATH: str
+    SECRET_KEY_LENGTH: int
+    SECRET_KEY_WATCHDOG_INTERVAL_SECONDS: int
 
-    CRYPTOGRAPHY_SALT_LENGTH: int
-    CRYPTOGRAPHY_KEY_LENGTH: int
-    CRYPTOGRAPHY_IV_LENGTH: int
-    CRYPTOGRAPHY_PBKDF2_ITERATIONS: int
+    DATA_MOUNTPOINT: str
+    DATA_CIPHER_DIR: str
+
+    CRYPTO_KEY_LENGTH: int
+    CRYPTO_NONCE_LENGTH: int
+    CRYPTO_HKDF_INFO: bytes
+    CRYPTO_HKDF_SALT_B64: str
+    CRYPTO_DERIVE_WITH_HKDF: bool
+    CRYPTO_DEFAULT_ENCODING: str
+    CRYPTO_AAD_DEFAULT: bytes
+
+    LOCK_FILE_PATH: str
 
     LOG_LEVEL: str
     LOG_NAME: str
@@ -31,13 +47,10 @@ class Config:
     UVICORN_PORT: int
     UVICORN_WORKERS: int
 
-    POSTGRES_HOST: str
-    POSTGRES_PORT: int
-    POSTGRES_DATABASE: str
-    POSTGRES_USERNAME: str
-    POSTGRES_PASSWORD: str
-    POSTGRES_POOL_SIZE: int
-    POSTGRES_POOL_OVERFLOW: int
+    SQLITE_PATH: str
+    SQLITE_POOL_SIZE: int
+    SQLITE_POOL_OVERFLOW: int
+    SQLITE_SQL_ECHO: bool
 
     REDIS_ENABLED: bool
     REDIS_HOST: str
@@ -45,78 +58,66 @@ class Config:
     REDIS_DECODE_RESPONSES: bool
     REDIS_EXPIRE: int
 
-    SPHINX_PATH: str
-    SPHINX_NAME: str
-    SPHINX_URL: str
+    LRU_TOTAL_SIZE_BYTES: int
+    LRU_ITEM_SIZE_LIMIT_BYTES: int
+
+    FILE_CHUNK_SIZE: int
+    FILE_SHRED_CYCLES: int
+    FILE_DEFAULT_MIMETYPE: str
 
     JTI_LENGTH: int
-    JWT_EXPIRES: int
-    JWT_ALGORITHM: str
+    JWT_ALGORITHMS: list
     JWT_SECRET: str
 
-    ADDONS_ENABLED: list
     ADDONS_PATH: str
+    ADDONS_LIST: list
 
-    APP_API_VERSION: str
-    APP_URL: str
-    APP_SHRED_CYCLES: int
-    APP_SHUFFLE_LIMIT: int
-    APP_LOCK_PATH: str
+    AUTH_PASSWORD_ATTEMPTS: int
+    AUTH_TOTP_ATTEMPTS: int
+    AUTH_SUSPENDED_TIME: int
 
-    HTML_PATH: str
-    HTML_FILE: str
+    DOCUMENTS_DIR: str
 
-    USER_PASSWORD_ATTEMPTS: int
-    USER_TOTP_ATTEMPTS: int
-    USER_SUSPENDED_TIME: int
-
-    USERPICS_PATH: str
-    USERPICS_URL: str
-    USERPICS_PREFIX: str
-    USERPICS_WIDTH: int
-    USERPICS_HEIGHT: int
-    USERPICS_QUALITY: int
-    USERPICS_LRU_SIZE: int
-
-    THUMBNAILS_PATH: str
-    THUMBNAILS_URL: str
-    THUMBNAILS_PREFIX: str
+    THUMBNAILS_DIR: str
     THUMBNAILS_WIDTH: int
     THUMBNAILS_HEIGHT: int
     THUMBNAILS_QUALITY: int
-    THUMBNAILS_LRU_SIZE: int
-
-    DOCUMENTS_PATH: str
-    DOCUMENTS_URL: str
-    DOCUMENTS_LRU_SIZE: int
 
 
 @lru_cache
 def get_config() -> Config:
     """
-    Loads configuration values from the .env file, converts them to the
-    types declared in the Config dataclass, caches the result for reuse,
-    and returns a fully populated Config instance.
+    Loads configuration settings from an `.env` file and returns them as
+    a `Config` dataclass instance. The function uses type annotations to
+    convert the environment variable values to their appropriate types,
+    such as `bool`, `int`, `list`, `str` or `bytes`.
     """
-    keys_and_types = {x.name: x.type for x in fields(Config)}
-    values = dotenv_values(DOTENV_PATH)
-    config_dict = {}
+    env = dotenv_values(DOTENV_PATH)
+    cfg = {}
 
-    for key, value in values.items():
-        value_type = keys_and_types.get(key)
+    for field in fields(Config):
+        raw = env[field.name]
+        type_ = field.type
 
-        if value_type is None:
-            value = None
+        if raw == "None":
+            cfg[field.name] = None
 
-        elif value_type == int:
-            value = int(value)
+        elif type_ is list:
+            text = raw.strip()
+            parts = [] if text == "" else [p.strip() for p in text.split(",")]
+            cfg[field.name] = parts
 
-        elif value_type == list:
-            value = value.split(",")
+        elif type_ is str:
+            cfg[field.name] = raw.strip()
 
-        elif value_type == bool:
-            value = value.lower() == "true"
+        elif type_ is int:
+            cfg[field.name] = int(raw.strip())
 
-        config_dict[key] = value
+        elif type_ is bool:
+            value = raw.strip().lower()
+            cfg[field.name] = {"true": True, "false": False}[value]
 
-    return Config(**config_dict)
+        elif type_ is bytes:
+            cfg[field.name] = raw.strip().encode("utf-8")
+
+    return Config(**cfg)

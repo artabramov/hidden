@@ -1,207 +1,172 @@
 """
-The module provides asynchronous methods for various file operations.
-These include uploading, deleting, writing, reading, copying, renaming.
-It supports efficient I/O operations using aiofiles to handle large
-files and avoid blocking the event loop.
+Asynchronous file utilities for atomic writes, chunked I/O, and
+multiple-pass overwrite deletion via a system tool. Favors fail-fast
+behavior with minimal policy, leaving durability and higher-level
+error handling to callers.
 """
 
 import os
 import asyncio
 import mimetypes
+import hashlib
 import aiofiles
 import aiofiles.os
-from app.config import get_config
-from typing import List
-from uuid import uuid4
-
-KB = 1024
-MB = 1024 * 1024
-FILE_UPLOAD_CHUNK_SIZE = MB * 1
-FILE_COPY_CHUNK_SIZE = MB * 1
-FILE_READ_CHUNK_SIZE = MB * 1
-FILE_DEFAULT_MIMETYPE = "application/octet-stream"
-
-cfg = get_config()
+from typing import AsyncIterable
+from app.config import Config
 
 
 class FileManager:
     """
-    Provides methods for async file operations using aiofiles. It
-    includes uploading, unrecoverable deleting, writing and reading
-    files, and encrypting or decrypting binary data.
+    Provides asynchronous file operations with atomic writes and
+    chunked I/O. Favors fail-fast behavior and avoids durability
+    guarantees beyond OS buffering.
     """
 
-    @staticmethod
-    async def file_exists(path: str) -> bool:
-        """Check if path exists."""
+    def __init__(self, config: Config):
+        """
+        Initializes a new instance configured with external parameters.
+        """
+        self.config = config
+
+    def mimetype(self, filename: str) -> str:
+        """
+        Returns a media type inferred from a filename, with a fallback.
+        Resolution uses standard extension mapping and does not inspect
+        contents.
+        """
+        mime, _ = mimetypes.guess_type(filename)
+        return mime or self.config.FILE_DEFAULT_MIMETYPE
+
+    async def filesize(self, path: str) -> int:
+        """
+        Returns the size of a file in bytes via an async stat call.
+        Lets OS errors propagate (e.g., missing path).
+        """
+        stats = await aiofiles.os.stat(path)
+        return int(stats.st_size)
+
+    async def checksum(self, path: str) -> str:
+        """
+        Computes and returns the SHA-256 hex digest of a file
+        asynchronously by streaming it in chunks.
+        """
+        h = hashlib.sha256()
+        async with aiofiles.open(path, "rb") as f:
+            while True:
+                buf = await f.read(self.config.FILE_CHUNK_SIZE)
+                if not buf:
+                    break
+                h.update(buf)
+        return h.hexdigest()
+
+    async def isfile(self, path: str) -> bool:
+        """
+        Checks whether a path refers to an existing regular file.
+        Runs asynchronously and ignores non-file filesystem entries.
+        """
         return await aiofiles.os.path.isfile(path)
 
-    @staticmethod
-    async def mimetype(filename: str):
-        """Determines the MIME type of a file based on its filename."""
-        mimetype, _ = mimetypes.guess_type(filename)
-        if mimetype is None:
-            mimetype = FILE_DEFAULT_MIMETYPE
-        return mimetype
-
-    @staticmethod
-    async def upload(file: object, path: str):
-        """Uploads a file to the specified path."""
-        async with aiofiles.open(path, mode="wb") as fn:
-            while content := await file.read(FILE_UPLOAD_CHUNK_SIZE):
-                await fn.write(content)
-
-    @staticmethod
-    async def delete(path: str):
+    async def mkdir(self, path: str) -> None:
         """
-        Securely deletes the file by overwriting it a number of times,
-        ensuring that the file's contents cannot be recovered.
+        Ensures the parent directory for a file path exists. Creates
+        missing intermediates and leaves existing directories untouched.
         """
-        if await aiofiles.os.path.isfile(path):
+        parent = os.path.dirname(path)
+        if parent:
+            await aiofiles.os.makedirs(parent, exist_ok=True)
+
+    async def _atomic_write(
+            self, path: str, chunk_iter: AsyncIterable) -> None:
+        """
+        Writes data via a temporary sibling and atomically replaces the
+        target. Prevents partially written files from being observed and
+        lets errors propagate.
+        """
+        tmp = f"{path}.part"
+        async with aiofiles.open(tmp, "wb") as f:
+            async for chunk in chunk_iter:
+                await f.write(chunk)
+            await f.flush()
+        await aiofiles.os.replace(tmp, path)
+
+    async def upload(self, file: object, path: str) -> None:
+        """
+        Streams data from an asynchronous reader and writes it
+        atomically. Reads fixed-size chunks until exhaustion and
+        commits the result in one step.
+        """
+        await self.mkdir(path)
+
+        async def chunks():
+            while True:
+                buf = await file.read(self.config.FILE_CHUNK_SIZE)
+                if not buf:
+                    break
+                yield buf
+
+        await self._atomic_write(path, chunks())
+
+    async def delete(self, path: str) -> None:
+        """
+        Runs a system tool that overwrites a file in multiple passes and
+        unlinks it. Waits for completion and performs the operation only
+        if a regular file is present.
+        """
+        if await self.isfile(path):
             cmd = ["shred", "-u", "-z", "-n",
-                   str(cfg.APP_SHRED_CYCLES), path]
-            process = await asyncio.create_subprocess_exec(*cmd)
+                   str(self.config.FILE_SHRED_CYCLES), path]
+            process = await asyncio.create_subprocess_exec(
+                *cmd,
+                stdout=asyncio.subprocess.DEVNULL,
+                stderr=asyncio.subprocess.DEVNULL,
+            )
+
             await process.wait()
 
-    @staticmethod
-    async def write(path: str, data: bytes):
-        """Writes a binary data to a file at the specified path."""
-        async with aiofiles.open(path, mode="wb") as fn:
-            await fn.write(data)
+    async def write(self, path: str, data: bytes) -> None:
+        """
+        Writes bytes sequence atomically using the same replace pattern.
+        Persists to a temporary file first and exposes the result only
+        when complete.
+        """
+        await self.mkdir(path)
 
-    @staticmethod
-    async def read(path: str) -> bytes:
-        """Reads the contents of a file at the specified path."""
+        async def chunks():
+            yield data
+
+        await self._atomic_write(path, chunks())
+
+    async def read(self, path: str) -> bytes:
+        """
+        Reads the entire contents of a file into memory. Suitable for
+        small to medium inputs; consider streaming for large data.
+        """
         async with aiofiles.open(path, mode="rb") as fn:
             return await fn.read()
 
-    @staticmethod
-    async def copy(src_path: str, dst_path: str):
-        """Copies a file from source to destination path."""
-        async with aiofiles.open(src_path, mode="rb") as src_context:
-            async with aiofiles.open(dst_path, mode="wb") as dst_context:
+    async def copy(self, src_path: str, dst_path: str) -> None:
+        """
+        Copies a file by streaming bytes and atomically replacing the
+        destination. Creates parent directories as needed and avoids
+        exposing partial results.
+        """
+        await self.mkdir(dst_path)
+
+        async def chunks():
+            async with aiofiles.open(src_path, "rb") as src:
                 while True:
-                    chunk = await src_context.read(FILE_COPY_CHUNK_SIZE)
-                    if not chunk:
+                    buf = await src.read(self.config.FILE_CHUNK_SIZE)
+                    if not buf:
                         break
-                    await dst_context.write(chunk)
+                    yield buf
 
-    @staticmethod
-    async def rename(src_path: str, dst_path: str):
-        """Renames the file from source to destination path."""
-        await aiofiles.os.rename(src_path, dst_path)
+        await self._atomic_write(dst_path, chunks())
 
-    @staticmethod
-    def _determine_shard_size(file_size: int) -> int:
+    async def rename(self, src_path: str, dst_path: str) -> None:
         """
-        Determines the shard size (in bytes) for splitting a file into
-        up to 5 parts. The algorithm uses a predefined scale of base sizes:
-        1 KB, 2 KB, 4 KB, 8 KB, 16 KB, 32 KB, 64 KB, 128 KB, 256 KB, 512 KB,
-        1 MB, 2 MB, 4 MB, 8 MB, 16 MB, 32 MB, 64 MB, 128 MB, 256 MB, 512 MB.
-
-        The function selects the largest base size such that four shards of
-        that size fit entirely within the file. The fifth shard (if needed)
-        contains the remainder.
-
-        If the file size is smaller than the smallest base size (1 KB),
-        the function returns 0, indicating no splitting.
+        Atomically moves or renames a file, overwriting any existing
+        target. Creates the destination’s parent directory when missing
+        and completes in one step.
         """
-        base_sizes = [
-            1 * KB,
-            2 * KB,
-            4 * KB,
-            8 * KB,
-            16 * KB,
-            32 * KB,
-            64 * KB,
-            128 * KB,
-            256 * KB,
-            512 * KB,
-            1 * MB,
-            2 * MB,
-            4 * MB,
-            8 * MB,
-            16 * MB,
-            32 * MB,
-            64 * MB,
-            128 * MB,
-            256 * MB,
-            512 * MB
-        ]
-
-        if file_size < base_sizes[0]:
-            return 0
-
-        best_part_size = base_sizes[0]
-        for size in base_sizes:
-            if size * 4 <= file_size:
-                best_part_size = size
-            else:
-                break
-
-        return best_part_size
-
-    @staticmethod
-    async def split(data: bytes, base_path: str) -> List[str]:
-        """
-        Splits binary data into shards, writes each shard to a file
-        in the base path, and returns a list of generated filenames.
-        Returns an empty list if the data is smaller than the minimum
-        shard size.
-        """
-        filenames = []
-        start = 0
-
-        data_length = len(data)
-        shard_size = FileManager._determine_shard_size(data_length)
-        if shard_size == 0:
-            filename = str(uuid4())
-            path = os.path.join(base_path, filename)
-            try:
-                async with aiofiles.open(path, mode="wb") as fn:
-                    await fn.write(data)
-            except Exception:
-                await FileManager.delete(path)
-                raise
-            return [filename]
-
-        parts_count = (data_length + shard_size - 1) // shard_size
-        for _ in range(parts_count):
-            filename = str(uuid4())
-            path = os.path.join(base_path, filename)
-
-            end = min(start + shard_size, data_length)
-            chunk = data[start:end]
-            start = end
-
-            try:
-                async with aiofiles.open(path, mode="wb") as fn:
-                    await fn.write(chunk)
-
-            except Exception:
-                for fname in filenames:
-                    fpath = os.path.join(base_path, fname)
-                    await FileManager.delete(fpath)
-                raise
-
-            filenames.append(filename)
-        return filenames
-
-    @staticmethod
-    async def merge(paths: List[str]) -> bytes:
-        """
-        Merges shard files into a single binary object.
-        Reads each file in reasonably small chunks until EOF.
-        Chunk size here does not depend on shard size.
-        """
-        merged_data = bytearray()
-
-        for path in paths:
-            async with aiofiles.open(path, mode="rb") as fn:
-                while True:
-                    chunk = await fn.read(FILE_READ_CHUNK_SIZE)
-                    if not chunk:
-                        break
-                    merged_data.extend(chunk)
-
-        return bytes(merged_data)
+        await self.mkdir(dst_path)
+        await aiofiles.os.replace(src_path, dst_path)

@@ -16,29 +16,34 @@ class EntityManagerTest(unittest.IsolatedAsyncioTestCase):
     async def test_exists_true(self, select_mock, where_mock):
         session_mock = AsyncMock()
         entity_manager = EntityManager(session_mock)
-        obj_mock = MagicMock()
         cls_mock = MagicMock()
 
+        where_kwargs = {"name__eq": "name"}
+        where_mock.return_value = ["cond1"]
+
         result_mock = MagicMock()
-        result_mock.unique.return_value.scalars.return_value.one_or_none.return_value = obj_mock # noqa E501
-
+        result_mock.scalar_one_or_none.return_value = (1,)
         session_mock.execute.return_value = result_mock
-        kwargs = {"name__eq": "name"}
 
-        result = await entity_manager.exists(cls_mock, **kwargs)
+        result = await entity_manager.exists(cls_mock, **where_kwargs)
         self.assertTrue(result)
 
-        select_mock.assert_called_once_with(cls_mock)
-        where_mock.assert_called_once_with(cls_mock, **kwargs)
+        select_mock.assert_called_once_with(1)
+        where_mock.assert_called_once_with(cls_mock, **where_kwargs)
 
-        select_mock.return_value.where.assert_called_once_with(
-            *where_mock.return_value)
-
-        select_mock.return_value.where.return_value.limit.assert_called_once_with(1)  # noqa E501
+        select_mock.return_value.select_from.assert_called_once_with(cls_mock)
+        select_mock.return_value.select_from.return_value.where.assert_called_once_with(
+            *where_mock.return_value
+        )
+        select_mock.return_value.select_from.return_value.where.return_value.limit.assert_called_once_with(1)
 
         session_mock.execute.assert_called_once_with(
-            select_mock.return_value.where.return_value.limit.return_value)
-        result_mock.unique.return_value.scalars.return_value.one_or_none.assert_called_once() # noqa E501
+            select_mock.return_value
+            .select_from.return_value
+            .where.return_value
+            .limit.return_value
+        )
+        result_mock.scalar_one_or_none.assert_called_once()
 
     @patch("app.managers.entity_manager.EntityManager._where")
     @patch("app.managers.entity_manager.select")
@@ -47,26 +52,61 @@ class EntityManagerTest(unittest.IsolatedAsyncioTestCase):
         entity_manager = EntityManager(session_mock)
         cls_mock = MagicMock()
 
+        where_kwargs = {"name__eq": "name"}
+        where_mock.return_value = ["cond1"]
+
         result_mock = MagicMock()
-        result_mock.unique.return_value.scalars.return_value.one_or_none.return_value = None # noqa E501
-
+        result_mock.scalar_one_or_none.return_value = None
         session_mock.execute.return_value = result_mock
-        kwargs = {"name__eq": "name"}
 
-        result = await entity_manager.exists(cls_mock, **kwargs)
+        result = await entity_manager.exists(cls_mock, **where_kwargs)
         self.assertFalse(result)
 
-        select_mock.assert_called_once_with(cls_mock)
-        where_mock.assert_called_once_with(cls_mock, **kwargs)
+        select_mock.assert_called_once_with(1)
+        where_mock.assert_called_once_with(cls_mock, **where_kwargs)
 
-        select_mock.return_value.where.assert_called_once_with(
-            *where_mock.return_value)
-
-        select_mock.return_value.where.return_value.limit.assert_called_once_with(1)  # noqa E501
+        select_mock.return_value.select_from.assert_called_once_with(cls_mock)
+        select_mock.return_value.select_from.return_value.where.assert_called_once_with(
+            *where_mock.return_value
+        )
+        select_mock.return_value.select_from.return_value.where.return_value.limit.assert_called_once_with(1)
 
         session_mock.execute.assert_called_once_with(
-            select_mock.return_value.where.return_value.limit.return_value)
-        result_mock.unique.return_value.scalars.return_value.one_or_none.assert_called_once() # noqa E501
+            select_mock.return_value
+            .select_from.return_value
+            .where.return_value
+            .limit.return_value
+        )
+        result_mock.scalar_one_or_none.assert_called_once()
+
+    @patch("app.managers.entity_manager.EntityManager._where", return_value=[])
+    @patch("app.managers.entity_manager.select")
+    async def test_exists_no_filters(self, select_mock, where_mock):
+        session = AsyncMock()
+        em = EntityManager(session)
+        cls = MagicMock()
+
+        result_mock = MagicMock()
+        result_mock.scalar_one_or_none.return_value = (1,)
+        session.execute.return_value = result_mock
+
+        ok = await em.exists(cls)
+        self.assertTrue(ok)
+
+        select_mock.assert_called_once_with(1)
+        where_mock.assert_called_once_with(cls)
+
+        select_mock.return_value.select_from.assert_called_once_with(cls)
+        select_mock.return_value.select_from.return_value.where.assert_called_once_with(*[])
+        select_mock.return_value.select_from.return_value.where.return_value.limit.assert_called_once_with(1)
+
+        session.execute.assert_awaited_once_with(
+            select_mock.return_value
+            .select_from.return_value
+            .where.return_value
+            .limit.return_value
+        )
+        result_mock.scalar_one_or_none.assert_called_once()
 
     @patch("app.managers.entity_manager.EntityManager.flush")
     @patch("app.managers.entity_manager.EntityManager.commit")
@@ -223,36 +263,73 @@ class EntityManagerTest(unittest.IsolatedAsyncioTestCase):
     @patch("app.managers.entity_manager.EntityManager._where")
     @patch("app.managers.entity_manager.select")
     async def test_select_all_subquery(
-            self, select_mock, where_mock, order_by_mock, offset_mock,
-            limit_mock):
+        self, select_mock, where_mock, order_by_mock, offset_mock, limit_mock
+    ):
         session_mock = AsyncMock()
         entity_manager = EntityManager(session_mock)
 
         obj_mock = MagicMock()
         cls_mock = MagicMock()
-        result_mock = MagicMock()
-        result_mock.unique.return_value.scalars.return_value.all.return_value = [obj_mock] # noqa E501
-        session_mock.execute.return_value = result_mock
-        kwargs = {"name__eq": "dummy", "order_by": "id", "order": "asc",
-                  "offset": 1, "limit": 2, "subquery": MagicMock()}
 
-        result = await entity_manager.select_all(
-            cls_mock, **kwargs)
+        result_mock = MagicMock()
+        result_mock.unique.return_value.scalars.return_value.all.return_value = [obj_mock]
+        session_mock.execute.return_value = result_mock
+
+        subq = MagicMock()
+        kwargs = {
+            "name__eq": "dummy",
+            "order_by": "id",
+            "order": "asc",
+            "offset": 1,
+            "limit": 2,
+            "subquery": subq,
+        }
+
+        result = await entity_manager.select_all(cls_mock, **kwargs)
         self.assertListEqual(result, [obj_mock])
 
         select_mock.assert_called_once_with(cls_mock)
         where_mock.assert_called_once_with(cls_mock, **kwargs)
-        order_by_mock.assert_called_once_with(cls_mock, **kwargs)
-        offset_mock.assert_called_once_with(**kwargs)
-        limit_mock.assert_called_once_with(**kwargs)
-        select_mock.return_value.where.assert_called_once_with(
-            *where_mock.return_value)
-        select_mock.return_value.where.return_value.order_by.assert_called_once_with(order_by_mock.return_value) # noqa E501
-        select_mock.return_value.where.return_value.order_by.return_value.offset.assert_called_once_with(offset_mock.return_value) # noqa E501
-        select_mock.return_value.where.return_value.order_by.return_value.offset.return_value.limit.assert_called_once_with(limit_mock.return_value) # noqa E501
-        select_mock.return_value.where.return_value.order_by.return_value.offset.return_value.limit.return_value.filter.assert_called_once_with(cls_mock.id.in_.return_value)  # noqa E501
-        cls_mock.id.in_.assert_called_once()
-        result_mock.unique.return_value.scalars.return_value.all.assert_called_once() # noqa E501
+        base_where = select_mock.return_value.where
+        base_where.assert_called_once_with(*where_mock.return_value)
+
+        where_ret = base_where.return_value
+        where_ret.filter.assert_called_once_with(cls_mock.id.in_.return_value)
+        cls_mock.id.in_.assert_called_once_with(subq)
+
+        filtered_ret = where_ret.filter.return_value
+        filtered_ret.order_by.assert_called_once_with(order_by_mock.return_value)
+        ordered_ret = filtered_ret.order_by.return_value
+        ordered_ret.offset.assert_called_once_with(offset_mock.return_value)
+        ordered_ret.offset.return_value.limit.assert_called_once_with(limit_mock.return_value)
+
+        session_mock.execute.assert_called_once_with(
+            ordered_ret.offset.return_value.limit.return_value
+        )
+        result_mock.unique.return_value.scalars.return_value.all.assert_called_once()
+
+    @patch("app.managers.entity_manager.EntityManager._where", return_value=["cond"])
+    @patch("app.managers.entity_manager.select")
+    async def test_select_all_minimal_no_order_offset_limit(self, select_mock,
+                                                            where_mock):
+        session = AsyncMock()
+        em = EntityManager(session)
+        cls = MagicMock()
+
+        result_mock = MagicMock()
+        result_mock.unique.return_value.scalars.return_value.all.return_value = []
+        session.execute.return_value = result_mock
+
+        res = await em.select_all(cls, name__eq="x")
+        self.assertEqual(res, [])
+
+        select_mock.assert_called_once_with(cls)
+        select_mock.return_value.where.assert_called_once_with(*where_mock.return_value)
+        select_mock.return_value.where.return_value.order_by.assert_not_called()
+        select_mock.return_value.where.return_value.offset.assert_not_called()
+        select_mock.return_value.where.return_value.limit.assert_not_called()
+        select_mock.return_value.where.return_value.filter.assert_not_called()
+        cls.id.in_.assert_not_called()
 
     @patch("app.managers.entity_manager.text")
     async def test_select_rows(self, text_mock):
@@ -260,15 +337,15 @@ class EntityManagerTest(unittest.IsolatedAsyncioTestCase):
         entity_manager = EntityManager(session_mock)
 
         execute_mock = MagicMock()
-        execute_mock.fetchall.return_value = [('result',)]
+        execute_mock.all.return_value = [('result',)]
         session_mock.execute.return_value = execute_mock
         sql = "SELECT 1;"
 
         result = await entity_manager.select_rows(sql)
-        self.assertEqual(result, execute_mock.fetchall.return_value)
+        self.assertEqual(result, execute_mock.all.return_value)
 
         session_mock.execute.assert_awaited_once_with(text_mock(sql))
-        execute_mock.fetchall.assert_called_once()
+        execute_mock.all.assert_called_once()
 
     @patch("app.managers.entity_manager.EntityManager.flush")
     @patch("app.managers.entity_manager.EntityManager.commit")
@@ -580,6 +657,22 @@ class EntityManagerTest(unittest.IsolatedAsyncioTestCase):
             call(entity_3, flush=True, commit=False),
         ])
 
+    async def test_delete_all_no_matches(self):
+        session = AsyncMock()
+        em = EntityManager(session)
+        cls = MagicMock()
+
+        with patch.object(em, "select_all", return_value=[]) as select_all, \
+             patch.object(em, "delete") as delete:
+            res = await em.delete_all(cls, name__eq="x")
+            self.assertIsNone(res)
+            select_all.assert_called_once_with(
+                cls, name__eq="x",
+                order_by="id", order="asc",
+                offset=0, limit=DELETE_ALL_BATCH_SIZE
+            )
+            delete.assert_not_called()
+
     @patch("app.managers.entity_manager.EntityManager._where")
     @patch("app.managers.entity_manager.func")
     @patch("app.managers.entity_manager.select")
@@ -730,6 +823,14 @@ class EntityManagerTest(unittest.IsolatedAsyncioTestCase):
             *where_mock.return_value)
         result_mock.unique.return_value.scalars.return_value.one_or_none.assert_called_once() # noqa E501
 
+    async def test_sum_all_missing_column_raises(self):
+        session = AsyncMock()
+        em = EntityManager(session)
+        cls = MagicMock(spec_set=[])
+
+        with self.assertRaises(AttributeError):
+            await em.sum_all(cls, "missing_col")
+
     @patch("app.managers.entity_manager.select")
     async def test_subquery(self, select_mock):
         session_mock = AsyncMock()
@@ -746,6 +847,19 @@ class EntityManagerTest(unittest.IsolatedAsyncioTestCase):
         select_mock.assert_called_once_with(class_mock.dummy_id)
         select_mock.return_value.filter.assert_called_once()
         select_mock.return_value.filter.return_value.subquery.assert_called_once()  # noqa E501
+
+    @patch("app.managers.entity_manager.select")
+    async def test_subquery_uses_where_and_returns_selectable(self, select_mock):
+        session = AsyncMock()
+        em = EntityManager(session)
+        cls = MagicMock(fk="col")
+        with patch.object(em, "_where", return_value=["cond"]) as where_mock:
+            sq = await em.subquery(cls, "fk", name__eq="v")
+            self.assertIsNotNone(sq)
+            where_mock.assert_called_once_with(cls, name__eq="v")
+            select_mock.assert_called_once_with(cls.fk)
+            select_mock.return_value.filter.assert_called_once_with(*where_mock.return_value)
+            select_mock.return_value.filter.return_value.subquery.assert_called_once()
 
     async def test_flush(self):
         session_mock = AsyncMock()
@@ -820,6 +934,35 @@ class EntityManagerTest(unittest.IsolatedAsyncioTestCase):
         like_mock.assert_called_once_with("%" + kwargs["column__like"] + "%")
         ilike_mock.assert_called_once_with("%" + kwargs["column__ilike"] + "%")
 
+    async def test_where_ignores_unknown_column(self):
+        session = AsyncMock()
+        em = EntityManager(session)
+        cls = MagicMock(spec_set=[])
+
+        res = em._where(cls, missing__eq="v")
+        self.assertEqual(res, [])
+
+    async def test_where_skips_none_for_non_ne(self):
+        session = AsyncMock()
+        em = EntityManager(session)
+        col = MagicMock(__eq__=MagicMock())
+        cls = MagicMock(field=col)
+
+        res = em._where(cls, field__eq=None)
+        self.assertEqual(res, [])
+        col.__eq__.assert_not_called()
+
+    async def test_where_allows_ne_with_none(self):
+        session = AsyncMock()
+        em = EntityManager(session)
+        ne_mock = MagicMock()
+        col = MagicMock(__ne__=ne_mock)
+        cls = MagicMock(field=col)
+
+        res = em._where(cls, field__ne=None)
+        self.assertEqual(res, [ne_mock.return_value])
+        ne_mock.assert_called_once_with(None)
+
     @patch("app.managers.entity_manager.asc")
     async def test_order_by_asc(self, asc_mock):
         session_mock = AsyncMock()
@@ -859,6 +1002,16 @@ class EntityManagerTest(unittest.IsolatedAsyncioTestCase):
         result = entity_manager._order_by(cls_mock, **kwargs)
         self.assertEqual(result, func_mock.random.return_value)
 
+    @patch("app.managers.entity_manager.asc")
+    async def test_order_by_defaults_to_id_and_asc(self, asc_mock):
+        session = AsyncMock()
+        em = EntityManager(session)
+        cls = MagicMock()
+
+        result = em._order_by(cls)
+        self.assertEqual(result, asc_mock.return_value)
+        asc_mock.assert_called_once_with(cls.id)
+
     async def test_offset(self):
         session_mock = AsyncMock()
         entity_manager = EntityManager(session_mock)
@@ -874,7 +1027,3 @@ class EntityManagerTest(unittest.IsolatedAsyncioTestCase):
         kwargs = {"limit": 123}
         result = entity_manager._limit(**kwargs)
         self.assertEqual(result, 123)
-
-
-if __name__ == "__main__":
-    unittest.main()

@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.2.2] - 2025-09-07
+- Added content-based **MIME detection** using libmagic and filetype; filename-extension detection remains a last resort.
+
 ## [0.2.1] - 2025-09-07
 - Added **collection creation**. Each collection now has its own home in the documents directory — folders are created automatically to keep files strictly organized.
 

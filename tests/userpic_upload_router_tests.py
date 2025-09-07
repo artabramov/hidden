@@ -53,7 +53,7 @@ class UserpicUploadRouterTest(unittest.IsolatedAsyncioTestCase):
         fm = MagicMock()
         fm.upload = AsyncMock()
         fm.filesize = AsyncMock(return_value=12345)
-        fm.mimetype = MagicMock(return_value="image/jpeg")
+        fm.mimetype = AsyncMock(return_value="image/jpeg")
         fm.checksum = AsyncMock(return_value="deadbeef" * 8)
         fm.delete = AsyncMock()
 
@@ -128,7 +128,7 @@ class UserpicUploadRouterTest(unittest.IsolatedAsyncioTestCase):
         fm = MagicMock()
         fm.upload = AsyncMock()
         fm.filesize = AsyncMock(return_value=999)
-        fm.mimetype = MagicMock(return_value="image/jpeg")
+        fm.mimetype = AsyncMock(return_value="image/jpeg")
         fm.checksum = AsyncMock(return_value="aa" * 32)
         fm.delete = AsyncMock()
 

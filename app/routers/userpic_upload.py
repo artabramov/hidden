@@ -92,7 +92,7 @@ async def userpic_upload(
         config.THUMBNAILS_QUALITY)
     
     userpic_filesize = await file_manager.filesize(userpic_path)
-    userpic_mimetype = file_manager.mimetype(userpic_path)
+    userpic_mimetype = await file_manager.mimetype(userpic_path)
     userpic_checksum = await file_manager.checksum(userpic_path)
 
     user_thumbnail = UserThumbnail(

@@ -2,6 +2,7 @@ import unittest
 from unittest.mock import AsyncMock, MagicMock, patch
 import hashlib
 import types
+from types import SimpleNamespace
 from app.managers.file_manager import FileManager
 
 
@@ -11,24 +12,114 @@ class _Cfg:
     FILE_SHRED_CYCLES = 2
 
 
+class _AIOReader:
+    """Async context manager that returns fixed bytes for read()."""
+    def __init__(self, data: bytes):
+        self._data = data
+
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, exc_type, exc, tb):
+        return False
+
+    async def read(self, n: int):
+        return self._data
+
+
 class FileManagerTest(unittest.IsolatedAsyncioTestCase):
+
     async def asyncSetUp(self):
+        # patch magic.Magic so FileManager.__init__ doesn't require libmagic
+        self.magic_patcher = patch("app.managers.file_manager.magic.Magic")
+        MagicCls = self.magic_patcher.start()
+        self.addCleanup(self.magic_patcher.stop)
+
+        # Instance returned by magic.Magic()
+        self.magic_instance = MagicMock()
+        self.magic_instance.from_buffer = MagicMock(return_value=None)
+        MagicCls.return_value = self.magic_instance
+
         self.cfg = _Cfg()
         self.fm = FileManager(self.cfg)
 
-    @patch("app.managers.file_manager.mimetypes.guess_type")
-    async def test_mimetype_detected(self, guess_type_mock):
-        guess_type_mock.return_value = ("image/jpeg", None)
-        res = self.fm.mimetype("photo.jpg")
-        self.assertEqual(res, "image/jpeg")
-        guess_type_mock.assert_called_once_with("photo.jpg")
+    @patch("app.managers.file_manager.aiofiles.open")
+    async def test_magic_success(self, aio_open_mock):
+        """libmagic определяет корректный тип — он и возвращается."""
+        aio_open_mock.return_value = _AIOReader(b"\x89PNG\r\n\x1a\n...")
 
+        # вернём тип с charset — должен быть обрезан и lowercased
+        self.magic_instance.from_buffer.return_value = "text/plain; charset=utf-8"
+
+        mt = await self.fm.mimetype("/x/file.txt")
+        self.assertEqual(mt, "text/plain")
+
+        # filetype и mimetypes вызываться не должны
+        # (нет прямого доступа, но главное — что мы вернули на шаге 1)
+        self.magic_instance.from_buffer.assert_called_once()
+
+    @patch("app.managers.file_manager.aiofiles.open")
+    @patch("app.managers.file_manager.filetype.guess")
+    async def test_magic_octet_stream_then_filetype(self, guess_mock, aio_open_mock):
+        """Если libmagic вернул application/octet-stream — используем filetype."""
+        aio_open_mock.return_value = _AIOReader(b"GIF89a...")
+
+        # libmagic «неопознан»
+        self.magic_instance.from_buffer.return_value = "application/octet-stream"
+        guess_mock.return_value = SimpleNamespace(mime="image/gif")
+
+        mt = await self.fm.mimetype("/x/file.gif")
+        self.assertEqual(mt, "image/gif")
+
+        self.magic_instance.from_buffer.assert_called_once()
+        guess_mock.assert_called_once()
+
+    @patch("app.managers.file_manager.aiofiles.open")
+    @patch("app.managers.file_manager.filetype.guess")
+    async def test_magic_exception_then_filetype(self, guess_mock, aio_open_mock):
+        """Если libmagic бросил исключение — пробуем filetype."""
+        aio_open_mock.return_value = _AIOReader(b"\xff\xd8\xff\xe0...")  # JPEG head
+        self.magic_instance.from_buffer.side_effect = RuntimeError("boom")
+        guess_mock.return_value = SimpleNamespace(mime="image/jpeg")
+
+        mt = await self.fm.mimetype("/x/file.jpg")
+        self.assertEqual(mt, "image/jpeg")
+
+    @patch("app.managers.file_manager.aiofiles.open")
     @patch("app.managers.file_manager.mimetypes.guess_type")
-    async def test_mimetype_fallback(self, guess_type_mock):
+    @patch("app.managers.file_manager.filetype.guess")
+    async def test_filetype_none_then_extension(self, guess_mock, guess_type_mock, aio_open_mock):
+        """Если и libmagic, и filetype не помогли — fallback на расширение."""
+        aio_open_mock.return_value = _AIOReader(b"random-bytes")
+        self.magic_instance.from_buffer.return_value = None
+        guess_mock.return_value = None
+        guess_type_mock.return_value = ("application/pdf", None)
+
+        mt = await self.fm.mimetype("/x/report.pdf")
+        self.assertEqual(mt, "application/pdf")
+
+        guess_type_mock.assert_called_once_with("/x/report.pdf")
+
+    @patch("app.managers.file_manager.aiofiles.open")
+    @patch("app.managers.file_manager.mimetypes.guess_type")
+    @patch("app.managers.file_manager.filetype.guess")
+    async def test_all_fail_returns_none(self, guess_mock, guess_type_mock, aio_open_mock):
+        """Ничего не распознано — вернётся None."""
+        aio_open_mock.return_value = _AIOReader(b"...")
+        self.magic_instance.from_buffer.return_value = None
+        guess_mock.return_value = None
         guess_type_mock.return_value = (None, None)
-        res = self.fm.mimetype("unknown.blob")
-        self.assertEqual(res, self.cfg.FILE_DEFAULT_MIMETYPE)
-        guess_type_mock.assert_called_once_with("unknown.blob")
+
+        mt = await self.fm.mimetype("/x/unknown.bin")
+        self.assertIsNone(mt)
+
+    @patch("app.managers.file_manager.aiofiles.open")
+    async def test_open_error_returns_none(self, aio_open_mock):
+        """Ошибка открытия файла — вернётся None (fail-fast)."""
+        aio_open_mock.side_effect = FileNotFoundError()
+
+        mt = await self.fm.mimetype("/no/such/file")
+        self.assertIsNone(mt)
 
     @patch("app.managers.file_manager.aiofiles.os.stat", new_callable=AsyncMock)
     async def test_filesize_returns_bytes(self, stat_mock):

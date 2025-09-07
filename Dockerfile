@@ -32,7 +32,7 @@ RUN chmod -R 755 /var/log/hidden
 
 # install system packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    sqlite3 redis ffmpeg sudo git gocryptfs fuse3 \
+    sqlite3 redis ffmpeg libmagic1 sudo git gocryptfs fuse3 \
  && rm -rf /var/lib/apt/lists/*
 
 # install Python dependencies
@@ -59,8 +59,9 @@ RUN python3 -m pip install --upgrade pip \
 # RUN pip3 install sphinx==8.2.3
 # RUN pip3 install sphinx-rtd-theme==3.0.2
 # RUN pip3 install concurrent-log-handler==0.9.28
+# RUN pip3 install python-magic==0.4.27
+# RUN pip3 install filetype==1.2.0
 # RUN pip3 freeze > /hidden/requirements.txt
-
 
 # node_exporter 9100
 RUN wget https://github.com/prometheus/node_exporter/releases/download/v1.5.0/node_exporter-1.5.0.linux-amd64.tar.gz \

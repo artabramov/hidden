@@ -6,6 +6,8 @@ error handling to callers.
 """
 
 import os
+import magic
+import filetype
 import asyncio
 import mimetypes
 import hashlib
@@ -27,15 +29,42 @@ class FileManager:
         Initializes a new instance configured with external parameters.
         """
         self.config = config
+        self.magic = magic.Magic(mime=True)
 
-    def mimetype(self, filename: str) -> str:
+    async def mimetype(self, path: str) -> str | None:
         """
-        Returns a media type inferred from a filename, with a fallback.
-        Resolution uses standard extension mapping and does not inspect
-        contents.
+        Detect MIME type by file content (libmagic), then by signature
+        (filetype), and finally by filename extension as a fallback.
         """
-        mime, _ = mimetypes.guess_type(filename)
-        return mime or self.config.FILE_DEFAULT_MIMETYPE
+
+        # read the header (8–32 KB is enough; take it with a reserve)
+        try:
+            async with aiofiles.open(path, "rb") as f:
+                head = await f.read(256 * 1024)
+        except Exception:
+            return None
+
+        # 1. libmagic (python-magic)
+        try:
+            mt = self.magic.from_buffer(head)
+            if mt:
+                mt = mt.split(";", 1)[0].strip().lower()
+                if mt and mt != "application/octet-stream":
+                    return mt
+        except Exception:
+            pass
+
+        # 2. filetype (signatures of popular formats)
+        try:
+            kind = filetype.guess(head)
+            if kind and kind.mime:
+                return kind.mime.lower().strip()
+        except Exception:
+            pass
+
+        # 3. by extension
+        mt = mimetypes.guess_type(path)[0]
+        return mt.lower().strip() if mt else None
 
     async def filesize(self, path: str) -> int:
         """

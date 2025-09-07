@@ -1,7 +1,4 @@
-"""
-Validation helpers for user-related fields such as username, password,
-role, one-time password (TOTP), and optional profile summary.
-"""
+"""Validation helpers for user-related fields."""
 
 import re
 from typing import Optional

@@ -66,14 +66,18 @@ class FileManager:
         """
         return await aiofiles.os.path.isfile(path)
 
-    async def mkdir(self, path: str) -> None:
+    async def mkdir(self, path: str, is_file: bool = False) -> None:
         """
-        Ensures the parent directory for a file path exists. Creates
-        missing intermediates and leaves existing directories untouched.
+        Ensure required directories exist. For file paths, create parent
+        directories; for directory paths, create the directory itself.
+        Intermediate directories are created as needed; existing ones
+        are left untouched.
         """
-        parent = os.path.dirname(path)
-        if parent:
-            await aiofiles.os.makedirs(parent, exist_ok=True)
+        target = os.path.dirname(path) if is_file else path
+        if target:
+            target = target.rstrip("/\\")
+            if target:
+                await aiofiles.os.makedirs(target, exist_ok=True)
 
     async def _atomic_write(
             self, path: str, chunk_iter: AsyncIterable) -> None:
@@ -95,7 +99,7 @@ class FileManager:
         atomically. Reads fixed-size chunks until exhaustion and
         commits the result in one step.
         """
-        await self.mkdir(path)
+        await self.mkdir(path, is_file=True)
 
         async def chunks():
             while True:
@@ -129,7 +133,7 @@ class FileManager:
         Persists to a temporary file first and exposes the result only
         when complete.
         """
-        await self.mkdir(path)
+        await self.mkdir(path, is_file=True)
 
         async def chunks():
             yield data
@@ -150,7 +154,7 @@ class FileManager:
         destination. Creates parent directories as needed and avoids
         exposing partial results.
         """
-        await self.mkdir(dst_path)
+        await self.mkdir(dst_path, is_file=True)
 
         async def chunks():
             async with aiofiles.open(src_path, "rb") as src:
@@ -168,5 +172,5 @@ class FileManager:
         target. Creates the destination’s parent directory when missing
         and completes in one step.
         """
-        await self.mkdir(dst_path)
+        await self.mkdir(dst_path, is_file=True)
         await aiofiles.os.replace(src_path, dst_path)

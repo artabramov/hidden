@@ -1,11 +1,4 @@
-"""
-Defines the SQLAlchemy ORM mapping for application users, including
-available roles and the User entity with authentication data, access
-role, status flags, timestamps, MFA fields, and optional profile
-information; designed for SQLite with AUTOINCREMENT primary key but
-portable across databases.
-"""
-
+"""SQLAlchemy model for users."""
 
 import time
 from sqlalchemy import (
@@ -19,9 +12,10 @@ from app.models.user_thumbnail import UserThumbnail  # noqa: F401
 
 class UserRole:
     """
-    Defines the available user roles in the system.
-    Each role determines the scope of permissions.
+    Defines the available user roles in the application.
+    Each role determines a predefined set of permissions.
     """
+
     reader = "reader"
     writer = "writer"
     editor = "editor"
@@ -30,10 +24,11 @@ class UserRole:
 
 class User(Base):
     """
-    SQLAlchemy model for application users, representing authentication
-    credentials, access role, status flags, audit timestamps, MFA fields,
-    and optional profile information.
+    SQLAlchemy model for users. Stores authentication credentials,
+    access role, status flags, audit timestamps, MFA fields, and
+    optional profile information.
     """
+
     __tablename__ = "users"
     __table_args__ = {"sqlite_autoincrement": True}
     _cacheable = True
@@ -157,7 +152,19 @@ class User(Base):
         uselist=False,
         lazy="joined"
     )
-        
+
+    user_collections = relationship(
+        "Collection",
+        back_populates="collection_user",
+        lazy="noload"
+    )
+
+    # user_documents = relationship(
+    #     "Document",
+    #     back_populates="document_user",
+    #     lazy="noload"
+    # )
+
     def __init__(
             self, username: str, password_hash: str, first_name: str,
             last_name: str, role: UserRole, active: bool,
@@ -198,6 +205,7 @@ class User(Base):
         return self.user_thumbnail is not None
 
     async def to_dict(self) -> dict:
+        """Returns a dictionary representation of the user."""
         return {
             "id": self.id,
             "created_date": self.created_date,

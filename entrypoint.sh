@@ -14,13 +14,6 @@ mkdir -p "$DATA_MOUNTPOINT"
 DATA_CIPHER_DIR="${DATA_CIPHER_DIR%/}"
 mkdir -p -- "$DATA_CIPHER_DIR"
 
-# # Directories for documents and thumbnails
-# DOCUMENTS_DIR="${DOCUMENTS_DIR%/}"
-# mkdir -p "$DOCUMENTS_DIR"
-
-# THUMBNAILS_DIR="${THUMBNAILS_DIR%/}"
-# mkdir -p "$THUMBNAILS_DIR"
-
 # How often the watchdog checks passphrase presence / mount state.
 SECRET_KEY_WATCHDOG_INTERVAL_SECONDS="${SECRET_KEY_WATCHDOG_INTERVAL_SECONDS:-2}"
 

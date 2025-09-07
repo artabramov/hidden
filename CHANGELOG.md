@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.2.1] - 2025-09-07
+- Added **collection creation**. Each collection now has its own home in the documents directory — folders are created automatically to keep files strictly organized.
+
 ## [0.2.0] - 2025-09-06
 - Moved encryption to the OS layer via **gocryptfs** (FS-level encryption; app works with the cleartext mount).
 - Extracted the **secret key** and **encrypted data** into Docker volumes.

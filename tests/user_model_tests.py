@@ -4,7 +4,7 @@ from app.models.user import User, UserRole
 from unittest.mock import MagicMock
 
 
-class UserModelTest(unittest.TestCase):
+class UserModelTest(unittest.IsolatedAsyncioTestCase):
     def _make_user(self, role):
         return User(
             "u",           # username

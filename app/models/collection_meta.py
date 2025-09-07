@@ -1,4 +1,4 @@
-"""SQLAlchemy model for user metadata."""
+"""SQLAlchemy model for collection metadata."""
 
 import time
 from sqlalchemy import (
@@ -8,17 +8,17 @@ from sqlalchemy.orm import relationship
 from app.sqlite import Base
 
 
-class UserMeta(Base):
+class CollectionMeta(Base):
     """
-    SQLAlchemy model for user metadata. Stores a key-value pair
-    linked to a user; keys are unique within each collection.
+    SQLAlchemy model for collection metadata. Stores a key-value pair
+    linked to a collection; keys are unique within each collection.
     """
 
-    __tablename__ = "users_meta"
+    __tablename__ = "collections_meta"
     __table_args__ = (
         UniqueConstraint(
-            "user_id", "meta_key",
-            name="uq_users_meta_user_id_meta_key"
+            "collection_id", "meta_key",
+            name="uq_collections_meta_collection_id_meta_key"
         ),
         {"sqlite_autoincrement": True},
     )
@@ -29,9 +29,9 @@ class UserMeta(Base):
         autoincrement=True
     )
 
-    user_id = Column(
+    collection_id = Column(
         Integer,
-        ForeignKey("users.id", ondelete="CASCADE"),
+        ForeignKey("collections.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
     )
@@ -61,7 +61,7 @@ class UserMeta(Base):
         nullable=True
     )
 
-    meta_user = relationship(
-        "User",
-        back_populates="user_meta"
+    meta_collection = relationship(
+        "Collection",
+        back_populates="collection_meta"
     )

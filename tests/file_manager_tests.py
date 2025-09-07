@@ -110,7 +110,7 @@ class FileManagerTest(unittest.IsolatedAsyncioTestCase):
 
     @patch("app.managers.file_manager.aiofiles.os.makedirs", new_callable=AsyncMock)
     async def test_mkdir_creates_parent(self, makedirs_mock):
-        await self.fm.mkdir("/root/dir/file.bin")
+        await self.fm.mkdir("/root/dir/file.bin", is_file=True)
         makedirs_mock.assert_awaited_once()
         args, kwargs = makedirs_mock.call_args
         self.assertTrue(str(args[0]).endswith("/root/dir"))
@@ -118,8 +118,35 @@ class FileManagerTest(unittest.IsolatedAsyncioTestCase):
 
     @patch("app.managers.file_manager.aiofiles.os.makedirs", new_callable=AsyncMock)
     async def test_mkdir_empty_parent_noop(self, makedirs_mock):
-        await self.fm.mkdir("file.bin")
+        await self.fm.mkdir("file.bin", is_file=True)
         makedirs_mock.assert_not_called()
+
+    @patch("app.managers.file_manager.aiofiles.os.makedirs", new_callable=AsyncMock)
+    async def test_mkdir_creates_leaf_directory(self, makedirs_mock):
+        await self.fm.mkdir("/root/dir/leaf", is_file=False)
+        makedirs_mock.assert_awaited_once()
+        args, kwargs = makedirs_mock.call_args
+        self.assertTrue(str(args[0]).endswith("/root/dir/leaf"))
+        self.assertTrue(kwargs.get("exist_ok"))
+
+    @patch("app.managers.file_manager.aiofiles.os.makedirs", new_callable=AsyncMock)
+    async def test_mkdir_trailing_slash_leaf(self, makedirs_mock):
+        await self.fm.mkdir("/root/dir/leaf/", is_file=False)
+        makedirs_mock.assert_awaited_once()
+        args, _ = makedirs_mock.call_args
+        self.assertTrue(str(args[0]).endswith("/root/dir/leaf"))
+
+    @patch("app.managers.file_manager.aiofiles.os.makedirs", new_callable=AsyncMock)
+    async def test_mkdir_root_path_noop(self, makedirs_mock):
+        await self.fm.mkdir("/", is_file=False)
+        makedirs_mock.assert_not_called()
+
+    @patch("app.managers.file_manager.aiofiles.os.makedirs", new_callable=AsyncMock)
+    async def test_mkdir_relative_leaf(self, makedirs_mock):
+        await self.fm.mkdir("a/b/c", is_file=False)
+        makedirs_mock.assert_awaited_once()
+        args, _ = makedirs_mock.call_args
+        self.assertEqual(str(args[0]), "a/b/c")
 
     @patch("app.managers.file_manager.aiofiles.open")
     @patch("app.managers.file_manager.aiofiles.os.replace", new_callable=AsyncMock)

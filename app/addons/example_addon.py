@@ -12,7 +12,7 @@ from fastapi import Request
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.user import User
-from app.models.collection_model import Collection
+from app.models.collection import Collection
 
 
 async def after_token_retrieve(

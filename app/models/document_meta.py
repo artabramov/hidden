@@ -1,4 +1,4 @@
-"""SQLAlchemy model for user metadata."""
+"""SQLAlchemy model for document metadata."""
 
 import time
 from sqlalchemy import (
@@ -8,17 +8,17 @@ from sqlalchemy.orm import relationship
 from app.sqlite import Base
 
 
-class UserMeta(Base):
+class DocumentMeta(Base):
     """
-    SQLAlchemy model for user metadata. Stores a key-value pair
-    linked to a user; keys are unique within each collection.
+    SQLAlchemy model for document metadata. Stores a key-value pair
+    linked to a document; keys are unique within each document.
     """
 
-    __tablename__ = "users_meta"
+    __tablename__ = "documents_meta"
     __table_args__ = (
         UniqueConstraint(
-            "user_id", "meta_key",
-            name="uq_users_meta_user_id_meta_key"
+            "document_id", "meta_key",
+            name="uq_documents_meta_document_id_meta_key"
         ),
         {"sqlite_autoincrement": True},
     )
@@ -29,9 +29,9 @@ class UserMeta(Base):
         autoincrement=True
     )
 
-    user_id = Column(
+    document_id = Column(
         Integer,
-        ForeignKey("users.id", ondelete="CASCADE"),
+        ForeignKey("documents.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
     )
@@ -61,7 +61,7 @@ class UserMeta(Base):
         nullable=True
     )
 
-    meta_user = relationship(
-        "User",
-        back_populates="user_meta"
+    meta_document = relationship(
+        "Document",
+        back_populates="document_meta"
     )

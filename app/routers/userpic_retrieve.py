@@ -1,3 +1,5 @@
+"""FastAPI router for retrieving user image."""
+
 import os
 from fastapi import APIRouter, Depends, status, Response, Request
 from app.sqlite import get_session
@@ -20,6 +22,38 @@ async def userpic_retrieve(
     session=Depends(get_session), cache=Depends(get_cache),
     current_user: User = Depends(auth(UserRole.reader))
 ):
+    """
+    Retrieve a user's current userpic and return raw image bytes. The
+    image bytes are fetched from the LRU cache first, and if absent,
+    read from the filesystem and cached.
+
+    **Authentication:**
+    - Requires a valid bearer token with `reader` role or higher.
+
+    **Path parameters:**
+    - `user_id` (integer): target user identifier.
+
+    **Response:**
+    - Raw binary image.
+
+    **Response codes:**
+    - `200` — userpic returned.
+    - `401` — missing, invalid, or expired token.
+    - `403` — insufficient role, invalid JTI, user is inactive or
+    suspended.
+    - `404` — user not found, no userpic set, or file not found.
+    - `423` — application is temporarily locked.
+    - `498` — secret key is missing.
+    - `499` — secret key is invalid.
+
+    **Side effects:**
+    - Reads the image from the LRU cache or filesystem and saves it
+    into the LRU cache on hit/miss.
+
+    **Hooks:**
+    - `HOOK_AFTER_USERPIC_RETRIEVE`: executed after successful userpic
+    retrieval.
+    """
 
     config = request.app.state.config
     lru = request.app.state.lru

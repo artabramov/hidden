@@ -1,4 +1,4 @@
-"""SQLAlchemy model for user thumbnails."""
+"""SQLAlchemy model for document thumbnails."""
 
 import time
 from sqlalchemy import (
@@ -7,13 +7,14 @@ from sqlalchemy.orm import relationship
 from app.sqlite import Base
 
 
-class UserThumbnail(Base):
+class DocumentThumbnail(Base):
     """
-    SQLAlchemy model for user thumbnails. One-to-one thumbnail
-    linked to a user; stores file name, size, type, dimensions,
+    SQLAlchemy model for document thumbnails. One-to-one thumbnail
+    linked to a document; stores file name, size, type, dimensions,
     and checksum.
     """
-    __tablename__ = "users_thumbnails"
+
+    __tablename__ = "documents_thumbnails"
     __table_args__ = {"sqlite_autoincrement": True}
 
     id = Column(
@@ -22,9 +23,9 @@ class UserThumbnail(Base):
         autoincrement=True
     )
 
-    user_id = Column(
+    document_id = Column(
         Integer,
-        ForeignKey("users.id", ondelete="CASCADE"),
+        ForeignKey("documents.id", ondelete="CASCADE"),
         nullable=False,
         unique=True,
     )
@@ -76,17 +77,14 @@ class UserThumbnail(Base):
         nullable=False
     )
 
-    thumbnail_user = relationship(
-        "User",
-        back_populates="user_thumbnail"
+    thumbnail_document = relationship(
+        "Document",
+        back_populates="document_thumbnail"
     )
 
-    def __init__(self, user_id: int, filename: str, width: int, height: int,
-                 checksum: str, filesize: int, mimetype: str):
-        """
-        Initialize a user thumbnail entity with required metadata.
-        """
-        self.user_id = user_id
+    def __init__(self, document_id: int, filename: str, width: int,
+                 height: int, checksum: str, filesize: int, mimetype: str):
+        self.document_id = document_id
         self.filename = filename
         self.width = width
         self.height = height

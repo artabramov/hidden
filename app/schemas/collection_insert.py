@@ -1,33 +1,33 @@
-"""
-The module defines Pydantic schemas for the creation and response of
-collections.
-"""
-
 from typing import Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict, field_validator
+from app.validators.collection_validators import (
+    name_validate, summary_validate)
 
 
 class CollectionInsertRequest(BaseModel):
-    """
-    Request schema for creating a new collection. It includes the
-    collection name, which must be between 2 and 79 characters, and
-    an optional summary for the collection, which can be up to 1023
-    characters. The fields are validated and cleaned before being
-    processed.
-    """
-    collection_name: str = Field(..., min_length=1, max_length=79)
-    collection_summary: Optional[str] = Field(max_length=2048, default=None)
-    readonly: Optional[bool] = False
-    private: Optional[bool] = False
+    """Pydantic schema for inserting a collection."""
 
-    class Config:
-        """Strips whitespaces at the beginning and end of all values."""
-        str_strip_whitespace = True
+    model_config = ConfigDict(
+        str_strip_whitespace=True,
+        extra="forbid",
+    )
+
+    readonly: bool = False
+    name: str = Field(..., min_length=1, max_length=256)
+    summary: Optional[str] = Field(default=None, max_length=4096)
+
+    @field_validator("name")
+    @classmethod
+    def _validate_name(cls, v: str) -> str:
+        return name_validate(v)
+
+    @field_validator("summary")
+    @classmethod
+    def _validate_summary(cls, v: Optional[str]) -> Optional[str]:
+        return summary_validate(v)
 
 
 class CollectionInsertResponse(BaseModel):
-    """
-    Response schema for a successful collection creation. It contains
-    the unique identifier for the newly created collection.
-    """
-    collection_id: int
+    """Pydantic schema for collection insert response."""
+
+    collection_id: int = Field(..., ge=1)

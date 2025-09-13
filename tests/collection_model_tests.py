@@ -1,8 +1,9 @@
 import unittest
 from app.models.collection import Collection
+from app.models.document import Document  # noqa F401
 
 
-class CollectionTest(unittest.IsolatedAsyncioTestCase):
+class CollectionModelTest(unittest.IsolatedAsyncioTestCase):
 
     async def test_to_dict_basic(self):
         c = Collection(123, readonly=False, name="Inbox", summary=None)

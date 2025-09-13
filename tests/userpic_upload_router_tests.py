@@ -30,7 +30,7 @@ class UserpicUploadRouterTest(unittest.IsolatedAsyncioTestCase):
         return f
 
     @patch("app.routers.userpic_upload.IMAGE_EXTENSION", ".jpeg")
-    @patch("app.routers.userpic_upload.CONST_IMAGE_MIMETYPES", {"image/png"})
+    @patch("app.routers.userpic_upload.IMAGE_MIMETYPES", {"image/png"})
     @patch("app.routers.userpic_upload.uuid.uuid4")
     @patch("app.routers.userpic_upload.image_resize", new_callable=AsyncMock)
     @patch("app.routers.userpic_upload.UserThumbnail")
@@ -53,7 +53,6 @@ class UserpicUploadRouterTest(unittest.IsolatedAsyncioTestCase):
         fm = MagicMock()
         fm.upload = AsyncMock()
         fm.filesize = AsyncMock(return_value=12345)
-        fm.mimetype = AsyncMock(return_value="image/jpeg")
         fm.checksum = AsyncMock(return_value="deadbeef" * 8)
         fm.delete = AsyncMock()
 
@@ -84,18 +83,14 @@ class UserpicUploadRouterTest(unittest.IsolatedAsyncioTestCase):
             expected_path, cfg.THUMBNAILS_WIDTH, cfg.THUMBNAILS_HEIGHT, cfg.THUMBNAILS_QUALITY
         )
         file_manager.filesize.assert_awaited_once_with(expected_path)
-        file_manager.mimetype.assert_called_once_with(expected_path)
         file_manager.checksum.assert_awaited_once_with(expected_path)
 
         UserThumbnailMock.assert_called_once()
         args, kwargs = UserThumbnailMock.call_args
         self.assertEqual(args[0], 42)
         self.assertEqual(args[1], expected_name)
-        self.assertEqual(args[2], cfg.THUMBNAILS_WIDTH)
-        self.assertEqual(args[3], cfg.THUMBNAILS_HEIGHT)
-        self.assertEqual(args[4], "deadbeef" * 8)
-        self.assertEqual(args[5], 12345)
-        self.assertEqual(args[6], "image/jpeg")
+        self.assertEqual(args[2], 12345)
+        self.assertEqual(args[3], "deadbeef" * 8)
 
         self.assertIs(current_user.user_thumbnail, UserThumbnailMock.return_value)
         repo.update.assert_awaited_once_with(current_user)
@@ -105,7 +100,7 @@ class UserpicUploadRouterTest(unittest.IsolatedAsyncioTestCase):
         request.state.log.debug.assert_called()
 
     @patch("app.routers.userpic_upload.IMAGE_EXTENSION", ".jpeg")
-    @patch("app.routers.userpic_upload.CONST_IMAGE_MIMETYPES", {"image/png"})
+    @patch("app.routers.userpic_upload.IMAGE_MIMETYPES", {"image/png"})
     @patch("app.routers.userpic_upload.uuid.uuid4")
     @patch("app.routers.userpic_upload.image_resize", new_callable=AsyncMock)
     @patch("app.routers.userpic_upload.UserThumbnail")
@@ -128,7 +123,6 @@ class UserpicUploadRouterTest(unittest.IsolatedAsyncioTestCase):
         fm = MagicMock()
         fm.upload = AsyncMock()
         fm.filesize = AsyncMock(return_value=999)
-        fm.mimetype = AsyncMock(return_value="image/jpeg")
         fm.checksum = AsyncMock(return_value="aa" * 32)
         fm.delete = AsyncMock()
 
@@ -162,7 +156,6 @@ class UserpicUploadRouterTest(unittest.IsolatedAsyncioTestCase):
         file_manager.upload.assert_awaited_once_with(file, expected_path)
         image_resize_mock.assert_awaited_once()
         file_manager.filesize.assert_awaited_once_with(expected_path)
-        file_manager.mimetype.assert_called_once_with(expected_path)
         file_manager.checksum.assert_awaited_once_with(expected_path)
 
         UserThumbnailMock.assert_called_once()
@@ -170,7 +163,7 @@ class UserpicUploadRouterTest(unittest.IsolatedAsyncioTestCase):
         hook_instance.call.assert_awaited_once_with(HOOK_AFTER_USERPIC_UPLOAD)
         request.state.log.debug.assert_called()
 
-    @patch("app.routers.userpic_upload.CONST_IMAGE_MIMETYPES", {"image/png"})
+    @patch("app.routers.userpic_upload.IMAGE_MIMETYPES", {"image/png"})
     async def test_userpic_upload_invalid_mime(self):
         request, _, _ = self._make_request()
         session = AsyncMock()

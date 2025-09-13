@@ -28,6 +28,10 @@ HOOK_AFTER_USERPIC_DELETE = "after_userpic_delete"
 HOOK_AFTER_USERPIC_RETRIEVE = "after_userpic_retrieve"
 
 HOOK_AFTER_COLLECTION_INSERT = "after_collection_insert"
+HOOK_AFTER_COLLECTION_SELECT = "after_collection_select"
+
+HOOK_AFTER_DOCUMENT_UPLOAD = "after_document_upload"
+HOOK_AFTER_DOCUMENT_SELECT = "after_document_select"
 
 ENABLED_HOOKS = {
     HOOK_AFTER_TOKEN_RETRIEVE,
@@ -46,6 +50,10 @@ ENABLED_HOOKS = {
     HOOK_AFTER_USERPIC_RETRIEVE,
 
     HOOK_AFTER_COLLECTION_INSERT,
+    HOOK_AFTER_COLLECTION_SELECT,
+
+    HOOK_AFTER_DOCUMENT_UPLOAD,
+    HOOK_AFTER_DOCUMENT_SELECT,
 }
 
 class Hook:
@@ -72,8 +80,12 @@ class Hook:
         passing session, cache, current user, and provided args/kwargs.
         """
         for func in self.request.app.state.hooks.get(hook, ()):
-            await func(self.request, self.session, self.cache,
-                       self.current_user, *args, **kwargs)
+            try:
+                await func(self.request, self.session, self.cache,
+                        self.current_user, *args, **kwargs)
+            except Exception:
+                self.request.state.log.exception(
+                    f"hook failed; hook={func.__name__};")
 
 
 def init_hooks(app: FastAPI) -> None:

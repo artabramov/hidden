@@ -37,8 +37,9 @@ ERR_VALUE_INVALID = "value_invalid"
 
 # 404/422
 ERR_FILE_NOT_FOUND = "file_not_found"
-ERR_FILE_EMPTY = "file_empty"
-ERR_FILE_INVALID = "file_invalid"
+ERR_FILE_MIMETYPE_INVALID = "file_mimetype_invalid"
+ERR_FILE_CHECKSUM_MATCHED = "file_checksum_matched"
+ERR_FILE_WRITE_ERROR = "file_write_error"
 ERR_FILE_HASH_MISMATCH  = "file_hash_mismatch"
 
 # 423/498/499/500

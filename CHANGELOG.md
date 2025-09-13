@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.2.3] - 2025-09-13
+- Added **locks** on file operations to avoid race conditions (within one process).
+- Added **file upload** endpoint: per-document locks to prevent races; on update the previous head is copied into a revision, the new file atomically replaces the head with safe rollback on commit failure; thumbnails are regenerated under the same lock.
+- Added **thumbnail generation** for image files.
+- Added **collection retrieval** endpoint that returns collection data by its ID.
+- Added **document retrieval** endpoint that returns document data by its ID.
+- **Hook execution** is wrapped in a try-except so that the main code does not crash when there are errors in custom hooks.
+- Minor fixes and improvements.
+
 ## [0.2.2] - 2025-09-07
 - Added content-based **MIME detection** using libmagic and filetype; filename-extension detection remains a last resort.
 

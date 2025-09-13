@@ -1,7 +1,7 @@
 """
 Redis-backed cache manager for SQLAlchemy ORM entities. Provides TTL-based
 caching of ORM instances, lookup by model and primary key, bulk invalidation
-per model, and full-database flush, using SQLAlchemy’s binary serialization
+per model, and full-database flush, using SQLAlchemy's binary serialization
 format.
 """
 

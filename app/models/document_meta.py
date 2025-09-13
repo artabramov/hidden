@@ -22,6 +22,7 @@ class DocumentMeta(Base):
         ),
         {"sqlite_autoincrement": True},
     )
+    _cacheable = False
 
     id = Column(
         Integer,

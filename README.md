@@ -2,12 +2,9 @@
 
 A small, asynchronous, security-minded file storage backend built with FastAPI. It encrypts all data at rest (DB fields and files), supports multi-user access, and secures everything with a secret key; it keeps all data local unless explicit consent is given and provides secure, irreversible deletion.
 
-**Official website**: [joinhidden.com](https://joinhidden.com)  
-**Docker Hub**: [hub.docker.com/r/artabramov/hidden](https://hub.docker.com/r/artabramov/hidden)  
-**News and updates**: [t.me/hiddenupdates](https://t.me/hiddenupdates)  
-
-[![Docker Hub pulls](https://img.shields.io/docker/pulls/artabramov/hidden?logo=docker&label=Docker%20Hub%20pulls)](https://hub.docker.com/r/artabramov/hidden)
-![License](https://img.shields.io/badge/license-Non--Commercial-blueviolet)
+[![License](https://img.shields.io/badge/License-Non--Commercial-c0392b)](https://github.com/artabramov/hidden/blob/master/LICENSE)
+[![Website](https://img.shields.io/badge/Website-joinhidden.com-2ea44f)](https://joinhidden.com)
+[![Telegram](https://img.shields.io/badge/Telegram-@hiddenupdates-2CA5E0?logoColor=white)](https://t.me/hiddenupdates)
 
 If you like it, star it ⭐ — it helps discoverability.  
 

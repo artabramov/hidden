@@ -198,7 +198,7 @@ class FileManager:
     async def rename(self, src_path: str, dst_path: str) -> None:
         """
         Atomically moves or renames a file, overwriting any existing
-        target. Creates the destination’s parent directory when missing
+        target. Creates the destination's parent directory when missing
         and completes in one step.
         """
         await self.mkdir(dst_path, is_file=True)

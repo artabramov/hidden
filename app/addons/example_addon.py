@@ -13,6 +13,7 @@ from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.user import User
 from app.models.collection import Collection
+from app.models.document import Document
 
 
 async def after_token_retrieve(
@@ -110,4 +111,27 @@ async def after_collection_insert(
         request: Request, session: AsyncSession, cache: Redis,
         current_user: User, collection: Collection):
     """Executes after a collection is created."""
+    ...
+
+
+async def after_collection_select(
+        request: Request, session: AsyncSession, cache: Redis,
+        current_user: User, collection: Collection):
+    """Executes after a collection is retrieved."""
+    ...
+
+
+async def after_document_upload(
+        request: Request, session: AsyncSession, cache: Redis,
+        current_user: User, document: Document):
+    """Executes after a document is uploaded."""
+    raise Exception
+    ...
+
+
+async def after_document_select(
+        request: Request, session: AsyncSession, cache: Redis,
+        current_user: User, document: Document):
+    """Executes after a document is retrieved."""
+    raise Exception
     ...

@@ -1,8 +1,7 @@
 """SQLAlchemy model for user thumbnails."""
 
 import time
-from sqlalchemy import (
-    Column, Integer, BigInteger, SmallInteger, String, ForeignKey)
+from sqlalchemy import Column, Integer, BigInteger, String, ForeignKey
 from sqlalchemy.orm import relationship
 from app.sqlite import Base
 
@@ -15,6 +14,7 @@ class UserThumbnail(Base):
     """
     __tablename__ = "users_thumbnails"
     __table_args__ = {"sqlite_autoincrement": True}
+    _cacheable = False
 
     id = Column(
         Integer,
@@ -56,21 +56,6 @@ class UserThumbnail(Base):
         default=0
     )
 
-    mimetype = Column(
-        String(128),
-        nullable=True
-    )
-
-    width = Column(
-        SmallInteger,
-        nullable=False
-    )
-    
-    height = Column(
-        SmallInteger,
-        nullable=False
-    )
-
     checksum = Column(
         String(64),
         nullable=False
@@ -81,15 +66,12 @@ class UserThumbnail(Base):
         back_populates="user_thumbnail"
     )
 
-    def __init__(self, user_id: int, filename: str, width: int, height: int,
-                 checksum: str, filesize: int, mimetype: str):
+    def __init__(self, user_id: int, filename: str, filesize: int,
+                 checksum: str):
         """
         Initialize a user thumbnail entity with required metadata.
         """
         self.user_id = user_id
         self.filename = filename
-        self.width = width
-        self.height = height
-        self.checksum = checksum
         self.filesize = filesize
-        self.mimetype = mimetype
+        self.checksum = checksum

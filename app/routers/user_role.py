@@ -1,6 +1,6 @@
 """FastAPI router for managing user roles and active status."""
 
-from fastapi import APIRouter, Depends, status, Request
+from fastapi import APIRouter, Depends, status, Request, Path
 from fastapi.responses import JSONResponse
 from app.sqlite import get_session
 from app.redis import get_cache
@@ -19,7 +19,8 @@ router = APIRouter()
             response_class=JSONResponse, status_code=status.HTTP_200_OK,
             response_model=UserRoleResponse, tags=["Users"])
 async def user_role(
-    user_id: int, request: Request, schema: UserRoleRequest,
+    request: Request, schema: UserRoleRequest,
+    user_id: int = Path(..., ge=1),
     session=Depends(get_session), cache=Depends(get_cache),
     current_user: User = Depends(auth(UserRole.admin))
 ) -> UserRoleResponse:

@@ -1,7 +1,7 @@
 """FastAPI router for retrieving user image."""
 
 import os
-from fastapi import APIRouter, Depends, status, Response, Request
+from fastapi import APIRouter, Depends, status, Response, Request, Path
 from app.sqlite import get_session
 from app.redis import get_cache
 from app.models.user import User, UserRole
@@ -18,7 +18,7 @@ router = APIRouter()
             response_class=Response, status_code=status.HTTP_200_OK,
             tags=["Users"])
 async def userpic_retrieve(
-    user_id: int, request: Request,
+    request: Request, user_id: int = Path(..., ge=1),
     session=Depends(get_session), cache=Depends(get_cache),
     current_user: User = Depends(auth(UserRole.reader))
 ):
@@ -76,6 +76,7 @@ async def userpic_retrieve(
 
     if userpic_data is None:
         userpic_data = await file_manager.read(userpic_path)
+        # TODO: add checksum verification
 
     if userpic_data is None:
         raise E([LOC_PATH, "user_id"], user_id,

@@ -1,6 +1,6 @@
 """FastAPI router for retrieving user details."""
 
-from fastapi import APIRouter, Depends, status, Request
+from fastapi import APIRouter, Depends, status, Request, Path
 from fastapi.responses import JSONResponse
 from app.sqlite import get_session
 from app.redis import get_cache
@@ -18,7 +18,7 @@ router = APIRouter()
             response_class=JSONResponse, status_code=status.HTTP_200_OK,
             response_model=UserSelectResponse, tags=["Users"])
 async def user_select(
-    user_id: int, request: Request,
+    request: Request, user_id: int = Path(..., ge=1),
     session=Depends(get_session), cache=Depends(get_cache),
     current_user: User = Depends(auth(UserRole.reader))
 ) -> UserSelectResponse:

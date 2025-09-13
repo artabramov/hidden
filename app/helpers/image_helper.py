@@ -4,8 +4,14 @@ import asyncio
 from PIL import Image, ImageOps
 
 IMAGE_FORMAT = "JPEG"
-IMAGE_MEDIATYPE = "image/jpeg"
 IMAGE_EXTENSION = ".jpeg"
+IMAGE_MEDIATYPE = "image/jpeg"
+IMAGE_MIMETYPES = [
+    "image/jpeg", "image/png", "image/gif", "image/bmp", "image/tiff",
+    "image/x-icon", "image/x-portable-bitmap", "image/x-portable-graymap",
+    "image/x-portable-pixmap"
+]
+
 
 async def image_resize(path: str, width: int, height: int, quality: int):
     """

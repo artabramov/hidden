@@ -77,6 +77,8 @@ class Config:
     AUTH_SUSPENDED_TIME: int
 
     DOCUMENTS_DIR: str
+    REVISIONS_DIR: str
+    TEMPORARY_DIR: str
 
     THUMBNAILS_DIR: str
     THUMBNAILS_WIDTH: int

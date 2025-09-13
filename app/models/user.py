@@ -159,11 +159,17 @@ class User(Base):
         lazy="noload"
     )
 
-    # user_documents = relationship(
-    #     "Document",
-    #     back_populates="document_user",
-    #     lazy="noload"
-    # )
+    user_documents = relationship(
+        "Document",
+        back_populates="document_user",
+        lazy="noload"
+    )
+
+    user_revisions = relationship(
+        "DocumentRevision",
+        back_populates="revision_user",
+        lazy="noload"
+    )
 
     def __init__(
             self, username: str, password_hash: str, first_name: str,

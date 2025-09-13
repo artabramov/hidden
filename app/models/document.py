@@ -1,3 +1,4 @@
+"""SQLAlchemy model for documents."""
 
 import time
 from sqlalchemy import (
@@ -5,6 +6,9 @@ from sqlalchemy import (
 from sqlalchemy.orm import relationship
 from app.sqlite import Base
 from app.models.document_meta import DocumentMeta  # noqa: F401
+from app.models.document_tag import DocumentTag  # noqa: F401
+from app.models.document_thumbnail import DocumentThumbnail  # noqa: F401
+from app.models.document_revision import DocumentRevision  # noqa: F401
 
 
 class Document(Base):
@@ -78,9 +82,20 @@ class Document(Base):
         nullable=True
     )
 
+    checksum = Column(
+        String(64),
+        nullable=False
+    )
+
     summary = Column(
         String(4096),
         nullable=True
+    )
+
+    latest_revision = Column(
+        Integer,
+        nullable=False,
+        default=0
     )
 
     document_user = relationship(
@@ -119,28 +134,46 @@ class Document(Base):
         lazy="joined"
     )
 
+    document_revisions = relationship(
+        "DocumentRevision",
+        back_populates="revision_document",
+        cascade="all, delete-orphan",
+        lazy="selectin",
+        passive_deletes=True
+    )
+
     def __init__(
             self, user_id: int, collection_id: int, filename: str,
-            filesize: int, mimetype: str = None, flagged: bool = False,
-            summary: str = None):
+            filesize: int, checksum: str, mimetype: str = None,
+            flagged: bool = False, summary: str = None,
+            latest_revision: int = 0):
         self.user_id = user_id
         self.collection_id = collection_id
         self.filename = filename
         self.filesize = filesize
         self.mimetype = mimetype
+        self.checksum = checksum
         self.flagged = flagged
         self.summary = summary
+        self.latest_revision = latest_revision
+
+    @property
+    def has_thumbnail(self) -> bool:
+        return self.document_thumbnail is not None
 
     async def to_dict(self) -> dict:
         """Returns a dictionary representation of the document."""
         return {
             "id": self.id,
-            "collection_id": self.collection_id,
+            "user": await self.document_user.to_dict(),
+            "collection": await self.document_collection.to_dict(),
             "created_date": self.created_date,
             "updated_date": self.updated_date,
             "flagged": self.flagged,
             "filename": self.filename,
             "filesize": self.filesize,
             "mimetype": self.mimetype,
+            "checksum": self.checksum,
             "summary": self.summary,
+            "latest_revision": self.latest_revision,
         }

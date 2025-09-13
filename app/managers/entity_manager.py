@@ -122,7 +122,7 @@ class EntityManager:
     async def update(self, obj: DeclarativeBase, flush: bool = True,
                      commit: bool = False):
         """
-        Merges an entity’s state into the current unit of work.
+        Merges an entity's state into the current unit of work.
         Optionally flushes pending changes and commits the transaction.
         """
         await self.session.merge(obj)

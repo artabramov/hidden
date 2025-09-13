@@ -2,7 +2,7 @@
 
 import os
 import uuid
-from fastapi import APIRouter, Depends, status, File, UploadFile, Request
+from fastapi import APIRouter, Depends, status, File, UploadFile, Request, Path
 from fastapi.responses import JSONResponse
 from app.sqlite import get_session
 from app.redis import get_cache
@@ -10,12 +10,12 @@ from app.models.user import User, UserRole
 from app.models.user_thumbnail import UserThumbnail
 from app.schemas.userpic_upload import UserpicUploadResponse
 from app.error import (
-    E, LOC_PATH, LOC_BODY, ERR_VALUE_INVALID, ERR_FILE_INVALID)
+    E, LOC_PATH, LOC_BODY, ERR_VALUE_INVALID, ERR_FILE_MIMETYPE_INVALID)
 from app.hook import Hook, HOOK_AFTER_USERPIC_UPLOAD
 from app.auth import auth
 from app.repository import Repository
-from app.constants import CONST_IMAGE_MIMETYPES
-from app.helpers.image_helper import image_resize, IMAGE_EXTENSION
+from app.helpers.image_helper import (
+    image_resize, IMAGE_EXTENSION, IMAGE_MIMETYPES)
 
 router = APIRouter()
 
@@ -24,7 +24,8 @@ router = APIRouter()
              response_class=JSONResponse, status_code=status.HTTP_200_OK,
              response_model=UserpicUploadResponse, tags=["Users"])
 async def userpic_upload(
-    user_id: int, request: Request, file: UploadFile = File(...),
+    request: Request, file: UploadFile = File(...),
+    user_id: int = Path(..., ge=1),
     session=Depends(get_session), cache=Depends(get_cache),
     current_user: User = Depends(auth(UserRole.reader))
 ) -> UserpicUploadResponse:
@@ -72,9 +73,9 @@ async def userpic_upload(
         raise E([LOC_PATH, "user_id"], user_id,
                 ERR_VALUE_INVALID, status.HTTP_422_UNPROCESSABLE_ENTITY)
 
-    elif file.content_type not in CONST_IMAGE_MIMETYPES:
-        raise E([LOC_BODY, "file"], file.filename,
-                ERR_FILE_INVALID, status.HTTP_422_UNPROCESSABLE_ENTITY)
+    elif file.content_type not in IMAGE_MIMETYPES:
+        raise E([LOC_BODY, "file"], file.filename, ERR_FILE_MIMETYPE_INVALID,
+                status.HTTP_422_UNPROCESSABLE_ENTITY)
 
     if current_user.has_thumbnail:
         userpic_path = os.path.join(
@@ -92,13 +93,11 @@ async def userpic_upload(
         config.THUMBNAILS_QUALITY)
     
     userpic_filesize = await file_manager.filesize(userpic_path)
-    userpic_mimetype = await file_manager.mimetype(userpic_path)
     userpic_checksum = await file_manager.checksum(userpic_path)
 
     user_thumbnail = UserThumbnail(
-        current_user.id, userpic_filename, config.THUMBNAILS_WIDTH,
-        config.THUMBNAILS_HEIGHT, userpic_checksum, userpic_filesize,
-        userpic_mimetype)
+        current_user.id, userpic_filename, userpic_filesize,
+        userpic_checksum)
 
     current_user.user_thumbnail = user_thumbnail
     await user_repository.update(current_user)

@@ -9,8 +9,8 @@ from app.models.collection_meta import CollectionMeta  # noqa: F401
 
 class Collection(Base):
     """
-    SQLAlchemy model for collections. Stores a unique name, optional
-    summary, read-only flag, and creation/update timestamps.
+    SQLAlchemy model for collections. Stores a unique name, read-only
+    flag, creation/update timestamps, and optional summary.
     """
     __tablename__ = "collections"
     _cacheable = True
@@ -73,11 +73,11 @@ class Collection(Base):
         lazy="joined"
     )
 
-    # collection_documents = relationship(
-    #     "Document",
-    #     back_populates="document_collection",
-    #     lazy="noload"
-    # )
+    collection_documents = relationship(
+        "Document",
+        back_populates="document_collection",
+        lazy="noload"
+    )
 
     def __init__(self, user_id: int, name: str, readonly: bool = False,
                  summary: str = None):
@@ -90,6 +90,7 @@ class Collection(Base):
         """Returns a dictionary representation of the collection."""
         return {
             "id": self.id,
+            "user": await self.collection_user.to_dict(),
             "created_date": self.created_date,
             "updated_date": self.updated_date,
             "readonly": self.readonly,

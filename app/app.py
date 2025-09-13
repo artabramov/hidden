@@ -1,4 +1,6 @@
 import time
+import asyncio
+from collections import defaultdict
 from fastapi import FastAPI, Request, status, HTTPException
 from app.config import get_config
 from app.openapi import OPENAPI_TAGS, OPENAPI_DESCRIPTION, OPENAPI_PREFIX
@@ -23,7 +25,10 @@ from app.routers import (
     userpic_upload,
     userpic_delete,
     userpic_retrieve,
-    collection_insert
+    collection_insert,
+    collection_select,
+    document_upload,
+    document_select,
 )
 from cryptography.exceptions import (
     InvalidTag,
@@ -82,6 +87,8 @@ async def lifespan(app: FastAPI):
     lock_path = config.LOCK_FILE_PATH
     if await file_manager.isfile(lock_path):
         await file_manager.delete(lock_path)
+    
+    app.state.file_locks = defaultdict(asyncio.Lock)
 
     try:
         yield
@@ -112,12 +119,15 @@ app.include_router(user_role.router)
 app.include_router(user_password.router)
 app.include_router(user_select.router)
 app.include_router(user_update.router)
-app.include_router(user_delete.router)
+app.include_router(user_delete.router)  # TODO: hide the router in API
 app.include_router(user_list.router)
 app.include_router(userpic_upload.router)
 app.include_router(userpic_delete.router)
 app.include_router(userpic_retrieve.router)
 app.include_router(collection_insert.router)
+app.include_router(collection_select.router)
+app.include_router(document_upload.router)
+app.include_router(document_select.router)
 
 
 @app.middleware("http")

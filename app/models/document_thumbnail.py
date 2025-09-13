@@ -16,6 +16,7 @@ class DocumentThumbnail(Base):
 
     __tablename__ = "documents_thumbnails"
     __table_args__ = {"sqlite_autoincrement": True}
+    _cacheable = False
 
     id = Column(
         Integer,
@@ -57,21 +58,6 @@ class DocumentThumbnail(Base):
         default=0
     )
 
-    mimetype = Column(
-        String(128),
-        nullable=True
-    )
-
-    width = Column(
-        SmallInteger,
-        nullable=False
-    )
-    
-    height = Column(
-        SmallInteger,
-        nullable=False
-    )
-
     checksum = Column(
         String(64),
         nullable=False
@@ -82,12 +68,9 @@ class DocumentThumbnail(Base):
         back_populates="document_thumbnail"
     )
 
-    def __init__(self, document_id: int, filename: str, width: int,
-                 height: int, checksum: str, filesize: int, mimetype: str):
+    def __init__(self, document_id: int, filename: str, filesize: int,
+                 checksum: str):
         self.document_id = document_id
         self.filename = filename
-        self.width = width
-        self.height = height
-        self.checksum = checksum
         self.filesize = filesize
-        self.mimetype = mimetype
+        self.checksum = checksum

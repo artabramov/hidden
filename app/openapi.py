@@ -13,11 +13,9 @@ OPENAPI_TAGS = [
 
 OPENAPI_DESCRIPTION = """
 [![Website](https://img.shields.io/badge/Website-joinhidden.com-2ea44f)](https://joinhidden.com)
-[![Telegram](https://img.shields.io/badge/Telegram-@hiddenupdates-2CA5E0?logo=telegram&logoColor=white)](https://t.me/hiddenupdates)
-[![Mastodon](https://img.shields.io/badge/Mastodon-%40artabramov-6364FF?logo=mastodon&logoColor=white)](https://mastodon.social/@artabramov)
 [![GitHub stars](https://img.shields.io/github/stars/artabramov/hidden?style=flat&label=GitHub%20Stars&logo=github&logoColor=white)](https://github.com/artabramov/hidden)
-[![Docker Hub pulls](https://img.shields.io/docker/pulls/artabramov/hidden?logo=docker&label=Docker%20Hub%20pulls&logoColor=white)](https://hub.docker.com/r/artabramov/hidden)
 [![License](https://img.shields.io/badge/License-Non--Commercial-c0392b)](https://github.com/artabramov/hidden/blob/master/LICENSE)
+[![Telegram](https://img.shields.io/badge/Telegram-@hiddenupdates-2CA5E0?logo=telegram&logoColor=white)](https://t.me/hiddenupdates)
 
 ## What is it and how does it work
 A **RESTful** service that wraps a **gocryptfs**-encrypted directory inside

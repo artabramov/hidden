@@ -44,7 +44,7 @@ class UserThumbnail(Base):
         onupdate=lambda: int(time.time())
     )
 
-    filename = Column(
+    uuid = Column(
         String(256),
         index=True,
         nullable=False
@@ -66,12 +66,12 @@ class UserThumbnail(Base):
         back_populates="user_thumbnail"
     )
 
-    def __init__(self, user_id: int, filename: str, filesize: int,
+    def __init__(self, user_id: int, uuid: str, filesize: int,
                  checksum: str):
         """
         Initialize a user thumbnail entity with required metadata.
         """
         self.user_id = user_id
-        self.filename = filename
+        self.uuid = uuid
         self.filesize = filesize
         self.checksum = checksum

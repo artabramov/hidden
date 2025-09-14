@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.4] - 2025-09-14
+- Improved **revision management** through model adjustment and added revision data to document responses.
+- Added **file download** endpoint to retrieve the document file (latest or any specific historical revision) within its collection.
+- Added **document update** endpoint: atomic rename/move and summary update in a single transaction; deterministic per-path dual locks to prevent AB–BA deadlocks; strict DB/FS conflict checks and clean error codes.
+- Switched **userpic** and **document thumbnail** filenames to UUIDs for simplicity and clarity.
+- Added **hash verification** for static file responses (thumbnails, document files). Additionally, the hash is included in the **ETag header**.
+- Minor fixes and improvements.
+
 ## [0.2.3] - 2025-09-13
 - Added **locks** on file operations to avoid race conditions (within one process).
 - Added **file upload** endpoint: per-document locks to prevent races; on update the previous head is copied into a revision, the new file atomically replaces the head with safe rollback on commit failure; thumbnails are regenerated under the same lock.

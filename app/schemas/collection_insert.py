@@ -1,7 +1,7 @@
 from typing import Optional
 from pydantic import BaseModel, Field, ConfigDict, field_validator
-from app.validators.collection_validators import (
-    name_validate, summary_validate)
+from app.validators.collection_validators import summary_validate
+from app.validators.file_validators import name_validate
 
 
 class CollectionInsertRequest(BaseModel):

@@ -28,7 +28,9 @@ from app.routers import (
     collection_insert,
     collection_select,
     document_upload,
+    document_download,
     document_select,
+    document_update,
 )
 from cryptography.exceptions import (
     InvalidTag,
@@ -102,7 +104,7 @@ app = FastAPI(
     version=__version__,
     openapi_tags=OPENAPI_TAGS,
     description=OPENAPI_DESCRIPTION,
-    openapi_prefix=OPENAPI_PREFIX,
+    root_path=OPENAPI_PREFIX,
     lifespan=lifespan,
     swagger_ui_parameters={
         "persistAuthorization": True,
@@ -127,7 +129,9 @@ app.include_router(userpic_retrieve.router)
 app.include_router(collection_insert.router)
 app.include_router(collection_select.router)
 app.include_router(document_upload.router)
+app.include_router(document_download.router)
 app.include_router(document_select.router)
+app.include_router(document_update.router)
 
 
 @app.middleware("http")

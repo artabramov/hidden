@@ -57,8 +57,8 @@ async def userpic_delete(
     deletion.
     """
     config = request.app.state.config
-    lru = request.app.state.lru
     file_manager = request.app.state.file_manager
+    lru = request.app.state.lru
 
     if user_id != current_user.id:
         raise E([LOC_PATH, "user_id"], user_id,
@@ -69,7 +69,7 @@ async def userpic_delete(
                 ERR_VALUE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
 
     userpic_path = os.path.join(
-        config.THUMBNAILS_DIR, current_user.user_thumbnail.filename)
+        config.THUMBNAILS_DIR, current_user.user_thumbnail.uuid)
 
     lru.delete(userpic_path)
     await file_manager.delete(userpic_path)

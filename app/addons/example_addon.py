@@ -125,7 +125,13 @@ async def after_document_upload(
         request: Request, session: AsyncSession, cache: Redis,
         current_user: User, document: Document):
     """Executes after a document is uploaded."""
-    raise Exception
+    ...
+
+
+async def after_document_download(
+        request: Request, session: AsyncSession, cache: Redis,
+        current_user: User, document: Document, revision_number: int):
+    """Executes after a document is downloaded."""
     ...
 
 
@@ -133,5 +139,11 @@ async def after_document_select(
         request: Request, session: AsyncSession, cache: Redis,
         current_user: User, document: Document):
     """Executes after a document is retrieved."""
-    raise Exception
+    ...
+
+
+async def after_document_update(
+        request: Request, session: AsyncSession, cache: Redis,
+        current_user: User, document: Document):
+    """Executes after a document is updated."""
     ...

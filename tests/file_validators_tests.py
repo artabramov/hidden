@@ -1,5 +1,5 @@
 import unittest
-from app.validators.file_validators import filename_validate
+from app.validators.document_validators import filename_validate
 
 
 class FileValidatorsTest(unittest.TestCase):

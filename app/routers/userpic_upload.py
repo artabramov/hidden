@@ -79,13 +79,13 @@ async def userpic_upload(
 
     if current_user.has_thumbnail:
         userpic_path = os.path.join(
-            config.THUMBNAILS_DIR, current_user.user_thumbnail.filename)
+            config.THUMBNAILS_DIR, current_user.user_thumbnail.uuid)
         await file_manager.delete(userpic_path)
         current_user.user_thumbnail = None
         await user_repository.update(current_user)
 
-    userpic_filename = str(uuid.uuid4()) + IMAGE_EXTENSION
-    userpic_path = os.path.join(config.THUMBNAILS_DIR, userpic_filename)
+    userpic_uuid = str(uuid.uuid4()) + IMAGE_EXTENSION
+    userpic_path = os.path.join(config.THUMBNAILS_DIR, userpic_uuid)
 
     await file_manager.upload(file, userpic_path)
     await image_resize(
@@ -96,8 +96,8 @@ async def userpic_upload(
     userpic_checksum = await file_manager.checksum(userpic_path)
 
     user_thumbnail = UserThumbnail(
-        current_user.id, userpic_filename, userpic_filesize,
-        userpic_checksum)
+        current_user.id, userpic_uuid,
+        userpic_filesize, userpic_checksum)
 
     current_user.user_thumbnail = user_thumbnail
     await user_repository.update(current_user)

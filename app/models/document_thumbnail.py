@@ -10,8 +10,8 @@ from app.sqlite import Base
 class DocumentThumbnail(Base):
     """
     SQLAlchemy model for document thumbnails. One-to-one thumbnail
-    linked to a document; stores file name, size, type, dimensions,
-    and checksum.
+    linked to a document; stores UUID (thumbnail file name), file
+    size, and checksum.
     """
 
     __tablename__ = "documents_thumbnails"
@@ -46,7 +46,7 @@ class DocumentThumbnail(Base):
         onupdate=lambda: int(time.time())
     )
 
-    filename = Column(
+    uuid = Column(
         String(256),
         index=True,
         nullable=False
@@ -68,9 +68,9 @@ class DocumentThumbnail(Base):
         back_populates="document_thumbnail"
     )
 
-    def __init__(self, document_id: int, filename: str, filesize: int,
+    def __init__(self, document_id: int, uuid: str, filesize: int,
                  checksum: str):
         self.document_id = document_id
-        self.filename = filename
+        self.uuid = uuid
         self.filesize = filesize
         self.checksum = checksum

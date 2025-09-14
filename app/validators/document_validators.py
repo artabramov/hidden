@@ -1,12 +1,12 @@
-"""Validators for collection-related fields."""
+"""Validators for document-related fields."""
 
 from typing import Optional
 
 
 def summary_validate(summary: Optional[str]) -> Optional[str]:
     """
-    Validates summary by trimming whitespace and converting
-    blank strings to None. Returns the normalized summary.
+    Validates document summary by trimming whitespace and converting
+    blank strings to None. Returns the normalized document summary.
     """
     if summary is None:
         return None

@@ -1,4 +1,4 @@
-"""Validation helpers for user-related fields."""
+"""Validators for user-related fields."""
 
 import re
 from typing import Optional

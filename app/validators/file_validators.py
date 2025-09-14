@@ -1,30 +1,61 @@
-"""Validation helpers for file-related fields."""
+"""Validators for file and directory names."""
 
-from typing import Final
+import unicodedata
 
 
-def filename_validate(filename: str) -> str:
+# Cross-platform safety: forbid Windows names so
+# that names are portable between systems/volumes.
+_WINDOWS_RESERVED = {
+    "CON", "PRN", "AUX", "NUL",
+    *{f"COM{i}" for i in range(1, 10)},
+    *{f"LPT{i}" for i in range(1, 10)},
+}
+
+# A set of characters that are not allowed in names on Windows;
+# on Unix, many of them are allowed, but all of them for portability.
+_INVALID_CHARS = set('<>:"/\\|?*')
+
+
+def name_validate(name: str) -> str:
     """
-    Validates a file name used as a single path component. Trims leading
-    and trailing whitespace, ensures non-empty, rejects . and .. and
-    forbids / and NUL. Enforces ≤255 UTF-8 bytes. Returns the (possibly
-    trimmed) filename.
+    Validates name used as a single component by trimming surrounding
+    whitespace and ensuring the result is not empty, rejecting the
+    special components '.' and '..', forbidding characters that are
+    problematic across platforms as well as any ASCII control characters
+    including NUL, disallowing a trailing dot and Windows-reserved names
+    regardless of extension, and enforcing a maximum of 255 bytes when
+    encoded in UTF-8. The value is Unicode-normalized to NFC prior to
+    the byte-length check, and the normalized name is returned.
     """
-    if not isinstance(filename, str):
-        raise ValueError("Filename must be string")
+    if not isinstance(name, str):
+        raise ValueError("Name must be a string")
 
-    filename = filename.strip()
+    name = unicodedata.normalize("NFC", name.strip())
 
-    if not filename:
-        raise ValueError("Filename must not be empty")
+    if not name:
+        raise ValueError("Name must not be empty")
 
-    elif filename in (".", ".."):
-        raise ValueError("Filename must not be . or ..'")
+    # Disallow special path components
+    elif name in (".", ".."):
+        raise ValueError("Name must not be '.' or '..'")
 
-    elif "/" in filename or "\x00" in filename:
-        raise ValueError("Filename must not contain / or NUL characters")
+    # Disallow invalid characters (portable set)
+    elif any(ch in _INVALID_CHARS for ch in name):
+        raise ValueError("Name contains invalid characters")
 
-    elif len(filename.encode("utf-8")) > 255:
-        raise ValueError("Filename must not exceed 255 bytes in UTF-8")
+    # Disallow ASCII control characters (including NUL) and DEL
+    elif any(ord(ch) < 32 or ord(ch) == 127 for ch in name):
+        raise ValueError("Name must not contain control characters")
 
-    return filename
+    # Disallow trailing dot (problematic on Windows)
+    elif name.endswith("."):
+        raise ValueError("Name must not end with a dot")
+
+    # Forbid Windows reserved names regardless of extension
+    elif name.split(".", 1)[0].upper() in _WINDOWS_RESERVED:
+        raise ValueError("Name must not be a reserved name on Windows")
+
+    elif len(name.encode("utf-8")) > 255:
+        raise ValueError("Name must not exceed 255 bytes in UTF-8")
+
+    return name

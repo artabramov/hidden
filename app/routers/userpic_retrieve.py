@@ -5,7 +5,9 @@ from fastapi import APIRouter, Depends, status, Response, Request, Path
 from app.sqlite import get_session
 from app.redis import get_cache
 from app.models.user import User, UserRole
-from app.error import E, LOC_PATH, ERR_VALUE_NOT_FOUND,ERR_FILE_NOT_FOUND
+from app.error import (
+    E, LOC_PATH, ERR_VALUE_NOT_FOUND, ERR_FILE_NOT_FOUND,
+    ERR_FILE_HASH_MISMATCH)
 from app.helpers.image_helper import IMAGE_MEDIATYPE
 from app.hook import Hook, HOOK_AFTER_USERPIC_RETRIEVE
 from app.auth import auth
@@ -56,8 +58,8 @@ async def userpic_retrieve(
     """
 
     config = request.app.state.config
-    lru = request.app.state.lru
     file_manager = request.app.state.file_manager
+    lru = request.app.state.lru
 
     user_repository = Repository(session, cache, User, config)
     user = await user_repository.select(id=user_id)
@@ -70,22 +72,33 @@ async def userpic_retrieve(
         raise E([LOC_PATH, "user_id"], user_id,
                 ERR_FILE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
 
-    userpic_path = os.path.join(
-        config.THUMBNAILS_DIR, user.user_thumbnail.filename)
-    userpic_data = lru.load(userpic_path)
+    file_path = os.path.join(config.THUMBNAILS_DIR, user.user_thumbnail.uuid)
+    file_data = lru.load(file_path)
 
-    if userpic_data is None:
-        userpic_data = await file_manager.read(userpic_path)
-        # TODO: add checksum verification
+    if file_data is None:
+        file_exists = await file_manager.isfile(file_path)
+        if not file_exists:
+            raise E([LOC_PATH, "user_id"], user_id,
+                    ERR_FILE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
 
-    if userpic_data is None:
-        raise E([LOC_PATH, "user_id"], user_id,
-                ERR_FILE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
+        file_checksum = await file_manager.checksum(file_path)
+        if user.user_thumbnail.checksum != file_checksum:
+            raise E([LOC_PATH, "user_id"], user_id,
+                    ERR_FILE_HASH_MISMATCH, status.HTTP_404_NOT_FOUND)
 
-    lru.save(userpic_path, userpic_data)
+        file_data = await file_manager.read(file_path)
+
+    lru.save(file_path, file_data)
+
+    headers = {
+        "ETag": f'"{user.user_thumbnail.checksum}"',
+        "Content-Disposition": "inline",
+        "Content-Length": str(user.user_thumbnail.filesize),
+    }
 
     hook = Hook(request, session, cache, current_user=current_user)
     await hook.call(HOOK_AFTER_USERPIC_RETRIEVE, user)
 
     request.state.log.debug("userpic retrieved; user_id=%s;", user.id)
-    return Response(content=userpic_data, media_type=IMAGE_MEDIATYPE)
+    return Response(
+        content=file_data, media_type=IMAGE_MEDIATYPE, headers=headers)

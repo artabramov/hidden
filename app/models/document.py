@@ -92,7 +92,7 @@ class Document(Base):
         nullable=True
     )
 
-    latest_revision = Column(
+    latest_revision_number = Column(
         Integer,
         nullable=False,
         default=0
@@ -146,7 +146,7 @@ class Document(Base):
             self, user_id: int, collection_id: int, filename: str,
             filesize: int, checksum: str, mimetype: str = None,
             flagged: bool = False, summary: str = None,
-            latest_revision: int = 0):
+            latest_revision_number: int = 0):
         self.user_id = user_id
         self.collection_id = collection_id
         self.filename = filename
@@ -155,7 +155,7 @@ class Document(Base):
         self.checksum = checksum
         self.flagged = flagged
         self.summary = summary
-        self.latest_revision = latest_revision
+        self.latest_revision_number = latest_revision_number
 
     @property
     def has_thumbnail(self) -> bool:
@@ -175,5 +175,9 @@ class Document(Base):
             "mimetype": self.mimetype,
             "checksum": self.checksum,
             "summary": self.summary,
-            "latest_revision": self.latest_revision,
+            "latest_revision_number": self.latest_revision_number,
+            "document_revisions": [
+                await revision.to_dict() for revision
+                in self.document_revisions
+            ],
         }

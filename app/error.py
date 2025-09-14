@@ -37,10 +37,11 @@ ERR_VALUE_INVALID = "value_invalid"
 
 # 404/422
 ERR_FILE_NOT_FOUND = "file_not_found"
+ERR_FILE_EXISTS = "file_exists"
 ERR_FILE_MIMETYPE_INVALID = "file_mimetype_invalid"
-ERR_FILE_CHECKSUM_MATCHED = "file_checksum_matched"
-ERR_FILE_WRITE_ERROR = "file_write_error"
+ERR_FILE_HASH_EXISTS = "file_hash_exists"
 ERR_FILE_HASH_MISMATCH  = "file_hash_mismatch"
+ERR_FILE_WRITE_ERROR = "file_write_error"
 
 # 423/498/499/500
 ERR_LOCKED = "locked"

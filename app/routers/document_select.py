@@ -48,10 +48,8 @@ async def document_select(
     checksum; optional summary; and the latest revision number.
 
     **Path parameters:**
-    - `collection_id` (integer ≥ 1): identifier of the parent
-    collection.
-    - `document_id` (integer ≥ 1): identifier of the document to
-    retrieve.
+    - `collection_id` (integer ≥ 1): identifier of the parent collection.
+    - `document_id` (integer ≥ 1): identifier of the document to retrieve.
 
     **Response codes:**
     - `200` — document found; details returned.
@@ -70,6 +68,10 @@ async def document_select(
 
     config = request.app.state.config
 
+    # NOTE: Select by ID hits Redis cache; keep two-step fetch:
+    # load the collection by ID, then load the document by ID.
+    # Do NOT combine into a single filtered query.
+
     collection_repository = Repository(session, cache, Collection, config)
     collection = await collection_repository.select(id=collection_id)
 
@@ -77,7 +79,6 @@ async def document_select(
         raise E([LOC_PATH, "collection_id"], collection_id,
                 ERR_VALUE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
 
-    # NOTE: Select by ID hits Redis cache; keep two-step fetch.
     document_repository = Repository(session, cache, Document, config)
     document = await document_repository.select(id=document_id)
 

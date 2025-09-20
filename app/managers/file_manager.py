@@ -95,6 +95,14 @@ class FileManager:
         """
         return await aiofiles.os.path.isfile(path)
 
+    async def isdir(self, path: str) -> bool:
+        """
+        Checks whether a path refers to an existing directory. Runs
+        asynchronously and returns False for files, non-existing paths,
+        and symlinks that don't point to a directory.
+        """
+        return await aiofiles.os.path.isdir(path)
+
     async def mkdir(self, path: str, is_file: bool = False) -> None:
         """
         Ensure required directories exist. For file paths, create parent

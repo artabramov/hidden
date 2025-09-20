@@ -4,7 +4,6 @@ import asyncio
 from PIL import Image, ImageOps
 
 IMAGE_FORMAT = "JPEG"
-IMAGE_EXTENSION = ".jpeg"
 IMAGE_MEDIATYPE = "image/jpeg"
 IMAGE_MIMETYPES = [
     "image/jpeg", "image/png", "image/gif", "image/bmp", "image/tiff",

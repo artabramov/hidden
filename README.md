@@ -1,7 +1,10 @@
-![Designed to be hidden](hidden.png)
+# Designed to be hidden
+
+![Designed to be hidden](img/hidden.png)
 
 A small, asynchronous, security-minded file storage backend built with FastAPI. It encrypts all data at rest (DB fields and files), supports multi-user access, and secures everything with a secret key; it keeps all data local unless explicit consent is given and provides secure, irreversible deletion.
 
+[![Latest](https://img.shields.io/github/v/tag/artabramov/hidden?sort=semver&label=Latest&color=2f81f7)](https://github.com/artabramov/hidden/blob/master/CHANGELOG.md)
 [![License](https://img.shields.io/badge/License-Non--Commercial-c0392b)](https://github.com/artabramov/hidden/blob/master/LICENSE)
 [![Website](https://img.shields.io/badge/Website-joinhidden.com-2ea44f)](https://joinhidden.com)
 [![Telegram](https://img.shields.io/badge/Telegram-@hiddenupdates-2CA5E0?logoColor=white)](https://t.me/hiddenupdates)

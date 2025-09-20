@@ -1,6 +1,8 @@
 """SQLAlchemy model for documents."""
 
 import time
+import os
+from typing import Any
 from sqlalchemy import (
     Column, BigInteger, String, Boolean, Integer, ForeignKey, UniqueConstraint)
 from sqlalchemy.orm import relationship
@@ -160,6 +162,21 @@ class Document(Base):
     @property
     def has_thumbnail(self) -> bool:
         return self.document_thumbnail is not None
+
+    @property
+    def has_revisions(self) -> bool:
+        return len(self.document_revisions) > 0
+
+    @classmethod
+    def path_for_filename(cls, config: Any, collection_name: str,
+                          filename: str) -> str:
+        """Return absolute path to the document file by parameters."""
+        return os.path.join(config.DOCUMENTS_DIR, collection_name, filename)
+
+    def path(self, config: Any) -> str:
+        """Return absolute path to the document file by config."""
+        return self.__class__.path_for_filename(
+            config, self.document_collection.name, self.filename)
 
     async def to_dict(self) -> dict:
         """Returns a dictionary representation of the document."""

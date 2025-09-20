@@ -16,7 +16,7 @@ DOTENV_PATH = "/hidden/.env"
 class Config:
     """
     Strongly typed configuration where field names must match keys
-    in the `.env` file; values are trimmed and converted according to
+    in the .env file; values are trimmed and converted according to
     their annotated types.
     """
     SECRET_KEY_PATH: str

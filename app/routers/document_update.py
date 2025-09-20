@@ -1,4 +1,5 @@
-import os
+"""FastAPI router for document changing."""
+
 from fastapi import APIRouter, Request, Depends, Path, status
 from fastapi.responses import JSONResponse
 from app.sqlite import get_session
@@ -8,12 +9,13 @@ from app.models.collection import Collection
 from app.models.document import Document
 from app.schemas.document_update import (
     DocumentUpdateRequest, DocumentUpdateResponse)
+from app.validators.file_validators import name_validate
 from app.hook import Hook, HOOK_AFTER_DOCUMENT_UPDATE
 from app.auth import auth
 from app.repository import Repository
 from app.error import (
-    E, LOC_PATH, LOC_BODY, ERR_VALUE_NOT_FOUND, ERR_VALUE_EXISTS,
-    ERR_FILE_NOT_FOUND, ERR_FILE_EXISTS, ERR_FILE_WRITE_ERROR)
+    E, LOC_PATH, LOC_BODY, ERR_VALUE_NOT_FOUND, ERR_VALUE_INVALID,
+    ERR_FILE_CONFLICT)
 
 router = APIRouter()
 
@@ -44,9 +46,9 @@ async def document_update(
     transaction is committed to keep database and filesystem in sync.
 
     Concurrency is controlled with per-path locks. For rename/move, two
-    locks are acquired in a deterministic order to prevent AB-BA
-    deadlocks. All database and filesystem checks are executed inside
-    this critical section. These locks are in-process.
+    locks are acquired in a deterministic order to prevent deadlocks.
+    All database and filesystem checks are executed inside this critical
+    section. These locks are in-process.
 
     Files are stored under their collection directory. The database
     enforces uniqueness of (collection_id, filename) for documents.
@@ -61,8 +63,8 @@ async def document_update(
     `latest_revision_number`.
 
     **Path parameters:**
-    - `collection_id` (integer) — current collection identifier.
-    - `document_id` (integer) — document identifier.
+    - `collection_id` (integer ≥ 1) — current collection identifier.
+    - `document_id` (integer ≥ 1) — document identifier.
 
     **Request body:**
     - `application/json` with any of: `filename`, `summary`,
@@ -73,10 +75,10 @@ async def document_update(
     - `401` — missing, invalid, or expired token.
     - `403` — insufficient role, invalid JTI, user is inactive or
     suspended.
-    - `404` — collection or document not found; source file missing on
-    disk.
-    - `422` — validation or write error: name conflict in DB; file
-    conflict on filesystem; filesystem write/rename error.
+    - `404` — collection or document not found.
+    - `409` — conflict: name already exists in DB/FS or DB/FS mismatch
+    (document present but file missing, or vice versa).
+    - `422` — invalid file name.
     - `423` — application is temporarily locked.
     - `498` — secret key is missing.
     - `499` — secret key is invalid.
@@ -86,11 +88,13 @@ async def document_update(
     """
     config = request.app.state.config
     file_manager = request.app.state.file_manager
-    log = request.state.log
+    lru = request.app.state.lru
 
-    # NOTE: Select by ID hits Redis cache; keep two-step fetch:
-    # load the collection by ID, then load the document by ID.
-    # Do NOT combine into a single filtered query.
+    collection_locks = request.app.state.collection_locks
+    file_locks = request.app.state.file_locks
+
+    # NOTE: On document update, keep two-step fetch to hit Redis cache;
+    # load the collection by ID first, then load the document by ID.
 
     collection_repository = Repository(session, cache, Collection, config)
     collection = await collection_repository.select(id=collection_id)
@@ -109,63 +113,74 @@ async def document_update(
     document.summary = schema.summary
     document_updated = False
 
-    # Rename the file if the filename changes
-    if schema.filename is not None and document.filename != schema.filename:
+    # Checking the correctness of the file name
+    filename = None
+    if schema.filename is not None:
+        try:
+            filename = name_validate(schema.filename)
+        except ValueError:
+            raise E([LOC_BODY, "file"], schema.filename, ERR_VALUE_INVALID,
+                    status.HTTP_422_UNPROCESSABLE_ENTITY)
 
-        # NOTE: Acquire two per-path locks (source and target) in a
-        # deterministic order to prevent AB-BA deadlocks. Do all checks
-        # under these locks. These are per-process locks; for multiple
-        # workers, a distributed lock is required (e.g. Redis).
+    # NOTE: On document update, a small TOCTOU window remains; for
+    # strict guarantees, revalidate entities under the locks right
+    # before rename/move.
+
+    # Rename the file if the filename changes
+    if filename is not None and document.filename != filename:
+
+        # NOTE: On file rename, acquire the collection READ lock first,
+        # then the per-file exclusive lock.
+
+        collection_lock = collection_locks[collection_id]
 
         first_lock_key = (collection_id, document.filename)
-        second_lock_key = (collection_id, schema.filename)
+        second_lock_key = (collection_id, filename)
 
         first_lock_key, second_lock_key = sorted((
             first_lock_key, second_lock_key))
 
-        first_file_lock = request.app.state.file_locks[first_lock_key]
-        second_file_lock = request.app.state.file_locks[second_lock_key]
+        first_file_lock = file_locks[first_lock_key]
+        second_file_lock = file_locks[second_lock_key]
 
-        async with first_file_lock, second_file_lock:
+        async with collection_lock.read(), first_file_lock, second_file_lock:
 
-            # Is there a document with this filename in the collection?
+            # Check the document with the filename in the collection
             filename_exists = await document_repository.select(
-                id__ne=document.id, filename__eq=schema.filename,
+                id__ne=document.id, filename__eq=filename,
                 collection_id__eq=collection.id)
             if filename_exists:
-                raise E([LOC_BODY, "filename"], schema.filename,
-                        ERR_VALUE_EXISTS, status.HTTP_422_UNPROCESSABLE_ENTITY)
-
-            # Is there a file with current filename in the directory?
-            current_file_path = os.path.join(
-                config.DOCUMENTS_DIR, collection.name, document.filename)
+                raise E([LOC_BODY, "file"], filename,
+                        ERR_FILE_CONFLICT, status.HTTP_409_CONFLICT)
+            
+            # Check the file with the current filename in the directory
+            current_file_path = document.path(config)
             current_file_exists = await file_manager.isfile(current_file_path)
             if not current_file_exists:
-                raise E([LOC_BODY, "filename"], document.filename,
-                        ERR_FILE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
+                raise E([LOC_BODY, "file"], document.filename,
+                        ERR_FILE_CONFLICT, status.HTTP_409_CONFLICT)
 
-            # Is there a file with new filename in the directory?
-            updated_file_path = os.path.join(
-                config.DOCUMENTS_DIR, collection.name, schema.filename)
+            # Check the file with the new filename in the directory
+            updated_file_path = Document.path_for_filename(
+                config, collection.name, filename)
             updated_file_exists = await file_manager.isfile(updated_file_path)
             if updated_file_exists:
-                raise E([LOC_BODY, "filename"], schema.filename,
-                        ERR_FILE_EXISTS, status.HTTP_422_UNPROCESSABLE_ENTITY)
+                raise E([LOC_BODY, "file"], filename,
+                        ERR_FILE_CONFLICT, status.HTTP_409_CONFLICT)
 
             try:
-                document.filename = schema.filename
+                document.filename = filename
                 await document_repository.update(document, commit=False)
                 await file_manager.rename(current_file_path, updated_file_path)
+                lru.delete(current_file_path)
+                lru.delete(updated_file_path)
+
                 await document_repository.commit()
                 document_updated = True
 
             except Exception:
                 await document_repository.rollback()
-                log.exception(
-                    "file rename error; filename=%s;", schema.filename)
-                raise E(
-                    [LOC_BODY, "filename"], schema.filename,
-                    ERR_FILE_WRITE_ERROR, status.HTTP_422_UNPROCESSABLE_ENTITY)
+                raise
 
     # Move the file if collection changes
     if (schema.collection_id is not None
@@ -178,62 +193,65 @@ async def document_update(
             raise E([LOC_BODY, "collection_id"], schema.collection_id,
                     ERR_VALUE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
 
-        # NOTE: Acquire two per-path locks (source and target) in a
-        # deterministic order to prevent AB-BA deadlocks. Do all checks
-        # under these locks. These are per-process locks; for multiple
-        # workers, a distributed lock is required (e.g. Redis).
+        # NOTE: On file move, acquire READ locks on both collections
+        # first, then the per-file exclusive lock on both file paths;
 
-        first_lock_key = (collection_id, document.filename)
-        second_lock_key = (schema.collection_id, document.filename)
+        cid_a, cid_b = sorted([document.collection_id, schema.collection_id])
+        collection_lock_a = collection_locks[cid_a]
+        collection_lock_b = collection_locks[cid_b]
 
-        first_lock_key, second_lock_key = sorted((
-            first_lock_key, second_lock_key))
+        async with collection_lock_a.read(), collection_lock_b.read():
+            first_lock_key = (collection_id, document.filename)
+            second_lock_key = (schema.collection_id, document.filename)
 
-        first_file_lock = request.app.state.file_locks[first_lock_key]
-        second_file_lock = request.app.state.file_locks[second_lock_key]
+            first_lock_key, second_lock_key = sorted((
+                first_lock_key, second_lock_key))
 
-        async with first_file_lock, second_file_lock:
+            first_file_lock = file_locks[first_lock_key]
+            second_file_lock = file_locks[second_lock_key]
 
-            # Does the filename exist in the target collection?
-            filename_exists = await document_repository.select(
-                collection_id__eq=schema.collection_id,
-                filename__eq=document.filename)
-            if filename_exists:
-                raise E([LOC_BODY, "filename"], document.filename,
-                        ERR_VALUE_EXISTS, status.HTTP_422_UNPROCESSABLE_ENTITY)
+            async with first_file_lock, second_file_lock:
 
-            # Is there a file in the current directory?
-            current_file_path = os.path.join(
-                config.DOCUMENTS_DIR, collection.name, document.filename)
-            current_file_exists = await file_manager.isfile(current_file_path)
-            if not current_file_exists:
-                raise E([LOC_BODY, "filename"], document.filename,
-                        ERR_FILE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
+                # Does the filename exist in the target collection?
+                filename_exists = await document_repository.select(
+                    collection_id__eq=schema.collection_id,
+                    filename__eq=document.filename)
+                if filename_exists:
+                    raise E([LOC_BODY, "file"], document.filename,
+                            ERR_FILE_CONFLICT, status.HTTP_409_CONFLICT)
 
-            # Is there a file in the target directory?
-            target_file_path = os.path.join(
-                config.DOCUMENTS_DIR, target_collection.name, document.filename)
-            target_file_exists = await file_manager.isfile(target_file_path)
-            if target_file_exists:
-                raise E([LOC_BODY, "filename"], document.filename,
-                        ERR_FILE_EXISTS, status.HTTP_422_UNPROCESSABLE_ENTITY)
+                # Is there a file in the current directory?
+                current_file_path = document.path(config)
+                current_file_exists = await file_manager.isfile(
+                    current_file_path)
+                if not current_file_exists:
+                    raise E([LOC_BODY, "file"], document.filename,
+                            ERR_FILE_CONFLICT, status.HTTP_409_CONFLICT)
 
-            try:
-                document.collection_id = target_collection.id
-                await document_repository.update(document, commit=False)
-                await file_manager.rename(current_file_path, target_file_path)
-                await document_repository.commit()
-                document_updated = True
+                # Is there a file in the target directory?
+                target_file_path = Document.path_for_filename(
+                    config, target_collection.name, document.filename)
+                target_file_exists = await file_manager.isfile(
+                    target_file_path)
 
-            except Exception:
-                await document_repository.rollback()
-                log.exception(
-                    "file move error; filename=%s; collection_id=%s;",
-                    document.filename, target_collection.id,
-                )
-                raise E([LOC_BODY, "collection_id"], schema.collection_id,
-                        ERR_FILE_WRITE_ERROR,
-                        status.HTTP_422_UNPROCESSABLE_ENTITY)
+                if target_file_exists:
+                    raise E([LOC_BODY, "file"], document.filename,
+                            ERR_FILE_CONFLICT, status.HTTP_409_CONFLICT)
+
+                try:
+                    document.collection_id = target_collection.id
+                    await document_repository.update(document, commit=False)
+                    await file_manager.rename(
+                        current_file_path, target_file_path)
+                    lru.delete(current_file_path)
+                    lru.delete(target_file_path)
+                    
+                    await document_repository.commit()
+                    document_updated = True
+
+                except Exception:
+                    await document_repository.rollback()
+                    raise
 
     if not document_updated:
         await document_repository.update(document)
@@ -241,7 +259,6 @@ async def document_update(
     hook = Hook(request, session, cache, current_user=current_user)
     await hook.call(HOOK_AFTER_DOCUMENT_UPDATE, document)
 
-    request.state.log.debug("document updated; document_id=%s;", document_id)
     return {
         "document_id": document.id,
         "latest_revision_number": document.latest_revision_number,

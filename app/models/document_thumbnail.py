@@ -1,13 +1,13 @@
 """SQLAlchemy model for document thumbnails."""
 
 import time
-from sqlalchemy import (
-    Column, Integer, BigInteger, SmallInteger, String, ForeignKey)
+from sqlalchemy import Column, Integer, BigInteger, String, ForeignKey
 from sqlalchemy.orm import relationship
 from app.sqlite import Base
+from app.helpers.thumbnail_mixin import ThumbnailMixin
 
 
-class DocumentThumbnail(Base):
+class DocumentThumbnail(Base, ThumbnailMixin):
     """
     SQLAlchemy model for document thumbnails. One-to-one thumbnail
     linked to a document; stores UUID (thumbnail file name), file
@@ -70,6 +70,7 @@ class DocumentThumbnail(Base):
 
     def __init__(self, document_id: int, uuid: str, filesize: int,
                  checksum: str):
+        """Initialize a document thumbnail entity."""
         self.document_id = document_id
         self.uuid = uuid
         self.filesize = filesize

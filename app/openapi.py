@@ -18,7 +18,7 @@ OPENAPI_DESCRIPTION = """
 [![Telegram](https://img.shields.io/badge/Telegram-@hiddenupdates-2CA5E0?logo=telegram&logoColor=white)](https://t.me/hiddenupdates)
 
 ## What is it and how does it work
-A **RESTful** service that wraps a **gocryptfs**-encrypted directory inside
+A RESTful service that wraps a gocryptfs-encrypted directory inside
 a container: the encrypted cipher directory is mapped to a host volume
 (so everything persisted outside the container remains encrypted at
 rest), while a decrypted mount exists only inside the container for

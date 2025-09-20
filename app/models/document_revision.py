@@ -1,6 +1,8 @@
 """SQLAlchemy model for document revisions."""
 
+import os
 import time
+from typing import Any
 from sqlalchemy import (
     Column, Integer, BigInteger, String, ForeignKey, UniqueConstraint)
 from sqlalchemy.orm import relationship
@@ -86,6 +88,15 @@ class DocumentRevision(Base):
         "Document",
         back_populates="document_revisions"
     )
+
+    @classmethod
+    def path_for_uuid(cls, config: Any, uuid: str) -> str:
+        """Return absolute path for a given UUID using config."""
+        return os.path.join(config.REVISIONS_DIR, uuid)
+
+    def path(self, config: Any) -> str:
+        """Return absolute path to the thumbnail file by its UUID."""
+        return self.__class__.path_for_uuid(config, self.uuid)
 
     def __init__(
             self, user_id: int, document_id: int, revision_number: int,

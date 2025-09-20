@@ -1,13 +1,8 @@
-"""
-Initializes a global app logger and provides a request-scoped adapter
-that logs with the current request UUID, using only FastAPI context.
-"""
+"""Initializes a global app logger."""
 
-import time
 import logging
-from uuid import uuid4
 from concurrent_log_handler import ConcurrentRotatingFileHandler
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 
 
 def init_logger(app: FastAPI) -> logging.Logger:
@@ -32,19 +27,3 @@ def init_logger(app: FastAPI) -> logging.Logger:
     log.propagate = False
     app.state.log = log
     return log
-
-
-def bind_request_logger(request: Request) -> logging.LoggerAdapter:
-    """
-    Returns a LoggerAdapter bound to request_uuid; if missing, sets
-    request_uuid and request_start_time on request.state.
-    """
-    if not getattr(request.state, "request_uuid", None):
-        request.state.request_uuid = str(uuid4())
-
-    if not hasattr(request.state, "request_start_time"):
-        request.state.request_start_time = time.time()
-
-    base = request.app.state.log
-    return logging.LoggerAdapter(base, {
-        "request_uuid": request.state.request_uuid})

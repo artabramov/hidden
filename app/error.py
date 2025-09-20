@@ -42,6 +42,7 @@ ERR_FILE_MIMETYPE_INVALID = "file_mimetype_invalid"
 ERR_FILE_HASH_EXISTS = "file_hash_exists"
 ERR_FILE_HASH_MISMATCH  = "file_hash_mismatch"
 ERR_FILE_WRITE_ERROR = "file_write_error"
+ERR_FILE_CONFLICT = "file_conflict"
 
 # 423/498/499/500
 ERR_LOCKED = "locked"

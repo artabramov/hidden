@@ -4,13 +4,13 @@ import time
 from sqlalchemy import Column, Integer, BigInteger, String, ForeignKey
 from sqlalchemy.orm import relationship
 from app.sqlite import Base
+from app.helpers.thumbnail_mixin import ThumbnailMixin
 
 
-class UserThumbnail(Base):
+class UserThumbnail(Base, ThumbnailMixin):
     """
     SQLAlchemy model for user thumbnails. One-to-one thumbnail
-    linked to a user; stores file name, size, type, dimensions,
-    and checksum.
+    linked to a user; stores its UUID, size, and checksum.
     """
     __tablename__ = "users_thumbnails"
     __table_args__ = {"sqlite_autoincrement": True}
@@ -68,9 +68,7 @@ class UserThumbnail(Base):
 
     def __init__(self, user_id: int, uuid: str, filesize: int,
                  checksum: str):
-        """
-        Initialize a user thumbnail entity with required metadata.
-        """
+        """Initialize a user thumbnail entity."""
         self.user_id = user_id
         self.uuid = uuid
         self.filesize = filesize

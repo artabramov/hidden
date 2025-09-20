@@ -121,6 +121,13 @@ async def after_collection_select(
     ...
 
 
+async def after_collection_update(
+        request: Request, session: AsyncSession, cache: Redis,
+        current_user: User, collection: Collection):
+    """Executes after a collection is updated."""
+    ...
+
+
 async def after_document_upload(
         request: Request, session: AsyncSession, cache: Redis,
         current_user: User, document: Document):
@@ -146,4 +153,25 @@ async def after_document_update(
         request: Request, session: AsyncSession, cache: Redis,
         current_user: User, document: Document):
     """Executes after a document is updated."""
+    ...
+
+
+async def after_document_delete(
+        request: Request, session: AsyncSession, cache: Redis,
+        current_user: User, document_id: int):
+    """Executes after a document is deleted."""
+    ...
+
+
+async def after_document_list(
+        request: Request, session: AsyncSession, cache: Redis,
+        current_user: User, documents: List[Document], documents_count: int):
+    """Executes after a document list is retrieved."""
+    ...
+
+
+async def after_thumbnail_retrieve(
+        request: Request, session: AsyncSession, cache: Redis,
+        current_user: User, document: Document):
+    """Executes after a document thumbnail is retrieved."""
     ...

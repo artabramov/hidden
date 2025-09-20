@@ -68,9 +68,7 @@ async def userpic_delete(
         raise E([LOC_PATH, "user_id"], user_id,
                 ERR_VALUE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
 
-    userpic_path = os.path.join(
-        config.THUMBNAILS_DIR, current_user.user_thumbnail.uuid)
-
+    userpic_path = current_user.user_thumbnail.path(config)
     lru.delete(userpic_path)
     await file_manager.delete(userpic_path)
 

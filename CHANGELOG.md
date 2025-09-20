@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.2.5] - 2025-09-20
+- Unified thumbnail path handling via **thumbnail mixin**; applied to document and user thumbnails.
+- Added document **thumbnail retrieval** endpoint with LRU caching.
+- Added conditional response **304 Not Modified** to thumbnail endpoints to avoid redundant data traffic.
+- Added **document deletion** endpoint with per-document file lock; removes thumbnail, revisions, and head; purges LRU.
+- Added global **document listing** endpoint (cross-collection) with filtering, pagination, and ordering.
+- Added collection-level **read–write lock** (RWLock) with hierarchical coordination above per-file locks: file operations acquire **read**, directory operations acquire **write**; prevents races and blocks concurrent file operations (single-process scope).
+- Added **collection update** endpoint (rename and summary); performs atomic directory rename.
+- Standardized **NOTE** comments: each begins with a scope cue; use a repo-wide search for "NOTE" to find design/behavior caveats.
+- Minor fixes and improvements.
+
 ## [0.2.4] - 2025-09-14
 - Improved **revision management** through model adjustment and added revision data to document responses.
 - Added **file download** endpoint to retrieve the document file (latest or any specific historical revision) within its collection.

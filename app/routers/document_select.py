@@ -1,4 +1,4 @@
-"""FastAPI router for retrieving document details."""
+"""FastAPI router for document retrieving."""
 
 from fastapi import APIRouter, Depends, status, Request, Path
 from fastapi.responses import JSONResponse
@@ -48,8 +48,8 @@ async def document_select(
     checksum; optional summary; and the latest revision number.
 
     **Path parameters:**
-    - `collection_id` (integer ≥ 1): identifier of the parent collection.
-    - `document_id` (integer ≥ 1): identifier of the document to retrieve.
+    - `collection_id` (integer ≥ 1): parent collection identifier.
+    - `document_id` (integer ≥ 1): document identifier.
 
     **Response codes:**
     - `200` — document found; details returned.
@@ -65,12 +65,10 @@ async def document_select(
     - `HOOK_AFTER_DOCUMENT_SELECT`: executed after a successful
     retrieval.
     """
-
     config = request.app.state.config
 
-    # NOTE: Select by ID hits Redis cache; keep two-step fetch:
-    # load the collection by ID, then load the document by ID.
-    # Do NOT combine into a single filtered query.
+    # NOTE: On document select, keep two-step fetch to hit Redis cache;
+    # load the collection by ID first, then load the document by ID.
 
     collection_repository = Repository(session, cache, Collection, config)
     collection = await collection_repository.select(id=collection_id)
@@ -89,5 +87,4 @@ async def document_select(
     hook = Hook(request, session, cache, current_user=current_user)
     await hook.call(HOOK_AFTER_DOCUMENT_SELECT, document)
 
-    request.state.log.debug("document selected; document_id=%s;", document.id)
     return await document.to_dict()

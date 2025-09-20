@@ -14,8 +14,7 @@ from app.error import (
 from app.hook import Hook, HOOK_AFTER_USERPIC_UPLOAD
 from app.auth import auth
 from app.repository import Repository
-from app.helpers.image_helper import (
-    image_resize, IMAGE_EXTENSION, IMAGE_MIMETYPES)
+from app.helpers.image_helper import image_resize, IMAGE_MIMETYPES
 
 router = APIRouter()
 
@@ -78,19 +77,19 @@ async def userpic_upload(
                 status.HTTP_422_UNPROCESSABLE_ENTITY)
 
     if current_user.has_thumbnail:
-        userpic_path = os.path.join(
-            config.THUMBNAILS_DIR, current_user.user_thumbnail.uuid)
+        userpic_path = current_user.user_thumbnail.path(config)
         await file_manager.delete(userpic_path)
+
         current_user.user_thumbnail = None
         await user_repository.update(current_user)
 
-    userpic_uuid = str(uuid.uuid4()) + IMAGE_EXTENSION
-    userpic_path = os.path.join(config.THUMBNAILS_DIR, userpic_uuid)
+    userpic_uuid = str(uuid.uuid4())
+    userpic_path = UserThumbnail.path_for_uuid(config, userpic_uuid)
 
     await file_manager.upload(file, userpic_path)
     await image_resize(
-        userpic_path, config.THUMBNAILS_WIDTH, config.THUMBNAILS_HEIGHT,
-        config.THUMBNAILS_QUALITY)
+        userpic_path, config.THUMBNAILS_WIDTH,
+        config.THUMBNAILS_HEIGHT, config.THUMBNAILS_QUALITY)
     
     userpic_filesize = await file_manager.filesize(userpic_path)
     userpic_checksum = await file_manager.checksum(userpic_path)

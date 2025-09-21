@@ -6,7 +6,7 @@ A small, fast, async, security-minded file-storage service built with `FastAPI`,
 
 [![Release](https://img.shields.io/github/v/tag/artabramov/hidden?sort=semver&label=Release&color=2f81f7)](https://github.com/artabramov/hidden/blob/master/CHANGELOG.md)
 ![Tests](https://img.shields.io/badge/Tests-Passed-2f81f7)
-![Coverage](https://img.shields.io/badge/Coverage-54%-2f81f7)
+![Coverage](https://img.shields.io/badge/Coverage-54%25-2f81f7)
 [![License](https://img.shields.io/badge/License-Non--Commercial-2f81f7)](https://github.com/artabramov/hidden/blob/master/LICENSE)
 
 If you like it, star it ⭐ — it helps discoverability.  

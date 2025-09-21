@@ -29,6 +29,10 @@ RESERVED_OPERATORS = {
 }
 DELETE_ALL_BATCH_SIZE = 500
 
+# NOTE: On all SQLAlchemy models set sqlite_autoincrement to True in
+# __table_args__ to prevent ID reuse after deletes in SQLite; primary
+# key alone is not enough.
+
 
 class EntityManager:
     """
@@ -139,7 +143,8 @@ class EntityManager:
         Marks an entity for removal from persistent storage. Optionally
         flushes pending changes and commits the transaction.
         """
-        await self.session.delete(obj)
+        managed = await self.session.merge(obj)
+        await self.session.delete(managed)
 
         if flush:
             await self.flush()

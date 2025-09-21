@@ -1,4 +1,3 @@
-import os
 from fastapi import APIRouter, Request, Depends, Path, status
 from fastapi.responses import JSONResponse
 from app.sqlite import get_session
@@ -53,10 +52,10 @@ async def collection_update(
                 ERR_VALUE_EXISTS, status.HTTP_422_UNPROCESSABLE_ENTITY)
 
     current_name = collection.name
-    current_path = os.path.join(config.DOCUMENTS_DIR, current_name)
+    current_path = collection.path(config)
 
     updated_name = schema.name
-    updated_path = os.path.join(config.DOCUMENTS_DIR, updated_name)
+    updated_path = Collection.path_for_dir(config, updated_name)
 
     # Exclusive lock on the collection
     collection_lock = request.app.state.collection_locks[collection.id]

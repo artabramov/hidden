@@ -1,6 +1,8 @@
 """SQLAlchemy model for collections."""
 
 import time
+import os
+from typing import Any
 from sqlalchemy import Column, BigInteger, String, Boolean, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 from app.sqlite import Base
@@ -13,6 +15,7 @@ class Collection(Base):
     flag, creation/update timestamps, and optional summary.
     """
     __tablename__ = "collections"
+    __table_args__ = {"sqlite_autoincrement": True}
     _cacheable = True
 
     id = Column(
@@ -85,6 +88,15 @@ class Collection(Base):
         self.name = name
         self.readonly = readonly
         self.summary = summary
+
+    @classmethod
+    def path_for_dir(cls, config: Any, collection_name: str) -> str:
+        """Return absolute path to the collection by parameters."""
+        return os.path.join(config.DOCUMENTS_DIR, collection_name)
+
+    def path(self, config: Any) -> str:
+        """Return absolute path to the collection by config."""
+        return self.__class__.path_for_dir(config, self.name)
 
     async def to_dict(self) -> dict:
         """Returns a dictionary representation of the collection."""

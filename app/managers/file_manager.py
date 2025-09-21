@@ -116,6 +116,10 @@ class FileManager:
             if target:
                 await aiofiles.os.makedirs(target, exist_ok=True)
 
+    async def rmdir(self, path: str) -> None:
+        """Remove a directory if it exists and is empty."""
+        await aiofiles.os.rmdir(path)
+
     async def _atomic_write(
             self, path: str, chunk_iter: AsyncIterable) -> None:
         """

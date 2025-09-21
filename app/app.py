@@ -66,6 +66,8 @@ from app.routers import (
     collection_insert,
     collection_select,
     collection_update,
+    collection_delete,
+    collection_list,
     document_upload,
     document_download,
     document_select,
@@ -159,6 +161,8 @@ app = FastAPI(
     }
 )
 
+# TODO: Hide the user deletion router from public API.
+
 app.include_router(user_login.router)
 app.include_router(token_retrieve.router)
 app.include_router(token_invalidate.router)
@@ -167,7 +171,7 @@ app.include_router(user_role.router)
 app.include_router(user_password.router)
 app.include_router(user_select.router)
 app.include_router(user_update.router)
-app.include_router(user_delete.router)  # TODO: hide the router in API
+app.include_router(user_delete.router)
 app.include_router(user_list.router)
 app.include_router(userpic_upload.router)
 app.include_router(userpic_delete.router)
@@ -175,6 +179,8 @@ app.include_router(userpic_retrieve.router)
 app.include_router(collection_insert.router)
 app.include_router(collection_select.router)
 app.include_router(collection_update.router)
+app.include_router(collection_delete.router)
+app.include_router(collection_list.router)
 app.include_router(document_upload.router)
 app.include_router(document_download.router)
 app.include_router(document_select.router)

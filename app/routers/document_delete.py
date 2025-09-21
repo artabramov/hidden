@@ -37,7 +37,7 @@ async def document_delete(
     revisions, head file).
 
     **Authentication:**
-    - Requires a valid bearer token with `admin`.
+    - Requires a valid bearer token with `admin` role.
 
     **Path parameters:**
     - `collection_id` (integer ≥ 1): parent collection identifier.
@@ -103,11 +103,11 @@ async def document_delete(
         # (1) remove thumbnail, (2) remove revisions, (3) delete head.
         # The head is kept until the end to minimize the inconsistency
         # window. If filesystem operations fail, they likely fail at
-        # step (1), so we fail early with minimal side effects.
+        # step (1), so we fail early with minimal side effects. If any
+        # step fails, the deletion is aborted entirely (no head removal).
 
+        # Ensure the thumbnail file exists
         if document.has_thumbnail:
-
-            # Ensure the thumbnail file exists
             thumbnail_path = document.document_thumbnail.path(config)
             thumbnail_file_exists = await file_manager.isfile(thumbnail_path)
             if not thumbnail_file_exists:
@@ -117,10 +117,9 @@ async def document_delete(
             await file_manager.delete(thumbnail_path)
             lru.delete(thumbnail_path)
         
+        # Ensure the revision file exists
         if document.has_revisions:
             for revision in document.document_revisions:
-
-                # Ensure the revision file exists
                 revision_path = revision.path(config)
                 revision_file_exists = await file_manager.isfile(revision_path)
                 if not revision_file_exists:
@@ -137,18 +136,17 @@ async def document_delete(
             raise E([LOC_PATH, "document_id"], document_id,
                     ERR_FILE_CONFLICT, status.HTTP_409_CONFLICT)
 
+        await file_manager.delete(document_path)
+        lru.delete(document_path)
+
         # NOTE: On document delete, all related DB entities
         # are removed by SQLAlchemy using ORM relationships.
 
-        await file_manager.delete(document_path)
-        lru.delete(document_path)
         await document_repository.delete(document)
 
     hook = Hook(request, session, cache, current_user=current_user)
     await hook.call(HOOK_AFTER_DOCUMENT_DELETE, document_id)
 
-    request.state.log.debug(
-        "document deleted; document_id=%s;", document_id)
     return {
         "document_id": document_id,
         "latest_revision_number": latest_revision_number,

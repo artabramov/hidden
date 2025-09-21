@@ -18,8 +18,8 @@ from app.repository import Repository
 from app.hook import Hook, HOOK_AFTER_DOCUMENT_UPLOAD
 from app.auth import auth
 from app.error import (
-    E, LOC_PATH, LOC_BODY, ERR_VALUE_NOT_FOUND, ERR_FILE_HASH_EXISTS,
-    ERR_FILE_MIMETYPE_INVALID, ERR_VALUE_INVALID, ERR_FILE_CONFLICT)
+    E, LOC_PATH, LOC_BODY, ERR_VALUE_NOT_FOUND, ERR_FILE_MIMETYPE_INVALID,
+    ERR_VALUE_INVALID, ERR_FILE_CONFLICT)
 
 router = APIRouter()
 
@@ -80,7 +80,7 @@ async def document_upload(
     - `404` — collection not found.
     - `409` — conflict on DB/FS mismatch for the file (document present
     but file missing, or vice versa; MIME type changed for an existing
-    file; identical content when replacing the file).
+    file).
     - `422` — invalid file name.
     - `423` — application is temporarily locked.
     - `498` — secret key is missing.
@@ -99,6 +99,8 @@ async def document_upload(
     temporary_filename = str(uuid.uuid4()) + ".tmp"
     temporary_path = os.path.join(config.TEMPORARY_DIR, temporary_filename)
 
+    file_renamed = False
+    file_replaced = False
     thumbnail_path = None
 
     try:
@@ -145,7 +147,6 @@ async def document_upload(
         # Create a new document
         elif not document and not file_exists:
             await file_manager.upload(file, temporary_path)
-            file_renamed = False
 
             try:
                 filesize, mimetype, checksum = (
@@ -183,75 +184,83 @@ async def document_upload(
                 raise E([LOC_BODY, "file"], file.filename,
                         ERR_FILE_MIMETYPE_INVALID, status.HTTP_409_CONFLICT)
 
-            # If the file has not changed, it doesn't need to be updated
-            file_checksum = await file_manager.checksum(temporary_path)
-            if document.checksum == file_checksum:
-                await file_manager.delete(temporary_path)
-                raise E([LOC_BODY, "file"], file.filename,
-                        ERR_FILE_HASH_EXISTS, status.HTTP_409_CONFLICT)
-
-            # Copy outdated file to revision
-            revision_uuid = str(uuid.uuid4())
-            revision_path = DocumentRevision.path_for_uuid(
-                config, revision_uuid)
-
+            # Check the file checksum
             try:
-                await file_manager.copy(file_path, revision_path)
+                file_checksum = await file_manager.checksum(temporary_path)
             except Exception:
                 await file_manager.delete(temporary_path)
                 raise
-
-            # Outdated thumbnail will be removed after commit
-            if document.has_thumbnail:
-                thumbnail_path = document.document_thumbnail.path(config)
-
-            revision_repository = Repository(
-                session, cache, DocumentRevision, config)
             
-            file_replaced = False
-            latest_revision_number = document.latest_revision_number + 1
+            # NOTE: File upload is idempotent: if file matches current
+            # head (checksum), return successful response; skip DB/FS
+            # changes, revision unchanged.
 
-            try:
-                # Create a new revision
-                revision = DocumentRevision(
-                    current_user.id, document.id, latest_revision_number,
-                    revision_uuid, document.filesize, document.checksum)
-                await revision_repository.insert(revision, commit=False)
-            
-                # Update the document itself
-                document.latest_revision_number = latest_revision_number
-                document.document_thumbnail = None
-                document.checksum = file_checksum
-                document.filesize = await file_manager.filesize(temporary_path)
-                await document_repository.update(document, commit=False)
-
-                # Atomic replacement of the file and commit
-                await file_manager.rename(temporary_path, file_path)
-                lru.delete(file_path)
-
-                file_replaced = True
-                await document_repository.commit()
-
-            # Rollback if something goes wrong
-            except Exception:
-                await document_repository.rollback()
+            if document.checksum != file_checksum:
+                # Copy outdated file to revision
+                revision_uuid = str(uuid.uuid4())
+                revision_path = DocumentRevision.path_for_uuid(
+                    config, revision_uuid)
 
                 try:
-                    if file_replaced:
-                        await file_manager.rename(revision_path, file_path)
-                        revision_path = None
-                    else:
-                        await file_manager.delete(temporary_path)
+                    await file_manager.copy(file_path, revision_path)
                 except Exception:
-                    pass
+                    await file_manager.delete(temporary_path)
+                    raise
 
-                if revision_path:
+                # Outdated thumbnail will be removed after commit
+                if document.has_thumbnail:
+                    thumbnail_path = document.document_thumbnail.path(config)
+
+                revision_repository = Repository(
+                    session, cache, DocumentRevision, config)
+
+                latest_revision_number = document.latest_revision_number + 1
+
+                try:
+                    # Create a new revision
+                    revision = DocumentRevision(
+                        current_user.id, document.id, latest_revision_number,
+                        revision_uuid, document.filesize, document.checksum)
+                    await revision_repository.insert(revision, commit=False)
+                
+                    # Update the document itself
+                    document.latest_revision_number = latest_revision_number
+                    document.document_thumbnail = None
+                    document.checksum = file_checksum
+                    document.filesize = await file_manager.filesize(
+                        temporary_path)
+                    await document_repository.update(document, commit=False)
+
+                    # Atomic replacement of the file and commit
+                    await file_manager.rename(temporary_path, file_path)
+                    file_replaced = True
+
+                    await document_repository.commit()
+                    lru.delete(file_path)
+
+                # Rollback if something goes wrong
+                except Exception:
+                    await document_repository.rollback()
+
                     try:
-                        await file_manager.delete(revision_path)
+                        if file_replaced:
+                            await file_manager.rename(revision_path, file_path)
+                            revision_path = None
+                        else:
+                            await file_manager.delete(temporary_path)
                     except Exception:
                         pass
 
-                raise
+                    if revision_path:
+                        try:
+                            await file_manager.delete(revision_path)
+                        except Exception:
+                            pass
+
+                    raise
+
+            else:
+                await file_manager.delete(temporary_path)
 
         # Remove the outdated thumbnail
         if thumbnail_path:
@@ -262,7 +271,8 @@ async def document_upload(
                 pass
 
         # Create a new thumbnail
-        if document.mimetype in IMAGE_MIMETYPES:
+        if ((file_renamed or file_replaced) and
+                document.mimetype in IMAGE_MIMETYPES):
             thumbnail_uuid = str(uuid.uuid4())
             thumbnail_path = DocumentThumbnail.path_for_uuid(
                 config, thumbnail_uuid)

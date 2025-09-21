@@ -421,69 +421,93 @@ class EntityManagerTest(unittest.IsolatedAsyncioTestCase):
     @patch("app.managers.entity_manager.EntityManager.commit")
     async def test_delete(self, commit_mock, flush_mock):
         session_mock = AsyncMock()
+        managed_obj = MagicMock()
+        session_mock.merge = AsyncMock(return_value=managed_obj)
+
         entity_manager = EntityManager(session_mock)
         obj_mock = MagicMock()
 
         result = await entity_manager.delete(obj_mock)
         self.assertIsNone(result)
 
-        session_mock.delete.assert_called_once_with(obj_mock)
+        session_mock.merge.assert_awaited_once_with(obj_mock)
+        session_mock.delete.assert_awaited_once_with(managed_obj)
         flush_mock.assert_called_once()
         commit_mock.assert_not_called()
+
 
     @patch("app.managers.entity_manager.EntityManager.flush")
     @patch("app.managers.entity_manager.EntityManager.commit")
     async def test_delete_flush_true(self, commit_mock, flush_mock):
         session_mock = AsyncMock()
+        managed_obj = MagicMock()
+        session_mock.merge = AsyncMock(return_value=managed_obj)
+
         entity_manager = EntityManager(session_mock)
         obj_mock = MagicMock()
 
         result = await entity_manager.delete(obj_mock, flush=True)
         self.assertIsNone(result)
 
-        session_mock.delete.assert_called_once_with(obj_mock)
+        session_mock.merge.assert_awaited_once_with(obj_mock)
+        session_mock.delete.assert_awaited_once_with(managed_obj)
         flush_mock.assert_called_once()
         commit_mock.assert_not_called()
+
 
     @patch("app.managers.entity_manager.EntityManager.flush")
     @patch("app.managers.entity_manager.EntityManager.commit")
     async def test_delete_flush_false(self, commit_mock, flush_mock):
         session_mock = AsyncMock()
+        managed_obj = MagicMock()
+        session_mock.merge = AsyncMock(return_value=managed_obj)
+
         entity_manager = EntityManager(session_mock)
         obj_mock = MagicMock()
 
         result = await entity_manager.delete(obj_mock, flush=False)
         self.assertIsNone(result)
 
-        session_mock.delete.assert_called_once_with(obj_mock)
+        session_mock.merge.assert_awaited_once_with(obj_mock)
+        session_mock.delete.assert_awaited_once_with(managed_obj)
         flush_mock.assert_not_called()
         commit_mock.assert_not_called()
+
 
     @patch("app.managers.entity_manager.EntityManager.flush")
     @patch("app.managers.entity_manager.EntityManager.commit")
     async def test_delete_commit_true(self, commit_mock, flush_mock):
         session_mock = AsyncMock()
+        managed_obj = MagicMock()
+        session_mock.merge = AsyncMock(return_value=managed_obj)
+
         entity_manager = EntityManager(session_mock)
         obj_mock = MagicMock()
 
         result = await entity_manager.delete(obj_mock, commit=True)
         self.assertIsNone(result)
 
-        session_mock.delete.assert_called_once_with(obj_mock)
+        session_mock.merge.assert_awaited_once_with(obj_mock)
+        session_mock.delete.assert_awaited_once_with(managed_obj)
         flush_mock.assert_called_once()
         commit_mock.assert_called_once()
+
 
     @patch("app.managers.entity_manager.EntityManager.flush")
     @patch("app.managers.entity_manager.EntityManager.commit")
     async def test_delete_commit_false(self, commit_mock, flush_mock):
         session_mock = AsyncMock()
+        managed_obj = MagicMock()
+        session_mock.merge = AsyncMock(return_value=managed_obj)
+
         entity_manager = EntityManager(session_mock)
         obj_mock = MagicMock()
 
         result = await entity_manager.delete(obj_mock, commit=False)
         self.assertIsNone(result)
 
-        session_mock.delete.assert_called_once_with(obj_mock)
+        session_mock.merge.assert_awaited_once_with(obj_mock)
+        session_mock.delete.assert_awaited_once_with(managed_obj)
         flush_mock.assert_called_once()
         commit_mock.assert_not_called()
 

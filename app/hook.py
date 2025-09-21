@@ -12,6 +12,8 @@ from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.user import User
 
+# TODO: Replace HOOK_* constant list with a dataclass.
+
 HOOK_AFTER_TOKEN_RETRIEVE = "after_token_retrieve"
 HOOK_AFTER_TOKEN_INVALIDATE = "after_token_invalidate"
 
@@ -30,6 +32,8 @@ HOOK_AFTER_USERPIC_RETRIEVE = "after_userpic_retrieve"
 HOOK_AFTER_COLLECTION_INSERT = "after_collection_insert"
 HOOK_AFTER_COLLECTION_SELECT = "after_collection_select"
 HOOK_AFTER_COLLECTION_UPDATE = "after_collection_update"
+HOOK_AFTER_COLLECTION_DELETE = "after_collection_delete"
+HOOK_AFTER_COLLECTION_LIST = "after_collection_list"
 
 HOOK_AFTER_DOCUMENT_UPLOAD = "after_document_upload"
 HOOK_AFTER_DOCUMENT_DOWNLOAD = "after_document_download"
@@ -58,6 +62,8 @@ ENABLED_HOOKS = {
     HOOK_AFTER_COLLECTION_INSERT,
     HOOK_AFTER_COLLECTION_SELECT,
     HOOK_AFTER_COLLECTION_UPDATE,
+    HOOK_AFTER_COLLECTION_DELETE,
+    HOOK_AFTER_COLLECTION_LIST,
 
     HOOK_AFTER_DOCUMENT_UPLOAD,
     HOOK_AFTER_DOCUMENT_DOWNLOAD,

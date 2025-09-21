@@ -128,6 +128,21 @@ async def after_collection_update(
     ...
 
 
+async def after_collection_delete(
+        request: Request, session: AsyncSession, cache: Redis,
+        current_user: User, collection_id: int):
+    """Executes after a collection is deleted."""
+    ...
+
+
+async def after_collection_list(
+        request: Request, session: AsyncSession, cache: Redis,
+        current_user: User, collections: List[Collection],
+        collections_count: int):
+    """Executes after a collection list is retrieved."""
+    ...
+
+
 async def after_document_upload(
         request: Request, session: AsyncSession, cache: Redis,
         current_user: User, document: Document):

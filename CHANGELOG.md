@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.6] - 2025-09-21
+- Added **collection deletion** endpoint; removes all documents (thumbnails, revisions, head files) with a per-collection **write** lock, performs best-effort filesystem cleanup (missing files ignored), and purges LRU cache.
+- Fixed **delete** method in **EntityManager**: now merges the entity into the current session before deletion, preventing SQLAlchemy InvalidRequestError.
+- Added **short-circuit on checksum match** for uploads: if the uploaded content equals the current head, skip DB/FS changes and return **201 Created** with the revision unchanged.
+- Added **collection listing** endpoint with filtering (creator, timestamps, readonly, name), pagination, and ordering.
+- Added **VS Code configurations** for development workflow: flake8 linting, running tests with coverage, and generating coverage reports.
+
 ## [0.2.5] - 2025-09-20
 - Unified thumbnail path handling via **thumbnail mixin**; applied to document and user thumbnails.
 - Added document **thumbnail retrieval** endpoint with LRU caching.

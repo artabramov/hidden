@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Run",
+            "name": "Run: debug",
             "type": "debugpy",
             "request": "launch",
             "module": "uvicorn",
@@ -13,6 +13,42 @@
                 "--reload"
             ],
             "jinja": true,
+            "justMyCode": true
+        },
+        {
+            "name": "Lint: flake8",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "flake8",
+            "args": ["--count", "--max-line-length=79", "/hidden"],
+            "justMyCode": true,
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Tests: unittest",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "coverage",
+            "args": [
+                "run",
+                "-m", "unittest", "discover",
+                "-s", "./tests",
+                "-p", "*_tests.py",
+                "-v"
+            ],
+            "cwd": "/hidden",
+            "env": { "PYTHONWARNINGS": "ignore" },
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "Tests: coverage",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "coverage",
+            "args": ["report", "--omit", "./tests/"],
+            "cwd": "/hidden",
+            "console": "integratedTerminal",
             "justMyCode": true
         }
     ]

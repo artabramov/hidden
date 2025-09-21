@@ -2,27 +2,34 @@
 
 ![Designed to be hidden](img/hidden.png)
 
-A small, asynchronous, security-minded file storage backend built with FastAPI. It encrypts all data at rest (DB fields and files), supports multi-user access, and secures everything with a secret key; it keeps all data local unless explicit consent is given and provides secure, irreversible deletion.
+A small, fast, async, security-minded file-storage service built with `FastAPI`, `SQLAlchemy`, `SQLite`, and `Redis`. Internally, all data is stored in a `gocryptfs`-encrypted directory (cipher) and protected by a single secret key. It supports multi-user access with role-based permissions (RBAC) and multi-factor authentication (MFA). A clean `REST API` provides filesystem-like operations (upload, move, rename), organizes files into collections, and manages metadata and thumbnails. Supports versioning; past file states are available as revisions. For secure file erase, it uses the `shred` utility (revisions included). The encrypted directory is exposed as a `Docker` volume and can be mounted directly with `gocryptfs` when the secret key is available.
 
-[![Latest](https://img.shields.io/github/v/tag/artabramov/hidden?sort=semver&label=Latest&color=2f81f7)](https://github.com/artabramov/hidden/blob/master/CHANGELOG.md)
-[![License](https://img.shields.io/badge/License-Non--Commercial-c0392b)](https://github.com/artabramov/hidden/blob/master/LICENSE)
-[![Website](https://img.shields.io/badge/Website-joinhidden.com-2ea44f)](https://joinhidden.com)
-[![Telegram](https://img.shields.io/badge/Telegram-@hiddenupdates-2CA5E0?logoColor=white)](https://t.me/hiddenupdates)
+[![Release](https://img.shields.io/github/v/tag/artabramov/hidden?sort=semver&label=Release&color=2f81f7)](https://github.com/artabramov/hidden/blob/master/CHANGELOG.md)
+![Tests](https://img.shields.io/badge/Tests-Passed-2f81f7)
+![Coverage](https://img.shields.io/badge/Coverage-54%-2f81f7)
+[![License](https://img.shields.io/badge/License-Non--Commercial-2f81f7)](https://github.com/artabramov/hidden/blob/master/LICENSE)
 
 If you like it, star it ⭐ — it helps discoverability.  
 
+## Quick links
+- Official website: [joinhidden.com](https://joinhidden.com)
+- Telegram announcements: [@hiddenupdates](https://t.me/hiddenupdates)
+
 ## Threat model
 
-The primary threat this app is designed to mitigate is the **loss of the device** running the application. In such a scenario, an attacker may gain full access to the filesystem and the database, including all encrypted files and metadata — but **not the secret key**.
+This app is designed to withstand **full compromise of the host** (filesystem and database) **without compromise of the secret key**. In that scenario, an attacker may read all on-disk files and metadata but **cannot recover original data** (assumed that the secret key is stored securely outside the app).
 
-Without the secret encryption key, recovering any meaningful information is computationally infeasible. All user data is encrypted and fragmented, and cannot be extracted from a disk dump. Even with complete physical control over the storage, the attacker only obtains meaningless encrypted blobs.
+Without the secret encryption key, deriving any meaningful information is **computationally infeasible**: all user data is encrypted at rest, so even with complete physical control over the storage an attacker obtains only unintelligible ciphertext blobs.
+
+Read more about gocryptfs: [github.com/rfjakob/gocryptfs](https://github.com/rfjakob/gocryptfs)
 
 ## Highlights
 
 - **Isolated workspace** — may run fully offline, without requiring an internet connection; no implicit network traffic, no statistics collection.
-- **Protected storage** — all persistent data (database fields and files) is encrypted with `AES-256`; each file is fragmented into shards, and access to the storage is controlled by a secret key, which acts as the single point of trust.
-- **Extractable secret key** — stored as a file that can be exported and backed up; losing it makes the data permanently inaccessible.
-- **Irreversible deletion** — file removal relies on the `shred` utility, which overwrites file data multiple times. It is recommended to avoid using SSDs and copy-on-write filesystems (e.g. btrfs, ZFS).
+- **Protected storage** — all persistent data (database and files) is encrypted by `gocryptfs` and access to the storage is controlled by a secret key, which acts as the single point of trust.
+- **Extractable secret key** — stored as a file that can be extracted from the app; losing it makes the data permanently inaccessible.
+- **Irreversible deletion** — file removal relies on the `shred` utility, which overwrites file data multiple times (ineffective on SSDs or CoW/journaling filesystems).
+- **Head-based versioning** — the newest file revision is the head, and any previous revision can be restored.
 - **Role-based access** — user permissions are managed through the predefined `Reader`, `Author`, `Editor` and `Admin` roles.
 - **Multi-factor auth** — login sessions are protected with one-time passwords, adding a layer of defense against credential theft.
 - **Public API** — the `REST API` is fully documented with `Swagger/OpenAPI` documentation.
@@ -35,45 +42,30 @@ Without the secret encryption key, recovering any meaningful information is comp
 - **FastAPI** — web framework  
 - **Pydantic** — validation  
 - **Asyncio** — concurrency  
-- **Cryptography** — encryption  
+- **gocryptfs** — encryption  
 - **shred** — secure file deletion  
-- **PostgreSQL** — database  
+- **SQLite** — database  
 - **Redis** — cache  
 - **unittest** — testing  
 - **Sphinx** — documentation  
 - **flake8** — linting  
 - **safety** — dependency security checks 
 
+## Quick start
 
-## Quick start (Docker)
-
-Pull the latest image:
+Build and run with Docker:
 ```bash
-docker pull artabramov/hidden
+make install
 ```
 
-Run the app:
-```bash
-docker run -dit -p 80:80 artabramov/hidden
-```
+On first launch, a random secret key is generated and stored in a file in the `hidden-secret` Docker volume, from which it can be extracted. Encrypted data is stored in the `hidden-data` Docker volume; logs are in `hidden-logs`.
 
-On first start, the container will generate a random **secret key** and a **serial number**. These files will be created in the `/hidden` directory inside the container. By default, the secret key is stored at `/hidden/secret.key`. You can override this path by setting the `SECRET_KEY_PATH` environment variable and restart the container.
-
-## UI & documentation
-The web client is a **single-page application** built with **React** and **Bootstrap**. Its sources are **not** included in this repository. A pre-built JavaScript bundle is shipped with the backend container, already compiled and ready to use.
-
-
-Web client (UI):
-```bash
-http://localhost
-```
-
-Public API (Swagger/OpenAPI):
+Public API:
 ```bash
 http://localhost/docs
 ```
 
-Backend documentation (Sphinx):
+Documentation:
 ```bash
 http://localhost/sphinx/
 ```

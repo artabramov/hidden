@@ -7,13 +7,13 @@ from app.schemas.document_select import DocumentSelectResponse
 
 class DocumentListRequest(BaseModel):
     """
-    Request schema for listing documents. Supports optional filters on
-    creation time (Unix seconds, UTC), owner and collection IDs, flagged
-    status, filename and MIME type (case-insensitive substring match),
-    and file size (bytes); pagination via offset (default 0) and limit
-    (default 50, maximum 500); and ordering by a fixed set of fields
-    with order (asc, desc, or rand; default desc). Incoming strings
-    are stripped; extra fields are rejected.
+    Request schema for listing documents. Supports optional filters
+    on creation time (Unix seconds, UTC), creator and collection IDs,
+    flagged status, filename and MIME type (case-insensitive substring
+    match), and file size (bytes); pagination via offset (default 0)
+    and limit (default 50, maximum 500); and ordering by a fixed set
+    of fields with order (asc, desc, or rand; default desc). Incoming
+    strings are stripped; extra fields are rejected.
     """
     model_config = ConfigDict(
         str_strip_whitespace=True,

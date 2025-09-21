@@ -37,7 +37,7 @@ async def document_list(
 
     **Query parameters:**
     - `DocumentListRequest` — optional filters (collection_id, creation
-    time, owner, flagged status, filename/mimetype, file size),
+    time, creator, flagged status, filename/mimetype, file size),
     pagination (offset and limit), and ordering (order_by and order).
 
     **Response:**
@@ -66,6 +66,6 @@ async def document_list(
     await hook.call(HOOK_AFTER_DOCUMENT_LIST, documents, documents_count)
 
     return {
-        "documents": [await document.to_dict() for document in documents],
+        "documents": [await d.to_dict() for d in documents],
         "documents_count": documents_count,
     }

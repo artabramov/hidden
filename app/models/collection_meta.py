@@ -56,7 +56,7 @@ class CollectionMeta(Base):
         String(128),
         nullable=False
     )
-    
+
     meta_value = Column(
         String(4096),
         nullable=True

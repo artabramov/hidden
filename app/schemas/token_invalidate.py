@@ -9,4 +9,5 @@ class TokenInvalidateResponse(BaseModel):
     was invalidated for the specified user by returning the user's
     unique identifier.
     """
+
     user_id: int

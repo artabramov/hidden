@@ -262,6 +262,7 @@ class TokenRetrieveRouterTest(unittest.IsolatedAsyncioTestCase):
         cache_mock = AsyncMock()
 
         enc = MagicMock()
+
         def _decrypt(val):
             if val == "enc(mfa)":
                 return "MFA_SECRET"

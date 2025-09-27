@@ -60,5 +60,5 @@ def summary_validate(summary: Optional[str]) -> Optional[str]:
     """
     if summary is None:
         return None
-    
+
     return summary.strip() or None

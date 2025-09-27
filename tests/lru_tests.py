@@ -155,7 +155,6 @@ class LruTests(unittest.TestCase):
         self.assertEqual(list(lru.cache.keys()), ["a", "c"])
         self.assertEqual(lru.size, 4)
 
-
     def test_clear_empties_cache_and_resets_properties(self):
         lru = LRU(10)
         lru.save("a", b"AA")
@@ -179,4 +178,3 @@ class LruTests(unittest.TestCase):
         self.assertEqual(lru.load("b"), b"BBBB")
         self.assertEqual(lru.size, 4)
         self.assertEqual(lru.count, 1)
-

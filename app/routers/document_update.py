@@ -52,7 +52,7 @@ async def document_update(
 
     Files are stored under their collection directory. The database
     enforces uniqueness of (collection_id, filename) for documents.
-    
+
     **Authentication:**
     - Requires a valid bearer token with `editor` role or higher.
 
@@ -102,7 +102,7 @@ async def document_update(
     if not collection:
         raise E([LOC_PATH, "collection_id"], collection_id,
                 ERR_VALUE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
-    
+
     document_repository = Repository(session, cache, Document, config)
     document = await document_repository.select(id=document_id)
 
@@ -114,20 +114,18 @@ async def document_update(
     document_updated = False
 
     # Checking the correctness of the file name
-    filename = None
-    if schema.filename is not None:
-        try:
-            filename = name_validate(schema.filename)
-        except ValueError:
-            raise E([LOC_BODY, "file"], schema.filename, ERR_VALUE_INVALID,
-                    status.HTTP_422_UNPROCESSABLE_ENTITY)
+    try:
+        filename = name_validate(schema.filename)
+    except ValueError:
+        raise E([LOC_BODY, "file"], schema.filename, ERR_VALUE_INVALID,
+                status.HTTP_422_UNPROCESSABLE_ENTITY)
 
     # NOTE: On document update, a small TOCTOU window remains; for
     # strict guarantees, revalidate entities under the locks right
     # before rename/move.
 
     # Rename the file if the filename changes
-    if filename is not None and document.filename != filename:
+    if document.filename != filename:
 
         # NOTE: On file rename, acquire the collection READ lock first,
         # then the per-file exclusive lock.
@@ -152,7 +150,7 @@ async def document_update(
             if filename_exists:
                 raise E([LOC_BODY, "file"], filename,
                         ERR_FILE_CONFLICT, status.HTTP_409_CONFLICT)
-            
+
             # Check the file with the current filename in the directory
             current_file_path = document.path(config)
             current_file_exists = await file_manager.isfile(current_file_path)
@@ -183,8 +181,7 @@ async def document_update(
                 raise
 
     # Move the file if collection changes
-    if (schema.collection_id is not None
-            and document.collection_id != schema.collection_id):
+    if document.collection_id != schema.collection_id:
 
         # Does the target collection exist?
         target_collection = await collection_repository.select(
@@ -245,7 +242,7 @@ async def document_update(
                         current_file_path, target_file_path)
                     lru.delete(current_file_path)
                     lru.delete(target_file_path)
-                    
+
                     await document_repository.commit()
                     document_updated = True
 

@@ -80,7 +80,7 @@ async def thumbnail_retrieve(
     if not collection:
         raise E([LOC_PATH, "collection_id"], collection_id,
                 ERR_VALUE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
-    
+
     document_repository = Repository(session, cache, Document, config)
     document = await document_repository.select(id=document_id)
 

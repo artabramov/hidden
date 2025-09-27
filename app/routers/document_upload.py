@@ -138,7 +138,7 @@ async def document_upload(
         if document and not file_exists:
             raise E([LOC_BODY, "file"], file.filename,
                     ERR_FILE_CONFLICT, status.HTTP_409_CONFLICT)
-        
+
         # Inconsistent state: file exists but document does not
         elif not document and file_exists:
             raise E([LOC_BODY, "file"], file.filename,
@@ -190,7 +190,7 @@ async def document_upload(
             except Exception:
                 await file_manager.delete(temporary_path)
                 raise
-            
+
             # NOTE: File upload is idempotent: if file matches current
             # head (checksum), return successful response; skip DB/FS
             # changes, revision unchanged.
@@ -222,7 +222,7 @@ async def document_upload(
                         current_user.id, document.id, latest_revision_number,
                         revision_uuid, document.filesize, document.checksum)
                     await revision_repository.insert(revision, commit=False)
-                
+
                     # Update the document itself
                     document.latest_revision_number = latest_revision_number
                     document.document_thumbnail = None
@@ -283,10 +283,9 @@ async def document_upload(
                     thumbnail_path, config.THUMBNAILS_WIDTH,
                     config.THUMBNAILS_HEIGHT, config.THUMBNAILS_QUALITY)
 
-
                 thumbnail_repository = Repository(
                     session, cache, DocumentThumbnail, config)
-                
+
                 thumbnail_filesize, thumbnail_checksum = (
                     await file_manager.filesize(thumbnail_path),
                     await file_manager.checksum(thumbnail_path))

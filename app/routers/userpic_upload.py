@@ -1,6 +1,5 @@
 """FastAPI router for uploading userpics."""
 
-import os
 import uuid
 from fastapi import APIRouter, Depends, status, File, UploadFile, Request, Path
 from fastapi.responses import JSONResponse
@@ -90,7 +89,7 @@ async def userpic_upload(
     await image_resize(
         userpic_path, config.THUMBNAILS_WIDTH,
         config.THUMBNAILS_HEIGHT, config.THUMBNAILS_QUALITY)
-    
+
     userpic_filesize = await file_manager.filesize(userpic_path)
     userpic_checksum = await file_manager.checksum(userpic_path)
 

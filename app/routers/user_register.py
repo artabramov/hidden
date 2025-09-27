@@ -84,9 +84,9 @@ async def user_register(
         active = True
         role = UserRole.admin
 
-    password = schema.password.get_secret_value()
+    password = schema.password
     password_hash = encryption_manager.get_hash(password)
-    
+
     jti = generate_jti(config.JTI_LENGTH)
     jti_encrypted = encryption_manager.encrypt_str(jti)
 

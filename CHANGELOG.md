@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.7] - 2025-09-27
+- Fixed minor issues in the **pydantic models**, improving validation and error messages.
+- Increased overall unit test coverage to **81%**.
+- Minor fixes and improvements.
+
 ## [0.2.6] - 2025-09-21
 - Added **collection deletion** endpoint; removes all documents (thumbnails, revisions, head files) with a per-collection **write** lock, performs best-effort filesystem cleanup (missing files ignored), and purges LRU cache.
 - Fixed **delete** method in **EntityManager**: now merges the entity into the current session before deletion, preventing SQLAlchemy InvalidRequestError.

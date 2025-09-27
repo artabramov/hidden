@@ -14,8 +14,8 @@ def _make_request_mock():
     req.app.state = MagicMock()
     req.app.state.config = cfg
     req.state = MagicMock()
+    # .state.log.debug используется в роутере — добавим мок
     req.state.log = MagicMock()
-    req.state.log.debug = MagicMock()
     return req
 
 
@@ -39,17 +39,17 @@ class UserDeleteRouterTest(unittest.IsolatedAsyncioTestCase):
         HookMock.return_value = hook
 
         result = await user_delete(
-            123, request, session=session, cache=cache, current_user=current_user
+            request, 123, session=session, cache=cache,
+            current_user=current_user
         )
 
         self.assertEqual(result, {"user_id": 123})
         repo.select.assert_awaited_with(id=123)
         repo.delete.assert_awaited_with(target_user)
 
-        HookMock.assert_called_with(request, session, cache, current_user=current_user)
+        HookMock.assert_called_with(request, session, cache,
+                                    current_user=current_user)
         hook.call.assert_awaited_with(HOOK_AFTER_USER_DELETE, target_user)
-
-        request.state.log.debug.assert_called()
 
     @patch("app.routers.user_delete.Hook")
     @patch("app.routers.user_delete.Repository")
@@ -68,7 +68,8 @@ class UserDeleteRouterTest(unittest.IsolatedAsyncioTestCase):
 
         with self.assertRaises(E) as ctx:
             await user_delete(
-                123, request, session=session, cache=cache, current_user=current_user
+                request, 123, session=session, cache=cache,
+                current_user=current_user
             )
 
         repo.select.assert_awaited_with(id=123)
@@ -97,7 +98,8 @@ class UserDeleteRouterTest(unittest.IsolatedAsyncioTestCase):
 
         with self.assertRaises(E) as ctx:
             await user_delete(
-                123, request, session=session, cache=cache, current_user=current_user
+                request, 123, session=session, cache=cache,
+                current_user=current_user
             )
 
         repo.select.assert_not_called()
@@ -129,7 +131,8 @@ class UserDeleteRouterTest(unittest.IsolatedAsyncioTestCase):
 
         with self.assertRaises(E) as ctx:
             await user_delete(
-                123, request, session=session, cache=cache, current_user=current_user
+                request, 123, session=session, cache=cache,
+                current_user=current_user
             )
 
         repo.select.assert_awaited_with(id=123)

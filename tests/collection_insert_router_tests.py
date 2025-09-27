@@ -40,10 +40,13 @@ class CollectionInsertRouterTest(unittest.IsolatedAsyncioTestCase):
         hook_instance = MagicMock()
         hook_instance.call = AsyncMock()
 
-        with patch("app.routers.collection_insert.Repository", return_value=repo) as RepositoryMock, \
-             patch("app.routers.collection_insert.Hook", return_value=hook_instance) as HookMock:
+        with patch("app.routers.collection_insert.Repository",
+                   return_value=repo) as RepositoryMock, \
+             patch("app.routers.collection_insert.Hook",
+                   return_value=hook_instance) as HookMock:
 
-            schema = CollectionInsertRequest(readonly=False, name="Inbox", summary=None)
+            schema = CollectionInsertRequest(readonly=False, name="Inbox",
+                                             summary=None)
             result = await collection_insert(
                 request=request,
                 schema=schema,
@@ -91,10 +94,13 @@ class CollectionInsertRouterTest(unittest.IsolatedAsyncioTestCase):
         hook_instance = MagicMock()
         hook_instance.call = AsyncMock()
 
-        with patch("app.routers.collection_insert.Repository", return_value=repo), \
-             patch("app.routers.collection_insert.Hook", return_value=hook_instance):
+        with patch("app.routers.collection_insert.Repository",
+                   return_value=repo), \
+             patch("app.routers.collection_insert.Hook",
+                   return_value=hook_instance):
 
-            schema = CollectionInsertRequest(readonly=True, name="Projects", summary="x")
+            schema = CollectionInsertRequest(readonly=True, name="Projects",
+                                             summary="x")
             with self.assertRaises(E) as ctx:
                 await collection_insert(
                     request=request,
@@ -124,10 +130,13 @@ class CollectionInsertRouterTest(unittest.IsolatedAsyncioTestCase):
         hook_instance = MagicMock()
         hook_instance.call = AsyncMock()
 
-        with patch("app.routers.collection_insert.Repository", return_value=repo), \
-             patch("app.routers.collection_insert.Hook", return_value=hook_instance):
+        with patch("app.routers.collection_insert.Repository",
+                   return_value=repo), \
+             patch("app.routers.collection_insert.Hook",
+                   return_value=hook_instance):
 
-            schema = CollectionInsertRequest(readonly=False, name="Broken", summary=None)
+            schema = CollectionInsertRequest(readonly=False, name="Broken",
+                                             summary=None)
             with self.assertRaises(OSError):
                 await collection_insert(
                     request=request,

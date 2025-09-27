@@ -77,7 +77,6 @@ class AppTest(unittest.IsolatedAsyncioTestCase):
         engine.dispose.assert_awaited_once()
         RedisClientMock.return_value.close.assert_awaited_once()
 
-
     @patch("app.app.uuid4")
     async def test_middleware_handler_lock_exists(self, uuid4_mock):
         uuid4_mock.return_value = "fa5ed3d1-a85d-4f16-8a1f-b2440907"
@@ -381,7 +380,7 @@ class AppTest(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(json.loads(resp.body), {"detail": detail})
 
         self.assertEqual(resp.headers.get("X-Request-ID"),
-                        request.state.request_uuid)
+                         request.state.request_uuid)
         self.assertTrue(log_mock.error.called)
 
         lru_mock.assert_not_called()
@@ -418,7 +417,7 @@ class AppTest(unittest.IsolatedAsyncioTestCase):
         )
 
         self.assertEqual(resp.headers.get("X-Request-ID"),
-                        request.state.request_uuid)
+                         request.state.request_uuid)
         self.assertTrue(log_mock.error.called)
 
         lru_mock.assert_not_called()

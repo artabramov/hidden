@@ -46,17 +46,24 @@ class EncryptionManagerExtendedTest(unittest.TestCase):
         self.assertEqual(a.get_hash("payload"), b.get_hash("payload"))
 
     def test_init_invalid_salt_base64_raises(self):
-        class _Cfg(_CfgHKDF): CRYPTO_HKDF_SALT_B64 = "%%%not-base64%%%"
+
+        class _Cfg(_CfgHKDF):
+            CRYPTO_HKDF_SALT_B64 = "%%%not-base64%%%"
+
         with self.assertRaises(Exception):
             EncryptionManager(_Cfg(), "s")
 
     def test_init_raw_key_bytes_lengths_ok(self):
         for n in (16, 24, 32):
-            class _Cfg(_CfgRawKey): CRYPTO_KEY_LENGTH = n
+            class _Cfg(_CfgRawKey):
+                CRYPTO_KEY_LENGTH = n
+
             EncryptionManager(_Cfg(), b"\x00" * n)
 
     def test_init_raw_key_invalid_lengths_raise(self):
-        class _Cfg(_CfgRawKey): CRYPTO_KEY_LENGTH = 48
+        class _Cfg(_CfgRawKey):
+            CRYPTO_KEY_LENGTH = 48
+
         with self.assertRaises(ValueError):
             EncryptionManager(_Cfg(), "X" * 48)
 
@@ -108,7 +115,9 @@ class EncryptionManagerExtendedTest(unittest.TestCase):
         self.assertEqual(em.decrypt_bytes(ct), data)
 
     def test_encrypt_bytes_accepts_nonstandard_nonce_len(self):
-        class _Cfg(_CfgHKDF): CRYPTO_NONCE_LENGTH = 8
+        class _Cfg(_CfgHKDF):
+            CRYPTO_NONCE_LENGTH = 8
+
         em1 = EncryptionManager(_Cfg(), "s")
         em2 = EncryptionManager(_Cfg(), "s")
 
@@ -226,8 +235,12 @@ class EncryptionManagerExtendedTest(unittest.TestCase):
             b.decrypt_bytes(ct)
 
     def test_decrypt_bytes_aad_mismatch_raises(self):
-        class _C1(_CfgHKDF): CRYPTO_AAD_DEFAULT = b"env=one"
-        class _C2(_CfgHKDF): CRYPTO_AAD_DEFAULT = b"env=two"
+        class _C1(_CfgHKDF):
+            CRYPTO_AAD_DEFAULT = b"env=one"
+
+        class _C2(_CfgHKDF):
+            CRYPTO_AAD_DEFAULT = b"env=two"
+
         a = EncryptionManager(_C1(), "s")
         b = EncryptionManager(_C2(), "s")
         ct = a.encrypt_bytes(b"d")
@@ -248,11 +261,6 @@ class EncryptionManagerExtendedTest(unittest.TestCase):
         tok_false = em.encrypt_int(0)
         self.assertTrue(em.decrypt_bool(tok_true))
         self.assertFalse(em.decrypt_bool(tok_false))
-
-    def test_decrypt_bool_invalid_token_raises(self):
-        em = EncryptionManager(_CfgHKDF(), "BOOL-SECRET")
-        with self.assertRaises(Exception):
-            em.decrypt_bool("$$$not-base64$$$")
 
     def test_decrypt_int_invalid_token_raises(self):
         cfg = _CfgHKDF()

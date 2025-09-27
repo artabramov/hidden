@@ -9,11 +9,10 @@ from app.schemas.revision_select import RevisionSelectResponse
 
 class DocumentSelectResponse(BaseModel):
     """
-    Response schema for document detail retrieval. Includes the document
-    ID; creator data; parent collection data; creation and last-update
-    timestamps (Unix seconds, UTC); flagged status; filename; file size;
-    MIME type; content checksum; optional summary; and the latest
-    revision number.
+    Response schema for document details. Includes identifiers, creator,
+    parent collection, creation/update timestamps, flagged status,
+    filename, filesize, mimetype, checksum, optional summary, latest
+    revision number, and a list of document revisions.
     """
 
     id: int
@@ -24,8 +23,8 @@ class DocumentSelectResponse(BaseModel):
     flagged: bool
     filename: str
     filesize: int
-    mimetype: Optional[str]
+    mimetype: Optional[str] = None
     checksum: str
-    summary: Optional[str]
+    summary: Optional[str] = None
     latest_revision_number: int
     document_revisions: List[RevisionSelectResponse]

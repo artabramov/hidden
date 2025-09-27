@@ -52,7 +52,8 @@ class ImageResizeHelperTest(unittest.IsolatedAsyncioTestCase):
 
     @patch("app.helpers.image_helper.ImageOps.exif_transpose")
     @patch("app.helpers.image_helper.Image.open")
-    def test_sync_cover_branch_crop_height_then_resize_and_save(self, open_mock, exif_mock):
+    def test_sync_cover_branch_crop_height_then_resize_and_save(
+            self, open_mock, exif_mock):
         im = MagicMock()
         im.width, im.height = 100, 200
         im.mode = "RGBA"
@@ -86,10 +87,8 @@ class ImageResizeHelperTest(unittest.IsolatedAsyncioTestCase):
 
     @patch("app.helpers.image_helper.ImageOps.exif_transpose")
     @patch("app.helpers.image_helper.Image.open")
-    def test_sync_cover_branch_crop_width_then_resize_and_save(self, open_mock, exif_mock):
-        """
-        target_ratio <= im_ratio -> обрезаем по ширине: crop((off, 0, off+new_w, height))
-        """
+    def test_sync_cover_branch_crop_width_then_resize_and_save(
+            self, open_mock, exif_mock):
         im = MagicMock()
         im.width, im.height = 200, 100
         im.mode = "RGB"
@@ -134,7 +133,7 @@ class ImageResizeHelperTest(unittest.IsolatedAsyncioTestCase):
         im.resize.assert_called_once_with((60, 40), Image.Resampling.LANCZOS)
         im.save.assert_called_once()
 
-    @patch("app.helpers.image_helper.Image.open", side_effect=OSError("cannot open"))
+    @patch("app.helpers.image_helper.Image.open", side_effect=OSError("cannot open"))  # noqa E501
     def test_sync_raises_on_open_error(self, open_mock):
         with self.assertRaises(OSError):
             _image_resize_sync("bad/path", 10, 10, 80)

@@ -14,6 +14,9 @@ class DocumentThumbnail(Base, ThumbnailMixin):
     size, and checksum.
     """
 
+    # NOTE: Thumbnail models are obtained only through parent documents;
+    # the document cache applies and thumbnail cache is not necessary.
+
     __tablename__ = "documents_thumbnails"
     __table_args__ = {"sqlite_autoincrement": True}
     _cacheable = False

@@ -1,6 +1,5 @@
 """FastAPI router for deleting user image."""
 
-import os
 from fastapi import APIRouter, Depends, status, Request, Path
 from fastapi.responses import JSONResponse
 from app.sqlite import get_session
@@ -64,17 +63,14 @@ async def userpic_delete(
         raise E([LOC_PATH, "user_id"], user_id,
                 ERR_VALUE_INVALID, status.HTTP_422_UNPROCESSABLE_ENTITY)
 
-    elif not current_user.has_thumbnail:
-        raise E([LOC_PATH, "user_id"], user_id,
-                ERR_VALUE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
+    if current_user.has_thumbnail:
+        userpic_path = current_user.user_thumbnail.path(config)
+        lru.delete(userpic_path)
+        await file_manager.delete(userpic_path)
 
-    userpic_path = current_user.user_thumbnail.path(config)
-    lru.delete(userpic_path)
-    await file_manager.delete(userpic_path)
-
-    current_user.user_thumbnail = None
-    user_repository = Repository(session, cache, User, config)
-    await user_repository.update(current_user)
+        current_user.user_thumbnail = None
+        user_repository = Repository(session, cache, User, config)
+        await user_repository.update(current_user)
 
     hook = Hook(request, session, cache, current_user=current_user)
     await hook.call(HOOK_AFTER_USERPIC_DELETE)

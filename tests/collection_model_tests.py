@@ -1,78 +1,63 @@
+import os
 import unittest
+from unittest.mock import AsyncMock
+from types import SimpleNamespace
 from app.models.collection import Collection
-from app.models.document import Document  # noqa F401
+from app.models.document import Document  # noqa: F401
 
 
 class CollectionModelTest(unittest.IsolatedAsyncioTestCase):
 
-    async def test_to_dict_basic(self):
-        c = Collection(123, readonly=False, name="Inbox", summary=None)
-        c.id = 1
-        c.created_date = 111
-        c.updated_date = 222
+    def test_init(self):
+        user_id = 42
+        readonly = True
+        name = "Dummy"
+        summary = "Some text"
+        collection = Collection(user_id, readonly, name, summary)
 
-        self.assertEqual(
-            await c.to_dict(),
-            {
-                "id": 1,
-                "created_date": 111,
-                "updated_date": 222,
-                "readonly": False,
-                "name": "Inbox",
-                "summary": None,
-            },
-        )
+        self.assertEqual(collection.user_id, user_id)
+        self.assertEqual(collection.readonly, readonly)
+        self.assertEqual(collection.name, name)
+        self.assertEqual(collection.summary, summary)
 
-    async def test_to_dict_with_summary(self):
-        c = Collection(123, readonly=True, name="Projects",
-                       summary="Main workspace")
-        c.id = 2
-        c.created_date = 1000
-        c.updated_date = 2000
+        self.assertIsNone(collection.id)
+        self.assertIsNone(collection.created_date)
+        self.assertIsNone(collection.updated_date)
+        self.assertIsNone(collection.collection_user)
+        self.assertListEqual(collection.collection_meta, [])
+        self.assertListEqual(collection.collection_documents, [])
 
-        self.assertEqual(
-            await c.to_dict(),
-            {
-                "id": 2,
-                "created_date": 1000,
-                "updated_date": 2000,
-                "readonly": True,
-                "name": "Projects",
-                "summary": "Main workspace",
-            },
-        )
+        self.assertTrue(collection._cacheable)
+        self.assertEqual(collection.__tablename__, "collections")
+    
+    async def test_to_dict(self):
+        user_mock = AsyncMock()
+        collection = Collection(42, True, "dummy", "some text")
+        collection.collection_user = user_mock
+        collection.id = 37
+        collection.created_date = "created-date"
+        collection.updated_date = "updated-date"
+        
+        res = await collection.to_dict()
+        self.assertDictEqual(res, {
+            "id": 37,
+            "user": user_mock.to_dict.return_value,
+            "created_date": "created-date",
+            "updated_date": "updated-date",
+            "readonly": True,
+            "name": "dummy",
+            "summary": "some text",
+        })
 
-    async def test_to_dict_unicode_name(self):
-        c = Collection(123, readonly=False, name="коллекция📁", summary=None)
-        c.id = 3
-        c.created_date = 123
-        c.updated_date = 456
 
-        d = await c.to_dict()
-        self.assertEqual(d["name"], "коллекция📁")
-        self.assertIsNone(d["summary"])
-        self.assertEqual(d["readonly"], False)
-        self.assertEqual(d["id"], 3)
-        self.assertEqual(d["created_date"], 123)
-        self.assertEqual(d["updated_date"], 456)
+    def test_path_for_dir(self):
+        config = SimpleNamespace(DOCUMENTS_DIR="/tmp/data")
+        name = "dummies"
+        expected = os.path.join(config.DOCUMENTS_DIR, name)
+        self.assertEqual(Collection.path_for_dir(config, name), expected)
 
-    async def test_to_dict_large_summary(self):
-        large = "x" * 4096
-        c = Collection(123, readonly=False, name="Large", summary=large)
-        c.id = 4
-        c.created_date = 1
-        c.updated_date = 2
-
-        d = await c.to_dict()
-        self.assertEqual(d["summary"], large)
-        self.assertEqual(len(d["summary"]), 4096)
-
-    async def test_to_dict_readonly_flag(self):
-        c1 = Collection(123, readonly=False, name="A", summary=None)
-        c1.id, c1.created_date, c1.updated_date = 10, 10, 10
-
-        c2 = Collection(123, readonly=True, name="B", summary=None)
-        c2.id, c2.created_date, c2.updated_date = 20, 20, 20
-
-        self.assertFalse((await c1.to_dict())["readonly"])
-        self.assertTrue((await c2.to_dict())["readonly"])
+    def test_path(self):
+        config = SimpleNamespace(DOCUMENTS_DIR="/tmp/data")
+        collection = Collection(user_id=1, readonly=False, name="dummies")
+        expected = os.path.join(config.DOCUMENTS_DIR, "dummies")
+        self.assertEqual(collection.path(config), expected)

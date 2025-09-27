@@ -71,7 +71,7 @@ async def document_download(
     if not collection:
         raise E([LOC_PATH, "collection_id"], collection_id,
                 ERR_VALUE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
-    
+
     document_repository = Repository(session, cache, Document, config)
     document = await document_repository.select(id=document_id)
 
@@ -94,7 +94,7 @@ async def document_download(
         if not revision:
             raise E([LOC_PATH, "document_id"], document_id,
                     ERR_VALUE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
-        
+
         file_path = revision.path(config)
         checksum = revision.checksum
         filesize = revision.filesize

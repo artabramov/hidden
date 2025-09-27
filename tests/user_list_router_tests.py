@@ -69,7 +69,8 @@ class UserListRouterTest(unittest.IsolatedAsyncioTestCase):
         repo.select_all.assert_awaited_with(**expected_filters)
         repo.count_all.assert_awaited_with(**expected_filters)
 
-        HookMock.assert_called_with(request, session, cache, current_user=current_user)
+        HookMock.assert_called_with(request, session, cache,
+                                    current_user=current_user)
         hook.call.assert_awaited()
         request.state.log.debug.assert_called()
 

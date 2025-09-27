@@ -48,7 +48,7 @@ async def collection_update(
         name__eq=schema.name, id__ne=collection.id)
 
     if collection_exists:
-        raise E([LOC_BODY, "name"], schema.name, 
+        raise E([LOC_BODY, "name"], schema.name,
                 ERR_VALUE_EXISTS, status.HTTP_422_UNPROCESSABLE_ENTITY)
 
     current_name = collection.name
@@ -65,12 +65,12 @@ async def collection_update(
         if updated_name == current_name:
             collection.summary = schema.summary
             await collection_repository.update(collection)
-        
+
         else:
             # Does a directory with this name already exist?
             directory_exists = await file_manager.isdir(updated_path)
             if directory_exists:
-                raise E([LOC_BODY, "name"], schema.name, 
+                raise E([LOC_BODY, "name"], schema.name,
                         ERR_VALUE_EXISTS, status.HTTP_422_UNPROCESSABLE_ENTITY)
 
             try:
@@ -91,7 +91,7 @@ async def collection_update(
                         log.exception(
                             "collection rename failed; collection_id=%s;",
                             collection.id)
-        
+
                 # Rollback successful: raise original
                 # error without losing stacktrace
                 raise

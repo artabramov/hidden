@@ -66,7 +66,7 @@ async def _can_read(
     if not user.can_read:
         raise E([LOC_HEADER, "Authorization"], header.credentials,
                 ERR_ROLE_FORBIDDEN, status.HTTP_403_FORBIDDEN)
-    
+
     request.state.log.debug("auth completed; role=reader; user_id=%s", user.id)
     return user
 
@@ -93,7 +93,7 @@ async def _can_write(
     if not user.can_write:
         raise E([LOC_HEADER, "Authorization"], header.credentials,
                 ERR_ROLE_FORBIDDEN, status.HTTP_403_FORBIDDEN)
-    
+
     request.state.log.debug("auth completed; role=writer; user_id=%s", user.id)
     return user
 
@@ -120,7 +120,7 @@ async def _can_edit(
     if not user.can_edit:
         raise E([LOC_HEADER, "Authorization"], header.credentials,
                 ERR_ROLE_FORBIDDEN, status.HTTP_403_FORBIDDEN)
-    
+
     request.state.log.debug("auth completed; role=editor; user_id=%s", user.id)
     return user
 
@@ -147,7 +147,7 @@ async def _can_admin(
     if not user.can_admin:
         raise E([LOC_HEADER, "Authorization"], header.credentials,
                 ERR_ROLE_FORBIDDEN, status.HTTP_403_FORBIDDEN)
-    
+
     request.state.log.debug("auth completed; role=admin; user_id=%s", user.id)
     return user
 

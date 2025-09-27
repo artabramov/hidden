@@ -101,7 +101,7 @@ class Hook:
         for func in self.request.app.state.hooks.get(hook, ()):
             try:
                 await func(self.request, self.session, self.cache,
-                        self.current_user, *args, **kwargs)
+                           self.current_user, *args, **kwargs)
             except Exception:
                 self.request.state.log.exception(
                     f"hook failed; hook={func.__name__};")

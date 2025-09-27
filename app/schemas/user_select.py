@@ -6,12 +6,11 @@ from pydantic import BaseModel
 
 class UserSelectResponse(BaseModel):
     """
-    Response schema for user detail retrieval. Includes the user ID;
-    creation and last-login timestamps (Unix seconds, UTC); role
-    (reader, writer, editor, admin); active status; username; first
-    and last name; optional summary; and a flag indicating whether
-    a user thumbnail exists.
+    Response schema for user details. Includes identifiers, creation
+    and last-login timestamps, role, active status, username, first/last
+    name, optional summary, and thumbnail presence flag.
     """
+
     id: int
     created_date: int
     last_login_date: int

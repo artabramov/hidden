@@ -1,14 +1,18 @@
+"""Asyncio reader–writer lock with writer preference."""
+
 import asyncio
 from contextlib import asynccontextmanager
-from collections import defaultdict
+
 
 class RWLock:
     """
-    Asyncio-friendly readers-writer lock with writer preference.
-    - Multiple readers can hold the lock concurrently.
-    - Writers get exclusive access.
-    - New readers are blocked when a writer is waiting (prevents writer starvation).
+    Asyncio-friendly readers-writer lock with writer preference:
+    multiple readers may proceed concurrently, writers acquire
+    exclusive access, and new readers are blocked while any writer
+    is active or waiting. Non-reentrant and in-process only;
+    cancellation-safe.
     """
+
     def __init__(self):
         self._readers = 0
         self._readers_cond = asyncio.Condition()
@@ -17,7 +21,11 @@ class RWLock:
 
     @asynccontextmanager
     async def read(self):
-        # Block new readers if a writer is active or waiting.
+        """
+        Acquire a shared read lock: waits while a writer is active or
+        queued, then yields; releases on exit and wakes waiters when
+        the last reader leaves.
+        """
         async with self._readers_cond:
             while self._writer_lock.locked() or self._writers_waiting > 0:
                 await self._readers_cond.wait()
@@ -32,7 +40,11 @@ class RWLock:
 
     @asynccontextmanager
     async def write(self):
-        # Signal writer intent first to block new readers.
+        """
+        Acquire an exclusive write lock: announces writer intent to
+        block new readers, waits for current readers to drain, then
+        yields; releases on exit and wakes pending readers/writers.
+        """
         self._writers_waiting += 1
         try:
             await self._writer_lock.acquire()

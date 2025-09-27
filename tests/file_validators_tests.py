@@ -1,134 +1,99 @@
 import unittest
-from app.validators.document_validators import filename_validate
+import unicodedata
+from app.validators.file_validators import name_validate
 
 
 class FileValidatorsTest(unittest.TestCase):
 
-    def test_filename_valid_basic(self):
-        cases = [
-            ("doc.pdf", "doc.pdf"),
-            (".env", ".env"),
-            ("файл.txt", "файл.txt"),
-            ("テスト.png", "テスト.png"),
-            ("img😀.jpg", "img😀.jpg"),
-            ("spaces inside.txt", "spaces inside.txt"),
-        ]
-        for raw, expected in cases:
-            with self.subTest(raw=raw):
-                self.assertEqual(filename_validate(raw), expected)
+    # --- Type & empty handling ---
 
-    def test_filename_valid_with_trimming(self):
-        cases = [
-            (" leading.txt", "leading.txt"),
-            ("trailing.txt ", "trailing.txt"),
-            ("\ttrim\t.pdf\t", "trim\t.pdf"),
-            ("  mixed name . md  ", "mixed name . md"),
-        ]
-        for raw, expected in cases:
-            with self.subTest(raw=raw):
-                self.assertEqual(filename_validate(raw), expected)
+    def test_non_string(self):
+        for v in [None, 123, True, b"bytes", ["list"]]:
+            with self.assertRaises(ValueError):
+                name_validate(v)  # type: ignore[arg-type]
 
-    def test_filename_invalid_empty_or_whitespace_only(self):
-        for raw in ["", " ", "   ", "\t", "\n"]:
-            with self.subTest(raw=raw):
-                with self.assertRaises(ValueError):
-                    filename_validate(raw)
+    def test_empty_after_strip_raises(self):
+        for s in ["", " ", "\t\n  "]:
+            with self.assertRaises(ValueError):
+                name_validate(s)
 
-    def test_filename_invalid_dot_names(self):
-        for raw in [".", ".."]:
-            with self.subTest(raw=raw):
-                with self.assertRaises(ValueError):
-                    filename_validate(raw)
+    # --- Special components ---
 
-    def test_filename_invalid_forbidden_chars(self):
-        for raw in ["in/valid.txt", "nul\x00byte", "bad/\x00.txt"]:
-            with self.subTest(raw=raw):
-                with self.assertRaises(ValueError):
-                    filename_validate(raw)
+    def test_dot_and_dotdot_rejected(self):
+        for s in [".", ".."]:
+            with self.assertRaises(ValueError):
+                name_validate(s)
 
-    def test_max_bytes_ascii_boundary(self):
-        ok = "a" * 255            # 255 bytes → ok
-        bad = "a" * 256           # 256 bytes → fail
-        self.assertEqual(filename_validate(ok), ok)
+    # --- Invalid characters (portable set) ---
+
+    def test_invalid_chars_rejected(self):
+        bad_chars = '<>:"/\\|?*'
+        for ch in bad_chars:
+            with self.assertRaises(ValueError):
+                name_validate(f"foo{ch}bar")
+
+    # --- Control characters ---
+
+    def test_control_chars_rejected(self):
+        for ch in ["\x00", "\n", "\r", "\t", "\x1f", "\x7f"]:
+            with self.assertRaises(ValueError):
+                name_validate(f"foo{ch}bar")
+
+    # --- Trailing dot ---
+
+    def test_trailing_dot_rejected(self):
         with self.assertRaises(ValueError):
-            filename_validate(bad)
+            name_validate("readme.")
 
-    def test_filename_max_bytes_multibyte_boundary(self):
-        # кириллица: ~2 байта/символ
-        ok = "я" * 127            # ~254 bytes → ok
-        bad = "я" * 128           # ~256 bytes → fail
-        self.assertEqual(filename_validate(ok), ok)
+    # --- Windows reserved names ---
+
+    def test_windows_reserved_rejected_plain(self):
+        for s in ["CON", "prn", "Nul", "aux", "COM1", "lpt9"]:
+            with self.assertRaises(ValueError):
+                name_validate(s)
+
+    def test_windows_reserved_rejected_with_extension(self):
+        for s in ["con.txt", "PRN.md", "aux.jpg", "lpt1.doc"]:
+            with self.assertRaises(ValueError):
+                name_validate(s)
+
+    # --- Length in bytes (UTF-8) ---
+
+    def test_255_bytes(self):
+        # ASCII: 255 'a' bytes
+        name = "a" * 255
+        res = name_validate(name)
+        self.assertEqual(res, name)
+
+    def test_256_bytes_rejected(self):
+        # ASCII: 256 'a' bytes
         with self.assertRaises(ValueError):
-            filename_validate(bad)
+            name_validate("a" * 256)
 
-    def test_filename_max_bytes_after_trimming(self):
-        # до трима длина >255, после трима ≤255 — должно пройти
-        raw = " " + ("a" * 255)
-        self.assertEqual(filename_validate(raw), "a" * 255)
+    def test_multibyte_near_limit(self):
+        # 'é' is 2 bytes in UTF-8; 127 of them = 254 bytes
+        name = "é" * 127
+        self.assertEqual(len(name.encode("utf-8")), 254)
+        res = name_validate(name)
+        self.assertEqual(res, name)
 
-        # после трима всё ещё >255 — должно упасть
-        raw2 = " " + ("a" * 256) + " "
-        with self.assertRaises(ValueError):
-            filename_validate(raw2)
+    # --- Normalization & trimming ---
 
-    def test_filename_trimming_various_whitespace(self):
-        # обычные пробелы, табы, переводы строк, NBSP
-        cases = [
-            ("  name.txt  ", "name.txt"),
-            ("\tname.txt\t", "name.txt"),
-            ("\nname.txt\n", "name.txt"),
-            ("\r\nname.txt\r\n", "name.txt"),
-            ("\u00A0name.txt\u00A0", "name.txt"),  # NBSP
-        ]
-        for raw, expected in cases:
-            with self.subTest(raw=repr(raw)):
-                self.assertEqual(filename_validate(raw), expected)
+    def test_unicode_normalization_nfc(self):
+        # "e\u0301" (decomposed) should normalize to "é" (NFC)
+        decomposed = "Cafe\u0301"
+        expected = unicodedata.normalize("NFC", decomposed)
+        res = name_validate(decomposed)
+        self.assertEqual(res, expected)
+        self.assertEqual(unicodedata.normalize("NFC", res), res)
 
-    def test_filename_preserve_internal_whitespace_and_backslash(self):
-        # внутренние пробелы/табы/бэкслеш сохраняются
-        cases = [
-            ("in  side.txt", "in  side.txt"),
-            ("in\tside.txt", "in\tside.txt"),
-            ("back\\slash.txt", "back\\slash.txt"),
-        ]
-        for raw, expected in cases:
-            with self.subTest(raw=repr(raw)):
-                self.assertEqual(filename_validate(raw), expected)
+    def test_leading_trailing_whitespace_stripped(self):
+        res = name_validate("  report_final  ")
+        self.assertEqual(res, "report_final")
 
-    def test_filename_non_string_inputs_raise(self):
-        for raw in [None, 123, 3.14, b"bytes"]:
-            with self.subTest(raw=repr(raw)):
-                with self.assertRaises(ValueError):
-                    filename_validate(raw)  # type: ignore[arg-type]
+    # --- Valid examples ---
 
-    def test_filename_allows_fullwidth_slash_and_newline_inside(self):
-        # разрешаем похожие символы и переводы строк ВНУТРИ имени
-        cases = [
-            ("fullwidth／slash.txt", "fullwidth／slash.txt"),  # U+FF0F, не '/'
-            ("line\nbreak.txt", "line\nbreak.txt"),
-        ]
-        for raw, expected in cases:
-            with self.subTest(raw=repr(raw)):
-                self.assertEqual(filename_validate(raw), expected)
-
-    def test_filename_trim_to_dot_or_dotdot_is_invalid(self):
-        for raw in [" . ", " .. "]:
-            with self.subTest(raw=repr(raw)):
-                with self.assertRaises(ValueError):
-                    filename_validate(raw)
-
-    def test_filename_mixed_multibyte_boundary(self):
-        # 127 'я' (~254 байта) + 'a' (1 байт) = 255 → ок
-        ok = "я" * 127 + "a"
-        self.assertEqual(filename_validate(ok), ok)
-        # добавить ещё один байт → 256 → ошибка
-        bad = ok + "a"
-        with self.assertRaises(ValueError):
-            filename_validate(bad)
-
-    def test_filename_contains_nul_anywhere_invalid(self):
-        cases = ["\x00", "a\x00", "\x00b", "pre\x00post.txt"]
-        for raw in cases:
-            with self.subTest(raw=repr(raw)):
-                with self.assertRaises(ValueError):
-                    filename_validate(raw)
+    def test_valid_simple_names(self):
+        for s in ["file", "file_name-OK", "数据集", "файл", "notes_2025"]:
+            res = name_validate(s)
+            self.assertEqual(res, s)

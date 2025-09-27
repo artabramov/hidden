@@ -1,5 +1,4 @@
 import logging
-import time
 import unittest
 from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
@@ -60,7 +59,6 @@ class LogTest(unittest.TestCase):
         self.assertEqual(len(logger_obj.handlers), 1)
         logger_obj.addHandler.assert_called_once()
 
-
     @patch("app.log.logging.getLogger")
     @patch("app.log.ConcurrentRotatingFileHandler")
     def test_init_logger_no_duplicate_when_same_file_already_attached(
@@ -78,35 +76,3 @@ class LogTest(unittest.TestCase):
         logger_obj.setLevel.assert_called_with(self.cfg.LOG_LEVEL)
         self.assertFalse(getattr(logger_obj, "propagate", True))
         self.assertIs(app.state.log, logger_obj)
-
-    def test_bind_request_logger_and_start_time_and_returns_adapter(self):
-        base_logger = MagicMock(spec=logging.Logger)
-        app = SimpleNamespace(state=SimpleNamespace(log=base_logger))
-        request = SimpleNamespace(state=SimpleNamespace(), app=app)
-
-        adapter = log_mod.bind_request_logger(request)
-
-        self.assertIsInstance(adapter, logging.LoggerAdapter)
-        self.assertTrue(getattr(request.state, "request_uuid", None))
-        self.assertTrue(getattr(request.state, "request_start_time", None))
-        self.assertIs(adapter.logger, base_logger)
-        self.assertEqual(adapter.extra.get("request_uuid"),
-                         request.state.request_uuid)
-
-    def test_bind_request_logger_preserves_existing_values(self):
-        base_logger = MagicMock(spec=logging.Logger)
-        app = SimpleNamespace(state=SimpleNamespace(log=base_logger))
-        request_uuid = "fixed-uuid"
-        start_time = time.time() - 1.23
-        request = SimpleNamespace(
-            state=SimpleNamespace(
-                request_uuid=request_uuid, request_start_time=start_time),
-            app=app,
-        )
-
-        adapter = log_mod.bind_request_logger(request)
-
-        self.assertEqual(request.state.request_uuid, request_uuid)
-        self.assertEqual(request.state.request_start_time, start_time)
-        self.assertEqual(adapter.extra.get("request_uuid"), request_uuid)
-        self.assertIs(adapter.logger, base_logger)

@@ -7,6 +7,7 @@ from app.routers.user_update import user_update, User as UserModel
 
 cfg = get_config()
 
+
 def _req():
     r = MagicMock()
     r.app = MagicMock()
@@ -45,7 +46,8 @@ class UserUpdateRouterTest(unittest.IsolatedAsyncioTestCase):
         HookMock.return_value = hook
 
         result = await user_update(
-            123, request, Schema, session=session, cache=cache, current_user=current_user
+            request, Schema(), 123, session=session, cache=cache,
+            current_user=current_user
         )
 
         self.assertEqual(result, {"user_id": 123})
@@ -56,7 +58,8 @@ class UserUpdateRouterTest(unittest.IsolatedAsyncioTestCase):
         RepositoryMock.assert_called_once_with(session, cache, UserModel, cfg)
         repo.update.assert_awaited_with(current_user)
 
-        HookMock.assert_called_with(request, session, cache, current_user=current_user)
+        HookMock.assert_called_with(request, session, cache,
+                                    current_user=current_user)
         hook.call.assert_awaited_with(HOOK_AFTER_USER_UPDATE)
 
         request.state.log.debug.assert_called()
@@ -78,7 +81,8 @@ class UserUpdateRouterTest(unittest.IsolatedAsyncioTestCase):
 
         with self.assertRaises(E) as ctx:
             await user_update(
-                123, request, Schema, session=session, cache=cache, current_user=current_user
+                request, Schema(), 123, session=session, cache=cache,
+                current_user=current_user
             )
 
         self.assertEqual(ctx.exception.status_code, 422)

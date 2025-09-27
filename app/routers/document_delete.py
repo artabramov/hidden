@@ -88,7 +88,7 @@ async def document_delete(
     if not document or document.collection_id != collection.id:
         raise E([LOC_PATH, "document_id"], document_id,
                 ERR_VALUE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
-    
+
     latest_revision_number = document.latest_revision_number
 
     # NOTE: On document delete, acquire the collection READ lock first,
@@ -116,7 +116,7 @@ async def document_delete(
 
             await file_manager.delete(thumbnail_path)
             lru.delete(thumbnail_path)
-        
+
         # Ensure the revision file exists
         if document.has_revisions:
             for revision in document.document_revisions:

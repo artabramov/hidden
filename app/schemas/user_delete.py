@@ -5,7 +5,7 @@ from pydantic import BaseModel
 
 class UserDeleteResponse(BaseModel):
     """
-    Response schema for confirming a user deletion by returning the
-    unique identifier of the removed account.
+    Response schema for user deletion. Contains the deleted user ID.
     """
+
     user_id: int

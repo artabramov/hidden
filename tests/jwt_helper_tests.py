@@ -69,7 +69,6 @@ class JWTHelperTest(unittest.TestCase):
         with self.assertRaises(jwt.ImmatureSignatureError):
             decode_jwt(token, secret, [alg])
 
-
     def test_decode_jwt_raises_on_non_integer_iat(self):
         secret, alg = "test-secret", "HS256"
         payload = {"sub": "1", "iat": "not-an-int"}

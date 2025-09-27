@@ -4,121 +4,423 @@ from app.schemas.user_register import UserRegisterRequest, UserRegisterResponse
 
 
 class UserRegisterSchemaTest(unittest.TestCase):
-    def test_request_successful_build_and_normalization(self):
-        m = UserRegisterRequest(
-            username="John_Doe",
-            password="Aa1!aaaa",
-            first_name=" John ",
-            last_name=" Doe ",
-            summary="  Hello  ",
+
+    def test_request_successful(self):
+        res = UserRegisterRequest(
+            username="johndoe",
+            password="AaBb1!",
+            first_name="John",
+            last_name="Doe",
+            summary="Hello",
         )
-        self.assertEqual(m.first_name, "John")
-        self.assertEqual(m.last_name, "Doe")
-        self.assertEqual(m.username, "john_doe")
-        self.assertEqual(m.password.get_secret_value(), "Aa1!aaaa")
-        self.assertEqual(m.summary, "Hello")
-        self.assertIn("SecretStr", repr(m))
+        self.assertEqual(res.username, "johndoe")
+        self.assertEqual(res.first_name, "John")
+        self.assertEqual(res.last_name, "Doe")
+        self.assertEqual(res.password, "AaBb1!")
+        self.assertEqual(res.summary, "Hello")
 
-    def test_request_username_with_outer_spaces_rejected_when_before(self):
-        with self.assertRaises(ValidationError):
+    def test_request_extra_forbidden(self):
+        with self.assertRaises(ValidationError) as ctx:
             UserRegisterRequest(
-                username=" John_Doe ",
-                password="Aa1!aaaa",
-                first_name="A",
-                last_name="B",
+                username="johndoe",
+                password="AaBb1!",
+                first_name="John",
+                last_name="Doe",
+                summary="Hello",
+                foo="bar",
             )
 
-    def test_request_username_length_constraints(self):
-        with self.assertRaises(ValidationError):
+        errs = ctx.exception.errors()
+        self.assertEqual(len(errs), 1)
+
+        e = errs[0]
+        self.assertEqual(e.get("loc"), ("foo",))
+        self.assertEqual(e.get("type"), "extra_forbidden")
+
+    def test_request_username_missing(self):
+        with self.assertRaises(ValidationError) as ctx:
             UserRegisterRequest(
-                username="a",
-                password="Aa1!aaaa",
-                first_name="A",
-                last_name="B",
-            )
-        with self.assertRaises(ValidationError):
-            UserRegisterRequest(
-                username="a" * 41,
-                password="Aa1!aaaa",
-                first_name="A",
-                last_name="B",
+                password="AaBb1!",
+                first_name="John",
+                last_name="Doe",
+                summary="Hello",
             )
 
-    def test_request_first_last_name_constraints(self):
-        with self.assertRaises(ValidationError):
+        errs = ctx.exception.errors()
+        self.assertEqual(len(errs), 1)
+
+        e = errs[0]
+        self.assertEqual(e.get("loc"), ("username",))
+        self.assertEqual(e.get("type"), "missing")
+
+    def test_request_username_empty(self):
+        with self.assertRaises(ValidationError) as ctx:
             UserRegisterRequest(
-                username="user_1",
-                password="Aa1!aaaa",
+                username="",
+                password="AaBb1!",
+                first_name="John",
+                last_name="Doe",
+                summary="Hello",
+            )
+
+        errs = ctx.exception.errors()
+        self.assertEqual(len(errs), 1)
+
+        e = errs[0]
+        self.assertEqual(e.get("loc"), ("username",))
+        self.assertEqual(e.get("type"), "string_too_short")
+
+    def test_request_username_too_short(self):
+        with self.assertRaises(ValidationError) as ctx:
+            UserRegisterRequest(
+                username="x",
+                password="AaBb1!",
+                first_name="John",
+                last_name="Doe",
+                summary="Hello",
+            )
+
+        errs = ctx.exception.errors()
+        self.assertEqual(len(errs), 1)
+
+        e = errs[0]
+        self.assertEqual(e.get("loc"), ("username",))
+        self.assertEqual(e.get("type"), "string_too_short")
+
+    def test_request_username_too_long(self):
+        with self.assertRaises(ValidationError) as ctx:
+            UserRegisterRequest(
+                username="x" * 41,
+                password="AaBb1!",
+                first_name="John",
+                last_name="Doe",
+                summary="Hello",
+            )
+
+        errs = ctx.exception.errors()
+        self.assertEqual(len(errs), 1)
+
+        e = errs[0]
+        self.assertEqual(e.get("loc"), ("username",))
+        self.assertEqual(e.get("type"), "string_too_long")
+
+    def test_request_username_shortest(self):
+        res = UserRegisterRequest(
+            username="x" * 2,
+            password="AaBb1!",
+            first_name="John",
+            last_name="Doe",
+            summary="Hello",
+        )
+        self.assertEqual(res.username, "x" * 2)
+
+    def test_request_username_longest(self):
+        res = UserRegisterRequest(
+            username="x" * 40,
+            password="AaBb1!",
+            first_name="John",
+            last_name="Doe",
+            summary="Hello",
+        )
+        self.assertEqual(res.username, "x" * 40)
+
+    def test_request_password_missing(self):
+        with self.assertRaises(ValidationError) as ctx:
+            UserRegisterRequest(
+                username="johndoe",
+                first_name="John",
+                last_name="Doe",
+                summary="Hello",
+            )
+
+        errs = ctx.exception.errors()
+        self.assertEqual(len(errs), 1)
+
+        e = errs[0]
+        self.assertEqual(e.get("loc"), ("password",))
+        self.assertEqual(e.get("type"), "missing")
+
+    def test_request_password_empty(self):
+        with self.assertRaises(ValidationError) as ctx:
+            UserRegisterRequest(
+                username="johndoe",
+                password="",
+                first_name="John",
+                last_name="Doe",
+                summary="Hello",
+            )
+
+        errs = ctx.exception.errors()
+        self.assertEqual(len(errs), 1)
+
+        e = errs[0]
+        self.assertEqual(e.get("loc"), ("password",))
+        self.assertEqual(e.get("type"), "too_short")
+
+    def test_request_password_too_short(self):
+        with self.assertRaises(ValidationError) as ctx:
+            UserRegisterRequest(
+                username="johndoe",
+                password="Aab1!",
+                first_name="John",
+                last_name="Doe",
+                summary="Hello",
+            )
+
+        errs = ctx.exception.errors()
+        self.assertEqual(len(errs), 1)
+
+        e = errs[0]
+        self.assertEqual(e.get("loc"), ("password",))
+        self.assertEqual(e.get("type"), "too_short")
+
+    def test_request_first_name_missing(self):
+        with self.assertRaises(ValidationError) as ctx:
+            UserRegisterRequest(
+                username="johndoe",
+                password="AaBb1!",
+                last_name="Doe",
+                summary="Hello",
+            )
+
+        errs = ctx.exception.errors()
+        self.assertEqual(len(errs), 1)
+
+        e = errs[0]
+        self.assertEqual(e.get("loc"), ("first_name",))
+        self.assertEqual(e.get("type"), "missing")
+
+    def test_request_first_name_too_short(self):
+        with self.assertRaises(ValidationError) as ctx:
+            UserRegisterRequest(
+                username="johndoe",
+                password="AaBb1!",
                 first_name="",
-                last_name="B",
+                last_name="Doe",
+                summary="Hello",
             )
-        with self.assertRaises(ValidationError):
+
+        errs = ctx.exception.errors()
+        self.assertEqual(len(errs), 1)
+
+        e = errs[0]
+        self.assertEqual(e.get("loc"), ("first_name",))
+        self.assertEqual(e.get("type"), "string_too_short")
+
+    def test_request_first_name_too_long(self):
+        with self.assertRaises(ValidationError) as ctx:
             UserRegisterRequest(
-                username="user_1",
-                password="Aa1!aaaa",
-                first_name="A",
+                username="johndoe",
+                password="AaBb1!",
+                first_name="x" * 41,
+                last_name="Doe",
+                summary="Hello",
+            )
+
+        errs = ctx.exception.errors()
+        self.assertEqual(len(errs), 1)
+
+        e = errs[0]
+        self.assertEqual(e.get("loc"), ("first_name",))
+        self.assertEqual(e.get("type"), "string_too_long")
+
+    def test_request_first_name_minimal_length(self):
+        res = UserRegisterRequest(
+            username="johndoe",
+            password="AaBb1!",
+            first_name="x",
+            last_name="Doe",
+            summary="Hello",
+        )
+        self.assertEqual(res.first_name, "x")
+
+    def test_request_first_name_maximum_length(self):
+        res = UserRegisterRequest(
+            username="johndoe",
+            password="AaBb1!",
+            first_name="x" * 40,
+            last_name="Doe",
+            summary="Hello",
+        )
+        self.assertEqual(res.first_name, "x" * 40)
+
+    def test_request_last_name_missing(self):
+        with self.assertRaises(ValidationError) as ctx:
+            UserRegisterRequest(
+                username="johndoe",
+                password="AaBb1!",
+                first_name="John",
+                summary="Hello",
+            )
+
+        errs = ctx.exception.errors()
+        self.assertEqual(len(errs), 1)
+
+        e = errs[0]
+        self.assertEqual(e.get("loc"), ("last_name",))
+        self.assertEqual(e.get("type"), "missing")
+
+    def test_request_last_name_too_short(self):
+        with self.assertRaises(ValidationError) as ctx:
+            UserRegisterRequest(
+                username="johndoe",
+                password="AaBb1!",
+                first_name="John",
                 last_name="",
-            )
-        with self.assertRaises(ValidationError):
-            UserRegisterRequest(
-                username="user_1",
-                password="Aa1!aaaa",
-                first_name="A" * 41,
-                last_name="B",
+                summary="Hello",
             )
 
-    def test_request_summary_max_length(self):
-        ok = "x" * 4096
-        m = UserRegisterRequest(
-            username="user_1",
-            password="Aa1!aaaa",
-            first_name="A",
-            last_name="B",
-            summary=ok,
+        errs = ctx.exception.errors()
+        self.assertEqual(len(errs), 1)
+
+        e = errs[0]
+        self.assertEqual(e.get("loc"), ("last_name",))
+        self.assertEqual(e.get("type"), "string_too_short")
+
+    def test_request_last_name_too_long(self):
+        with self.assertRaises(ValidationError) as ctx:
+            UserRegisterRequest(
+                username="johndoe",
+                password="AaBb1!",
+                first_name="John",
+                last_name="x" * 41,
+                summary="Hello",
+            )
+
+        errs = ctx.exception.errors()
+        self.assertEqual(len(errs), 1)
+
+        e = errs[0]
+        self.assertEqual(e.get("loc"), ("last_name",))
+        self.assertEqual(e.get("type"), "string_too_long")
+
+    def test_request_last_name_minimal_length(self):
+        res = UserRegisterRequest(
+            username="johndoe",
+            password="AaBb1!",
+            first_name="John",
+            last_name="x",
+            summary="Hello",
         )
-        self.assertEqual(m.summary, ok)
+        self.assertEqual(res.last_name, "x")
 
-        too_long = "x" * 4097
-        with self.assertRaises(ValidationError):
-            UserRegisterRequest(
-                username="user_1",
-                password="Aa1!aaaa",
-                first_name="A",
-                last_name="B",
-                summary=too_long,
-            )
-
-    def test_request_summary_blank_to_none(self):
-        m = UserRegisterRequest(
-            username="user_1",
-            password="Aa1!aaaa",
-            first_name="A",
-            last_name="B",
-            summary="   ",
+    def test_request_last_name_maximum_length(self):
+        res = UserRegisterRequest(
+            username="johndoe",
+            password="AaBb1!",
+            first_name="John",
+            last_name="x" * 40,
+            summary="Hello",
         )
-        self.assertIsNone(m.summary)
+        self.assertEqual(res.last_name, "x" * 40)
 
-    def test_request_password_min_length_and_complexity(self):
-        with self.assertRaises(ValidationError):
+    def test_request_summary_missing(self):
+        res = UserRegisterRequest(
+            username="johndoe",
+            password="AaBb1!",
+            first_name="John",
+            last_name="Doe",
+        )
+        self.assertEqual(res.summary, None)
+
+    def test_request_summary_empty(self):
+        res = UserRegisterRequest(
+            username="johndoe",
+            password="AaBb1!",
+            first_name="John",
+            last_name="Doe",
+        )
+        self.assertEqual(res.summary, None)
+
+    def test_request_summary_too_long(self):
+        with self.assertRaises(ValidationError) as ctx:
             UserRegisterRequest(
-                username="user_1",
-                password="Aa1!",
-                first_name="A",
-                last_name="B",
-            )
-        with self.assertRaises(ValidationError):
-            UserRegisterRequest(
-                username="user_1",
-                password="aaaaaaa!",
-                first_name="A",
-                last_name="B",
+                username="johndoe",
+                password="AaBb1!",
+                first_name="John",
+                last_name="Doe",
+                summary="x" * 4097,
             )
 
-    def test_response_success(self):
-        r = UserRegisterResponse(user_id=123, mfa_secret="BASE32SECRET")
-        self.assertEqual(r.user_id, 123)
-        self.assertEqual(r.mfa_secret, "BASE32SECRET")
+        errs = ctx.exception.errors()
+        self.assertEqual(len(errs), 1)
 
-    def test_response_types_enforced(self):
-        with self.assertRaises(ValidationError):
-            UserRegisterResponse(user_id="not-int", mfa_secret="X")
+        e = errs[0]
+        self.assertEqual(e.get("loc"), ("summary",))
+        self.assertEqual(e.get("type"), "string_too_long")
+
+    def test_request_summary_longest(self):
+        res = UserRegisterRequest(
+            username="johndoe",
+            password="AaBb1!",
+            first_name="John",
+            last_name="Doe",
+            summary="x" * 4096,
+        )
+        self.assertEqual(res.summary, "x" * 4096)
+
+    def test_request_summary_striped(self):
+        res = UserRegisterRequest(
+            username="johndoe",
+            password="AaBb1!",
+            first_name="John",
+            last_name="Doe",
+            summary=" x ",
+        )
+        self.assertEqual(res.summary, "x")
+
+    def test_response_user_id_missing(self):
+        with self.assertRaises(ValidationError) as ctx:
+            UserRegisterResponse(mfa_secret="ApmD8Jy3")
+
+        errs = ctx.exception.errors()
+        self.assertEqual(len(errs), 1)
+
+        self.assertEqual(errs[0].get("loc"), ("user_id",))
+        self.assertEqual(errs[0].get("type"), "missing")
+
+    def test_response_user_id_none(self):
+        with self.assertRaises(ValidationError) as ctx:
+            UserRegisterResponse(user_id=None, mfa_secret="ApmD8Jy3")
+
+        errs = ctx.exception.errors()
+        self.assertEqual(len(errs), 1)
+
+        e = errs[0]
+        self.assertEqual(e.get("loc"), ("user_id",))
+        self.assertEqual(e.get("type"), "int_type")
+
+    def test_response_user_id_string(self):
+        with self.assertRaises(ValidationError) as ctx:
+            UserRegisterResponse(user_id="not-int", mfa_secret="ApmD8Jy3")
+
+        errs = ctx.exception.errors()
+        self.assertEqual(len(errs), 1)
+
+        e = errs[0]
+        self.assertEqual(e.get("loc"), ("user_id",))
+        self.assertEqual(e.get("type"), "int_parsing")
+
+    def test_response_user_id_coercion(self):
+        res = UserRegisterResponse(user_id="123", mfa_secret="ApmD8Jy3")
+        self.assertEqual(res.user_id, 123)
+
+    def test_response_mfa_secret_missing(self):
+        with self.assertRaises(ValidationError) as ctx:
+            UserRegisterResponse(user_id=42)
+
+        errs = ctx.exception.errors()
+        self.assertEqual(len(errs), 1)
+
+        self.assertEqual(errs[0].get("loc"), ("mfa_secret",))
+        self.assertEqual(errs[0].get("type"), "missing")
+
+    def test_response_mfa_secret_none(self):
+        with self.assertRaises(ValidationError) as ctx:
+            UserRegisterResponse(user_id=42, mfa_secret=None)
+
+        errs = ctx.exception.errors()
+        self.assertEqual(len(errs), 1)
+
+        self.assertEqual(errs[0].get("loc"), ("mfa_secret",))
+        self.assertEqual(errs[0].get("type"), "string_type")

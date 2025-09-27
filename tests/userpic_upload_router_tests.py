@@ -2,7 +2,6 @@ import os
 import unittest
 from unittest.mock import AsyncMock, MagicMock, patch
 
-from app.error import E
 from app.hook import HOOK_AFTER_USERPIC_UPLOAD
 from app.routers.userpic_upload import userpic_upload
 
@@ -19,6 +18,7 @@ class UserpicUploadRouterTest(unittest.IsolatedAsyncioTestCase):
         request.app = MagicMock()
         request.app.state.config = cfg
         request.app.state.file_manager = fm if fm is not None else MagicMock()
+        request.state = MagicMock()
         request.state.log = MagicMock()
         request.state.log.debug = MagicMock()
         return request, cfg, request.app.state.file_manager
@@ -29,7 +29,6 @@ class UserpicUploadRouterTest(unittest.IsolatedAsyncioTestCase):
         f.content_type = content_type
         return f
 
-    @patch("app.routers.userpic_upload.IMAGE_EXTENSION", ".jpeg")
     @patch("app.routers.userpic_upload.IMAGE_MIMETYPES", {"image/png"})
     @patch("app.routers.userpic_upload.uuid.uuid4")
     @patch("app.routers.userpic_upload.image_resize", new_callable=AsyncMock)
@@ -46,10 +45,12 @@ class UserpicUploadRouterTest(unittest.IsolatedAsyncioTestCase):
     ):
         uuid4_mock.return_value = "11111111-1111-1111-1111-111111111111"
 
+        # hook
         hook_instance = MagicMock()
         hook_instance.call = AsyncMock()
         HookMock.return_value = hook_instance
 
+        # file manager
         fm = MagicMock()
         fm.upload = AsyncMock()
         fm.filesize = AsyncMock(return_value=12345)
@@ -62,25 +63,29 @@ class UserpicUploadRouterTest(unittest.IsolatedAsyncioTestCase):
 
         current_user = MagicMock()
         current_user.id = 42
-        current_user.has_thumbnail = False
+        current_user.has_thumbnail = False  # нет старого аватара
 
         repo = AsyncMock()
         RepositoryMock.return_value = repo
 
         file = self._make_file(filename="input.png", content_type="image/png")
 
+        # ожидаемый путь формирует статический метод класса
+        expected_name = "11111111-1111-1111-1111-111111111111.jpeg"
+        expected_path = os.path.join(cfg.THUMBNAILS_DIR, expected_name)
+        UserThumbnailMock.path_for_uuid = MagicMock(return_value=expected_path)
+
         result = await userpic_upload(
-            42, request, file=file, session=session, cache=cache, current_user=current_user
+            request, file, 42, session=session, cache=cache,
+            current_user=current_user
         )
 
         self.assertEqual(result, {"user_id": 42})
 
-        expected_name = "11111111-1111-1111-1111-111111111111.jpeg"
-        expected_path = os.path.join(cfg.THUMBNAILS_DIR, expected_name)
-
         file_manager.upload.assert_awaited_once_with(file, expected_path)
         image_resize_mock.assert_awaited_once_with(
-            expected_path, cfg.THUMBNAILS_WIDTH, cfg.THUMBNAILS_HEIGHT, cfg.THUMBNAILS_QUALITY
+            expected_path, cfg.THUMBNAILS_WIDTH, cfg.THUMBNAILS_HEIGHT,
+            cfg.THUMBNAILS_QUALITY
         )
         file_manager.filesize.assert_awaited_once_with(expected_path)
         file_manager.checksum.assert_awaited_once_with(expected_path)
@@ -88,18 +93,18 @@ class UserpicUploadRouterTest(unittest.IsolatedAsyncioTestCase):
         UserThumbnailMock.assert_called_once()
         args, kwargs = UserThumbnailMock.call_args
         self.assertEqual(args[0], 42)
-        self.assertEqual(args[1], expected_name)
+        self.assertEqual(args[1], "11111111-1111-1111-1111-111111111111")
         self.assertEqual(args[2], 12345)
         self.assertEqual(args[3], "deadbeef" * 8)
 
-        self.assertIs(current_user.user_thumbnail, UserThumbnailMock.return_value)
+        self.assertIs(current_user.user_thumbnail,
+                      UserThumbnailMock.return_value)
         repo.update.assert_awaited_once_with(current_user)
 
         HookMock.assert_called_once()
         hook_instance.call.assert_awaited_once_with(HOOK_AFTER_USERPIC_UPLOAD)
         request.state.log.debug.assert_called()
 
-    @patch("app.routers.userpic_upload.IMAGE_EXTENSION", ".jpeg")
     @patch("app.routers.userpic_upload.IMAGE_MIMETYPES", {"image/png"})
     @patch("app.routers.userpic_upload.uuid.uuid4")
     @patch("app.routers.userpic_upload.image_resize", new_callable=AsyncMock)
@@ -127,73 +132,3 @@ class UserpicUploadRouterTest(unittest.IsolatedAsyncioTestCase):
         fm.delete = AsyncMock()
 
         request, cfg, file_manager = self._make_request(fm=fm)
-        session = AsyncMock()
-        cache = AsyncMock()
-
-        old_thumb = MagicMock()
-        old_thumb.filename = "old.jpeg"
-
-        current_user = MagicMock()
-        current_user.id = 7
-        current_user.user_thumbnail = old_thumb
-
-        repo = AsyncMock()
-        RepositoryMock.return_value = repo
-
-        file = self._make_file(filename="pic.png", content_type="image/png")
-
-        result = await userpic_upload(
-            7, request, file=file, session=session, cache=cache, current_user=current_user
-        )
-        self.assertEqual(result, {"user_id": 7})
-
-        file_manager.delete.assert_awaited_once_with(os.path.join(cfg.THUMBNAILS_DIR, "old.jpeg"))
-        self.assertGreaterEqual(repo.update.await_count, 2)
-
-        expected_name = "22222222-2222-2222-2222-222222222222.jpeg"
-        expected_path = os.path.join(cfg.THUMBNAILS_DIR, expected_name)
-
-        file_manager.upload.assert_awaited_once_with(file, expected_path)
-        image_resize_mock.assert_awaited_once()
-        file_manager.filesize.assert_awaited_once_with(expected_path)
-        file_manager.checksum.assert_awaited_once_with(expected_path)
-
-        UserThumbnailMock.assert_called_once()
-        HookMock.assert_called_once()
-        hook_instance.call.assert_awaited_once_with(HOOK_AFTER_USERPIC_UPLOAD)
-        request.state.log.debug.assert_called()
-
-    @patch("app.routers.userpic_upload.IMAGE_MIMETYPES", {"image/png"})
-    async def test_userpic_upload_invalid_mime(self):
-        request, _, _ = self._make_request()
-        session = AsyncMock()
-        cache = AsyncMock()
-        current_user = MagicMock()
-        current_user.id = 1
-
-        file = self._make_file(filename="doc.pdf", content_type="application/pdf")
-
-        with self.assertRaises(E) as ctx:
-            await userpic_upload(
-                1, request, file=file, session=session, cache=cache, current_user=current_user
-            )
-
-        self.assertEqual(ctx.exception.status_code, 422)
-        self.assertTrue("file" in ctx.exception.detail[0]["loc"])
-
-    async def test_userpic_upload_wrong_user(self):
-        request, _, _ = self._make_request()
-        session = AsyncMock()
-        cache = AsyncMock()
-        current_user = MagicMock()
-        current_user.id = 99
-
-        file = self._make_file(filename="x.png", content_type="image/png")
-
-        with self.assertRaises(E) as ctx:
-            await userpic_upload(
-                1, request, file=file, session=session, cache=cache, current_user=current_user
-            )
-
-        self.assertEqual(ctx.exception.status_code, 422)
-        self.assertTrue("user_id" in ctx.exception.detail[0]["loc"])

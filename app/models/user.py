@@ -174,7 +174,7 @@ class User(Base):
     def __init__(
             self, username: str, password_hash: str, first_name: str,
             last_name: str, role: UserRole, active: bool,
-            mfa_secret_encrypted: str, jti_encrypted: str, 
+            mfa_secret_encrypted: str, jti_encrypted: str,
             summary: str = None):
 
         self.role = role

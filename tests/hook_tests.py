@@ -81,8 +81,10 @@ class HookTest(unittest.IsolatedAsyncioTestCase):
             after_user_select=b_select,
         )
 
-        spec1 = MagicMock(); spec1.loader = MagicMock()
-        spec2 = MagicMock(); spec2.loader = MagicMock()
+        spec1 = MagicMock()
+        spec1.loader = MagicMock()
+        spec2 = MagicMock()
+        spec2.loader = MagicMock()
         spec_from_file_mock.side_effect = [spec1, spec2]
         module_from_spec_mock.side_effect = [module1, module2]
 
@@ -128,8 +130,10 @@ class HookTest(unittest.IsolatedAsyncioTestCase):
         module_a = SimpleNamespace(after_user_register=reg)
         module_b = SimpleNamespace(after_user_register=reg)
 
-        spec_a = MagicMock(); spec_a.loader = MagicMock()
-        spec_b = MagicMock(); spec_b.loader = MagicMock()
+        spec_a = MagicMock()
+        spec_a.loader = MagicMock()
+        spec_b = MagicMock()
+        spec_b.loader = MagicMock()
         spec_from_file_mock.side_effect = [spec_a, spec_b]
         module_from_spec_mock.side_effect = [module_a, module_b]
         spec_a.loader.exec_module.side_effect = lambda m: None

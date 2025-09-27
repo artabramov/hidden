@@ -26,15 +26,16 @@ class UserPasswordRouterTest(unittest.IsolatedAsyncioTestCase):
     @patch("app.routers.user_password.EncryptionManager")
     @patch("app.routers.user_password.Repository")
     @patch("app.routers.user_password.Hook")
-    async def test_change_password_success(self, HookMock, RepositoryMock, EncMgrMock):
+    async def test_change_password_success(self, HookMock, RepositoryMock,
+                                           EncMgrMock):
         request = _req()
         session = AsyncMock()
         cache = AsyncMock()
-
         current_user = AsyncMock(id=123, password_hash="cur_hash")
 
         enc = MagicMock()
-        enc.get_hash.side_effect = lambda s: "cur_hash" if s == "OldP@ss1" else "new_hash"
+        enc.get_hash.side_effect = (
+            lambda s: "cur_hash" if s == "OldP@ss1" else "new_hash")
         EncMgrMock.return_value = enc
 
         repo = AsyncMock()
@@ -48,7 +49,8 @@ class UserPasswordRouterTest(unittest.IsolatedAsyncioTestCase):
             updated_password = "NewP@ss1"
 
         result = await user_password(
-            123, Schema, request, session=session, cache=cache, current_user=current_user
+            request, Schema(), 123, session=session, cache=cache,
+            current_user=current_user
         )
 
         self.assertEqual(result, {"user_id": 123})
@@ -58,7 +60,8 @@ class UserPasswordRouterTest(unittest.IsolatedAsyncioTestCase):
         RepositoryMock.assert_called_once_with(session, cache, UserModel, cfg)
         repo.update.assert_awaited_with(current_user)
 
-        HookMock.assert_called_with(request, session, cache, current_user=current_user)
+        HookMock.assert_called_with(request, session, cache,
+                                    current_user=current_user)
         hook.call.assert_awaited_with(HOOK_AFTER_USER_PASSWORD)
 
         request.state.log.debug.assert_called()
@@ -66,7 +69,8 @@ class UserPasswordRouterTest(unittest.IsolatedAsyncioTestCase):
     @patch("app.routers.user_password.EncryptionManager")
     @patch("app.routers.user_password.Repository")
     @patch("app.routers.user_password.Hook")
-    async def test_path_user_mismatch_422(self, HookMock, RepositoryMock, EncMgrMock):
+    async def test_path_user_mismatch_422(self, HookMock, RepositoryMock,
+                                          EncMgrMock):
         request = _req()
         session = AsyncMock()
         cache = AsyncMock()
@@ -78,7 +82,8 @@ class UserPasswordRouterTest(unittest.IsolatedAsyncioTestCase):
 
         with self.assertRaises(E) as ctx:
             await user_password(
-                123, Schema, request, session=session, cache=cache, current_user=current_user
+                request, Schema(), 123, session=session, cache=cache,
+                current_user=current_user
             )
 
         self.assertEqual(ctx.exception.status_code, 422)
@@ -92,7 +97,8 @@ class UserPasswordRouterTest(unittest.IsolatedAsyncioTestCase):
     @patch("app.routers.user_password.EncryptionManager")
     @patch("app.routers.user_password.Repository")
     @patch("app.routers.user_password.Hook")
-    async def test_wrong_current_password_422(self, HookMock, RepositoryMock, EncMgrMock):
+    async def test_wrong_current_password_422(self, HookMock, RepositoryMock,
+                                              EncMgrMock):
         request = _req()
         session = AsyncMock()
         cache = AsyncMock()
@@ -108,7 +114,8 @@ class UserPasswordRouterTest(unittest.IsolatedAsyncioTestCase):
 
         with self.assertRaises(E) as ctx:
             await user_password(
-                123, Schema, request, session=session, cache=cache, current_user=current_user
+                request, Schema(), 123, session=session, cache=cache,
+                current_user=current_user
             )
 
         self.assertEqual(ctx.exception.status_code, 422)
@@ -121,7 +128,8 @@ class UserPasswordRouterTest(unittest.IsolatedAsyncioTestCase):
     @patch("app.routers.user_password.EncryptionManager")
     @patch("app.routers.user_password.Repository")
     @patch("app.routers.user_password.Hook")
-    async def test_same_password_422(self, HookMock, RepositoryMock, EncMgrMock):
+    async def test_same_password_422(self, HookMock, RepositoryMock,
+                                     EncMgrMock):
         request = _req()
         session = AsyncMock()
         cache = AsyncMock()
@@ -137,7 +145,8 @@ class UserPasswordRouterTest(unittest.IsolatedAsyncioTestCase):
 
         with self.assertRaises(E) as ctx:
             await user_password(
-                123, Schema, request, session=session, cache=cache, current_user=current_user
+                request, Schema(), 123, session=session, cache=cache,
+                current_user=current_user
             )
 
         self.assertEqual(ctx.exception.status_code, 422)

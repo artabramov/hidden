@@ -1,21 +1,47 @@
 import unittest
 from pydantic import ValidationError
-from app.schemas.userpic_upload import UserpicUploadResponse
+from app.schemas.userpic_delete import UserpicDeleteResponse
 
 
-class UserpicUploadResponseSchemaTest(unittest.TestCase):
-    def test_valid_response(self):
-        m = UserpicUploadResponse(user_id=123)
-        self.assertEqual(m.user_id, 123)
+class UserDeleteSchemaTest(unittest.TestCase):
 
-    def test_user_id_coercion_from_str(self):
-        m = UserpicUploadResponse(user_id="42")
-        self.assertEqual(m.user_id, 42)
+    def test_response_correct(self):
+        res = UserpicDeleteResponse(user_id=123)
+        self.assertEqual(res.user_id, 123)
 
-    def test_missing_user_id_raises(self):
-        with self.assertRaises(ValidationError):
-            UserpicUploadResponse()
+    def test_response_user_id_missing(self):
+        with self.assertRaises(ValidationError) as ctx:
+            UserpicDeleteResponse()
 
-    def test_reject_non_numeric_user_id(self):
-        with self.assertRaises(ValidationError):
-            UserpicUploadResponse(user_id="not-a-number")
+        errs = ctx.exception.errors()
+        self.assertEqual(len(errs), 1)
+
+        e = errs[0]
+        self.assertEqual(e.get("loc"), ("user_id",))
+        self.assertEqual(e.get("type"), "missing")
+
+    def test_response_user_id_none(self):
+        with self.assertRaises(ValidationError) as ctx:
+            UserpicDeleteResponse(user_id=None)
+
+        errs = ctx.exception.errors()
+        self.assertEqual(len(errs), 1)
+
+        e = errs[0]
+        self.assertEqual(e.get("loc"), ("user_id",))
+        self.assertEqual(e.get("type"), "int_type")
+
+    def test_response_user_id_string(self):
+        with self.assertRaises(ValidationError) as ctx:
+            UserpicDeleteResponse(user_id="not-int")
+
+        errs = ctx.exception.errors()
+        self.assertEqual(len(errs), 1)
+
+        e = errs[0]
+        self.assertEqual(e.get("loc"), ("user_id",))
+        self.assertEqual(e.get("type"), "int_parsing")
+
+    def test_response_user_id_coercion(self):
+        res = UserpicDeleteResponse(user_id="123")
+        self.assertEqual(res.user_id, 123)

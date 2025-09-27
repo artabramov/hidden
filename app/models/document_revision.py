@@ -8,6 +8,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import relationship
 from app.sqlite import Base
 
+
 class DocumentRevision(Base):
     """
     SQLAlchemy model for document revisions.
@@ -43,7 +44,7 @@ class DocumentRevision(Base):
         nullable=False,
         index=True
     )
-    
+
     created_date = Column(
         BigInteger,
         nullable=False,

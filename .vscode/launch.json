@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Run: debug",
+            "name": "Run: app",
             "type": "debugpy",
             "request": "launch",
             "module": "uvicorn",
@@ -31,6 +31,7 @@
             "module": "coverage",
             "args": [
                 "run",
+                "--source", "app",
                 "-m", "unittest", "discover",
                 "-s", "./tests",
                 "-p", "*_tests.py",
@@ -46,7 +47,12 @@
             "type": "debugpy",
             "request": "launch",
             "module": "coverage",
-            "args": ["report", "--omit", "./tests/"],
+            "args": [
+                "report",
+                "--omit", "tests/*,*/__init__.py",
+                "--show-missing",
+                "--fail-under=60"
+            ],
             "cwd": "/hidden",
             "console": "integratedTerminal",
             "justMyCode": true

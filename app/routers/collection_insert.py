@@ -78,8 +78,7 @@ async def collection_insert(
     await file_manager.mkdir(collection_path)
 
     collection = Collection(
-        current_user.id, schema.name, readonly=schema.readonly,
-        summary=schema.summary)
+        current_user.id, schema.readonly, schema.name, summary=schema.summary)
     await collection_repository.insert(collection)
 
     hook = Hook(request, session, cache, current_user=current_user)

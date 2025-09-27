@@ -90,7 +90,7 @@ class EncryptionManager:
         """
         if value is None:
             return None
-        
+
         enc = self.config.CRYPTO_DEFAULT_ENCODING
         blob = self.encrypt_bytes(value.encode(enc))
         return base64.b64encode(blob).decode(enc)

@@ -1,6 +1,5 @@
 """FastAPI router for collection deleting."""
 
-import os
 from fastapi import APIRouter, Request, Depends, Path, status
 from fastapi.responses import JSONResponse
 from app.sqlite import get_session
@@ -104,7 +103,7 @@ async def collection_delete(
                 thumbnail_path = document.document_thumbnail.path(config)
                 await file_manager.delete(thumbnail_path)
                 lru.delete(thumbnail_path)
-            
+
             # Remove the revision files; no error if absent
             if document.has_revisions:
                 for revision in document.document_revisions:

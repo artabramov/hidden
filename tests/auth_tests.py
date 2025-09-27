@@ -9,7 +9,6 @@ from app.error import E
 
 class TestAuth(unittest.IsolatedAsyncioTestCase):
 
-
     @patch("app.auth._auth")
     async def test_header_wrong_scheme_401(self, _auth_mock):
         _auth_mock.return_value = MagicMock(can_read=True)
@@ -71,7 +70,6 @@ class TestAuth(unittest.IsolatedAsyncioTestCase):
 
         with self.assertRaises(E):
             await _auth(request, "token", session, cache)
-
 
     @patch("app.auth.Repository")
     @patch("app.auth.decode_jwt")

@@ -82,11 +82,11 @@ class Collection(Base):
         lazy="noload"
     )
 
-    def __init__(self, user_id: int, name: str, readonly: bool = False,
+    def __init__(self, user_id: int, readonly: bool, name: str,
                  summary: str = None):
         self.user_id = user_id
-        self.name = name
         self.readonly = readonly
+        self.name = name
         self.summary = summary
 
     @classmethod

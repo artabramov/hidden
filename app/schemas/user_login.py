@@ -8,18 +8,17 @@ class UserLoginRequest(BaseModel):
     """
     Request schema for user login. Carries the username and password
     used to authenticate the account; the username is trimmed and
-    lowercased (Latin letters, digits, underscore).
+    lowercased (Latin letters, digits, underscore). Extra fields
+    are forbidden.
     """
-    model_config = ConfigDict(str_strip_whitespace=True)
+
+    model_config = ConfigDict(
+        str_strip_whitespace=True,
+        extra="forbid",
+    )
 
     username: str = Field(...)
     password: SecretStr = Field(...)
-
-    @field_validator("username", mode="before")
-    @classmethod
-    def _validate_username(cls, value: str) -> str:
-        """Validates username: strips, lowercases and [a-z0-9_] only."""
-        return username_validate(value)
 
 
 class UserLoginResponse(BaseModel):
@@ -28,5 +27,6 @@ class UserLoginResponse(BaseModel):
     indicating that the password step was accepted and the flow may
     proceed to MFA.
     """
+
     user_id: int
     password_accepted: bool

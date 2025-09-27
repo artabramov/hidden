@@ -44,7 +44,6 @@ class DocumentTag(Base):
         default=lambda: int(time.time())
     )
 
-    
     tag_value = Column(
         String(128),
         nullable=False,

@@ -3,19 +3,45 @@ from pydantic import ValidationError
 from app.schemas.user_delete import UserDeleteResponse
 
 
-class UserDeleteResponseSchemaTest(unittest.TestCase):
-    def test_valid_response(self):
-        m = UserDeleteResponse(user_id=123)
-        self.assertEqual(m.user_id, 123)
+class UserDeleteSchemaTest(unittest.TestCase):
 
-    def test_user_id_coercion_from_str(self):
-        m = UserDeleteResponse(user_id="42")
-        self.assertEqual(m.user_id, 42)
+    def test_response_correct(self):
+        res = UserDeleteResponse(user_id=123)
+        self.assertEqual(res.user_id, 123)
 
-    def test_missing_user_id_raises(self):
-        with self.assertRaises(ValidationError):
+    def test_response_user_id_missing(self):
+        with self.assertRaises(ValidationError) as ctx:
             UserDeleteResponse()
 
-    def test_reject_non_numeric_user_id(self):
-        with self.assertRaises(ValidationError):
-            UserDeleteResponse(user_id="not-a-number")
+        errs = ctx.exception.errors()
+        self.assertEqual(len(errs), 1)
+
+        e = errs[0]
+        self.assertEqual(e.get("loc"), ("user_id",))
+        self.assertEqual(e.get("type"), "missing")
+
+    def test_response_user_id_none(self):
+        with self.assertRaises(ValidationError) as ctx:
+            UserDeleteResponse(user_id=None)
+
+        errs = ctx.exception.errors()
+        self.assertEqual(len(errs), 1)
+
+        e = errs[0]
+        self.assertEqual(e.get("loc"), ("user_id",))
+        self.assertEqual(e.get("type"), "int_type")
+
+    def test_response_user_id_string(self):
+        with self.assertRaises(ValidationError) as ctx:
+            UserDeleteResponse(user_id="not-int")
+
+        errs = ctx.exception.errors()
+        self.assertEqual(len(errs), 1)
+
+        e = errs[0]
+        self.assertEqual(e.get("loc"), ("user_id",))
+        self.assertEqual(e.get("type"), "int_parsing")
+
+    def test_response_user_id_coercion(self):
+        res = UserDeleteResponse(user_id="123")
+        self.assertEqual(res.user_id, 123)

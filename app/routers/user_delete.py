@@ -26,7 +26,7 @@ async def user_delete(
     Deletes a user account by ID. The current user cannot delete their
     own account. The user to delete should not have any relationships
     with other app objects.
-    
+
     **Authentication:**
     - Requires a valid bearer token with the `admin` role.
 

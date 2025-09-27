@@ -17,12 +17,12 @@ LOC_QUERY = "query"
 LOC_BODY = "body"
 
 # 401
-ERR_TOKEN_MISSING   = "token_missing"
-ERR_TOKEN_INVALID   = "token_invalid"
-ERR_TOKEN_EXPIRED   = "token_expired"
+ERR_TOKEN_MISSING = "token_missing"
+ERR_TOKEN_INVALID = "token_invalid"
+ERR_TOKEN_EXPIRED = "token_expired"
 
 # 403/422
-ERR_USER_NOT_FOUND  = "user_not_found"
+ERR_USER_NOT_FOUND = "user_not_found"
 ERR_USER_SUSPENDED = "user_suspended"
 ERR_USER_INACTIVE = "user_inactive"
 ERR_USER_REJECTED = "user_rejected"
@@ -40,7 +40,7 @@ ERR_FILE_NOT_FOUND = "file_not_found"
 ERR_FILE_EXISTS = "file_exists"
 ERR_FILE_MIMETYPE_INVALID = "file_mimetype_invalid"
 ERR_FILE_HASH_EXISTS = "file_hash_exists"
-ERR_FILE_HASH_MISMATCH  = "file_hash_mismatch"
+ERR_FILE_HASH_MISMATCH = "file_hash_mismatch"
 ERR_FILE_WRITE_ERROR = "file_write_error"
 ERR_FILE_CONFLICT = "file_conflict"
 

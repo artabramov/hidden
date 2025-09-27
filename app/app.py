@@ -41,7 +41,6 @@ from cryptography.exceptions import (
     InternalError,
 )
 from app.config import get_config
-from app.openapi import OPENAPI_TAGS, OPENAPI_DESCRIPTION, OPENAPI_PREFIX
 from app.sqlite import SessionManager, init_database
 from app.redis import RedisClient, init_cache
 from app.managers.file_manager import FileManager
@@ -85,6 +84,14 @@ from app.error import (
 # NOTE: Use a project-wide search for comments with the "NOTE" prefix
 # to read all design and behavior caveats. Each comment starts with a
 # scope cue for quick scanning.
+
+OPENAPI_PREFIX = "/api/v1"
+OPENAPI_TITLE = "Hidden — REST over gocryptfs"
+OPENAPI_DESCRIPTION = """
+Secure file storage with secret-key protection,
+file versioning, and irreversible deletion —
+[joinhidden.com](https://joinhidden.com)
+"""
 
 
 @asynccontextmanager
@@ -131,7 +138,7 @@ async def lifespan(app: FastAPI):
     lock_path = config.LOCK_FILE_PATH
     if await file_manager.isfile(lock_path):
         await file_manager.delete(lock_path)
-        
+
     # NOTE: On app startup, per-process locks are placed in app state.
     # Not shared across workers (use one worker or create a distributed
     # lock, e.g. Redis). Lock order: collection first, then files. When
@@ -148,9 +155,8 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="Hidden",
+    title=OPENAPI_TITLE,
     version=__version__,
-    openapi_tags=OPENAPI_TAGS,
     description=OPENAPI_DESCRIPTION,
     root_path=OPENAPI_PREFIX,
     lifespan=lifespan,
@@ -203,7 +209,7 @@ async def middleware_handler(request: Request, call_next):
 
     request.state.request_uuid = str(uuid4())
     request.state.request_start_time = time.time()
-    
+
     base = request.app.state.log
     request.state.log = logging.LoggerAdapter(base, {
         "request_uuid": request.state.request_uuid})
@@ -277,8 +283,8 @@ async def exception_handler(request: Request, e: Exception):
     ):
         request.app.state.lru.clear()
         status_code = HTTP_499_SECRET_KEY_INVALID
-        detail=[{"type": ERR_SECRET_KEY_INVALID,
-                 "msg": "Secret key is invalid"}]
+        detail = [{"type": ERR_SECRET_KEY_INVALID,
+                   "msg": "Secret key is invalid"}]
 
     elif isinstance(e, HTTPException):
         status_code = e.status_code
@@ -286,8 +292,8 @@ async def exception_handler(request: Request, e: Exception):
 
     else:
         status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-        detail=[{"type": ERR_SERVER_ERROR,
-                 "msg": "Internal server error"}]
+        detail = [{"type": ERR_SERVER_ERROR,
+                   "msg": "Internal server error"}]
 
     # Validation errors are logged at DEBUG; all others at ERROR
     elapsed_time = f"{time.time() - request.state.request_start_time:.6f}"

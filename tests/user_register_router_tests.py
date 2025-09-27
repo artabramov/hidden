@@ -83,7 +83,6 @@ class UserRegisterRouterTest(unittest.IsolatedAsyncioTestCase):
         gen_mfa_mock.assert_not_called()
         repository_mock.insert.assert_not_called()
 
-
     @patch("app.routers.user_register.Hook")
     @patch("app.routers.user_register.Repository")
     @patch("app.routers.user_register.User")

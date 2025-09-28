@@ -1,7 +1,6 @@
 """Pydantic schemas for user login."""
 
-from pydantic import BaseModel, Field, SecretStr, ConfigDict, field_validator
-from app.validators.user_validators import username_validate
+from pydantic import BaseModel, Field, SecretStr, ConfigDict
 
 
 class UserLoginRequest(BaseModel):

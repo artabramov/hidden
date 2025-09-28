@@ -44,7 +44,7 @@ class DocumentModelTest(unittest.IsolatedAsyncioTestCase):
 
         self.assertTrue(document._cacheable)
         self.assertEqual(document.__tablename__, "documents")
-    
+
     async def test_to_dict(self):
         user_id = 42
         collection_id = 37
@@ -68,7 +68,7 @@ class DocumentModelTest(unittest.IsolatedAsyncioTestCase):
         document.id = 12
         document.created_date = "created-date"
         document.updated_date = "updated-date"
-        
+
         res = await document.to_dict()
         self.assertDictEqual(res, {
             "id": 12,
@@ -86,7 +86,6 @@ class DocumentModelTest(unittest.IsolatedAsyncioTestCase):
             "document_revisions": [],
         })
 
-
     def test_path_for_filename(self):
         config = SimpleNamespace(DOCUMENTS_DIR="/tmp/data")
         collection_name = "dummies"
@@ -102,7 +101,7 @@ class DocumentModelTest(unittest.IsolatedAsyncioTestCase):
             42, 37, "dummies.jpeg", 10500, "3f6cdcb77bbd",
             "image/jpeg", True)
         document.document_collection = MagicMock()
-        document.document_collection.name="dummies"
+        document.document_collection.name = "dummies"
         expected = os.path.join(
             config.DOCUMENTS_DIR, "dummies", "dummies.jpeg")
         self.assertEqual(document.path(config), expected)

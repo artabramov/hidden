@@ -32,7 +32,7 @@ class RevisionModelTest(unittest.IsolatedAsyncioTestCase):
 
         self.assertFalse(revision._cacheable)
         self.assertEqual(revision.__tablename__, "documents_revisions")
-    
+
     async def test_to_dict(self):
         user_id = 42
         document_id = 37
@@ -51,7 +51,7 @@ class RevisionModelTest(unittest.IsolatedAsyncioTestCase):
         revision.revision_document = document_mock
         revision.id = 12
         revision.created_date = "created-date"
-        
+
         res = await revision.to_dict()
         self.assertDictEqual(res, {
             "id": 12,

@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y wget build-essential libreadline-dev li
     libffi-dev zlib1g-dev \
  && rm -rf /var/lib/apt/lists/*
 
-# install Python 3.13.3
+# Python 3.13.3
 WORKDIR /usr/src
 RUN wget -q https://www.python.org/ftp/python/3.13.3/Python-3.13.3.tgz \
  && tar -xf Python-3.13.3.tgz && rm -f Python-3.13.3.tgz \
@@ -22,20 +22,20 @@ RUN wget -q https://www.python.org/ftp/python/3.13.3/Python-3.13.3.tgz \
  && make -j"$(nproc)" && make install \
  && cd .. && rm -rf Python-3.13.3
 
-# app sources
+# app
 ADD . /hidden
 WORKDIR /hidden
 
-# app logs
+# logs
 RUN mkdir /var/log/hidden
 RUN chmod -R 755 /var/log/hidden
 
-# install system packages
+# system packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
     sqlite3 redis ffmpeg libmagic1 sudo git gocryptfs fuse3 \
  && rm -rf /var/lib/apt/lists/*
 
-# install Python dependencies
+# Python dependencies
 RUN python3 -m pip install --upgrade pip \
  && pip3 install --no-cache-dir -r /hidden/requirements.txt
 
@@ -61,7 +61,13 @@ RUN python3 -m pip install --upgrade pip \
 # RUN pip3 install concurrent-log-handler==0.9.28
 # RUN pip3 install python-magic==0.4.27
 # RUN pip3 install filetype==1.2.0
-# RUN pip3 freeze > /hidden/requirements.txt
+
+# fix 2025-09-27
+# RUN pip3 install -U "aiohttp~=3.12.14"
+# RUN pip3 install -U "fastapi>=0.116.2,<0.117" "starlette>=0.47.2,<0.49"
+# RUN pip3 install -U "pillow>=11.3.0,<11.4"
+# RUN pip3 install -U pip-audit bandit
+# RUN pip3 freeze > requirements.txt
 
 # node_exporter 9100
 RUN wget https://github.com/prometheus/node_exporter/releases/download/v1.5.0/node_exporter-1.5.0.linux-amd64.tar.gz \

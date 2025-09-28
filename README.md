@@ -2,29 +2,42 @@
 
 ![Designed to be hidden](img/hidden.png)
 
-A small, fast, async, self-hosted, security-minded file-storage service built with `FastAPI`, `SQLAlchemy`, `SQLite`, and `Redis`. Internally, all data is stored in a `gocryptfs`-encrypted directory (cipher) and protected by a detachable secret key (gocryptfs passphrase). Externally, a clean `REST API` provides filesystem-like operations (upload, move, rename) and organizes files into collections. Supports file metadata, tags, and thumbnails. Versioning is built in — past file states are available as revisions. Deletion uses `shred` to securely erase files and all their revisions. A microkernel design allows hook-based `add-ons` to extend functionality without modifying the core.
+A small, fast, async, self-hosted, security-minded file-storage service built with `FastAPI`, `SQLAlchemy`, `SQLite`, and `Redis`. Internally, all data is stored in a `gocryptfs`-encrypted directory (cipher) and protected by a detachable secret key (gocryptfs passphrase). Externally, a clean `REST API` provides filesystem-like operations (upload, move, rename) and organizes files into collections. Supports file metadata and thumbnails. Versioning is built in — past file states are available as revisions. Deletion uses `shred` to securely erase files and all their revisions. A microkernel design allows hook-based `add-ons` to extend functionality without modifying the core. Out of the box, the app runs entirely inside a `Docker` container.
 
-Source data can be imported through the API using a console utility. The encrypted data isn’t bound to the application — it’s exposed as a `Docker` volume and can be mounted directly with `gocryptfs` when the secret key is available.
+Source data can be imported through the API using any external tool. The encrypted data is not locked to the app — it’s exposed as a Docker volume and can be mounted directly with gocryptfs when the secret key is available.
 
-Supports multi-user access with role-based permissions (RBAC) and multi-factor authentication (MFA).
+Enforces multi-user access with role-based permissions (`RBAC`) and multi-factor authentication (`MFA`).
 
 [![release](https://img.shields.io/github/v/tag/artabramov/hidden?sort=semver&label=release&color=2f81f7)](https://github.com/artabramov/hidden/blob/master/CHANGELOG.md)
-![vulnerability scan](https://img.shields.io/badge/vulnerability%20scan-2025--09--21-2f81f7)
-![test coverage](https://img.shields.io/badge/test%20coverage-81%25-2f81f7)
+[![security scan](https://img.shields.io/badge/security%20scan-2025--09--27-2f81f7)](https://github.com/artabramov/hidden/blob/master/SECURITY_SCAN.md)
+![test coverage](https://img.shields.io/badge/test%20coverage-82%25-2f81f7)
 [![license](https://img.shields.io/badge/license-Non--Commercial-2f81f7)](https://github.com/artabramov/hidden/blob/master/LICENSE)
 
 If you like it, star it ⭐ — it helps discoverability. Thank you!
 
-## Quick links
+## References
 
 - Official website: [joinhidden.com](https://joinhidden.com)
 - Telegram announcements: [t.me/hiddenupdates](https://t.me/hiddenupdates)
 
+## Quick start
+
+The app is delivered as a Docker image. Start it with a single command:
+```bash
+make install
+```
+
+On first launch, a random secret key is generated (used as the gocryptfs passphrase) and stored in a file in the `hidden-secret` Docker volume, from which it can be extracted. Encrypted data is stored in the `hidden-data` Docker volume (plaintext is not exposed outside the container). After installation, the following URL is available:
+
+Rest API — http://localhost/docs
+
+![Swagger](img/swagger.png)
+
 ## Threat model
 
-The app is designed for data protection in local workflows: **all data stays within the environment** — suitable for personal use and co-located teams.
+The app’s prime directive is **to protect data at any cost**. It is engineered to withstand **full compromise of the host** (illegal filesystem access or physical loss/theft of the device) **without compromise of the secret key**. In that scenario, an attacker may read all on-disk data but **cannot recover original data** (assumed that the secret key is stored securely outside the app).
 
-It is engineered to withstand **full compromise of the host** (filesystem and database) **without compromise of the secret key**. In that scenario, an attacker may read all on-disk files and metadata but **cannot recover original data** (assumed that the secret key is stored securely outside the app).
+**Hot key extraction is supported**: the secret key can be removed without restarting the app. Upon extraction, the gocryptfs cipher directory is cleanly unmounted, and the cache is fully purged.
 
 Without the secret key, deriving any meaningful information is **computationally infeasible**: all user data is encrypted at rest, so even with complete physical control over the storage an attacker obtains only unintelligible ciphertext blobs.
 
@@ -35,71 +48,47 @@ When deleted, files are securely wiped with shred (with all revisions and thumbn
 
 ## Caution
 
-- **Losing the secret key permanently locks all encrypted data without the possibility of recovery**. Store the key in a secure, reliable location. Do not keep it in the same place as the application. Do not share the key with anyone.
+- **Losing the secret key permanently locks all encrypted data without the possibility of recovery**. Store the key in a secure, reliable location. Do not keep it in the same place as the app. Do not share the key with anyone.
 - **On SSDs and copy-on-write/journaling filesystems, shred is ineffective** (wear-leveling and CoW defeat multi-pass overwrites). Use non-CoW filesystems and avoid snapshots.
+- **Do not modify internal data manually** — this breaks data consistency. Accessing encrypted data is intended only for migration or critical recovery.
 
 ## Highlights
 
 - **Self-hosted mode** — containerized with Docker, so it works on any hardware and operating system where a container runtime is available.
-- **Isolated workspace** — fully offline; no internet required. No external services, no background network traffic, no analytics, no AI.
+- **Isolated workspace** — no internet required. No external services, no background traffic, no analytics, no AI. For local workflows, all data is processed within the local environment — suitable for personal use and co-located teams.
 - **Protected storage** — everything is encrypted, and access is controlled by a secret key that serves as the single point of trust.
-- **Detachable secret key** — an external key file (gocryptfs passphrase) that can be extracted and stored separately.
-- **App-agnostic volume** — the encrypted store is exposed as a Docker volume; with the secret key, it can be mounted directly via gocryptfs or migrated to another instance of the application.
-- **Irreversible deletion** — securely erases files by overwriting data multiple times to prevent recovery.
-- **Head-based versioning** — the newest file revision is the head, any previous revision can be listed and restored.
-- **Rich file features** — supports file metadata, tags, description, and automatic thumbnail generation.
-- **Role-based access** — user permissions are managed through the predefined `Reader`, `Author`, `Editor` and `Admin` roles.
+- **Detachable secret key** — an external key file (gocryptfs passphrase) that can be extracted on the fly and stored separately.
+- **App-agnostic volume** — the encrypted storage is exposed as a Docker volume; with the secret key, it can be mounted directly via gocryptfs or migrated to another instance of the app.
+- **Irreversible deletion** — securely erases files by overwriting data multiple times to prevent recovery. Ineffective on SSDs or copy-on-write filesystems.
+- **Head-based versioning** — the newest file revision is the head, any previous revision can be listed and restored. Adds disk-space overhead, but grants access to every historical state.
+- **Powerful file handling** — supports file metadata, descriptions, auto-thumbnails, and cross-field search. Overall storage capacity is limited only by available disk space.
+- **Multi-user access** — the app runs asynchronously and allows many users to work simultaneously. When the same data is modified, a flexible locking system prevents accidental corruption.
+- **Role-based policy** — user permissions are managed by predefined roles: `Reader`, `Author`, `Editor`, and `Admin`.
 - **Multi-factor auth** — login sessions are protected with one-time passwords, adding a layer of defense against credential theft.
-- **Public API** — the `REST API` is fully documented with `Swagger/OpenAPI` documentation.
-- **Backend documentation** — detailed developer docs are generated with `Sphinx`, covering architecture, internals, and extension points. 
 - **Add-on friendly** — the core follows a microkernel design with a hook-based extension system, making it easy to add new features without modifying the main codebase.
-- **Import CLI** — source data can be ingested through a console utility for bulk or scripted imports.
+- **Documentation** — detailed developer docs are generated with `Sphinx`, covering architecture, internals, and extension points. 
 
-## Main stack
+## Core stack
 
-- **Python** `3.13` — core runtime
-- **FastAPI** `0.115.12` — framework
-- **Pydantic** `2.11.7` — validation
-- **SQLite** `3.45.1` — database
-- **Redis** `7.0.15` — cache
-- **gocryptfs** `2.4.0` — encrypted FS layer
-- **shred** `9.4` — secure file erasure
+The project’s codebase is open and available to inspect. Under the hood, it’s built with:
+
+- **Python** — core runtime
+- **FastAPI** — framework
+- **Pydantic** — validation
+- **SQLite** — database
+- **Redis** — cache
+- **gocryptfs** — encrypted FS layer
+- **shred** — secure file erasure
+- **unittest** — unit test runner
+- **flake8** — linting
+- **behave** — BDD tests (not included)
+- **Sphinx** — documentation generator
 
 ## Security
 
-- **pip-audit** —
-- **semgrep** —
-- **bandit** —
-- **gitleaks** —
-- **trivy** —
+The project is **regularly scanned for potential vulnerabilities**, and dependencies are kept up-to-date to address any issues found (the latest scan report is available in `SECURITY_SCAN.md`). Scanning is performed with:
 
-## Quick start
+- **pip-audit** — checks Python dependencies for known vulnerabilities.
+- **Bandit** — performs static analysis of Python source for security issues.
 
-Build and run with Docker:
-```bash
-make install
-```
-
-On first launch, a random secret key is generated and stored in a file in the `hidden-secret` Docker volume, from which it can be extracted. Encrypted data is stored in the `hidden-data` Docker volume; logs are in `hidden-logs`.
-
-Public API:
-```bash
-http://localhost/docs
-```
-
-Documentation:
-```bash
-http://localhost/sphinx/
-```
-
-## Import data
-
-## Development
-
-Thanks for your interest in improving **Hidden**!
-
-To set up the development environment, clone the repository and run `make install`, which will build the Docker image and install all dependencies. The container also includes a `.vscode` directory with IDE settings and launch parameters for running the app in debug mode.
-
-Please **do not** open public issues for vulnerabilities. Use GitHub's "Report a vulnerability" (Security Advisories) or contact the maintainer privately. Include steps to reproduce and a clear impact assessment.
-
-Please note that the project is provided as **source-available** under a **non-commercial** license. By contributing, you agree that your contributions are licensed under the same terms. The author reserves the right to change the license or relicense the project in the future.
+If you discover a vulnerability, **please do not open a public issue**. Report it privately via GitHub’s "Report a vulnerability" (Security Advisories) or contact the maintainer directly. Include steps to reproduce and a clear impact assessment.

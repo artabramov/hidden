@@ -29,7 +29,7 @@ class CollectionModelTest(unittest.IsolatedAsyncioTestCase):
 
         self.assertTrue(collection._cacheable)
         self.assertEqual(collection.__tablename__, "collections")
-    
+
     async def test_to_dict(self):
         user_mock = AsyncMock()
         collection = Collection(42, True, "dummy", "some text")
@@ -37,7 +37,7 @@ class CollectionModelTest(unittest.IsolatedAsyncioTestCase):
         collection.id = 37
         collection.created_date = "created-date"
         collection.updated_date = "updated-date"
-        
+
         res = await collection.to_dict()
         self.assertDictEqual(res, {
             "id": 37,
@@ -48,7 +48,6 @@ class CollectionModelTest(unittest.IsolatedAsyncioTestCase):
             "name": "dummy",
             "summary": "some text",
         })
-
 
     def test_path_for_dir(self):
         config = SimpleNamespace(DOCUMENTS_DIR="/tmp/data")

@@ -6,7 +6,7 @@ from app.sqlite import get_session
 from app.redis import get_cache
 from app.models.user import User, UserRole
 from app.schemas.userpic_delete import UserpicDeleteResponse
-from app.error import E, LOC_PATH, ERR_VALUE_INVALID, ERR_VALUE_NOT_FOUND
+from app.error import E, LOC_PATH, ERR_VALUE_INVALID
 from app.hook import Hook, HOOK_AFTER_USERPIC_DELETE
 from app.auth import auth
 from app.repository import Repository

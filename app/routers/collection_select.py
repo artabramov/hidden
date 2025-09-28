@@ -67,6 +67,4 @@ async def collection_select(
     hook = Hook(request, session, cache, current_user=current_user)
     await hook.call(HOOK_AFTER_COLLECTION_SELECT, collection)
 
-    request.state.log.debug(
-        "collection selected; collection_id=%s;", collection.id)
     return await collection.to_dict()

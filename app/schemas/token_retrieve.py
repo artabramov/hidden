@@ -2,7 +2,7 @@
 
 from typing import Optional
 from pydantic import BaseModel, Field, ConfigDict, field_validator
-from app.validators.user_validators import username_validate, totp_validate
+from app.validators.user_validators import totp_validate
 
 
 class TokenRetrieveRequest(BaseModel):

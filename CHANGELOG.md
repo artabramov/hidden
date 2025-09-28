@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.8] - 2025-09-28
+- Added **Makefile scan** target that runs vulnerability scans (**pip-audit**, **bandit**) and generates the report **SECURITY_SCAN.md**.
+- Security fixes: bumped **aiohttp** (3.12.x), **Starlette** (0.47.2), **Pillow** (11.3.0).
+- Increased overall unit test coverage to **82%**.
+
 ## [0.2.7] - 2025-09-27
 - Fixed minor issues in the **pydantic models**, improving validation and error messages.
 - Increased overall unit test coverage to **81%**.

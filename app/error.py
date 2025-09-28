@@ -17,9 +17,9 @@ LOC_QUERY = "query"
 LOC_BODY = "body"
 
 # 401
-ERR_TOKEN_MISSING = "token_missing"
-ERR_TOKEN_INVALID = "token_invalid"
-ERR_TOKEN_EXPIRED = "token_expired"
+ERR_TOKEN_MISSING = "token_missing"  # nosec: B105
+ERR_TOKEN_INVALID = "token_invalid"  # nosec: B105
+ERR_TOKEN_EXPIRED = "token_expired"  # nosec: B105
 
 # 403/422
 ERR_USER_NOT_FOUND = "user_not_found"
@@ -46,8 +46,8 @@ ERR_FILE_CONFLICT = "file_conflict"
 
 # 423/498/499/500
 ERR_LOCKED = "locked"
-ERR_SECRET_KEY_MISSING = "secret_key_missing"
-ERR_SECRET_KEY_INVALID = "secret_key_invalid"
+ERR_SECRET_KEY_MISSING = "secret_key_missing"  # nosec: B105
+ERR_SECRET_KEY_INVALID = "secret_key_invalid"  # nosec: B105
 ERR_SERVER_ERROR = "server_error"
 
 

@@ -19,7 +19,7 @@ class UserValidatorsTest(unittest.TestCase):
                 username_validate(username)
 
     def test_username_string_correct(self):
-        usernames = ["john", "john_doe","j0hn", "__john__"]
+        usernames = ["john", "john_doe", "j0hn", "__john__"]
         for username in usernames:
             res = username_validate(username)
             self.assertEqual(res, username)

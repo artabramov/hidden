@@ -14,13 +14,13 @@ from app.models.user import User
 
 # TODO: Replace HOOK_* constant list with a dataclass.
 
-HOOK_AFTER_TOKEN_RETRIEVE = "after_token_retrieve"
-HOOK_AFTER_TOKEN_INVALIDATE = "after_token_invalidate"
+HOOK_AFTER_TOKEN_RETRIEVE = "after_token_retrieve"  # nosec: B105
+HOOK_AFTER_TOKEN_INVALIDATE = "after_token_invalidate"  # nosec: B105
 
 HOOK_AFTER_USER_REGISTER = "after_user_register"
 HOOK_AFTER_USER_LOGIN = "after_user_login"
 HOOK_AFTER_USER_ROLE = "after_user_role"
-HOOK_AFTER_USER_PASSWORD = "after_user_password"
+HOOK_AFTER_USER_PASSWORD = "after_user_password"  # nosec: B105
 HOOK_AFTER_USER_SELECT = "after_user_select"
 HOOK_AFTER_USER_UPDATE = "after_user_update"
 HOOK_AFTER_USER_DELETE = "after_user_delete"

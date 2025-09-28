@@ -52,7 +52,7 @@ class FileManager:
                 if mt and mt != "application/octet-stream":
                     return mt
         except Exception:
-            pass
+            pass  # nosec: B110
 
         # 2. filetype (signatures of popular formats)
         try:
@@ -60,7 +60,7 @@ class FileManager:
             if kind and kind.mime:
                 return kind.mime.lower().strip()
         except Exception:
-            pass
+            pass  # nosec: B110
 
         # 3. by extension
         mt = mimetypes.guess_type(path)[0]

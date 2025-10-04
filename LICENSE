@@ -6,18 +6,25 @@ definition of open source, as it restricts commercial use. The software
 is source-available only and should not be considered open source in
 the OSI sense.
 
+For the purposes of this license, "non-commercial" means redistribution
+without charge and without direct or indirect commercial advantage;
+internal use by you may be commercial.
+
 1. By installing, using, or accessing this software, you accept this
 license. All rights, including intellectual property, are owned
 exclusively by the developer.
 
-2. A royalty-free, non-exclusive, non-transferable license is granted
-to use, copy, modify, and redistribute this software for non-commercial
-purposes only (i.e., no commercial advantage or monetary compensation),
-and distribute derivatives under this license.
+2. A royalty-free, non-exclusive, non-transferable, non-sublicensable
+license is granted to use, copy, and modify this software. Internal use
+(including commercial internal use) is permitted. Redistribution is
+allowed only on a non-commercial, no-charge basis. When redistributing
+this software or derivative works, you must keep this license and all notices and clearly
+mark any changes.
 
-3. No commercial use (sale, paid services/SaaS, inclusion in paid
-products, or business operations), no removal/alteration of notices,
-no terms that weaken the non-commercial restriction.
+3. No commercial distribution. You may not: (a) sublicense under terms
+that remove or weaken the non-commercial restriction; (b) embed or
+bundle this software or its functionality into paid products or services; or (c) provide it as a paid or revenue-generating hosted service
+(including SaaS). Notices must not be removed or altered.
 
 4. This software is provided "as is," without any warranties, express or
 implied. The developer is not responsible for any damages, including but

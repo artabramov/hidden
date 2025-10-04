@@ -3,8 +3,8 @@ set -eu
 umask 077
 
 # Directories for the passphrase file and data paths.
-GOCRYPTGS_PASSPHRASE_DIR="$(dirname -- "$GOCRYPTFS_PASSPHRASE_PATH")"
-mkdir -p -- "$GOCRYPTGS_PASSPHRASE_DIR"
+GOCRYPTFS_PASSPHRASE_DIR="$(dirname -- "$GOCRYPTFS_PASSPHRASE_PATH")"
+mkdir -p -- "$GOCRYPTFS_PASSPHRASE_DIR"
 
 # Normalize and ensure mountpoint (cleartext view).
 GOCRYPTFS_DATA_MOUNTPOINT="${GOCRYPTFS_DATA_MOUNTPOINT%/}"
@@ -29,9 +29,11 @@ fi
   while :; do
     if [ -f "$GOCRYPTFS_PASSPHRASE_PATH" ]; then
       # Initialize cipher once when the passphrase is present (idempotent).
-      if [ ! -f "$GOCRYPTFS_DATA_CIPHER_DIR/gocryptfs.conf" ]; then
+      if ! find "$GOCRYPTFS_DATA_CIPHER_DIR" -mindepth 1 -maxdepth 1 -print -quit | grep -q .; then
         if gocryptfs -init -passfile "$GOCRYPTFS_PASSPHRASE_PATH" "$GOCRYPTFS_DATA_CIPHER_DIR" -nosyslog; then
           echo "[watchdog] cipher initialized"
+        else
+          echo "[watchdog] cipher init FAILED"
         fi
       fi
 

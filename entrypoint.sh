@@ -29,7 +29,7 @@ fi
   while :; do
     if [ -f "$GOCRYPTFS_PASSPHRASE_PATH" ]; then
       # Initialize cipher once when the passphrase is present (idempotent).
-      if ! find "$GOCRYPTFS_DATA_CIPHER_DIR" -mindepth 1 -maxdepth 1 -print -quit | grep -q .; then
+      if [ ! -f "$GOCRYPTFS_DATA_CIPHER_DIR/gocryptfs.conf" ]; then
         if gocryptfs -init -passfile "$GOCRYPTFS_PASSPHRASE_PATH" "$GOCRYPTFS_DATA_CIPHER_DIR" -nosyslog; then
           echo "[watchdog] cipher initialized"
         else

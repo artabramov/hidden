@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.9] - 2025-10-04
+- Added **readonly** property for collections: when enabled, documents inside them cannot be modified; added **value_readonly** error on modification attempts.
+- Added **Sphinx** documentation generation through the **Makefile apidoc** target; runs **sphinx-apidoc** over app (excluding tests) and produces Markdown output.
+- Moved installation of security-scan packages from the **Dockerfile** to the **Makefile scan** target.
+- Pruned **requirements** to remove redundant dependencies.
+
 ## [0.2.8] - 2025-09-28
 - Added **Makefile scan** target that runs vulnerability scans (**pip-audit**, **bandit**) and generates the report **SECURITY_SCAN.md**.
 - Security fixes: bumped **aiohttp** (3.12.x), **Starlette** (0.47.2), **Pillow** (11.3.0).

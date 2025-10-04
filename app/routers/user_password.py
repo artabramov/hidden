@@ -17,7 +17,7 @@ from app.managers.encryption_manager import EncryptionManager
 router = APIRouter()
 
 
-@router.put("/user/{user_id}/password", summary="Change user's password.",
+@router.put("/user/{user_id}/password", summary="Change user's password",
             response_class=JSONResponse, status_code=status.HTTP_200_OK,
             response_model=UserPasswordResponse, tags=["Users"])
 async def user_password(

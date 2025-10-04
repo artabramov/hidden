@@ -31,7 +31,48 @@ async def collection_update(
     cache=Depends(get_cache),
     current_user: User = Depends(auth(UserRole.editor))
 ) -> CollectionUpdateResponse:
+    """
+    Updates a collection's properties and, if the name changes, renames
+    the underlying directory on disk. The operation updates: name,
+    readonly status, and summary. Changes are performed under an
+    exclusive collection lock to keep the database and filesystem in
+    sync. Collection names are unique across the application; both the
+    database and the filesystem are validated before applying changes.
 
+    **Authentication:**
+    - Requires a valid bearer token with `editor` role or higher.
+
+    **Validation schemas:**
+    - `CollectionUpdateRequest` — optional fields: `name`, `readonly`,
+      `summary`.
+    - `CollectionUpdateResponse` — returns `collection_id`.
+
+    **Path parameters:**
+    - `collection_id` (integer ≥ 1) — collection identifier.
+
+    **Request body:**
+    - `application/json` with any of: `name`, `readonly`, `summary`.
+
+    **Response codes:**
+    - `200` — update successful.
+    - `401` — missing, invalid, or expired token.
+    - `403` — insufficient role, invalid JTI, user is inactive or
+      suspended.
+    - `404` — collection not found.
+    - `422` — validation error (e.g., `name` already exists).
+    - `423` — application is temporarily locked.
+    - `498` — secret key is missing.
+    - `499` — secret key is invalid.
+
+    **Locks & consistency:**
+    - Exclusive per-collection lock during the update.
+    - On rename, directory existence is checked before moving; any
+    failure triggers a best-effort rollback of the directory move.
+
+    **Hooks:**
+    - `HOOK_AFTER_COLLECTION_UPDATE` — executed after a successful
+    update.
+    """
     config = request.app.state.config
     file_manager = request.app.state.file_manager
     log = request.state.log
@@ -61,8 +102,9 @@ async def collection_update(
     collection_lock = request.app.state.collection_locks[collection.id]
     async with collection_lock.write():
 
-        # No-op rename: only summary changes
+        # No-op rename
         if updated_name == current_name:
+            collection.readonly = schema.readonly
             collection.summary = schema.summary
             await collection_repository.update(collection)
 
@@ -79,6 +121,7 @@ async def collection_update(
                 collection_renamed = True
 
                 collection.name = schema.name
+                collection.readonly = schema.readonly
                 collection.summary = schema.summary
                 await collection_repository.update(collection)
 

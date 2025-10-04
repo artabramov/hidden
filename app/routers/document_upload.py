@@ -19,7 +19,7 @@ from app.hook import Hook, HOOK_AFTER_DOCUMENT_UPLOAD
 from app.auth import auth
 from app.error import (
     E, LOC_PATH, LOC_BODY, ERR_VALUE_NOT_FOUND, ERR_FILE_MIMETYPE_INVALID,
-    ERR_VALUE_INVALID, ERR_FILE_CONFLICT)
+    ERR_VALUE_INVALID, ERR_FILE_CONFLICT, ERR_VALUE_READONLY)
 
 router = APIRouter()
 
@@ -123,6 +123,10 @@ async def document_upload(
         if not collection:
             raise E([LOC_PATH, "collection_id"], collection_id,
                     ERR_VALUE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
+
+        elif collection.readonly:
+            raise E([LOC_PATH, "collection_id"], collection_id,
+                    ERR_VALUE_READONLY, status.HTTP_422_UNPROCESSABLE_CONTENT)
 
         # Check the document with the filename in the collection
         document_repository = Repository(session, cache, Document, config)

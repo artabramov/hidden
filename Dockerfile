@@ -32,7 +32,7 @@ RUN chmod -R 755 /var/log/hidden
 
 # system packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    sqlite3 redis ffmpeg libmagic1 sudo git gocryptfs fuse3 \
+    sqlite3 redis libmagic1 sudo git gocryptfs fuse3 \
  && rm -rf /var/lib/apt/lists/*
 
 # Python dependencies
@@ -51,22 +51,18 @@ RUN python3 -m pip install --upgrade pip \
 # RUN pip3 install pillow==11.2.1
 # RUN pip3 install psutil==7.0.0
 # RUN pip3 install cryptography==44.0.2
-# RUN pip3 install ffmpeg-python==0.2.0
 # RUN pip3 install python-dotenv==1.1.0
 # RUN pip3 install python-multipart==0.0.20
 # RUN pip3 install coverage==7.8.0
 # RUN pip3 install flake8==7.2.0
-# RUN pip3 install sphinx==8.2.3
-# RUN pip3 install sphinx-rtd-theme==3.0.2
 # RUN pip3 install concurrent-log-handler==0.9.28
 # RUN pip3 install python-magic==0.4.27
 # RUN pip3 install filetype==1.2.0
 
-# fix 2025-09-27
+# # fix 2025-09-27
 # RUN pip3 install -U "aiohttp~=3.12.14"
 # RUN pip3 install -U "fastapi>=0.116.2,<0.117" "starlette>=0.47.2,<0.49"
 # RUN pip3 install -U "pillow>=11.3.0,<11.4"
-# RUN pip3 install -U pip-audit bandit
 # RUN pip3 freeze > requirements.txt
 
 # node_exporter 9100

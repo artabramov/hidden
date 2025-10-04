@@ -15,7 +15,7 @@ from app.auth import auth
 from app.repository import Repository
 from app.error import (
     E, LOC_PATH, LOC_BODY, ERR_VALUE_NOT_FOUND, ERR_VALUE_INVALID,
-    ERR_FILE_CONFLICT)
+    ERR_FILE_CONFLICT, ERR_VALUE_READONLY)
 
 router = APIRouter()
 
@@ -102,6 +102,10 @@ async def document_update(
     if not collection:
         raise E([LOC_PATH, "collection_id"], collection_id,
                 ERR_VALUE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
+
+    elif collection.readonly:
+        raise E([LOC_PATH, "collection_id"], collection_id,
+                ERR_VALUE_READONLY, status.HTTP_422_UNPROCESSABLE_CONTENT)
 
     document_repository = Repository(session, cache, Document, config)
     document = await document_repository.select(id=document_id)

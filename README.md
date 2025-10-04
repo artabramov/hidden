@@ -19,6 +19,7 @@ If you like it, star it ⭐ — it helps discoverability. Thank you!
 
 - Official website: [joinhidden.com](https://joinhidden.com)
 - Telegram announcements: [t.me/hiddenupdates](https://t.me/hiddenupdates)
+- Sphinx documentation: [github.com/artabramov/hidden-docs](https://github.com/artabramov/hidden-docs)
 
 ## Quick start
 
@@ -29,9 +30,17 @@ make install
 
 On first launch, a random secret key is generated (used as the gocryptfs passphrase) and stored in a file in the `hidden-secret` Docker volume, from which it can be extracted. Encrypted data is stored in the `hidden-data` Docker volume (plaintext is not exposed outside the container). After installation, the following URL is available:
 
-Rest API — http://localhost/docs
+http://localhost/docs
 
 ![Swagger](img/swagger.png)
+
+## Terminology
+
+The app adopts terminology from MongoDB — collections and documents.
+
+**Collections** — a way to organize files. Each collection maps to its own directory within gocryptfs. The structure is flat — nesting collections is not supported.
+
+**Documents** — wrappers for files. Each document contains the file itself along with its revisions, thumbnails, and metadata.
 
 ## Threat model
 
@@ -63,10 +72,10 @@ When deleted, files are securely wiped with shred (with all revisions and thumbn
 - **Head-based versioning** — the newest file revision is the head, any previous revision can be listed and restored. Adds disk-space overhead, but grants access to every historical state.
 - **Powerful file handling** — supports file metadata, descriptions, auto-thumbnails, and cross-field search. Overall storage capacity is limited only by available disk space.
 - **Multi-user access** — the app runs asynchronously and allows many users to work simultaneously. When the same data is modified, a flexible locking system prevents accidental corruption.
-- **Role-based policy** — user permissions are managed by predefined roles: `Reader`, `Author`, `Editor`, and `Admin`.
+- **Role-based policy** — user permissions are managed by predefined roles: Reader, Author, Editor, and Admin.
 - **Multi-factor auth** — login sessions are protected with one-time passwords, adding a layer of defense against credential theft.
 - **Add-on friendly** — the core follows a microkernel design with a hook-based extension system, making it easy to add new features without modifying the main codebase.
-- **Documentation** — detailed developer docs are generated with `Sphinx`, covering architecture, internals, and extension points. 
+- **Documentation** — detailed developer docs are generated with Sphinx, covering architecture, internals, and extension points.
 
 ## Core stack
 
@@ -92,3 +101,11 @@ The project is **regularly scanned for potential vulnerabilities**, and dependen
 - **Bandit** — performs static analysis of Python source for security issues.
 
 If you discover a vulnerability, **please do not open a public issue**. Report it privately via GitHub’s "Report a vulnerability" (Security Advisories) or contact the maintainer directly. Include steps to reproduce and a clear impact assessment.
+
+## Architecture overview
+
+The app runs using virtualization inside a Docker container and can be deployed in any environment that supports it. Three volumes are exposed outside the container: one for the secret key, one for encrypted data, and one for logs (typically used for development). All data operations go through the public REST API.
+
+The core follows a microkernel pattern: on execution, each router invokes a named hook. Add-ons intercept these hooks to extend behavior without modifying the core. Any number of add-ons can be enabled, multiple handlers may process the same hook in sequence, and add-ons are toggled via the `.env` configuration.
+
+![Architecture](img/architecture.png)

@@ -17,10 +17,10 @@ from app.config import Config
 class EncryptionManager:
     """
     Coordinates symmetric encryption primitives behind a simple API.
-    Accepts configuration and a secret at construction.
+    Accepts configuration and a gocryptfs at construction.
     """
 
-    def __init__(self, config: Config, secret_key: Union[str, bytes]):
+    def __init__(self, config: Config, gocryptfs_key: Union[str, bytes]):
         """
         Initializes AES-GCM with a key derived or taken as-is from the
         secret.
@@ -29,10 +29,10 @@ class EncryptionManager:
 
         enc = self.config.CRYPTO_DEFAULT_ENCODING
         # keep the raw secret in bytes; no decoding required
-        if isinstance(secret_key, (bytes, bytearray)):
-            raw_secret = bytes(secret_key)
+        if isinstance(gocryptfs_key, (bytes, bytearray)):
+            raw_secret = bytes(gocryptfs_key)
         else:
-            raw_secret = secret_key.encode(enc)
+            raw_secret = gocryptfs_key.encode(enc)
 
         # derive or use raw for AES-GCM
         if self.config.CRYPTO_DERIVE_WITH_HKDF:

@@ -14,7 +14,7 @@ def _make_request_mock():
     req.app.state = MagicMock()
     req.app.state.config = cfg
     req.state = MagicMock()
-    req.state.secret_key = "test-secret-key"
+    req.state.gocryptfs_key = "test-gocryptfs-key"
     req.state.log = MagicMock()
     req.state.log.debug = MagicMock()
     return req

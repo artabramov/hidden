@@ -28,7 +28,7 @@ The app is delivered as a Docker image. Start it with a single command:
 make install
 ```
 
-On first launch, a random secret key is generated (used as the gocryptfs passphrase) and stored in a file in the `hidden-secret` Docker volume, from which it can be extracted. Encrypted data is stored in the `hidden-data` Docker volume (plaintext is not exposed outside the container). After installation, the following URL is available:
+On first launch, a random secret key is generated (used as the gocryptfs passphrase) and stored in a file in the `hidden-secrets` Docker volume, from which it can be extracted. Encrypted data is stored in the `hidden-data` Docker volume (plaintext is not exposed outside the container). After installation, the following URL is available:
 
 http://localhost/docs
 
@@ -104,7 +104,7 @@ If you discover a vulnerability, **please do not open a public issue**. Report i
 
 ## Architecture overview
 
-The app runs using virtualization inside a Docker container and can be deployed in any environment that supports it. Three volumes are exposed outside the container: one for the secret key, one for encrypted data, and one for logs (typically used for development). All data operations go through the public REST API.
+The app runs using virtualization inside a Docker container and can be deployed in any environment that supports it. Three volumes are exposed outside the container: one for the secrets, one for encrypted data, and one for logs (typically used for development). All data operations go through the public REST API.
 
 The core follows a microkernel pattern: on execution, each router invokes a named hook. Add-ons intercept these hooks to extend behavior without modifying the core. Any number of add-ons can be enabled, multiple handlers may process the same hook in sequence, and add-ons are toggled via the `.env` configuration.
 

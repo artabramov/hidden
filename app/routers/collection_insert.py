@@ -53,8 +53,8 @@ async def collection_insert(
     suspended.
     - `422` — name already exists or fails validation.
     - `423` — application is temporarily locked.
-    - `498` — secret key is missing.
-    - `499` — secret key is invalid.
+    - `498` — gocryptfs key is missing.
+    - `499` — gocryptfs key is invalid.
 
     **Side effects:**
     - Creates a directory at `documents/<name>`.

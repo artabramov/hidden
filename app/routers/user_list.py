@@ -39,8 +39,8 @@ async def user_list(
     - `403` — insufficient role, invalid JTI, user is inactive or
     suspended.
     - `423` — application is temporarily locked.
-    - `498` — secret key is missing.
-    - `499` — secret key is invalid.
+    - `498` — gocryptfs key is missing.
+    - `499` — gocryptfs key is invalid.
 
     **Hooks:**
     - `HOOK_AFTER_USER_LIST`: executes after the list is retrieved.

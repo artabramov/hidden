@@ -48,7 +48,7 @@ class ConfigTest(unittest.IsolatedAsyncioTestCase):
     @patch("app.config.dotenv_values")
     async def test_missing_key_raises_keyerror(self, dotenv_mock):
         env = self.build_env()
-        env.pop("SECRET_KEY_PATH", None)
+        env.pop("GOCRYPTFS_PASSPHRASE_PATH", None)
         dotenv_mock.return_value = env
 
         with self.assertRaises(KeyError):

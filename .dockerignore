@@ -1,4 +1,4 @@
 __pycache__/
 *.pyc
 /hidden/data
-/hidden/secret
+/hidden/secrets

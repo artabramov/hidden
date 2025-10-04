@@ -54,8 +54,8 @@ async def thumbnail_retrieve(
     - `404` — collection or document not found, or no thumbnail set.
     - `409` — file not found on filesystem or checksum mismatch.
     - `423` — application is temporarily locked.
-    - `498` — secret key is missing.
-    - `499` — secret key is invalid.
+    - `498` — gocryptfs key is missing.
+    - `499` — gocryptfs key is invalid.
 
     **Side effects:**
     - Reads from the LRU cache or filesystem and saves the bytes into

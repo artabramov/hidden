@@ -44,15 +44,15 @@ async def token_invalidate(
     - `403` — insufficient role, invalid JTI, user is inactive or
     suspended.
     - `423` — application is temporarily locked.
-    - `498` — secret key is missing.
-    - `499` — secret key is invalid.
+    - `498` — gocryptfs key is missing.
+    - `499` — gocryptfs key is invalid.
 
     **Hooks:**
     - `HOOK_AFTER_TOKEN_INVALIDATE`: executes after successful token
     invalidation.
     """
     config = request.app.state.config
-    encryption_manager = EncryptionManager(config, request.state.secret_key)
+    encryption_manager = EncryptionManager(config, request.state.gocryptfs_key)
 
     jti = generate_jti(config.JTI_LENGTH)
     current_user.jti_encrypted = encryption_manager.encrypt_str(jti)

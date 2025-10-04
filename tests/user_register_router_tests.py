@@ -17,7 +17,7 @@ class UserRegisterRouterTest(unittest.IsolatedAsyncioTestCase):
         req.app.state = MagicMock()
         req.app.state.config = cfg
         req.state = MagicMock()
-        req.state.secret_key = "test-secret-key"
+        req.state.gocryptfs_key = "test-gocryptfs-key"
         req.state.log = MagicMock()
         req.state.log.debug = MagicMock()
         return req
@@ -75,7 +75,8 @@ class UserRegisterRouterTest(unittest.IsolatedAsyncioTestCase):
         self.assertIn("username", context.exception.detail[0]["loc"])
 
         EncryptionManagerMock.assert_called_once_with(
-            request_mock.app.state.config, request_mock.state.secret_key
+            request_mock.app.state.config,
+            request_mock.state.gocryptfs_key
         )
 
         HookMock.assert_not_called()

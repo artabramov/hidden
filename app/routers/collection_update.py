@@ -61,8 +61,8 @@ async def collection_update(
     - `404` — collection not found.
     - `422` — validation error (e.g., `name` already exists).
     - `423` — application is temporarily locked.
-    - `498` — secret key is missing.
-    - `499` — secret key is invalid.
+    - `498` — gocryptfs key is missing.
+    - `499` — gocryptfs key is invalid.
 
     **Locks & consistency:**
     - Exclusive per-collection lock during the update.

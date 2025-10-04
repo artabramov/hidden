@@ -51,8 +51,8 @@ async def collection_list(
     - `403` — insufficient role, invalid JTI, user is inactive or
     suspended.
     - `423` — application is temporarily locked.
-    - `498` — secret key is missing.
-    - `499` — secret key is invalid.
+    - `498` — gocryptfs key is missing.
+    - `499` — gocryptfs key is invalid.
 
     **Hooks**
     - `HOOK_AFTER_COLLECTION_LIST` — executed after successful retrieval.

@@ -58,8 +58,8 @@ async def document_select(
     suspended.
     - `404` — collection or document not found.
     - `423` — application is temporarily locked.
-    - `498` — secret key is missing.
-    - `499` — secret key is invalid.
+    - `498` — gocryptfs key is missing.
+    - `499` — gocryptfs key is invalid.
 
     **Hooks:**
     - `HOOK_AFTER_DOCUMENT_SELECT`: executed after a successful

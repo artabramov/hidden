@@ -56,8 +56,8 @@ async def userpic_upload(
     - `422` — path user ID does not match current user or file mimetype
     is invalid.
     - `423` — application is temporarily locked.
-    - `498` — secret key is missing.
-    - `499` — secret key is invalid.
+    - `498` — gocryptfs key is missing.
+    - `499` — gocryptfs key is invalid.
 
     **Hooks:**
     - `HOOK_AFTER_USERPIC_UPLOAD`: executes after the image is processed

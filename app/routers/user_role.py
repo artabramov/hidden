@@ -49,8 +49,8 @@ async def user_role(
     - `404` — user not found.
     - `422` — attempted to change own role or active status.
     - `423` — application is temporarily locked.
-    - `498` — secret key is missing.
-    - `499` — secret key is invalid.
+    - `498` — gocryptfs key is missing.
+    - `499` — gocryptfs key is invalid.
 
     **Hooks:**
     - `HOOK_AFTER_USER_ROLE`: executes after the user role or active

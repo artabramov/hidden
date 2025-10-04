@@ -49,7 +49,7 @@ class TestAuth(unittest.IsolatedAsyncioTestCase):
         request.app.state.config = MagicMock(
             JWT_SECRET="s", JWT_ALGORITHMS=["HS256"])
         request.state = MagicMock()
-        request.state.secret_key = "k"
+        request.state.gocryptfs_key = "k"
 
         with self.assertRaises(E):
             await _auth(request, "token", session, cache)
@@ -66,7 +66,7 @@ class TestAuth(unittest.IsolatedAsyncioTestCase):
         request.app.state.config = MagicMock(
             JWT_SECRET="s", JWT_ALGORITHMS=["HS256"])
         request.state = MagicMock()
-        request.state.secret_key = "k"
+        request.state.gocryptfs_key = "k"
 
         with self.assertRaises(E):
             await _auth(request, "token", session, cache)
@@ -88,7 +88,7 @@ class TestAuth(unittest.IsolatedAsyncioTestCase):
         request.app.state.config = MagicMock(
             JWT_SECRET="s", JWT_ALGORITHMS=["HS256"])
         request.state = MagicMock()
-        request.state.secret_key = "k"
+        request.state.gocryptfs_key = "k"
 
         with self.assertRaises(E):
             await _auth(request, "token", session, cache)
@@ -112,7 +112,7 @@ class TestAuth(unittest.IsolatedAsyncioTestCase):
         request.app.state.config = MagicMock(
             JWT_SECRET="s", JWT_ALGORITHMS=["HS256"])
         request.state = MagicMock()
-        request.state.secret_key = "k"
+        request.state.gocryptfs_key = "k"
 
         with self.assertRaises(E):
             await _auth(request, "token", session, cache)
@@ -137,7 +137,7 @@ class TestAuth(unittest.IsolatedAsyncioTestCase):
         request.app.state.config = MagicMock(
             JWT_SECRET="s", JWT_ALGORITHMS=["HS256"])
         request.state = MagicMock()
-        request.state.secret_key = "k"
+        request.state.gocryptfs_key = "k"
 
         with self.assertRaises(E):
             await _auth(request, "token", session, cache)
@@ -166,7 +166,7 @@ class TestAuth(unittest.IsolatedAsyncioTestCase):
         request.app.state.config = MagicMock(
             JWT_SECRET="s", JWT_ALGORITHMS=["HS256"])
         request.state = MagicMock()
-        request.state.secret_key = "k"
+        request.state.gocryptfs_key = "k"
 
         with self.assertRaises(E):
             await _auth(request, "token", session, cache)
@@ -346,7 +346,7 @@ class TestAuth(unittest.IsolatedAsyncioTestCase):
         request.app.state = MagicMock()
         request.app.state.config = config
         request.state = MagicMock()
-        request.state.secret_key = "k"
+        request.state.gocryptfs_key = "k"
 
         result = await _auth(request, "token", session, cache)
         self.assertEqual(result, user_mock)
@@ -364,7 +364,7 @@ class TestAuth(unittest.IsolatedAsyncioTestCase):
         request.app.state = MagicMock()
         request.app.state.config = config
         request.state = MagicMock()
-        request.state.secret_key = "k"
+        request.state.gocryptfs_key = "k"
 
         with self.assertRaises(E):
             await _auth(request, "token", session, cache)
@@ -381,7 +381,7 @@ class TestAuth(unittest.IsolatedAsyncioTestCase):
         request.app.state = MagicMock()
         request.app.state.config = config
         request.state = MagicMock()
-        request.state.secret_key = "k"
+        request.state.gocryptfs_key = "k"
 
         with self.assertRaises(E):
             await _auth(request, "expired_token", session, cache)

@@ -51,8 +51,8 @@ async def user_password(
     - `422` — path user ID mismatch, current password invalid, or new
       password equals the current one.
     - `423` — application is temporarily locked.
-    - `498` — secret key is missing.
-    - `499` — secret key is invalid.
+    - `498` — gocryptfs key is missing.
+    - `499` — gocryptfs key is invalid.
 
     **Hooks:**
     - `HOOK_AFTER_USER_PASSWORD`: executes after password change.
@@ -63,7 +63,7 @@ async def user_password(
         raise E([LOC_PATH, "user_id"], user_id,
                 ERR_VALUE_INVALID, status.HTTP_422_UNPROCESSABLE_ENTITY)
 
-    encryption_manager = EncryptionManager(config, request.state.secret_key)
+    encryption_manager = EncryptionManager(config, request.state.gocryptfs_key)
     password_hash = encryption_manager.get_hash(schema.current_password)
 
     if current_user.password_hash != password_hash:

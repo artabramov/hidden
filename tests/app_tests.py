@@ -35,8 +35,8 @@ class AppTest(unittest.IsolatedAsyncioTestCase):
             LRU_TOTAL_SIZE_BYTES=1000,
             LRU_ITEM_SIZE_LIMIT_BYTES=500,
             LOCK_FILE_PATH="/tmp/lock",
-            SECRET_KEY_PATH="/tmp/secret",
-            SECRET_KEY_LENGTH=64,
+            GOCRYPTFS_PASSPHRASE_PATH="/tmp/secret",
+            GOCRYPTFS_PASSPHRASE_LENGTH=64,
         )
         get_config_mock.return_value = cfg
 
@@ -86,8 +86,8 @@ class AppTest(unittest.IsolatedAsyncioTestCase):
 
         cfg = SimpleNamespace(
             LOCK_FILE_PATH="/tmp/lock",
-            SECRET_KEY_PATH="/tmp/secret",
-            SECRET_KEY_LENGTH=64,
+            GOCRYPTFS_PASSPHRASE_PATH="/tmp/secret",
+            GOCRYPTFS_PASSPHRASE_LENGTH=64,
         )
 
         log_mock = MagicMock()
@@ -133,8 +133,8 @@ class AppTest(unittest.IsolatedAsyncioTestCase):
 
         cfg = SimpleNamespace(
             LOCK_FILE_PATH="/tmp/lock",
-            SECRET_KEY_PATH="/tmp/secret",
-            SECRET_KEY_LENGTH=64,
+            GOCRYPTFS_PASSPHRASE_PATH="/tmp/secret",
+            GOCRYPTFS_PASSPHRASE_LENGTH=64,
         )
 
         log_mock = MagicMock()
@@ -160,11 +160,11 @@ class AppTest(unittest.IsolatedAsyncioTestCase):
             await appmod.middleware_handler(request, call_next_mock)
 
         self.assertEqual(
-            ctx.exception.status_code, appmod.HTTP_498_SECRET_KEY_MISSING)
+            ctx.exception.status_code, appmod.HTTP_498_GOCRYPTFS_KEY_MISSING)
 
         file_manager_mock.isfile.assert_has_awaits([
             call(cfg.LOCK_FILE_PATH),
-            call(cfg.SECRET_KEY_PATH),
+            call(cfg.GOCRYPTFS_PASSPHRASE_PATH),
         ])
 
         call_next_mock.assert_not_awaited()
@@ -186,8 +186,8 @@ class AppTest(unittest.IsolatedAsyncioTestCase):
 
         cfg = SimpleNamespace(
             LOCK_FILE_PATH="/tmp/lock",
-            SECRET_KEY_PATH="/tmp/secret",
-            SECRET_KEY_LENGTH=64,
+            GOCRYPTFS_PASSPHRASE_PATH="/tmp/secret",
+            GOCRYPTFS_PASSPHRASE_LENGTH=64,
         )
 
         log_mock = MagicMock()
@@ -214,14 +214,15 @@ class AppTest(unittest.IsolatedAsyncioTestCase):
 
         self.assertEqual(
             ctx.exception.status_code,
-            appmod.HTTP_499_SECRET_KEY_INVALID
+            appmod.HTTP_499_GOCRYPTFS_KEY_INVALID
         )
 
         file_manager_mock.isfile.assert_has_awaits([
             call(cfg.LOCK_FILE_PATH),
-            call(cfg.SECRET_KEY_PATH),
+            call(cfg.GOCRYPTFS_PASSPHRASE_PATH),
         ])
-        file_manager_mock.read.assert_awaited_once_with(cfg.SECRET_KEY_PATH)
+        file_manager_mock.read.assert_awaited_once_with(
+            cfg.GOCRYPTFS_PASSPHRASE_PATH)
 
         call_next_mock.assert_not_awaited()
         self.assertEqual(request.state.request_uuid, uuid4_mock.return_value)
@@ -243,8 +244,8 @@ class AppTest(unittest.IsolatedAsyncioTestCase):
 
         cfg = SimpleNamespace(
             LOCK_FILE_PATH="/tmp/lock",
-            SECRET_KEY_PATH="/tmp/secret",
-            SECRET_KEY_LENGTH=64,
+            GOCRYPTFS_PASSPHRASE_PATH="/tmp/secret",
+            GOCRYPTFS_PASSPHRASE_LENGTH=64,
         )
 
         log_mock = MagicMock()
@@ -275,13 +276,14 @@ class AppTest(unittest.IsolatedAsyncioTestCase):
                          uuid4_mock.return_value)
         self.assertEqual(request.state.request_uuid, uuid4_mock.return_value)
 
-        self.assertEqual(request.state.secret_key, valid_key)
+        self.assertEqual(request.state.gocryptfs_key, valid_key)
 
         file_manager_mock.isfile.assert_has_awaits([
             call(cfg.LOCK_FILE_PATH),
-            call(cfg.SECRET_KEY_PATH),
+            call(cfg.GOCRYPTFS_PASSPHRASE_PATH),
         ])
-        file_manager_mock.read.assert_awaited_once_with(cfg.SECRET_KEY_PATH)
+        file_manager_mock.read.assert_awaited_once_with(
+            cfg.GOCRYPTFS_PASSPHRASE_PATH)
 
         lru_mock.clear.assert_not_called()
 
@@ -339,11 +341,14 @@ class AppTest(unittest.IsolatedAsyncioTestCase):
         exc = InvalidKey()
         resp = await appmod.exception_handler(request, exc)
 
-        self.assertEqual(resp.status_code, appmod.HTTP_499_SECRET_KEY_INVALID)
+        self.assertEqual(
+            resp.status_code,
+            appmod.HTTP_499_GOCRYPTFS_KEY_INVALID
+        )
         self.assertEqual(
             json.loads(resp.body),
-            {"detail": [{"type": appmod.ERR_SECRET_KEY_INVALID,
-                        "msg": "Secret key is invalid"}]}
+            {"detail": [{"type": appmod.ERR_GOCRYPTFS_KEY_INVALID,
+                        "msg": "gocryptfs key is invalid"}]}
         )
 
         self.assertEqual(resp.headers.get("X-Request-ID"),

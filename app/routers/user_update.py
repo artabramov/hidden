@@ -47,8 +47,8 @@ async def user_update(
     suspended.
     - `422` — path user ID mismatch.
     - `423` — application is temporarily locked.
-    - `498` — secret key is missing.
-    - `499` — secret key is invalid.
+    - `498` — gocryptfs key is missing.
+    - `499` — gocryptfs key is invalid.
 
     **Hooks:**
     - `HOOK_AFTER_USER_UPDATE`: executes after profile update.

@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.10] - 2025-10-04
+- Secrets volume is renamed to **hidden-secrets**.
+- Secret key file is renamed to **gocryptfs.key**.
+- Updated application code and unit tests to use the new paths and environment variable names.
+- Minor docs and config tweaks to reflect the new secret layout.
+
 ## [0.2.9] - 2025-10-04
 - Added **readonly** property for collections: when enabled, documents inside them cannot be modified; added **value_readonly** error on modification attempts.
 - Added **Sphinx** documentation generation through the **Makefile apidoc** target; runs **sphinx-apidoc** over app (excluding tests) and produces Markdown output.

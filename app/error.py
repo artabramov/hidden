@@ -6,8 +6,8 @@ consistent error codes and unified response format across the API.
 from fastapi import HTTPException
 
 # Custom HTTP error codes
-HTTP_498_SECRET_KEY_MISSING = 498
-HTTP_499_SECRET_KEY_INVALID = 499
+HTTP_498_GOCRYPTFS_KEY_MISSING = 498
+HTTP_499_GOCRYPTFS_KEY_INVALID = 499
 
 # Locations
 LOC_HEADER = "header"
@@ -47,8 +47,8 @@ ERR_FILE_CONFLICT = "file_conflict"
 
 # 423/498/499/500
 ERR_LOCKED = "locked"
-ERR_SECRET_KEY_MISSING = "secret_key_missing"  # nosec: B105
-ERR_SECRET_KEY_INVALID = "secret_key_invalid"  # nosec: B105
+ERR_GOCRYPTFS_KEY_MISSING = "gocryptfs_key_missing"  # nosec: B105
+ERR_GOCRYPTFS_KEY_INVALID = "gocryptfs_key_invalid"  # nosec: B105
 ERR_SERVER_ERROR = "server_error"
 
 

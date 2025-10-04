@@ -56,8 +56,8 @@ async def document_delete(
     - `404` — collection or document not found.
     - `409` — conflict: thumbnail, revision or head file is missing.
     - `423` — application is temporarily locked.
-    - `498` — secret key is missing.
-    - `499` — secret key is invalid.
+    - `498` — gocryptfs key is missing.
+    - `499` — gocryptfs key is invalid.
 
     **Side effects:**
     - Deletes thumbnail, all revisions, and the head file from the

@@ -8,11 +8,11 @@ components into the application state. If lockdown mode is enabled, it
 is forcibly disabled. On shutdown, all resources are released cleanly.
 
 For every request, assign a UUID, measure and log duration, check the
-lockdown state, and validate the secret key. Request logging is enabled
-at DEBUG level.
+lockdown state, and validate the gocryptfs key. Request logging is
+enabled at DEBUG level.
 
 Errors are handled centrally to produce consistent JSON. Returns 422 for
-validation; 498/499 for secret-key issues; 423 for lockdown mode; 409
+validation; 498/499 for gocryptfs-key issues; 423 for lockdown mode; 409
 for file conflicts; 401/403 for auth errors. All other exceptions become
 500. Every non-validation issue is logged with elapsed time and a stack
 trace, and the response includes the request UUID (X-Request-ID). Error
@@ -77,8 +77,8 @@ from app.routers import (
 )
 from app.version import __version__
 from app.error import (
-    HTTP_498_SECRET_KEY_MISSING, HTTP_499_SECRET_KEY_INVALID,
-    ERR_SECRET_KEY_MISSING, ERR_SECRET_KEY_INVALID, ERR_LOCKED,
+    HTTP_498_GOCRYPTFS_KEY_MISSING, HTTP_499_GOCRYPTFS_KEY_INVALID,
+    ERR_GOCRYPTFS_KEY_MISSING, ERR_GOCRYPTFS_KEY_INVALID, ERR_LOCKED,
     ERR_SERVER_ERROR)
 
 # NOTE: Use a project-wide search for comments with the "NOTE" prefix
@@ -88,7 +88,7 @@ from app.error import (
 OPENAPI_PREFIX = "/api/v1"
 OPENAPI_TITLE = "Hidden — REST over gocryptfs"
 OPENAPI_DESCRIPTION = """
-Secure file storage with secret-key protection,
+Secure file storage with gocryptfs-key protection,
 file versioning, and irreversible deletion —
 [joinhidden.com](https://joinhidden.com)
 """
@@ -126,7 +126,7 @@ async def lifespan(app: FastAPI):
     app.state.file_manager = file_manager
 
     # NOTE: Thumbnails/userpics are cached in an in-memory LRU.
-    # App lockdown or secret-key errors clear the LRU immediately.
+    # App lockdown or gocryptfs-key errors clear the LRU immediately.
 
     app.state.lru = LRU(
         config.LRU_TOTAL_SIZE_BYTES,
@@ -200,7 +200,7 @@ app.include_router(thumbnail_retrieve.router)
 async def middleware_handler(request: Request, call_next):
     """
     Binds a request-scoped logger, logs request timing, checks lockdown
-    state, reads the secret key, appends X-Request-ID to the response.
+    state, reads the gocryptfs key, appends X-Request-ID to the response.
     """
     file_manager = request.app.state.file_manager
 
@@ -229,28 +229,28 @@ async def middleware_handler(request: Request, call_next):
             detail=[{"type": ERR_LOCKED,
                      "msg": "Application is locked"}])
 
-    # NOTE: Before handling each request, validate the secret key; store
-    # it in request state and keep it request-scoped (not shared outside
-    # the current request).
+    # NOTE: Before handling each request, validate the gocryptfs key;
+    # store it in request state and keep it request-scoped (not shared
+    # outside the current request).
 
-    secret_path = request.app.state.config.SECRET_KEY_PATH
-    if not await file_manager.isfile(secret_path):
+    gocryptfs_path = request.app.state.config.GOCRYPTFS_PASSPHRASE_PATH
+    if not await file_manager.isfile(gocryptfs_path):
         request.app.state.lru.clear()
         raise HTTPException(
-            status_code=HTTP_498_SECRET_KEY_MISSING,
-            detail=[{"type": ERR_SECRET_KEY_MISSING,
-                     "msg": "Secret key is missing"}])
+            status_code=HTTP_498_GOCRYPTFS_KEY_MISSING,
+            detail=[{"type": ERR_GOCRYPTFS_KEY_MISSING,
+                     "msg": "gocryptfs key is missing"}])
 
-    secret_key = (await file_manager.read(secret_path)).strip()
-    secret_length = request.app.state.config.SECRET_KEY_LENGTH
-    if not secret_key or len(secret_key) != secret_length:
+    gocryptfs_key = (await file_manager.read(gocryptfs_path)).strip()
+    gocryptfs_key_length = request.app.state.config.GOCRYPTFS_PASSPHRASE_LENGTH
+    if not gocryptfs_key or len(gocryptfs_key) != gocryptfs_key_length:
         request.app.state.lru.clear()
         raise HTTPException(
-            status_code=HTTP_499_SECRET_KEY_INVALID,
-            detail=[{"type": ERR_SECRET_KEY_INVALID,
-                     "msg": "Secret key is invalid"}])
+            status_code=HTTP_499_GOCRYPTFS_KEY_INVALID,
+            detail=[{"type": ERR_GOCRYPTFS_KEY_INVALID,
+                     "msg": "gocryptfs key is invalid"}])
 
-    request.state.secret_key = secret_key
+    request.state.gocryptfs_key = gocryptfs_key
     response = await call_next(request)
 
     elapsed_time = f"{time.time() - request.state.request_start_time:.6f}"
@@ -282,9 +282,9 @@ async def exception_handler(request: Request, e: Exception):
         AlreadyFinalized, NotYetFinalized, AlreadyUpdated, InternalError)
     ):
         request.app.state.lru.clear()
-        status_code = HTTP_499_SECRET_KEY_INVALID
-        detail = [{"type": ERR_SECRET_KEY_INVALID,
-                   "msg": "Secret key is invalid"}]
+        status_code = HTTP_499_GOCRYPTFS_KEY_INVALID
+        detail = [{"type": ERR_GOCRYPTFS_KEY_INVALID,
+                   "msg": "gocryptfs key is invalid"}]
 
     elif isinstance(e, HTTPException):
         status_code = e.status_code

@@ -53,15 +53,15 @@ async def token_retrieve(
     - `422` — invalid username, inactive user, user not logged in, or
     invalid TOTP.
     - `423` — application is temporarily locked.
-    - `498` — secret key is missing.
-    - `499` — secret key is invalid.
+    - `498` — gocryptfs key is missing.
+    - `499` — gocryptfs key is invalid.
 
     **Hooks:**
     - `HOOK_AFTER_TOKEN_RETRIEVE`: executes after successful token
     retrieval.
     """
     config = request.app.state.config
-    encryption_manager = EncryptionManager(config, request.state.secret_key)
+    encryption_manager = EncryptionManager(config, request.state.gocryptfs_key)
 
     user_repository = Repository(session, cache, User, config)
     user = await user_repository.select(username__eq=schema.username)

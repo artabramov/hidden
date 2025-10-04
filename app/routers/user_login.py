@@ -49,14 +49,14 @@ async def user_login(
     - `200` — user successfully authenticated (password accepted).
     - `422` — invalid credentials; user suspended; user inactive.
     - `423` — application is temporarily locked.
-    - `498` — secret key is missing.
-    - `499` — secret key is invalid.
+    - `498` — gocryptfs key is missing.
+    - `499` — gocryptfs key is invalid.
 
     **Hooks:**
     - `HOOK_AFTER_USER_LOGIN`: executes after successful authentication.
     """
     config = request.app.state.config
-    encryption_manager = EncryptionManager(config, request.state.secret_key)
+    encryption_manager = EncryptionManager(config, request.state.gocryptfs_key)
 
     password = schema.password.get_secret_value()
     password_hash = encryption_manager.get_hash(password)

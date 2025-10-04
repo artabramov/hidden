@@ -50,8 +50,8 @@ async def userpic_retrieve(
     - `404` — user not found, or no userpic set.
     - `409` — file not found on filesystem or checksum mismatch.
     - `423` — application is temporarily locked.
-    - `498` — secret key is missing.
-    - `499` — secret key is invalid.
+    - `498` — gocryptfs key is missing.
+    - `499` — gocryptfs key is invalid.
 
     **Side effects:**
     - Reads the image from the LRU cache or filesystem and saves it

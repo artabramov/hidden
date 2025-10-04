@@ -43,8 +43,8 @@ async def user_select(
     suspended.
     - `404` — user not found.
     - `423` — application is temporarily locked.
-    - `498` — secret key is missing.
-    - `499` — secret key is invalid.
+    - `498` — gocryptfs key is missing.
+    - `499` — gocryptfs key is invalid.
 
     **Hooks:**
     - `HOOK_AFTER_USER_SELECT`: executes after successful retrieval.

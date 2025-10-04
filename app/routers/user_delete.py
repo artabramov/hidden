@@ -45,8 +45,8 @@ async def user_delete(
     - `404` — user not found.
     - `422` — attempted to delete own account or deletion failed.
     - `423` — application is temporarily locked.
-    - `498` — secret key is missing.
-    - `499` — secret key is invalid.
+    - `498` — gocryptfs key is missing.
+    - `499` — gocryptfs key is invalid.
 
     **Hooks:**
     - `HOOK_AFTER_USER_DELETE`: executes after successful deletion.

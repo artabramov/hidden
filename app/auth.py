@@ -203,7 +203,7 @@ async def _auth(
                 ERR_USER_SUSPENDED, status.HTTP_403_FORBIDDEN)
 
     # JTI consistency check
-    encryption_manager = EncryptionManager(config, request.state.secret_key)
+    encryption_manager = EncryptionManager(config, request.state.gocryptfs_key)
     if jti != encryption_manager.decrypt_str(user.jti_encrypted):
         raise E([LOC_HEADER, "Authorization"], user_token,
                 ERR_USER_REJECTED, status.HTTP_403_FORBIDDEN)

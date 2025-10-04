@@ -19,12 +19,11 @@ class Config:
     in the .env file; values are trimmed and converted according to
     their annotated types.
     """
-    SECRET_KEY_PATH: str
-    SECRET_KEY_LENGTH: int
-    SECRET_KEY_WATCHDOG_INTERVAL_SECONDS: int
-
-    DATA_MOUNTPOINT: str
-    DATA_CIPHER_DIR: str
+    GOCRYPTFS_PASSPHRASE_PATH: str
+    GOCRYPTFS_PASSPHRASE_LENGTH: int
+    GOCRYPTFS_WATCHDOG_INTERVAL_SECONDS: int
+    GOCRYPTFS_DATA_MOUNTPOINT: str
+    GOCRYPTFS_DATA_CIPHER_DIR: str
 
     CRYPTO_KEY_LENGTH: int
     CRYPTO_NONCE_LENGTH: int

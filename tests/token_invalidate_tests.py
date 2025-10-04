@@ -14,7 +14,7 @@ def _make_request_mock():
     req.app.state = MagicMock()
     req.app.state.config = cfg
     req.state = MagicMock()
-    req.state.secret_key = "test-secret-key"
+    req.state.gocryptfs_key = "test-gocryptfs-key"
     req.state.log = MagicMock()
     req.state.log.debug = MagicMock()
     return req
@@ -57,7 +57,8 @@ class TokenInvalidateRouterTest(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result, {"user_id": 123})
 
         generate_jti_mock.assert_called_once()
-        EncryptionManagerMock.assert_called_once_with(cfg, "test-secret-key")
+        EncryptionManagerMock.assert_called_once_with(
+            cfg, "test-gocryptfs-key")
         enc.encrypt_str.assert_called_once_with("JTI123")
         self.assertEqual(current_user_mock.jti_encrypted, "enc(JTI123)")
 

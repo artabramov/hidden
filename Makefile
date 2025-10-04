@@ -3,7 +3,7 @@ export
 
 install:
 	docker build --no-cache -t hidden .
-	docker run -dit --cap-add SYS_ADMIN --device /dev/fuse --security-opt apparmor:unconfined -p 80:80 -p 9100:9100 -v hidden-data:/encrypted/data -v hidden-secret:/hidden/secret -v hidden-logs:/var/log/hidden --name hidden --env-file .env hidden
+	docker run -dit --cap-add SYS_ADMIN --device /dev/fuse --security-opt apparmor:unconfined -p 80:80 -p 9100:9100 -v hidden-data:/encrypted/data -v hidden-secrets:/hidden/secrets -v hidden-logs:/var/log/hidden --name hidden --env-file .env hidden
 	docker restart hidden
 
 scan:
@@ -16,7 +16,7 @@ scan:
 	@docker exec hidden sh -c 'bandit -r /hidden --exclude /hidden/tests >> /hidden/SECURITY_SCAN.md || true'
 	@echo "SECURITY_SCAN.md is updated"
 
-docs:
+apidoc:
 	@docker exec hidden sh -c 'pip3 install -U --no-cache-dir sphinx sphinx-markdown-builder'
 	@echo "Generating API stubs..."
 	@docker exec hidden sh -c 'mkdir -p /hidden/docs/api && sphinx-apidoc -o /hidden/docs/api /hidden/app /hidden/app/tests'

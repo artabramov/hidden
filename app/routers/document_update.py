@@ -80,8 +80,8 @@ async def document_update(
     (document present but file missing, or vice versa).
     - `422` — invalid file name.
     - `423` — application is temporarily locked.
-    - `498` — secret key is missing.
-    - `499` — secret key is invalid.
+    - `498` — gocryptfs key is missing.
+    - `499` — gocryptfs key is invalid.
 
     **Hooks:**
     - `HOOK_AFTER_DOCUMENT_UPDATE` — executed after a successful update.

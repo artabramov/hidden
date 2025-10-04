@@ -59,15 +59,15 @@ async def user_register(
     - `201` — user successfully created.
     - `422` — validation failed or username already exists.
     - `423` — application is temporarily locked.
-    - `498` — secret key is missing.
-    - `499` — secret key is invalid.
+    - `498` — gocryptfs key is missing.
+    - `499` — gocryptfs key is invalid.
 
     **Hooks:**
     - `HOOK_AFTER_USER_REGISTER`: Executes after the user is
     successfully created.
     """
     config = request.app.state.config
-    encryption_manager = EncryptionManager(config, request.state.secret_key)
+    encryption_manager = EncryptionManager(config, request.state.gocryptfs_key)
 
     user_repository = Repository(session, cache, User, config)
     user_exists = await user_repository.exists(username__eq=schema.username)

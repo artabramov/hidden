@@ -1,6 +1,6 @@
 __pycache__/
 *.pyc
 data
-secret
+secrets
 docs/_build/
 docs/api/

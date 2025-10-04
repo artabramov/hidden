@@ -44,8 +44,8 @@ async def userpic_delete(
     - `404` — userpic not found for the user.
     - `422` — user ID does not match the authenticated user.
     - `423` — application is temporarily locked.
-    - `498` — secret key is missing.
-    - `499` — secret key is invalid.
+    - `498` — gocryptfs key is missing.
+    - `499` — gocryptfs key is invalid.
 
     **Side effects:**
     - Evicts the thumbnail from the in-memory LRU cache.

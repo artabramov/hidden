@@ -1,7 +1,5 @@
 # Hidden — REST over gocryptfs
 
-![Designed to be hidden](img/hidden.png)
-
 A small, fast, async, self-hosted, security-minded file-storage service built with `FastAPI`, `SQLAlchemy`, `SQLite`, and `Redis`. Internally, all data is stored in a `gocryptfs`-encrypted directory (cipher) and protected by a detachable secret key (gocryptfs passphrase). Externally, a clean `REST API` provides filesystem-like operations (upload, move, rename) and organizes files into collections. Supports file metadata and thumbnails. Versioning is built in — past file states are available as revisions. Deletion uses `shred` to securely erase files and all their revisions. A microkernel design allows hook-based `add-ons` to extend functionality without modifying the core. Out of the box, the app runs entirely inside a `Docker` container.
 
 Source data can be imported through the API using any external tool. The encrypted data is not locked to the app — it’s exposed as a Docker volume and can be mounted directly with gocryptfs when the secret key is available.

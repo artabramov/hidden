@@ -9,8 +9,8 @@ Source data can be imported through the API using any external tool. The encrypt
 Enforces multi-user access with role-based permissions (`RBAC`) and multi-factor authentication (`MFA`).
 
 [![release](https://img.shields.io/github/v/tag/artabramov/hidden?sort=semver&label=release&color=2f81f7)](https://github.com/artabramov/hidden/blob/master/CHANGELOG.md)
-[![security scan](https://img.shields.io/badge/security%20scan-2025--09--27-2f81f7)](https://github.com/artabramov/hidden/blob/master/SECURITY_SCAN.md)
-![test coverage](https://img.shields.io/badge/test%20coverage-82%25-2f81f7)
+[![security scan](https://img.shields.io/badge/security%20scan-2025--10--05-2f81f7)](https://github.com/artabramov/hidden/blob/master/SECURITY_SCAN.md)
+![test coverage](https://img.shields.io/badge/test%20coverage-83%25-2f81f7)
 [![license](https://img.shields.io/badge/license-Non--Commercial-2f81f7)](https://github.com/artabramov/hidden/blob/master/LICENSE)
 
 If you like it, star it ⭐ — it helps discoverability. Thank you!

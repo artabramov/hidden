@@ -47,8 +47,8 @@ ERR_FILE_CONFLICT = "file_conflict"
 
 # 423/498/499/500
 ERR_LOCKED = "locked"
-ERR_GOCRYPTFS_KEY_MISSING = "gocryptfs_key_missing"  # nosec: B105
-ERR_GOCRYPTFS_KEY_INVALID = "gocryptfs_key_invalid"  # nosec: B105
+ERR_GOCRYPTFS_KEY_MISSING = "gocryptfs_key_missing"
+ERR_GOCRYPTFS_KEY_INVALID = "gocryptfs_key_invalid"
 ERR_SERVER_ERROR = "server_error"
 
 

@@ -253,13 +253,13 @@ async def document_upload(
                         else:
                             await file_manager.delete(temporary_path)
                     except Exception:
-                        pass  # nosec: B110
+                        pass
 
                     if revision_path:
                         try:
                             await file_manager.delete(revision_path)
                         except Exception:
-                            pass  # nosec: B110
+                            pass
 
                     raise
 
@@ -272,7 +272,7 @@ async def document_upload(
                 await file_manager.delete(thumbnail_path)
                 lru.delete(thumbnail_path)
             except Exception:
-                pass  # nosec: B110
+                pass
 
         # Create a new thumbnail
         if ((file_renamed or file_replaced) and

@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.2.11] - 2025-10-05
+- Increased overall unit test coverage to **83%**.
+- Updated **security scan** report with latest audit results and regenerated **SECURITY_SCAN.md**.
+
 ## [0.2.10] - 2025-10-04
 - Secrets volume is renamed to **hidden-secrets**.
 - Secret key file is renamed to **gocryptfs.key**.

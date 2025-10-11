@@ -18,12 +18,14 @@ exclusively by the developer.
 license is granted to use, copy, and modify this software. Internal use
 (including commercial internal use) is permitted. Redistribution is
 allowed only on a non-commercial, no-charge basis. When redistributing
-this software or derivative works, you must keep this license and all notices and clearly
+this software or derivative works, you must keep this license and all
+notices and clearly
 mark any changes.
 
 3. No commercial distribution. You may not: (a) sublicense under terms
 that remove or weaken the non-commercial restriction; (b) embed or
-bundle this software or its functionality into paid products or services; or (c) provide it as a paid or revenue-generating hosted service
+bundle this software or its functionality into paid products or services;
+or (c) provide it as a paid or revenue-generating hosted service
 (including SaaS). Notices must not be removed or altered.
 
 4. This software is provided "as is," without any warranties, express or

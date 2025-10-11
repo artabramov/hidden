@@ -3,8 +3,7 @@ export
 
 install:
 	docker build --no-cache -t hidden .
-	docker run -dit --cap-add SYS_ADMIN --device /dev/fuse --security-opt apparmor:unconfined -p 80:80 -p 9100:9100 -v hidden-data:/encrypted/data -v hidden-secrets:/hidden/secrets -v hidden-logs:/var/log/hidden --name hidden --env-file .env hidden
-	docker restart hidden
+	docker run -dit --restart unless-stopped --cap-add SYS_ADMIN --device /dev/fuse --security-opt apparmor:unconfined -p 80:80 -p 9100:9100 -v hidden-data:/encrypted/data -v hidden-secrets:/mnt/secrets -v hidden-logs:/var/log/hidden --name hidden --env-file .env hidden
 
 scan:
 	@docker exec hidden sh -c 'pip3 install -U pip-audit bandit'

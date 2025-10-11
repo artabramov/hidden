@@ -7,7 +7,7 @@ Source data can be imported through the API using any external tool. The encrypt
 Enforces multi-user access with role-based permissions (`RBAC`) and multi-factor authentication (`MFA`).
 
 [![release](https://img.shields.io/github/v/tag/artabramov/hidden?sort=semver&label=release&color=2f81f7)](https://github.com/artabramov/hidden/blob/master/CHANGELOG.md)
-[![security scan](https://img.shields.io/badge/security%20scan-2025--10--05-2f81f7)](https://github.com/artabramov/hidden/blob/master/SECURITY_SCAN.md)
+[![security scan](https://img.shields.io/badge/security%20scan-2025--10--11-2f81f7)](https://github.com/artabramov/hidden/blob/master/SECURITY_SCAN.md)
 ![test coverage](https://img.shields.io/badge/test%20coverage-83%25-2f81f7)
 [![license](https://img.shields.io/badge/license-Non--Commercial-2f81f7)](https://github.com/artabramov/hidden/blob/master/LICENSE)
 
@@ -102,8 +102,21 @@ If you discover a vulnerability, **please do not open a public issue**. Report i
 
 ## Architecture overview
 
-The app runs using virtualization inside a Docker container and can be deployed in any environment that supports it. Three volumes are exposed outside the container: one for the secrets, one for encrypted data, and one for logs (typically used for development). All data operations go through the public REST API.
+The app runs using virtualization inside a Docker container and can be deployed in any environment that supports it. All data operations go through the public REST API. Three volumes are exposed outside the container: one for the secrets, one for encrypted data, and one for logs (typically used for development).
 
 The core follows a microkernel pattern: on execution, each router invokes a named hook. Add-ons intercept these hooks to extend behavior without modifying the core. Any number of add-ons can be enabled, multiple handlers may process the same hook in sequence, and add-ons are toggled via the `.env` configuration.
 
-![Architecture](img/architecture.png)
+```
+       External                           Docker Container
+┌────────────────────┐       ┌────────────────────────┬──────────────┐
+│     Public API     │───────│          Core          │    Addons    │
+└────────────────────┘       └────────────────────────┴──────────────┘
+                                                 │
+┌────────────────────┐       ┌───────────────────────────────────────┐
+│     Secret Key     │- - - -│              Data Access              │
+└────────────────────┘       └───────────────────────────────────────┘
+                                          │                   │
+┌────────────────────┐       ┌───────────────────────┐ ┌─────────────┐
+│   Encrypted Data   │- - - -│   Protected Storage   │ │    Cache    │
+└────────────────────┘       └───────────────────────┘ └─────────────┘
+```

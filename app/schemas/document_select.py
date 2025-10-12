@@ -28,3 +28,4 @@ class DocumentSelectResponse(BaseModel):
     summary: Optional[str] = None
     latest_revision_number: int
     document_revisions: List[RevisionSelectResponse]
+    document_tags: list = None

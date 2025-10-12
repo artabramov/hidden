@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.13] - 2025-10-12
+- Implemented **document tagging**: introduced endpoints to add and remove tags from individual documents, with input validation and consistent responses.
+- Enhanced document listing: added **tag-based filtering** to retrieve documents by tag value.
+- Document payloads updated a **document_tags** array is returned in both detail and list responses to expose assigned tags.
+
 ## [0.2.12] - 2025-10-11
 - Minor configuration fixes.
 - Updated **security scan** report with latest audit results and regenerated **SECURITY_SCAN.md**.

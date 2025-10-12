@@ -17,8 +17,8 @@ class DocumentTag(Base):
     __tablename__ = "documents_tags"
     __table_args__ = (
         UniqueConstraint(
-            "document_id", "tag_value",
-            name="uq_documents_tags_document_id_tag_value"
+            "document_id", "value",
+            name="uq_documents_tags_document_id_value"
         ),
         {"sqlite_autoincrement": True},
     )
@@ -44,8 +44,8 @@ class DocumentTag(Base):
         default=lambda: int(time.time())
     )
 
-    tag_value = Column(
-        String(128),
+    value = Column(
+        String(40),
         nullable=False,
         index=True
     )
@@ -54,3 +54,7 @@ class DocumentTag(Base):
         "Document",
         back_populates="document_tags"
     )
+
+    def __init__(self, document_id: int, value: str):
+        self.document_id = document_id
+        self.value = value

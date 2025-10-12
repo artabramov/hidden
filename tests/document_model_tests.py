@@ -84,6 +84,7 @@ class DocumentModelTest(unittest.IsolatedAsyncioTestCase):
             "summary": summary,
             "latest_revision_number": latest_revision_number,
             "document_revisions": [],
+            "document_tags": [],
         })
 
     def test_path_for_filename(self):

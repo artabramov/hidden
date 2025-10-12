@@ -74,6 +74,8 @@ from app.routers import (
     document_delete,
     document_list,
     thumbnail_retrieve,
+    tag_insert_router,
+    tag_delete_router,
 )
 from app.version import __version__
 from app.error import (
@@ -194,6 +196,8 @@ app.include_router(document_update.router)
 app.include_router(document_delete.router)
 app.include_router(document_list.router)
 app.include_router(thumbnail_retrieve.router)
+app.include_router(tag_insert_router.router)
+app.include_router(tag_delete_router.router)
 
 
 @app.middleware("http")

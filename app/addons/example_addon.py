@@ -190,3 +190,17 @@ async def after_thumbnail_retrieve(
         current_user: User, document: Document):
     """Executes after a document thumbnail is retrieved."""
     ...
+
+
+async def after_tag_insert(
+        request: Request, session: AsyncSession, cache: Redis,
+        current_user: User, document: Document, tag_value: str):
+    """Executes after a document tag is added."""
+    ...
+
+
+async def after_tag_delete(
+        request: Request, session: AsyncSession, cache: Redis,
+        current_user: User, document: Document, tag_value: str):
+    """Executes after a tag is deleted."""
+    ...

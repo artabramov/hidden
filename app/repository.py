@@ -112,6 +112,7 @@ class Repository:
         if self._do_cache:
             await self.cache_manager.delete(entity)
 
+    # TODO: remove the function
     async def delete_from_cache(self, entity: DeclarativeBase):
         """
         Deletes an entity of the managed SQLAlchemy model from the cache

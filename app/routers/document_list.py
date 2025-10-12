@@ -4,8 +4,10 @@ from fastapi import APIRouter, Depends, Request, status
 from fastapi.responses import JSONResponse
 from app.sqlite import get_session
 from app.redis import get_cache
+from app.managers.entity_manager import SUBQUERY
 from app.models.user import User, UserRole
 from app.models.document import Document
+from app.models.document_tag import DocumentTag
 from app.schemas.document_list import DocumentListRequest, DocumentListResponse
 from app.hook import Hook, HOOK_AFTER_DOCUMENT_LIST
 from app.auth import auth
@@ -59,6 +61,11 @@ async def document_list(
     kwargs = schema.model_dump(exclude_none=True)
 
     document_repository = Repository(session, cache, Document, config)
+
+    if schema.tag_value__eq is not None:
+        kwargs[SUBQUERY] = await document_repository.entity_manager.subquery(
+            DocumentTag, "document_id", value__eq=schema.tag_value__eq)
+
     documents = await document_repository.select_all(**kwargs)
     documents_count = await document_repository.count_all(**kwargs)
 

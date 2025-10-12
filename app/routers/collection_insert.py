@@ -84,6 +84,7 @@ async def collection_insert(
     hook = Hook(request, session, cache, current_user=current_user)
     await hook.call(HOOK_AFTER_COLLECTION_INSERT, collection)
 
+    # TODO: remove redundant logging
     request.state.log.debug(
         "collection created; collection_id=%s;", collection.id)
     return {"collection_id": collection.id}

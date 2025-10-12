@@ -9,9 +9,9 @@ class DocumentListRequest(BaseModel):
     """
     Request schema for listing documents. Allows filtering by creator,
     collection, filename/mimetype (case-insensitive), flagged status,
-    creation and update time ranges, and filesize range. Supports
-    pagination via offset/limit. Results can be ordered by id,
-    created/updated date, creator, collection, flagged, filename,
+    creation and update time ranges, filesize range, MIME type, tag
+    value. Supports pagination via offset/limit. Results can be ordered
+    by id, created/updated date, creator, collection, flagged, filename,
     filesize, or mimetype, in ascending, descending, or random order.
     Extra fields are forbidden.
     """
@@ -31,6 +31,7 @@ class DocumentListRequest(BaseModel):
     filesize__ge: Optional[int] = Field(default=None, ge=0)
     filesize__le: Optional[int] = Field(default=None, ge=0)
     mimetype__ilike: Optional[str] = None
+    tag_value__eq: Optional[str] = None
     offset: int = Field(default=0, ge=0)
     limit: int = Field(default=50, ge=1, le=500)
     order_by: Literal[

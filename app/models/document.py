@@ -197,4 +197,5 @@ class Document(Base):
                 await revision.to_dict() for revision
                 in self.document_revisions
             ],
+            "document_tags": [t.value for t in self.document_tags],
         }

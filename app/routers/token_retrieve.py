@@ -93,6 +93,8 @@ async def token_retrieve(
         hook = Hook(request, session, cache, current_user=user)
         await hook.call(HOOK_AFTER_TOKEN_RETRIEVE)
 
+        # TODO: Update last login date
+
         request.state.log.debug("token retrieved; user_id=%s;", user.id)
         return {
             "user_id": user.id,

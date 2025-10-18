@@ -84,6 +84,9 @@ class Config:
     THUMBNAILS_HEIGHT: int
     THUMBNAILS_QUALITY: int
 
+    HTML_PATH: str
+    HTML_FILE: str
+
 
 @lru_cache
 def get_config() -> Config:

@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.14] - 2025-10-18
+- Added **static HTML** hosting: the backend now serves files from **/hidden/html** (ships with a placeholder **index.html**); a custom frontend can be placed there.
+- **Enabled CORS**: responses now include headers permitting cross-origin requests from external origins.
+- Added **telemetry** endpoint (admin-only). Returns runtime metrics including app version, Python interpreter details, timestamp and timezone, SQLite version and size, Redis version and memory, OS/platform details, and CPU/memory/disk stats.
+
 ## [0.2.13] - 2025-10-12
 - Implemented **document tagging**: introduced endpoints to add and remove tags from individual documents, with input validation and consistent responses.
 - Enhanced document listing: added **tag-based filtering** to retrieve documents by tag value.

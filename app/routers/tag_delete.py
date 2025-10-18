@@ -6,7 +6,7 @@ from app.models.user import User, UserRole
 from app.models.collection import Collection
 from app.models.document import Document
 from app.validators.tag_validators import value_validate
-from app.schemas.tag_delete_schema import TagDeleteResponse
+from app.schemas.tag_delete import TagDeleteResponse
 from app.repository import Repository
 from app.error import E, LOC_PATH, ERR_VALUE_NOT_FOUND, ERR_VALUE_INVALID
 from app.hook import Hook, HOOK_AFTER_TAG_DELETE

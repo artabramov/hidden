@@ -22,11 +22,13 @@ logging is enabled at ERROR level.
 import time
 import asyncio
 import logging
+import os
 from uuid import uuid4
 from collections import defaultdict
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request, status, HTTPException
-from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse, HTMLResponse, FileResponse
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
 from pydantic import ValidationError
@@ -74,8 +76,9 @@ from app.routers import (
     document_delete,
     document_list,
     thumbnail_retrieve,
-    tag_insert_router,
-    tag_delete_router,
+    tag_insert,
+    tag_delete,
+    telemetry_retrieve,
 )
 from app.version import __version__
 from app.error import (
@@ -169,6 +172,14 @@ app = FastAPI(
     }
 )
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_credentials=True,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
+
 # TODO: Hide the user deletion router from public API.
 
 app.include_router(user_login.router)
@@ -196,8 +207,31 @@ app.include_router(document_update.router)
 app.include_router(document_delete.router)
 app.include_router(document_list.router)
 app.include_router(thumbnail_retrieve.router)
-app.include_router(tag_insert_router.router)
-app.include_router(tag_delete_router.router)
+app.include_router(tag_insert.router)
+app.include_router(tag_delete.router)
+app.include_router(telemetry_retrieve.router)
+
+
+@app.get("/{full_path:path}", include_in_schema=False,)
+async def catch_all(full_path: str, request: Request):
+    """
+    Serves static files. Returns the main HTML file if no specific
+    path is provided, or serves the requested file if it exists.
+    """
+    if not full_path or full_path == request.app.state.config.HTML_FILE:
+        file_path = os.path.join(
+            request.app.state.config.HTML_PATH,
+            request.app.state.config.HTML_FILE
+        )
+        with open(file_path) as f:
+            return HTMLResponse(content=f.read())
+
+    else:
+        file_path = os.path.join(request.app.state.config.HTML_PATH, full_path)
+        if not os.path.exists(file_path):
+            raise HTTPException(status_code=404)
+        else:
+            return FileResponse(file_path)
 
 
 @app.middleware("http")
@@ -315,4 +349,17 @@ async def exception_handler(request: Request, e: Exception):
         status_code=status_code,
         content=jsonable_encoder({"detail": detail}))
     response.headers["X-Request-ID"] = request.state.request_uuid
+    return add_cors_headers(response)
+
+
+def add_cors_headers(response: JSONResponse) -> JSONResponse:
+    """
+    Add headers to the response to allow cross-origin requests from any
+    source. This ensures that the response can be accessed by clients
+    from different domains, supports all HTTP methods and headers.
+    """
+    response.headers["Access-Control-Allow-Credentials"] = "true"
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Headers"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "*"
     return response

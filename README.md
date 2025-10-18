@@ -16,8 +16,8 @@ If you like it, star it ⭐ — it helps discoverability. Thank you!
 ## References
 
 - Official website: [joinhidden.com](https://joinhidden.com)
+- Documentation: [github.com/artabramov/hidden-docs](https://github.com/artabramov/hidden-docs)
 - Telegram announcements: [t.me/hiddenupdates](https://t.me/hiddenupdates)
-- Sphinx documentation: [github.com/artabramov/hidden-docs](https://github.com/artabramov/hidden-docs)
 
 ## Quick start
 

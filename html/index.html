@@ -1,0 +1,27 @@
+<!-- /hidden/html/index.html -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Static Frontend Placeholder</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main class="wrap" role="main">
+    <h1>Static frontend placeholder</h1>
+    <p>The server serves the contents of the folder <span class="mono">/hidden/html</span>.<br>
+    By default, it contains this file: <span class="mono">index.html</span>.<br>
+    You can place your own frontend here — it will be automatically served by the backend.</p>
+
+    <div class="block">
+      <strong>How to replace it with your own frontend</strong>
+      <ol class="steps">
+        <li>Build your SPA (for example, run <span class="mono">npm run build</span>).</li>
+        <li>Copy the build output (usually the <span class="mono">dist/</span> or <span class="mono">build/</span> folder) into <span class="mono">/hidden/html</span>.</li>
+        <li>Make sure that <span class="mono">/hidden/html</span> contains <span class="mono">index.html</span> and all static assets (JS/CSS/images).</li>
+      </ol>
+    </div>
+  </main>
+</body>
+</html>

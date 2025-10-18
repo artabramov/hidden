@@ -204,3 +204,10 @@ async def after_tag_delete(
         current_user: User, document: Document, tag_value: str):
     """Executes after a tag is deleted."""
     ...
+
+
+async def after_telemetry_retrieve(
+        request: Request, session: AsyncSession, cache: Redis,
+        current_user: User, telemetry: dict):
+    """Executes after telemetry is retrieved."""
+    ...

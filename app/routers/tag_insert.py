@@ -10,7 +10,7 @@ from app.hook import Hook, HOOK_AFTER_TAG_INSERT
 from app.error import E, LOC_PATH, ERR_VALUE_NOT_FOUND
 from app.auth import auth
 from app.repository import Repository
-from app.schemas.tag_insert_schema import TagInsertRequest, TagInsertResponse
+from app.schemas.tag_insert import TagInsertRequest, TagInsertResponse
 
 router = APIRouter()
 

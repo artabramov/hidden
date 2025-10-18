@@ -18,8 +18,8 @@ class File(Base):
     __tablename__ = "files"
     __table_args__ = (
         UniqueConstraint(
-            "collection_id", "filename",
-            name="uq_files_collection_id_filename"
+            "folder_id", "filename",
+            name="uq_files_folder_id_filename"
         ),
         {"sqlite_autoincrement": True},
     )
@@ -38,9 +38,9 @@ class File(Base):
         index=True,
     )
 
-    collection_id = Column(
+    folder_id = Column(
         Integer,
-        ForeignKey("collections.id"),
+        ForeignKey("folders.id"),
         nullable=False,
         index=True,
     )
@@ -106,9 +106,9 @@ class File(Base):
         lazy="joined"
     )
 
-    file_collection = relationship(
-        "Collection",
-        back_populates="collection_files",
+    file_folder = relationship(
+        "Folder",
+        back_populates="folder_files",
         lazy="joined"
     )
 
@@ -145,12 +145,12 @@ class File(Base):
     )
 
     def __init__(
-            self, user_id: int, collection_id: int, filename: str,
+            self, user_id: int, folder_id: int, filename: str,
             filesize: int, checksum: str, mimetype: str = None,
             flagged: bool = False, summary: str = None,
             latest_revision_number: int = 0):
         self.user_id = user_id
-        self.collection_id = collection_id
+        self.folder_id = folder_id
         self.filename = filename
         self.filesize = filesize
         self.mimetype = mimetype
@@ -168,22 +168,22 @@ class File(Base):
         return len(self.file_revisions) > 0
 
     @classmethod
-    def path_for_filename(cls, config: Any, collection_name: str,
+    def path_for_filename(cls, config: Any, folder_name: str,
                           filename: str) -> str:
         """Return absolute path to the file file by parameters."""
-        return os.path.join(config.FILES_DIR, collection_name, filename)
+        return os.path.join(config.FILES_DIR, folder_name, filename)
 
     def path(self, config: Any) -> str:
         """Return absolute path to the file file by config."""
         return self.__class__.path_for_filename(
-            config, self.file_collection.name, self.filename)
+            config, self.file_folder.name, self.filename)
 
     async def to_dict(self) -> dict:
         """Returns a dictionary representation of the file."""
         return {
             "id": self.id,
             "user": await self.file_user.to_dict(),
-            "collection": await self.file_collection.to_dict(),
+            "folder": await self.file_folder.to_dict(),
             "created_date": self.created_date,
             "updated_date": self.updated_date,
             "flagged": self.flagged,

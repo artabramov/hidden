@@ -1,4 +1,4 @@
-"""Validators for collection-related fields."""
+"""Validators for folder-related fields."""
 
 from typing import Optional
 

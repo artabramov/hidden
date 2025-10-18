@@ -1,15 +1,15 @@
-"""Pydantic schemas for collection update."""
+"""Pydantic schemas for folder update."""
 
 from typing import Optional
 from pydantic import BaseModel, Field, field_validator, ConfigDict
-from app.validators.collection_validators import summary_validate
+from app.validators.folder_validators import summary_validate
 from app.validators.file_validators import name_validate
 
 
-class CollectionUpdateRequest(BaseModel):
+class FolderUpdateRequest(BaseModel):
     """
-    Request schema for updating a collection. Includes the read-only
-    flag, collection name, and an optional summary. Whitespace is
+    Request schema for updating a folder. Includes the read-only
+    flag, folder name, and an optional summary. Whitespace is
     stripped from strings; extra fields are forbidden.
     """
 
@@ -33,10 +33,9 @@ class CollectionUpdateRequest(BaseModel):
         return summary_validate(value)
 
 
-class CollectionUpdateResponse(BaseModel):
+class FolderUpdateResponse(BaseModel):
     """
-    Response schema for collection update. Contains the updated
-    collection ID.
+    Response schema for folder update. Contains the updated folder ID.
     """
 
-    collection_id: int
+    folder_id: int

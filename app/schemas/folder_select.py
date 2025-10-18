@@ -1,15 +1,15 @@
-"""Pydantic schemas for collection detail retrieval."""
+"""Pydantic schemas for folder detail retrieval."""
 
 from typing import Optional
 from pydantic import BaseModel
 from app.schemas.user_select import UserSelectResponse
 
 
-class CollectionSelectResponse(BaseModel):
+class FolderSelectResponse(BaseModel):
     """
-    Response schema for collection detail retrieval. Includes the
-    collection ID; creation and last-update timestamps (Unix seconds,
-    UTC); read-only flag; collection name; optional summary; and
+    Response schema for folder detail retrieval. Includes the
+    folder ID; creation and last-update timestamps (Unix seconds,
+    UTC); read-only flag; folder name; optional summary; and
     creator details.
     """
 

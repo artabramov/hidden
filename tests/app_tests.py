@@ -53,7 +53,7 @@ class AppTest(unittest.IsolatedAsyncioTestCase):
             self.assertIs(appmod.app.state.config, cfg)
             self.assertIsNotNone(appmod.app.state.file_manager)
             self.assertIsNotNone(appmod.app.state.lru)
-            self.assertTrue(hasattr(appmod.app.state, "collection_locks"))
+            self.assertTrue(hasattr(appmod.app.state, "folder_locks"))
             self.assertTrue(hasattr(appmod.app.state, "file_locks"))
 
             init_db_mock.assert_awaited_once()

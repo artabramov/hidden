@@ -1,15 +1,15 @@
-"""Pydantic schemas for collection insertion."""
+"""Pydantic schemas for folder insertion."""
 
 from typing import Optional
 from pydantic import BaseModel, Field, ConfigDict, field_validator
-from app.validators.collection_validators import summary_validate
+from app.validators.folder_validators import summary_validate
 from app.validators.file_validators import name_validate
 
 
-class CollectionInsertRequest(BaseModel):
+class FolderInsertRequest(BaseModel):
     """
-    Request schema for collection insertion. Includes the read-only
-    flag, collection name, and an optional summary. Whitespace is
+    Request schema for folder insertion. Includes the read-only
+    flag, folder name, and an optional summary. Whitespace is
     stripped from strings; extra fields are forbidden.
     """
 
@@ -33,10 +33,10 @@ class CollectionInsertRequest(BaseModel):
         return summary_validate(v)
 
 
-class CollectionInsertResponse(BaseModel):
+class FolderInsertResponse(BaseModel):
     """
-    Response schema for collection insertion. Contains the created
-    collection ID.
+    Response schema for folder insertion. Contains the created
+    folder ID.
     """
 
-    collection_id: int
+    folder_id: int

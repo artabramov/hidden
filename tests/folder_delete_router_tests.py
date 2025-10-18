@@ -1,16 +1,16 @@
 import unittest
 from unittest.mock import AsyncMock, MagicMock, patch, call
-from app.routers.collection_delete import collection_delete, Collection, File
-from app.hook import HOOK_AFTER_COLLECTION_DELETE
+from app.routers.folder_delete import folder_delete, Folder, File
+from app.hook import HOOK_AFTER_FOLDER_DELETE
 from app.error import E
 from app.config import get_config
 
 
-class CollectionDeleteRouterTest(unittest.IsolatedAsyncioTestCase):
+class FolderDeleteRouterTest(unittest.IsolatedAsyncioTestCase):
 
-    @patch("app.routers.collection_delete.Hook")
-    @patch("app.routers.collection_delete.Repository")
-    async def test_collection_delete_success(self, RepositoryMock, HookMock):
+    @patch("app.routers.folder_delete.Hook")
+    @patch("app.routers.folder_delete.Repository")
+    async def test_folder_delete_success(self, RepositoryMock, HookMock):
 
         request = MagicMock()
         request.app = MagicMock()
@@ -23,17 +23,17 @@ class CollectionDeleteRouterTest(unittest.IsolatedAsyncioTestCase):
         file_manager_mock = AsyncMock()
         request.app.state.file_manager = file_manager_mock
 
-        collection_locks_mock = AsyncMock()
-        request.app.state.collection_locks = collection_locks_mock
+        folder_locks_mock = AsyncMock()
+        request.app.state.folder_locks = folder_locks_mock
 
         session = AsyncMock()
         cache = AsyncMock()
         current_user = AsyncMock()
 
-        collection_repository = AsyncMock()
-        collection_mock = AsyncMock(
-            id=42, path=MagicMock(return_value="collection-path"))
-        collection_repository.select.return_value = collection_mock
+        folder_repository = AsyncMock()
+        folder_mock = AsyncMock(
+            id=42, path=MagicMock(return_value="folder-path"))
+        folder_repository.select.return_value = folder_mock
 
         file_37 = AsyncMock(
             id=37,
@@ -66,31 +66,31 @@ class CollectionDeleteRouterTest(unittest.IsolatedAsyncioTestCase):
             file_37, file_38]
 
         RepositoryMock.side_effect = [
-            collection_repository,
+            folder_repository,
             file_repository
         ]
 
         hook = AsyncMock()
         HookMock.return_value = hook
 
-        result = await collection_delete(
+        result = await folder_delete(
             request, 42,
             session=session, cache=cache,
             current_user=current_user
         )
 
-        self.assertEqual(result, {"collection_id": collection_mock.id})
+        self.assertEqual(result, {"folder_id": folder_mock.id})
 
         self.assertListEqual(RepositoryMock.call_args_list, [
-            call(session, cache, Collection, request.app.state.config),
+            call(session, cache, Folder, request.app.state.config),
             call(session, cache, File, request.app.state.config),
         ])
 
-        collection_repository.select.assert_awaited_with(id=42)
+        folder_repository.select.assert_awaited_with(id=42)
         file_repository.select_all.assert_awaited_with(
-            collection_id__eq=42)
+            folder_id__eq=42)
 
-        collection_locks_mock.__getitem__.assert_called_once_with(42)
+        folder_locks_mock.__getitem__.assert_called_once_with(42)
 
         file_manager_mock.delete.assert_has_awaits([
             call("thumb37"), call("rev37-1"), call("rev37-1"), call("path37"),
@@ -106,17 +106,17 @@ class CollectionDeleteRouterTest(unittest.IsolatedAsyncioTestCase):
             call(file_37), call(file_38)
         ], any_order=True)
 
-        collection_repository.delete.assert_awaited_with(collection_mock)
+        folder_repository.delete.assert_awaited_with(folder_mock)
 
-        file_manager_mock.rmdir.assert_awaited_with("collection-path")
+        file_manager_mock.rmdir.assert_awaited_with("folder-path")
 
         HookMock.assert_called_with(
             request, session, cache, current_user=current_user)
-        hook.call.assert_awaited_with(HOOK_AFTER_COLLECTION_DELETE, 42)
+        hook.call.assert_awaited_with(HOOK_AFTER_FOLDER_DELETE, 42)
 
-    @patch("app.routers.collection_delete.Hook")
-    @patch("app.routers.collection_delete.Repository")
-    async def test_collection_delete_not_found(self, RepositoryMock, HookMock):
+    @patch("app.routers.folder_delete.Hook")
+    @patch("app.routers.folder_delete.Repository")
+    async def test_folder_delete_not_found(self, RepositoryMock, HookMock):
 
         request = MagicMock()
         request.app = MagicMock()
@@ -127,28 +127,28 @@ class CollectionDeleteRouterTest(unittest.IsolatedAsyncioTestCase):
         cache = AsyncMock()
         current_user = AsyncMock()
 
-        collection_repository = AsyncMock()
-        collection_repository.select.return_value = None
+        folder_repository = AsyncMock()
+        folder_repository.select.return_value = None
 
         RepositoryMock.side_effect = [
-            collection_repository
+            folder_repository
         ]
 
         hook = AsyncMock()
         HookMock.return_value = hook
 
         with self.assertRaises(E) as ctx:
-            await collection_delete(
+            await folder_delete(
                 request, 42,
                 session=session, cache=cache,
                 current_user=current_user
             )
 
-        collection_repository.select.assert_awaited_with(id=42)
+        folder_repository.select.assert_awaited_with(id=42)
 
         self.assertEqual(ctx.exception.status_code, 404)
         self.assertEqual(ctx.exception.detail[0]["type"], "value_not_found")
-        self.assertIn("collection_id", ctx.exception.detail[0]["loc"])
+        self.assertIn("folder_id", ctx.exception.detail[0]["loc"])
 
         HookMock.assert_not_called()
         hook.call.assert_not_called()

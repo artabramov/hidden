@@ -64,11 +64,11 @@ from app.routers import (
     userpic_upload,
     userpic_delete,
     userpic_retrieve,
-    collection_insert,
-    collection_select,
-    collection_update,
-    collection_delete,
-    collection_list,
+    folder_insert,
+    folder_select,
+    folder_update,
+    folder_delete,
+    folder_list,
     file_upload,
     file_download,
     file_select,
@@ -146,10 +146,10 @@ async def lifespan(app: FastAPI):
 
     # NOTE: On app startup, per-process locks are placed in app state.
     # Not shared across workers (use one worker or create a distributed
-    # lock, e.g. Redis). Lock order: collection first, then files. When
+    # lock, e.g. Redis). Lock order: folder first, then files. When
     # locking multiple files, sort keys to avoid AB-BA deadlocks.
 
-    app.state.collection_locks = defaultdict(RWLock)
+    app.state.folder_locks = defaultdict(RWLock)
     app.state.file_locks = defaultdict(asyncio.Lock)
 
     try:
@@ -195,11 +195,11 @@ app.include_router(user_list.router)
 app.include_router(userpic_upload.router)
 app.include_router(userpic_delete.router)
 app.include_router(userpic_retrieve.router)
-app.include_router(collection_insert.router)
-app.include_router(collection_select.router)
-app.include_router(collection_update.router)
-app.include_router(collection_delete.router)
-app.include_router(collection_list.router)
+app.include_router(folder_insert.router)
+app.include_router(folder_select.router)
+app.include_router(folder_update.router)
+app.include_router(folder_delete.router)
+app.include_router(folder_list.router)
 app.include_router(file_upload.router)
 app.include_router(file_download.router)
 app.include_router(file_select.router)

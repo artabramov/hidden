@@ -4,15 +4,15 @@ from app.schemas.file_update import (
     FileUpdateRequest, FileUpdateResponse)
 
 
-class CollectionUpdateSchemaTest(unittest.TestCase):
+class FolderUpdateSchemaTest(unittest.TestCase):
 
     def test_request_correct(self):
-        res = FileUpdateRequest(collection_id=42, filename="dummy.jpeg")
-        self.assertEqual(res.collection_id, 42)
+        res = FileUpdateRequest(folder_id=42, filename="dummy.jpeg")
+        self.assertEqual(res.folder_id, 42)
         self.assertEqual(res.filename, "dummy.jpeg")
         self.assertIsNone(res.summary)
 
-    def test_request_collection_id_missing(self):
+    def test_request_folder_id_missing(self):
         with self.assertRaises(ValidationError) as ctx:
             FileUpdateRequest(filename="dummy.jpeg")
 
@@ -20,54 +20,54 @@ class CollectionUpdateSchemaTest(unittest.TestCase):
         self.assertEqual(len(errs), 1)
 
         e = errs[0]
-        self.assertEqual(e.get("loc"), ("collection_id",))
+        self.assertEqual(e.get("loc"), ("folder_id",))
         self.assertEqual(e.get("type"), "missing")
 
-    def test_request_collection_id_none(self):
+    def test_request_folder_id_none(self):
         with self.assertRaises(ValidationError) as ctx:
-            FileUpdateRequest(collection_id=None, filename="dummy.jpeg")
+            FileUpdateRequest(folder_id=None, filename="dummy.jpeg")
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
 
         e = errs[0]
-        self.assertEqual(e.get("loc"), ("collection_id",))
+        self.assertEqual(e.get("loc"), ("folder_id",))
         self.assertEqual(e.get("type"), "int_type")
 
-    def test_request_collection_id_string(self):
+    def test_request_folder_id_string(self):
         with self.assertRaises(ValidationError) as ctx:
             FileUpdateRequest(
-                collection_id="not-int", filename="dummy.jpeg")
+                folder_id="not-int", filename="dummy.jpeg")
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
 
         e = errs[0]
-        self.assertEqual(e.get("loc"), ("collection_id",))
+        self.assertEqual(e.get("loc"), ("folder_id",))
         self.assertEqual(e.get("type"), "int_parsing")
 
-    def test_request_collection_id_integer_0(self):
+    def test_request_folder_id_integer_0(self):
         with self.assertRaises(ValidationError) as ctx:
-            FileUpdateRequest(collection_id=0, filename="dummy.jpeg")
+            FileUpdateRequest(folder_id=0, filename="dummy.jpeg")
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
 
         e = errs[0]
-        self.assertEqual(e.get("loc"), ("collection_id",))
+        self.assertEqual(e.get("loc"), ("folder_id",))
         self.assertEqual(e.get("type"), "greater_than_equal")
 
     def test_request_readonly_coercion_integer_1(self):
-        res = FileUpdateRequest(collection_id=1, filename="dummy.jpeg")
-        self.assertEqual(res.collection_id, 1)
+        res = FileUpdateRequest(folder_id=1, filename="dummy.jpeg")
+        self.assertEqual(res.folder_id, 1)
 
-    def test_request_collection_id_coercion(self):
-        res = FileUpdateRequest(collection_id="42", filename="dummy.jpeg")
-        self.assertEqual(res.collection_id, 42)
+    def test_request_folder_id_coercion(self):
+        res = FileUpdateRequest(folder_id="42", filename="dummy.jpeg")
+        self.assertEqual(res.folder_id, 42)
 
     def test_request_filename_missing(self):
         with self.assertRaises(ValidationError) as ctx:
-            FileUpdateRequest(collection_id=42)
+            FileUpdateRequest(folder_id=42)
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -78,7 +78,7 @@ class CollectionUpdateSchemaTest(unittest.TestCase):
 
     def test_request_filename_none(self):
         with self.assertRaises(ValidationError) as ctx:
-            FileUpdateRequest(collection_id=42, filename=None)
+            FileUpdateRequest(folder_id=42, filename=None)
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -89,7 +89,7 @@ class CollectionUpdateSchemaTest(unittest.TestCase):
 
     def test_request_filename_string_too_short(self):
         with self.assertRaises(ValidationError) as ctx:
-            FileUpdateRequest(collection_id=42, filename="")
+            FileUpdateRequest(folder_id=42, filename="")
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -100,7 +100,7 @@ class CollectionUpdateSchemaTest(unittest.TestCase):
 
     def test_request_filename_string_too_long(self):
         with self.assertRaises(ValidationError) as ctx:
-            FileUpdateRequest(collection_id=42, filename="X" * 256)
+            FileUpdateRequest(folder_id=42, filename="X" * 256)
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -110,36 +110,36 @@ class CollectionUpdateSchemaTest(unittest.TestCase):
         self.assertEqual(e.get("type"), "string_too_long")
 
     def test_request_filename_string_shortest(self):
-        res = FileUpdateRequest(collection_id=42, filename="X")
+        res = FileUpdateRequest(folder_id=42, filename="X")
         self.assertEqual(res.filename, "X")
 
     def test_request_filename_string_longest(self):
-        res = FileUpdateRequest(collection_id=42, filename="X" * 255)
+        res = FileUpdateRequest(folder_id=42, filename="X" * 255)
         self.assertEqual(res.filename, "X" * 255)
 
     def test_request_filename_string_stripped(self):
-        res = FileUpdateRequest(collection_id=42, filename=" X ")
+        res = FileUpdateRequest(folder_id=42, filename=" X ")
         self.assertEqual(res.filename, "X")
 
     def test_request_summary_none(self):
         res = FileUpdateRequest(
-            collection_id=42, filename="dummy.jpeg", summary=None)
+            folder_id=42, filename="dummy.jpeg", summary=None)
         self.assertIsNone(res.summary)
 
     def test_request_summary_string_empty(self):
         res = FileUpdateRequest(
-            collection_id=42, filename="dummy.jpeg", summary="")
+            folder_id=42, filename="dummy.jpeg", summary="")
         self.assertIsNone(res.summary)
 
     def test_request_summary_string_longest(self):
         res = FileUpdateRequest(
-            collection_id=42, filename="dummy.jpeg", summary="X" * 4096)
+            folder_id=42, filename="dummy.jpeg", summary="X" * 4096)
         self.assertEqual(res.summary, "X" * 4096)
 
     def test_request_summary_string_too_long(self):
         with self.assertRaises(ValidationError) as ctx:
             FileUpdateRequest(
-                collection_id=42, filename="dummy.jpeg", summary="X" * 4097)
+                folder_id=42, filename="dummy.jpeg", summary="X" * 4097)
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -151,7 +151,7 @@ class CollectionUpdateSchemaTest(unittest.TestCase):
     def test_request_summary_integer(self):
         with self.assertRaises(ValidationError) as ctx:
             FileUpdateRequest(
-                collection_id=42, filename="dummy.jpeg", summary=42)
+                folder_id=42, filename="dummy.jpeg", summary=42)
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -162,13 +162,13 @@ class CollectionUpdateSchemaTest(unittest.TestCase):
 
     def test_request_summary_string_stripped(self):
         res = FileUpdateRequest(
-            collection_id=42, filename="dummy.jpeg", summary=" X ")
+            folder_id=42, filename="dummy.jpeg", summary=" X ")
         self.assertEqual(res.summary, "X")
 
     def test_request_extra_forbidden(self):
         with self.assertRaises(ValidationError) as ctx:
             FileUpdateRequest(
-                collection_id=42, filename="dummy.jpeg", foo="bar")
+                folder_id=42, filename="dummy.jpeg", foo="bar")
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)

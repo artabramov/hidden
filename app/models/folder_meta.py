@@ -1,4 +1,4 @@
-"""SQLAlchemy model for collection metadata."""
+"""SQLAlchemy model for folder metadata."""
 
 import time
 from sqlalchemy import (
@@ -8,17 +8,17 @@ from sqlalchemy.orm import relationship
 from app.sqlite import Base
 
 
-class CollectionMeta(Base):
+class FolderMeta(Base):
     """
-    SQLAlchemy model for collection metadata. Stores a key-value pair
-    linked to a collection; keys are unique within each collection.
+    SQLAlchemy model for folder metadata. Stores a key-value pair
+    linked to a folder; keys are unique within each folder.
     """
 
-    __tablename__ = "collections_meta"
+    __tablename__ = "folders_meta"
     __table_args__ = (
         UniqueConstraint(
-            "collection_id", "meta_key",
-            name="uq_collections_meta_collection_id_meta_key"
+            "folder_id", "meta_key",
+            name="uq_folders_meta_folder_id_meta_key"
         ),
         {"sqlite_autoincrement": True},
     )
@@ -30,9 +30,9 @@ class CollectionMeta(Base):
         autoincrement=True
     )
 
-    collection_id = Column(
+    folder_id = Column(
         Integer,
-        ForeignKey("collections.id", ondelete="CASCADE"),
+        ForeignKey("folders.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
     )
@@ -62,7 +62,7 @@ class CollectionMeta(Base):
         nullable=True
     )
 
-    meta_collection = relationship(
-        "Collection",
-        back_populates="collection_meta"
+    meta_folder = relationship(
+        "Folder",
+        back_populates="folder_meta"
     )

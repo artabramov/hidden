@@ -12,7 +12,7 @@ from fastapi import Request
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.user import User
-from app.models.collection import Collection
+from app.models.folder import Folder
 from app.models.file import File
 
 
@@ -107,39 +107,39 @@ async def after_userpic_retrieve(
     ...
 
 
-async def after_collection_insert(
+async def after_folder_insert(
         request: Request, session: AsyncSession, cache: Redis,
-        current_user: User, collection: Collection):
-    """Executes after a collection is created."""
+        current_user: User, folder: Folder):
+    """Executes after a folder is created."""
     ...
 
 
-async def after_collection_select(
+async def after_folder_select(
         request: Request, session: AsyncSession, cache: Redis,
-        current_user: User, collection: Collection):
-    """Executes after a collection is retrieved."""
+        current_user: User, folder: Folder):
+    """Executes after a folder is retrieved."""
     ...
 
 
-async def after_collection_update(
+async def after_folder_update(
         request: Request, session: AsyncSession, cache: Redis,
-        current_user: User, collection: Collection):
-    """Executes after a collection is updated."""
+        current_user: User, folder: Folder):
+    """Executes after a folder is updated."""
     ...
 
 
-async def after_collection_delete(
+async def after_folder_delete(
         request: Request, session: AsyncSession, cache: Redis,
-        current_user: User, collection_id: int):
-    """Executes after a collection is deleted."""
+        current_user: User, folder_id: int):
+    """Executes after a folder is deleted."""
     ...
 
 
-async def after_collection_list(
+async def after_folder_list(
         request: Request, session: AsyncSession, cache: Redis,
-        current_user: User, collections: List[Collection],
-        collections_count: int):
-    """Executes after a collection list is retrieved."""
+        current_user: User, folders: List[Folder],
+        folders_count: int):
+    """Executes after a folder list is retrieved."""
     ...
 
 

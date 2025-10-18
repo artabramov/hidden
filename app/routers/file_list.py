@@ -38,9 +38,9 @@ async def file_list(
     - Requires a valid bearer token with `reader` role or higher.
 
     **Query parameters:**
-    - `FileListRequest` — optional filters (collection_id, creation
-    time, creator, flagged status, filename/mimetype, file size),
-    pagination (offset and limit), and ordering (order_by and order).
+    - `FileListRequest` — optional filters (folder_id, creation time,
+    creator, flagged status, filename/mimetype, file size), pagination
+    (offset and limit), and ordering (order_by and order).
 
     **Response:**
     - `FileListResponse` — page of files and total match count.

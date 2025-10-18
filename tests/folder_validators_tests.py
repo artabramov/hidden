@@ -1,8 +1,8 @@
 import unittest
-from app.validators.collection_validators import summary_validate
+from app.validators.folder_validators import summary_validate
 
 
-class CollectionValidatorsTest(unittest.TestCase):
+class FolderValidatorsTest(unittest.TestCase):
 
     def test_summary_none(self):
         res = summary_validate(None)

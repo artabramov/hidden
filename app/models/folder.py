@@ -1,4 +1,4 @@
-"""SQLAlchemy model for collections."""
+"""SQLAlchemy model for folders."""
 
 import time
 import os
@@ -6,15 +6,15 @@ from typing import Any
 from sqlalchemy import Column, BigInteger, String, Boolean, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 from app.sqlite import Base
-from app.models.collection_meta import CollectionMeta  # noqa: F401
+from app.models.folder_meta import FolderMeta  # noqa: F401
 
 
-class Collection(Base):
+class Folder(Base):
     """
-    SQLAlchemy model for collections. Stores a unique name, read-only
+    SQLAlchemy model for folders. Stores a unique name, read-only
     flag, creation/update timestamps, and optional summary.
     """
-    __tablename__ = "collections"
+    __tablename__ = "folders"
     __table_args__ = {"sqlite_autoincrement": True}
     _cacheable = True
 
@@ -62,23 +62,23 @@ class Collection(Base):
         nullable=True
     )
 
-    collection_meta = relationship(
-        "CollectionMeta",
-        back_populates="meta_collection",
+    folder_meta = relationship(
+        "FolderMeta",
+        back_populates="meta_folder",
         cascade="all, delete-orphan",
         lazy="selectin",
         passive_deletes=True
     )
 
-    collection_user = relationship(
+    folder_user = relationship(
         "User",
-        back_populates="user_collections",
+        back_populates="user_folders",
         lazy="joined"
     )
 
-    collection_files = relationship(
+    folder_files = relationship(
         "File",
-        back_populates="file_collection",
+        back_populates="file_folder",
         lazy="noload"
     )
 
@@ -90,19 +90,19 @@ class Collection(Base):
         self.summary = summary
 
     @classmethod
-    def path_for_dir(cls, config: Any, collection_name: str) -> str:
-        """Return absolute path to the collection by parameters."""
-        return os.path.join(config.FILES_DIR, collection_name)
+    def path_for_dir(cls, config: Any, folder_name: str) -> str:
+        """Return absolute path to the folder by parameters."""
+        return os.path.join(config.FILES_DIR, folder_name)
 
     def path(self, config: Any) -> str:
-        """Return absolute path to the collection by config."""
+        """Return absolute path to the folder by config."""
         return self.__class__.path_for_dir(config, self.name)
 
     async def to_dict(self) -> dict:
-        """Returns a dictionary representation of the collection."""
+        """Returns a dictionary representation of the folder."""
         return {
             "id": self.id,
-            "user": await self.collection_user.to_dict(),
+            "user": await self.folder_user.to_dict(),
             "created_date": self.created_date,
             "updated_date": self.updated_date,
             "readonly": self.readonly,

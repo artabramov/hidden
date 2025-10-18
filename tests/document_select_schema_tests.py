@@ -1,7 +1,7 @@
 import unittest
 from pydantic import ValidationError
 from app.schemas.file_select import (
-    FileSelectResponse, UserSelectResponse, CollectionSelectResponse,
+    FileSelectResponse, UserSelectResponse, FolderSelectResponse,
     RevisionSelectResponse)
 
 
@@ -10,8 +10,8 @@ class FileSelectSchemaTest(unittest.TestCase):
     def _user_stub(self):
         return UserSelectResponse.model_construct(id=123)
 
-    def _collection_stub(self):
-        return CollectionSelectResponse.model_construct(id=123)
+    def _folder_stub(self):
+        return FolderSelectResponse.model_construct(id=123)
 
     def _revision_stub(self):
         return RevisionSelectResponse.model_construct(id=123)
@@ -20,7 +20,7 @@ class FileSelectSchemaTest(unittest.TestCase):
         res = FileSelectResponse(
             id=42,
             user=self._user_stub(),
-            collection=self._collection_stub(),
+            folder=self._folder_stub(),
             created_date=100,
             updated_date=200,
             flagged=True,
@@ -34,7 +34,7 @@ class FileSelectSchemaTest(unittest.TestCase):
         )
         self.assertEqual(res.id, 42)
         self.assertEqual(res.user, self._user_stub())
-        self.assertEqual(res.collection, self._collection_stub())
+        self.assertEqual(res.folder, self._folder_stub())
         self.assertEqual(res.created_date, 100)
         self.assertEqual(res.updated_date, 200)
         self.assertEqual(res.flagged, True)
@@ -50,7 +50,7 @@ class FileSelectSchemaTest(unittest.TestCase):
         with self.assertRaises(ValidationError) as ctx:
             FileSelectResponse(
                 user=self._user_stub(),
-                collection=self._collection_stub(),
+                folder=self._folder_stub(),
                 created_date=100,
                 updated_date=200,
                 flagged=True,
@@ -75,7 +75,7 @@ class FileSelectSchemaTest(unittest.TestCase):
             FileSelectResponse(
                 id=None,
                 user=self._user_stub(),
-                collection=self._collection_stub(),
+                folder=self._folder_stub(),
                 created_date=100,
                 updated_date=200,
                 flagged=True,
@@ -100,7 +100,7 @@ class FileSelectSchemaTest(unittest.TestCase):
             FileSelectResponse(
                 id="not-int",
                 user=self._user_stub(),
-                collection=self._collection_stub(),
+                folder=self._folder_stub(),
                 created_date=100,
                 updated_date=200,
                 flagged=True,
@@ -124,7 +124,7 @@ class FileSelectSchemaTest(unittest.TestCase):
         res = FileSelectResponse(
             id="42",
             user=self._user_stub(),
-            collection=self._collection_stub(),
+            folder=self._folder_stub(),
             created_date=100,
             updated_date=200,
             flagged=True,
@@ -143,7 +143,7 @@ class FileSelectSchemaTest(unittest.TestCase):
             FileSelectResponse(
                 id=42,
                 user=self._user_stub(),
-                collection=self._collection_stub(),
+                folder=self._folder_stub(),
                 flagged=True,
                 filename="X",
                 filesize=123,
@@ -168,7 +168,7 @@ class FileSelectSchemaTest(unittest.TestCase):
             FileSelectResponse(
                 id=42,
                 user=self._user_stub(),
-                collection=self._collection_stub(),
+                folder=self._folder_stub(),
                 created_date=None,
                 updated_date=None,
                 flagged=True,
@@ -195,7 +195,7 @@ class FileSelectSchemaTest(unittest.TestCase):
             FileSelectResponse(
                 id=42,
                 user=self._user_stub(),
-                collection=self._collection_stub(),
+                folder=self._folder_stub(),
                 created_date="not-int",
                 updated_date="not-int",
                 flagged=True,
@@ -221,7 +221,7 @@ class FileSelectSchemaTest(unittest.TestCase):
         res = FileSelectResponse(
             id=42,
             user=self._user_stub(),
-            collection=self._collection_stub(),
+            folder=self._folder_stub(),
             created_date="100",
             updated_date="200",
             flagged=True,
@@ -241,7 +241,7 @@ class FileSelectSchemaTest(unittest.TestCase):
             FileSelectResponse(
                 id=42,
                 user=self._user_stub(),
-                collection=self._collection_stub(),
+                folder=self._folder_stub(),
                 created_date=100,
                 updated_date=200,
                 filename="X",
@@ -265,7 +265,7 @@ class FileSelectSchemaTest(unittest.TestCase):
             FileSelectResponse(
                 id=42,
                 user=self._user_stub(),
-                collection=self._collection_stub(),
+                folder=self._folder_stub(),
                 created_date=100,
                 updated_date=200,
                 flagged=None,
@@ -290,7 +290,7 @@ class FileSelectSchemaTest(unittest.TestCase):
             FileSelectResponse(
                 id=42,
                 user=self._user_stub(),
-                collection=self._collection_stub(),
+                folder=self._folder_stub(),
                 created_date=100,
                 updated_date=200,
                 flagged="not-int",
@@ -314,7 +314,7 @@ class FileSelectSchemaTest(unittest.TestCase):
         res = FileSelectResponse(
             id=42,
             user=self._user_stub(),
-            collection=self._collection_stub(),
+            folder=self._folder_stub(),
             created_date=100,
             updated_date=200,
             flagged=1,
@@ -333,7 +333,7 @@ class FileSelectSchemaTest(unittest.TestCase):
             FileSelectResponse(
                 id=42,
                 user=self._user_stub(),
-                collection=self._collection_stub(),
+                folder=self._folder_stub(),
                 created_date=100,
                 updated_date=200,
                 flagged=True,
@@ -357,7 +357,7 @@ class FileSelectSchemaTest(unittest.TestCase):
             FileSelectResponse(
                 id=42,
                 user=self._user_stub(),
-                collection=self._collection_stub(),
+                folder=self._folder_stub(),
                 created_date=100,
                 updated_date=200,
                 flagged=True,
@@ -382,7 +382,7 @@ class FileSelectSchemaTest(unittest.TestCase):
             FileSelectResponse(
                 id=42,
                 user=self._user_stub(),
-                collection=self._collection_stub(),
+                folder=self._folder_stub(),
                 created_date=100,
                 updated_date=200,
                 flagged=True,
@@ -407,7 +407,7 @@ class FileSelectSchemaTest(unittest.TestCase):
             FileSelectResponse(
                 id=42,
                 user=self._user_stub(),
-                collection=self._collection_stub(),
+                folder=self._folder_stub(),
                 created_date=100,
                 updated_date=200,
                 flagged=True,
@@ -431,7 +431,7 @@ class FileSelectSchemaTest(unittest.TestCase):
             FileSelectResponse(
                 id=42,
                 user=self._user_stub(),
-                collection=self._collection_stub(),
+                folder=self._folder_stub(),
                 created_date=100,
                 updated_date=200,
                 flagged=True,
@@ -456,7 +456,7 @@ class FileSelectSchemaTest(unittest.TestCase):
             FileSelectResponse(
                 id=42,
                 user=self._user_stub(),
-                collection=self._collection_stub(),
+                folder=self._folder_stub(),
                 created_date=100,
                 updated_date=200,
                 flagged=True,
@@ -480,7 +480,7 @@ class FileSelectSchemaTest(unittest.TestCase):
         res = FileSelectResponse(
             id=42,
             user=self._user_stub(),
-            collection=self._collection_stub(),
+            folder=self._folder_stub(),
             created_date=100,
             updated_date=200,
             flagged=True,
@@ -498,7 +498,7 @@ class FileSelectSchemaTest(unittest.TestCase):
         res = FileSelectResponse(
             id=42,
             user=self._user_stub(),
-            collection=self._collection_stub(),
+            folder=self._folder_stub(),
             created_date=100,
             updated_date=200,
             flagged=True,
@@ -515,7 +515,7 @@ class FileSelectSchemaTest(unittest.TestCase):
         res = FileSelectResponse(
             id=42,
             user=self._user_stub(),
-            collection=self._collection_stub(),
+            folder=self._folder_stub(),
             created_date=100,
             updated_date=200,
             flagged=True,
@@ -533,7 +533,7 @@ class FileSelectSchemaTest(unittest.TestCase):
         res = FileSelectResponse(
             id=42,
             user=self._user_stub(),
-            collection=self._collection_stub(),
+            folder=self._folder_stub(),
             created_date=100,
             updated_date=200,
             flagged=True,
@@ -552,7 +552,7 @@ class FileSelectSchemaTest(unittest.TestCase):
             FileSelectResponse(
                 id=42,
                 user=self._user_stub(),
-                collection=self._collection_stub(),
+                folder=self._folder_stub(),
                 created_date=100,
                 updated_date=200,
                 flagged=True,
@@ -577,7 +577,7 @@ class FileSelectSchemaTest(unittest.TestCase):
             FileSelectResponse(
                 id=42,
                 user=self._user_stub(),
-                collection=self._collection_stub(),
+                folder=self._folder_stub(),
                 created_date=100,
                 updated_date=200,
                 flagged=True,
@@ -601,7 +601,7 @@ class FileSelectSchemaTest(unittest.TestCase):
             FileSelectResponse(
                 id=42,
                 user=self._user_stub(),
-                collection=self._collection_stub(),
+                folder=self._folder_stub(),
                 created_date=100,
                 updated_date=200,
                 flagged=True,
@@ -626,7 +626,7 @@ class FileSelectSchemaTest(unittest.TestCase):
             FileSelectResponse(
                 id=42,
                 user=self._user_stub(),
-                collection=self._collection_stub(),
+                folder=self._folder_stub(),
                 created_date=100,
                 updated_date=200,
                 flagged=True,
@@ -650,7 +650,7 @@ class FileSelectSchemaTest(unittest.TestCase):
         res = FileSelectResponse(
             id=42,
             user=self._user_stub(),
-            collection=self._collection_stub(),
+            folder=self._folder_stub(),
             created_date=100,
             updated_date=200,
             flagged=True,
@@ -667,7 +667,7 @@ class FileSelectSchemaTest(unittest.TestCase):
         res = FileSelectResponse(
             id=42,
             user=self._user_stub(),
-            collection=self._collection_stub(),
+            folder=self._folder_stub(),
             created_date=100,
             updated_date=200,
             flagged=True,
@@ -685,7 +685,7 @@ class FileSelectSchemaTest(unittest.TestCase):
         res = FileSelectResponse(
             id=42,
             user=self._user_stub(),
-            collection=self._collection_stub(),
+            folder=self._folder_stub(),
             created_date=100,
             updated_date=200,
             flagged=True,
@@ -704,7 +704,7 @@ class FileSelectSchemaTest(unittest.TestCase):
             FileSelectResponse(
                 id=42,
                 user=self._user_stub(),
-                collection=self._collection_stub(),
+                folder=self._folder_stub(),
                 created_date=100,
                 updated_date=200,
                 flagged=True,
@@ -728,7 +728,7 @@ class FileSelectSchemaTest(unittest.TestCase):
         with self.assertRaises(ValidationError) as ctx:
             FileSelectResponse(
                 id=42,
-                collection=self._collection_stub(),
+                folder=self._folder_stub(),
                 created_date=100,
                 updated_date=200,
                 flagged=True,
@@ -753,7 +753,7 @@ class FileSelectSchemaTest(unittest.TestCase):
             FileSelectResponse(
                 id=42,
                 user=None,
-                collection=self._collection_stub(),
+                folder=self._folder_stub(),
                 created_date=100,
                 updated_date=200,
                 flagged=True,
@@ -773,7 +773,7 @@ class FileSelectSchemaTest(unittest.TestCase):
         self.assertEqual(e.get("loc"), ("user",))
         self.assertEqual(e.get("type"), "model_type")
 
-    def test_response_collection_missing(self):
+    def test_response_folder_missing(self):
         with self.assertRaises(ValidationError) as ctx:
             FileSelectResponse(
                 id=42,
@@ -794,15 +794,15 @@ class FileSelectSchemaTest(unittest.TestCase):
         self.assertEqual(len(errs), 1)
 
         e = errs[0]
-        self.assertEqual(e.get("loc"), ("collection",))
+        self.assertEqual(e.get("loc"), ("folder",))
         self.assertEqual(e.get("type"), "missing")
 
-    def test_response_collection_none(self):
+    def test_response_folder_none(self):
         with self.assertRaises(ValidationError) as ctx:
             FileSelectResponse(
                 id=42,
                 user=self._user_stub(),
-                collection=None,
+                folder=None,
                 created_date=100,
                 updated_date=200,
                 flagged=True,
@@ -819,7 +819,7 @@ class FileSelectSchemaTest(unittest.TestCase):
         self.assertEqual(len(errs), 1)
 
         e = errs[0]
-        self.assertEqual(e.get("loc"), ("collection",))
+        self.assertEqual(e.get("loc"), ("folder",))
         self.assertEqual(e.get("type"), "model_type")
 
     def test_response_revisions_missing(self):
@@ -827,7 +827,7 @@ class FileSelectSchemaTest(unittest.TestCase):
             FileSelectResponse(
                 id=42,
                 user=self._user_stub(),
-                collection=self._collection_stub(),
+                folder=self._folder_stub(),
                 created_date=100,
                 updated_date=200,
                 flagged=True,
@@ -851,7 +851,7 @@ class FileSelectSchemaTest(unittest.TestCase):
             FileSelectResponse(
                 id=42,
                 user=self._user_stub(),
-                collection=self._collection_stub(),
+                folder=self._folder_stub(),
                 created_date=100,
                 updated_date=200,
                 flagged=True,

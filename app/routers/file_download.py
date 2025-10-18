@@ -4,7 +4,7 @@ from fastapi import APIRouter, Request, Response, Path, Depends, status
 from app.sqlite import get_session
 from app.redis import get_cache
 from app.models.user import User, UserRole
-from app.models.collection import Collection
+from app.models.folder import Folder
 from app.models.file import File
 from app.error import E, LOC_PATH, ERR_VALUE_NOT_FOUND, ERR_FILE_CONFLICT
 from app.auth import auth
@@ -15,7 +15,7 @@ router = APIRouter()
 
 
 @router.get(
-    "/collection/{collection_id}/file/{file_id}/revision/{revision_number}",
+    "/folder/{folder_id}/file/{file_id}/revision/{revision_number}",
     status_code=status.HTTP_200_OK,
     response_class=Response,
     summary="Download file",
@@ -23,7 +23,7 @@ router = APIRouter()
 )
 async def file_download(
     request: Request,
-    collection_id: int = Path(..., ge=1),
+    folder_id: int = Path(..., ge=1),
     file_id: int = Path(..., ge=1),
     revision_number: int = Path(..., ge=0),
     session=Depends(get_session),
@@ -32,14 +32,14 @@ async def file_download(
 ) -> Response:
     """
     Download a file file (current head or a specific revision) within
-    a given collection. Returns the raw file bytes with the file's
+    a given folder. Returns the raw file bytes with the file's
     MIME type, and the original filename.
 
     **Authentication:**
     - Requires a valid bearer token with `reader` role or higher.
 
     **Path parameters:**
-    - `collection_id` (integer ≥ 1): parent collection identifier.
+    - `folder_id` (integer ≥ 1): parent folder identifier.
     - `file_id` (integer ≥ 1): file identifier.
     - `revision_number` (integer ≥ 0): 0 for the current file head;
     > 0 for a specific revision.
@@ -49,7 +49,7 @@ async def file_download(
     - `401` — missing, invalid, or expired token.
     - `403` — insufficient role, invalid JTI, user is inactive or
     suspended.
-    - `404` — collection, file, or revision not found.
+    - `404` — folder, file, or revision not found.
     - `409` — file not found on filesystem or checksum mismatch.
     - `423` — application is temporarily locked.
     - `498` — gocryptfs key is missing.
@@ -63,19 +63,19 @@ async def file_download(
     lru = request.app.state.lru
 
     # NOTE: On file download, keep two-step fetch to hit Redis cache;
-    # load the collection by ID first, then load the file by ID.
+    # load the folder by ID first, then load the file by ID.
 
-    collection_repository = Repository(session, cache, Collection, config)
-    collection = await collection_repository.select(id=collection_id)
+    folder_repository = Repository(session, cache, Folder, config)
+    folder = await folder_repository.select(id=folder_id)
 
-    if not collection:
-        raise E([LOC_PATH, "collection_id"], collection_id,
+    if not folder:
+        raise E([LOC_PATH, "folder_id"], folder_id,
                 ERR_VALUE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
 
     file_repository = Repository(session, cache, File, config)
     file = await file_repository.select(id=file_id)
 
-    if not file or file.collection_id != collection.id:
+    if not file or file.folder_id != folder.id:
         raise E([LOC_PATH, "file_id"], file_id,
                 ERR_VALUE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
 

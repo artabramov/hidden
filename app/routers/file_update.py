@@ -5,7 +5,7 @@ from fastapi.responses import JSONResponse
 from app.sqlite import get_session
 from app.redis import get_cache
 from app.models.user import User, UserRole
-from app.models.collection import Collection
+from app.models.folder import Folder
 from app.models.file import File
 from app.schemas.file_update import (
     FileUpdateRequest, FileUpdateResponse)
@@ -21,7 +21,7 @@ router = APIRouter()
 
 
 @router.put(
-    "/collection/{collection_id}/file/{file_id}",
+    "/folder/{folder_id}/file/{file_id}",
     status_code=status.HTTP_200_OK,
     response_class=JSONResponse,
     response_model=FileUpdateResponse,
@@ -31,51 +31,51 @@ router = APIRouter()
 async def file_update(
     request: Request,
     schema: FileUpdateRequest,
-    collection_id: int = Path(..., ge=1),
+    folder_id: int = Path(..., ge=1),
     file_id: int = Path(..., ge=1),
     session=Depends(get_session),
     cache=Depends(get_cache),
     current_user: User = Depends(auth(UserRole.editor))
 ) -> FileUpdateResponse:
     """
-    Updates a file by renaming its head file within the current
-    collection, moving the head file to a different collection (keeping
-    its name), and/or changing the file summary. Disk changes are
-    performed with an atomic rename; the file row is staged
-    (no-commit), the file is renamed or moved on disk, and then the
-    transaction is committed to keep database and filesystem in sync.
+    Updates a file by renaming its head file within the current folder,
+    moving the head file to a different folder (keeping its name),
+    and/or changing the file summary. Disk changes are performed with
+    an atomic rename; the file row is staged (no-commit), the file is
+    renamed or moved on disk, and then the transaction is committed to
+    keep database and filesystem in sync.
 
     Concurrency is controlled with per-path locks. For rename/move, two
     locks are acquired in a deterministic order to prevent deadlocks.
     All database and filesystem checks are executed inside this critical
     section. These locks are in-process.
 
-    Files are stored under their collection directory. The database
-    enforces uniqueness of (collection_id, filename) for files.
+    Files are stored under their folder directory. The database enforces
+    uniqueness of (folder_id, filename) for files.
 
     **Authentication:**
     - Requires a valid bearer token with `editor` role or higher.
 
     **Validation schemas:**
     - `FileUpdateRequest` — optional fields: `filename`, `summary`,
-    `collection_id`.
+    `folder_id`.
     - `FileUpdateResponse` — returns `file_id` and
     `latest_revision_number`.
 
     **Path parameters:**
-    - `collection_id` (integer ≥ 1) — current collection identifier.
+    - `folder_id` (integer ≥ 1) — current folder identifier.
     - `file_id` (integer ≥ 1) — file identifier.
 
     **Request body:**
     - `application/json` with any of: `filename`, `summary`,
-    `collection_id`.
+    `folder_id`.
 
     **Response codes:**
     - `200` — update successful.
     - `401` — missing, invalid, or expired token.
     - `403` — insufficient role, invalid JTI, user is inactive or
     suspended.
-    - `404` — collection or file not found.
+    - `404` — folder or file not found.
     - `409` — conflict: name already exists in DB/FS or DB/FS mismatch
     (file present but file missing, or vice versa).
     - `422` — invalid file name.
@@ -90,27 +90,27 @@ async def file_update(
     file_manager = request.app.state.file_manager
     lru = request.app.state.lru
 
-    collection_locks = request.app.state.collection_locks
+    folder_locks = request.app.state.folder_locks
     file_locks = request.app.state.file_locks
 
     # NOTE: On file update, keep two-step fetch to hit Redis cache;
-    # load the collection by ID first, then load the file by ID.
+    # load the folder by ID first, then load the file by ID.
 
-    collection_repository = Repository(session, cache, Collection, config)
-    collection = await collection_repository.select(id=collection_id)
+    folder_repository = Repository(session, cache, Folder, config)
+    folder = await folder_repository.select(id=folder_id)
 
-    if not collection:
-        raise E([LOC_PATH, "collection_id"], collection_id,
+    if not folder:
+        raise E([LOC_PATH, "folder_id"], folder_id,
                 ERR_VALUE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
 
-    elif collection.readonly:
-        raise E([LOC_PATH, "collection_id"], collection_id,
+    elif folder.readonly:
+        raise E([LOC_PATH, "folder_id"], folder_id,
                 ERR_VALUE_READONLY, status.HTTP_422_UNPROCESSABLE_CONTENT)
 
     file_repository = Repository(session, cache, File, config)
     file = await file_repository.select(id=file_id)
 
-    if not file or file.collection_id != collection.id:
+    if not file or file.folder_id != folder.id:
         raise E([LOC_PATH, "file_id"], file_id,
                 ERR_VALUE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
 
@@ -131,13 +131,13 @@ async def file_update(
     # Rename the file if the filename changes
     if file.filename != filename:
 
-        # NOTE: On file rename, acquire the collection READ lock first,
+        # NOTE: On file rename, acquire the folder READ lock first,
         # then the per-file exclusive lock.
 
-        collection_lock = collection_locks[collection_id]
+        folder_lock = folder_locks[folder_id]
 
-        first_lock_key = (collection_id, file.filename)
-        second_lock_key = (collection_id, filename)
+        first_lock_key = (folder_id, file.filename)
+        second_lock_key = (folder_id, filename)
 
         first_lock_key, second_lock_key = sorted((
             first_lock_key, second_lock_key))
@@ -145,12 +145,11 @@ async def file_update(
         first_file_lock = file_locks[first_lock_key]
         second_file_lock = file_locks[second_lock_key]
 
-        async with collection_lock.read(), first_file_lock, second_file_lock:
+        async with folder_lock.read(), first_file_lock, second_file_lock:
 
-            # Check the file with the filename in the collection
+            # Check the file with the filename in the folder
             filename_exists = await file_repository.select(
-                id__ne=file.id, filename__eq=filename,
-                collection_id__eq=collection.id)
+                id__ne=file.id, filename__eq=filename, folder_id__eq=folder.id)
             if filename_exists:
                 raise E([LOC_BODY, "file"], filename,
                         ERR_FILE_CONFLICT, status.HTTP_409_CONFLICT)
@@ -164,7 +163,7 @@ async def file_update(
 
             # Check the file with the new filename in the directory
             updated_file_path = File.path_for_filename(
-                config, collection.name, filename)
+                config, folder.name, filename)
             updated_file_exists = await file_manager.isfile(updated_file_path)
             if updated_file_exists:
                 raise E([LOC_BODY, "file"], filename,
@@ -184,26 +183,26 @@ async def file_update(
                 await file_repository.rollback()
                 raise
 
-    # Move the file if collection changes
-    if file.collection_id != schema.collection_id:
+    # Move the file if folder changes
+    if file.folder_id != schema.folder_id:
 
-        # Does the target collection exist?
-        target_collection = await collection_repository.select(
-            id=schema.collection_id)
-        if not target_collection:
-            raise E([LOC_BODY, "collection_id"], schema.collection_id,
+        # Does the target folder exist?
+        target_folder = await folder_repository.select(
+            id=schema.folder_id)
+        if not target_folder:
+            raise E([LOC_BODY, "folder_id"], schema.folder_id,
                     ERR_VALUE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
 
-        # NOTE: On file move, acquire READ locks on both collections
+        # NOTE: On file move, acquire READ locks on both folders
         # first, then the per-file exclusive lock on both file paths;
 
-        cid_a, cid_b = sorted([file.collection_id, schema.collection_id])
-        collection_lock_a = collection_locks[cid_a]
-        collection_lock_b = collection_locks[cid_b]
+        cid_a, cid_b = sorted([file.folder_id, schema.folder_id])
+        folder_lock_a = folder_locks[cid_a]
+        folder_lock_b = folder_locks[cid_b]
 
-        async with collection_lock_a.read(), collection_lock_b.read():
-            first_lock_key = (collection_id, file.filename)
-            second_lock_key = (schema.collection_id, file.filename)
+        async with folder_lock_a.read(), folder_lock_b.read():
+            first_lock_key = (folder_id, file.filename)
+            second_lock_key = (schema.folder_id, file.filename)
 
             first_lock_key, second_lock_key = sorted((
                 first_lock_key, second_lock_key))
@@ -213,10 +212,9 @@ async def file_update(
 
             async with first_file_lock, second_file_lock:
 
-                # Does the filename exist in the target collection?
+                # Does the filename exist in the target folder?
                 filename_exists = await file_repository.select(
-                    collection_id__eq=schema.collection_id,
-                    filename__eq=file.filename)
+                    folder_id__eq=schema.folder_id, filename__eq=file.filename)
                 if filename_exists:
                     raise E([LOC_BODY, "file"], file.filename,
                             ERR_FILE_CONFLICT, status.HTTP_409_CONFLICT)
@@ -231,7 +229,7 @@ async def file_update(
 
                 # Is there a file in the target directory?
                 target_file_path = File.path_for_filename(
-                    config, target_collection.name, file.filename)
+                    config, target_folder.name, file.filename)
                 target_file_exists = await file_manager.isfile(
                     target_file_path)
 
@@ -240,7 +238,7 @@ async def file_update(
                             ERR_FILE_CONFLICT, status.HTTP_409_CONFLICT)
 
                 try:
-                    file.collection_id = target_collection.id
+                    file.folder_id = target_folder.id
                     await file_repository.update(file, commit=False)
                     await file_manager.rename(
                         current_file_path, target_file_path)

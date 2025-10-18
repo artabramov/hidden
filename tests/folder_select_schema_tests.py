@@ -1,10 +1,9 @@
 import unittest
 from pydantic import ValidationError
-from app.schemas.collection_select import (
-    CollectionSelectResponse, UserSelectResponse)
+from app.schemas.folder_select import FolderSelectResponse, UserSelectResponse
 
 
-class CollectionSelectSchemaTest(unittest.TestCase):
+class FolderSelectSchemaTest(unittest.TestCase):
 
     def _user_stub(self):
         # Create a valid UserSelectResponse instance without binding it
@@ -13,7 +12,7 @@ class CollectionSelectSchemaTest(unittest.TestCase):
         return UserSelectResponse.model_construct(id=123)
 
     def test_response_correct(self):
-        res = CollectionSelectResponse(
+        res = FolderSelectResponse(
             id=42,
             created_date=100,
             updated_date=200,
@@ -32,7 +31,7 @@ class CollectionSelectSchemaTest(unittest.TestCase):
 
     def test_response_id_missing(self):
         with self.assertRaises(ValidationError) as ctx:
-            CollectionSelectResponse(
+            FolderSelectResponse(
                 created_date=100,
                 updated_date=200,
                 readonly=True,
@@ -50,7 +49,7 @@ class CollectionSelectSchemaTest(unittest.TestCase):
 
     def test_response_id_none(self):
         with self.assertRaises(ValidationError) as ctx:
-            CollectionSelectResponse(
+            FolderSelectResponse(
                 id=None,
                 created_date=100,
                 updated_date=200,
@@ -69,7 +68,7 @@ class CollectionSelectSchemaTest(unittest.TestCase):
 
     def test_response_id_string(self):
         with self.assertRaises(ValidationError) as ctx:
-            CollectionSelectResponse(
+            FolderSelectResponse(
                 id="not-int",
                 created_date=100,
                 updated_date=200,
@@ -87,7 +86,7 @@ class CollectionSelectSchemaTest(unittest.TestCase):
         self.assertEqual(e.get("type"), "int_parsing")
 
     def test_response_id_coercion(self):
-        res = CollectionSelectResponse(
+        res = FolderSelectResponse(
             id="42",
             created_date=100,
             updated_date=200,
@@ -100,7 +99,7 @@ class CollectionSelectSchemaTest(unittest.TestCase):
 
     def test_response_timestamps_missing(self):
         with self.assertRaises(ValidationError) as ctx:
-            CollectionSelectResponse(
+            FolderSelectResponse(
                 id=42,
                 readonly=True,
                 name="X",
@@ -119,7 +118,7 @@ class CollectionSelectSchemaTest(unittest.TestCase):
 
     def test_response_timestamps_none(self):
         with self.assertRaises(ValidationError) as ctx:
-            CollectionSelectResponse(
+            FolderSelectResponse(
                 id=42,
                 created_date=None,
                 updated_date=None,
@@ -140,7 +139,7 @@ class CollectionSelectSchemaTest(unittest.TestCase):
 
     def test_response_timestamps_string(self):
         with self.assertRaises(ValidationError) as ctx:
-            CollectionSelectResponse(
+            FolderSelectResponse(
                 id=42,
                 created_date="not-int",
                 updated_date="not-int",
@@ -160,7 +159,7 @@ class CollectionSelectSchemaTest(unittest.TestCase):
         self.assertEqual(errs[1].get("type"), "int_parsing")
 
     def test_response_timestamps_coercion(self):
-        res = CollectionSelectResponse(
+        res = FolderSelectResponse(
             id=42,
             created_date="100",
             updated_date="200",
@@ -174,7 +173,7 @@ class CollectionSelectSchemaTest(unittest.TestCase):
 
     def test_response_readonly_missing(self):
         with self.assertRaises(ValidationError) as ctx:
-            CollectionSelectResponse(
+            FolderSelectResponse(
                 id=42,
                 created_date=100,
                 updated_date=200,
@@ -192,7 +191,7 @@ class CollectionSelectSchemaTest(unittest.TestCase):
 
     def test_response_readonly_none(self):
         with self.assertRaises(ValidationError) as ctx:
-            CollectionSelectResponse(
+            FolderSelectResponse(
                 id=42,
                 created_date=100,
                 updated_date=200,
@@ -211,7 +210,7 @@ class CollectionSelectSchemaTest(unittest.TestCase):
 
     def test_response_readonly_string(self):
         with self.assertRaises(ValidationError) as ctx:
-            CollectionSelectResponse(
+            FolderSelectResponse(
                 id=42,
                 created_date=100,
                 updated_date=200,
@@ -229,7 +228,7 @@ class CollectionSelectSchemaTest(unittest.TestCase):
         self.assertEqual(e.get("type"), "bool_parsing")
 
     def test_response_readonly_coercion(self):
-        res = CollectionSelectResponse(
+        res = FolderSelectResponse(
             id=42,
             created_date=100,
             updated_date=200,
@@ -242,7 +241,7 @@ class CollectionSelectSchemaTest(unittest.TestCase):
 
     def test_response_name_missing(self):
         with self.assertRaises(ValidationError) as ctx:
-            CollectionSelectResponse(
+            FolderSelectResponse(
                 id=42,
                 created_date=100,
                 updated_date=200,
@@ -260,7 +259,7 @@ class CollectionSelectSchemaTest(unittest.TestCase):
 
     def test_response_name_none(self):
         with self.assertRaises(ValidationError) as ctx:
-            CollectionSelectResponse(
+            FolderSelectResponse(
                 id=42,
                 created_date=100,
                 updated_date=200,
@@ -279,7 +278,7 @@ class CollectionSelectSchemaTest(unittest.TestCase):
 
     def test_response_name_not_coercion(self):
         with self.assertRaises(ValidationError) as ctx:
-            CollectionSelectResponse(
+            FolderSelectResponse(
                 id=42,
                 created_date=100,
                 updated_date=200,
@@ -297,7 +296,7 @@ class CollectionSelectSchemaTest(unittest.TestCase):
         self.assertEqual(e.get("type"), "string_type")
 
     def test_response_summary_missing(self):
-        res = CollectionSelectResponse(
+        res = FolderSelectResponse(
             id=42,
             created_date=100,
             updated_date=200,
@@ -308,7 +307,7 @@ class CollectionSelectSchemaTest(unittest.TestCase):
         self.assertIsNone(res.summary)
 
     def test_response_summary_none(self):
-        res = CollectionSelectResponse(
+        res = FolderSelectResponse(
             id=42,
             created_date=100,
             updated_date=200,
@@ -320,7 +319,7 @@ class CollectionSelectSchemaTest(unittest.TestCase):
         self.assertIsNone(res.summary)
 
     def test_response_summary_string(self):
-        res = CollectionSelectResponse(
+        res = FolderSelectResponse(
             id=42,
             created_date=100,
             updated_date=200,
@@ -333,7 +332,7 @@ class CollectionSelectSchemaTest(unittest.TestCase):
 
     def test_response_summary_not_coercion(self):
         with self.assertRaises(ValidationError) as ctx:
-            CollectionSelectResponse(
+            FolderSelectResponse(
                 id=42,
                 created_date=100,
                 updated_date=200,
@@ -352,7 +351,7 @@ class CollectionSelectSchemaTest(unittest.TestCase):
 
     def test_response_user_missing(self):
         with self.assertRaises(ValidationError) as ctx:
-            CollectionSelectResponse(
+            FolderSelectResponse(
                 id=42,
                 created_date=100,
                 updated_date=200,
@@ -370,7 +369,7 @@ class CollectionSelectSchemaTest(unittest.TestCase):
 
     def test_response_user_none(self):
         with self.assertRaises(ValidationError) as ctx:
-            CollectionSelectResponse(
+            FolderSelectResponse(
                 id=42,
                 created_date=100,
                 updated_date=200,

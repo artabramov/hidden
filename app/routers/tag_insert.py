@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 from app.sqlite import get_session
 from app.redis import get_cache
 from app.models.user import User, UserRole
-from app.models.collection import Collection
+from app.models.folder import Folder
 from app.models.file import File
 from app.models.file_tag import FileTag
 from app.hook import Hook, HOOK_AFTER_TAG_INSERT
@@ -16,7 +16,7 @@ router = APIRouter()
 
 
 @router.post(
-    "/collection/{collection_id}/file/{file_id}/tag",
+    "/folder/{folder_id}/file/{file_id}/tag",
     status_code=status.HTTP_201_CREATED,
     response_class=JSONResponse,
     response_model=TagInsertResponse,
@@ -26,7 +26,7 @@ router = APIRouter()
 async def tag_insert(
     request: Request,
     schema: TagInsertRequest,
-    collection_id: int = Path(..., ge=1),
+    folder_id: int = Path(..., ge=1),
     file_id: int = Path(..., ge=1),
     session=Depends(get_session),
     cache=Depends(get_cache),
@@ -48,8 +48,8 @@ async def tag_insert(
     `latest_revision_number`.
 
     **Path parameters:**
-    - `collection_id` (int, ≥1): target collection ID.
-    - `file_id`  (int, ≥1): target file ID within the collection.
+    - `folder_id` (int, ≥1): target folder ID.
+    - `file_id`  (int, ≥1): target file ID within the folder.
 
     **Request body:**
     - `value` (string, 1-40): tag value; whitespace-trimmed; normalized.
@@ -59,7 +59,7 @@ async def tag_insert(
     - `401` — missing, invalid, or expired token.
     - `403` — insufficient role, invalid JTI, user is inactive or
     suspended.
-    - `404` — collection or file not found.
+    - `404` — folder or file not found.
     - `422` — validation error (path/body).
     - `423` — application is temporarily locked.
     - `498` — gocryptfs key is missing.
@@ -75,17 +75,17 @@ async def tag_insert(
     """
     config = request.app.state.config
 
-    collection_repository = Repository(session, cache, Collection, config)
-    collection = await collection_repository.select(id=collection_id)
+    folder_repository = Repository(session, cache, Folder, config)
+    folder = await folder_repository.select(id=folder_id)
 
-    if not collection:
-        raise E([LOC_PATH, "collection_id"], collection_id,
+    if not folder:
+        raise E([LOC_PATH, "folder_id"], folder_id,
                 ERR_VALUE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
 
     file_repository = Repository(session, cache, File, config)
     file = await file_repository.select(id=file_id)
 
-    if not file or file.collection_id != collection.id:
+    if not file or file.folder_id != folder.id:
         raise E([LOC_PATH, "file_id"], file_id,
                 ERR_VALUE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
 

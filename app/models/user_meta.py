@@ -11,7 +11,7 @@ from app.sqlite import Base
 class UserMeta(Base):
     """
     SQLAlchemy model for user metadata. Stores a key-value pair
-    linked to a user; keys are unique within each collection.
+    linked to a user; keys are unique within each folder.
     """
 
     __tablename__ = "users_meta"

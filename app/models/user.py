@@ -153,9 +153,9 @@ class User(Base):
         lazy="joined"
     )
 
-    user_collections = relationship(
-        "Collection",
-        back_populates="collection_user",
+    user_folders = relationship(
+        "Folder",
+        back_populates="folder_user",
         lazy="noload"
     )
 

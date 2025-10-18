@@ -10,7 +10,7 @@ class FileListSchemaTest(unittest.TestCase):
     def test_request_defaults(self):
         res = FileListRequest()
         self.assertIsNone(res.user_id__eq)
-        self.assertIsNone(res.collection_id__eq)
+        self.assertIsNone(res.folder_id__eq)
         self.assertIsNone(res.created_date__ge)
         self.assertIsNone(res.created_date__le)
         self.assertIsNone(res.updated_date__ge)
@@ -28,7 +28,7 @@ class FileListSchemaTest(unittest.TestCase):
     def test_request_correct(self):
         res = FileListRequest(
             user_id__eq=42,
-            collection_id__eq=37,
+            folder_id__eq=37,
             created_date__ge=0,
             created_date__le=99,
             updated_date__ge=10,
@@ -44,7 +44,7 @@ class FileListSchemaTest(unittest.TestCase):
             order="asc",
         )
         self.assertEqual(res.user_id__eq, 42)
-        self.assertEqual(res.collection_id__eq, 37)
+        self.assertEqual(res.folder_id__eq, 37)
         self.assertEqual(res.created_date__ge, 0)
         self.assertEqual(res.created_date__le, 99)
         self.assertEqual(res.updated_date__ge, 10)
@@ -119,65 +119,65 @@ class FileListSchemaTest(unittest.TestCase):
         res = FileListRequest(user_id__eq=" 42 ")
         self.assertEqual(res.user_id__eq, 42)
 
-    def test_request_collection_id_eq_none(self):
-        res = FileListRequest(collection_id__eq=None)
-        self.assertIsNone(res.collection_id__eq)
+    def test_request_folder_id_eq_none(self):
+        res = FileListRequest(folder_id__eq=None)
+        self.assertIsNone(res.folder_id__eq)
 
-    def test_request_collection_id_eq_integer_zero(self):
+    def test_request_folder_id_eq_integer_zero(self):
         with self.assertRaises(ValidationError) as ctx:
-            FileListRequest(collection_id__eq=0)
+            FileListRequest(folder_id__eq=0)
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
 
         e = errs[0]
-        self.assertEqual(e.get("loc"), ("collection_id__eq",))
+        self.assertEqual(e.get("loc"), ("folder_id__eq",))
         self.assertEqual(e.get("type"), "greater_than_equal")
 
-    def test_request_collection_id_eq_integer_negative(self):
+    def test_request_folder_id_eq_integer_negative(self):
         with self.assertRaises(ValidationError) as ctx:
-            FileListRequest(collection_id__eq=-42)
+            FileListRequest(folder_id__eq=-42)
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
 
         e = errs[0]
-        self.assertEqual(e.get("loc"), ("collection_id__eq",))
+        self.assertEqual(e.get("loc"), ("folder_id__eq",))
         self.assertEqual(e.get("type"), "greater_than_equal")
 
-    def test_request_collection_id_eq_integer_positive(self):
-        res = FileListRequest(collection_id__eq=42)
-        self.assertEqual(res.collection_id__eq, 42)
+    def test_request_folder_id_eq_integer_positive(self):
+        res = FileListRequest(folder_id__eq=42)
+        self.assertEqual(res.folder_id__eq, 42)
 
-    def test_request_collection_id_eq_string_empty(self):
+    def test_request_folder_id_eq_string_empty(self):
         with self.assertRaises(ValidationError) as ctx:
-            FileListRequest(collection_id__eq="")
+            FileListRequest(folder_id__eq="")
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
 
         e = errs[0]
-        self.assertEqual(e.get("loc"), ("collection_id__eq",))
+        self.assertEqual(e.get("loc"), ("folder_id__eq",))
         self.assertEqual(e.get("type"), "int_parsing")
 
-    def test_request_collection_id_eq_string_dummy(self):
+    def test_request_folder_id_eq_string_dummy(self):
         with self.assertRaises(ValidationError) as ctx:
-            FileListRequest(collection_id__eq="dummy")
+            FileListRequest(folder_id__eq="dummy")
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
 
         e = errs[0]
-        self.assertEqual(e.get("loc"), ("collection_id__eq",))
+        self.assertEqual(e.get("loc"), ("folder_id__eq",))
         self.assertEqual(e.get("type"), "int_parsing")
 
-    def test_request_collection_id_eq_string_coercion(self):
-        res = FileListRequest(collection_id__eq="42")
-        self.assertEqual(res.collection_id__eq, 42)
+    def test_request_folder_id_eq_string_coercion(self):
+        res = FileListRequest(folder_id__eq="42")
+        self.assertEqual(res.folder_id__eq, 42)
 
-    def test_request_collection_id_eq_string_strip(self):
-        res = FileListRequest(collection_id__eq=" 42 ")
-        self.assertEqual(res.collection_id__eq, 42)
+    def test_request_folder_id_eq_string_strip(self):
+        res = FileListRequest(folder_id__eq=" 42 ")
+        self.assertEqual(res.folder_id__eq, 42)
 
     def test_request_created_date_ge_none(self):
         res = FileListRequest(created_date__ge=None)
@@ -776,7 +776,7 @@ class FileListSchemaTest(unittest.TestCase):
     def test_request_order_by_literal(self):
         values = [
             "id", "created_date", "updated_date", "user_id",
-            "collection_id", "flagged", "filename", "filesize",
+            "folder_id", "flagged", "filename", "filesize",
             "mimetype"]
 
         for value in values:

@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 from app.sqlite import get_session
 from app.redis import get_cache
 from app.models.user import User, UserRole
-from app.models.collection import Collection
+from app.models.folder import Folder
 from app.models.file import File
 from app.validators.tag_validators import value_validate
 from app.schemas.tag_delete import TagDeleteResponse
@@ -16,7 +16,7 @@ router = APIRouter()
 
 
 @router.delete(
-    "/collection/{collection_id}/file/{file_id}/tag/{tag_value}",
+    "/folder/{folder_id}/file/{file_id}/tag/{tag_value}",
     status_code=status.HTTP_200_OK,
     response_class=JSONResponse,
     response_model=TagDeleteResponse,
@@ -25,7 +25,7 @@ router = APIRouter()
 )
 async def tag_delete(
     request: Request,
-    collection_id: int = Path(..., ge=1),
+    folder_id: int = Path(..., ge=1),
     file_id: int = Path(..., ge=1),
     tag_value: str = Path(..., min_length=1),
     session=Depends(get_session),
@@ -42,8 +42,8 @@ async def tag_delete(
     - Requires a valid bearer token with `editor` role.
 
     **Path parameters:**
-    - `collection_id` (integer ≥ 1): collection identifier.
-    - `file_id` (integer ≥ 1): file identifier within the collection.
+    - `folder_id` (integer ≥ 1): folder identifier.
+    - `file_id` (integer ≥ 1): file identifier within the folder.
     - `tag_value` (string, 1-40): tag value to remove; normalized and
     validated.
 
@@ -56,7 +56,7 @@ async def tag_delete(
     - `401` — missing, invalid, or expired token.
     - `403` — insufficient role, invalid JTI, user is inactive or
     suspended.
-    - `404` — collection or file not found.
+    - `404` — folder or file not found.
     - `422` — invalid `tag_value` (fails normalization/constraints).
     - `423` — application is temporarily locked.
     - `498` — gocryptfs key is missing.
@@ -67,17 +67,17 @@ async def tag_delete(
     """
     config = request.app.state.config
 
-    collection_repository = Repository(session, cache, Collection, config)
-    collection = await collection_repository.select(id=collection_id)
+    folder_repository = Repository(session, cache, Folder, config)
+    folder = await folder_repository.select(id=folder_id)
 
-    if not collection:
-        raise E([LOC_PATH, "collection_id"], collection_id,
+    if not folder:
+        raise E([LOC_PATH, "folder_id"], folder_id,
                 ERR_VALUE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
 
     file_repository = Repository(session, cache, File, config)
     file = await file_repository.select(id=file_id)
 
-    if not file or file.collection_id != collection.id:
+    if not file or file.folder_id != folder.id:
         raise E([LOC_PATH, "file_id"], file_id,
                 ERR_VALUE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
 

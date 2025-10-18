@@ -12,7 +12,7 @@ from app.models.user import User, UserRole
 from app.models.file import File
 from app.models.file_revision import FileRevision
 from app.models.file_thumbnail import FileThumbnail
-from app.models.collection import Collection
+from app.models.folder import Folder
 from app.schemas.file_upload import FileUploadResponse
 from app.helpers.image_helper import image_resize, IMAGE_MIMETYPES
 from app.validators.file_validators import name_validate
@@ -27,7 +27,7 @@ router = APIRouter()
 
 
 @router.post(
-    "/collection/{collection_id}/file",
+    "/folder/{folder_id}/file",
     status_code=status.HTTP_201_CREATED,
     response_class=JSONResponse,
     response_model=FileUploadResponse,
@@ -36,22 +36,22 @@ router = APIRouter()
 )
 async def file_upload(
     request: Request,
-    collection_id: int = Path(..., ge=1),
+    folder_id: int = Path(..., ge=1),
     data: UploadFile = Data(...),
     session=Depends(get_session),
     cache=Depends(get_cache),
     current_user: User = Depends(auth(UserRole.writer))
 ) -> FileUploadResponse:
     """
-    Uploads a file into the target collection. If no file with that
-    name exists, a new one is created; if it does, the current head file
+    Uploads a file into the target folder. If no file with that name
+    exists, a new one is created; if it does, the current head file
     is snapshotted as a new immutable revision and the upload becomes
     the new head. File metadata (size, MIME type, checksum) is computed
     from the uploaded content and persisted. Disk writes are performed
     via a temporary file followed by an atomic rename to avoid partial
     states.
 
-    This operation is serialized per (collection_id, filename) using an
+    This operation is serialized per (folder_id, filename) using an
     in-process asyncio lock, so concurrent uploads of the same name in a
     single process are executed one by one. In the update path, if the
     database commit fails after the head file was already replaced on
@@ -68,7 +68,7 @@ async def file_upload(
     file ID and the latest revision number.
 
     **Path parameters:**
-    - `collection_id` (integer ≥ 1) — target collection identifier.
+    - `folder_id` (integer ≥ 1) — target folder identifier.
 
     **Request body:**
     - `file` — the file to upload (`multipart/form-data`).
@@ -79,7 +79,7 @@ async def file_upload(
     - `401` — missing, invalid, or expired token.
     - `403` — insufficient role to perform the operation, invalid JTI,
     user is inactive or suspended.
-    - `404` — collection not found.
+    - `404` — folder not found.
     - `409` — conflict on DB/FS mismatch for the file (file present but
     file missing, or vice versa; MIME type changed for an existing file).
     - `422` — invalid file name.
@@ -94,7 +94,7 @@ async def file_upload(
     file_manager = request.app.state.file_manager
     lru = request.app.state.lru
 
-    collection_locks = request.app.state.collection_locks
+    folder_locks = request.app.state.folder_locks
     file_locks = request.app.state.file_locks
 
     temporary_filename = str(uuid.uuid4()) + ".tmp"
@@ -110,33 +110,32 @@ async def file_upload(
         raise E([LOC_BODY, "file"], data.filename, ERR_VALUE_INVALID,
                 status.HTTP_422_UNPROCESSABLE_ENTITY)
 
-    # NOTE: On file upload, acquire the collection READ lock first,
+    # NOTE: On file upload, acquire the folder READ lock first,
     # then the per-file exclusive lock.
 
-    collection_lock = collection_locks[collection_id]
-    file_lock_key = (collection_id, filename)
+    folder_lock = folder_locks[folder_id]
+    file_lock_key = (folder_id, filename)
     file_lock = file_locks[file_lock_key]
-    async with collection_lock.read(), file_lock:
+    async with folder_lock.read(), file_lock:
 
-        # Ensure the collection exists
-        collection_repository = Repository(session, cache, Collection, config)
-        collection = await collection_repository.select(id=collection_id)
-        if not collection:
-            raise E([LOC_PATH, "collection_id"], collection_id,
+        # Ensure the folder exists
+        folder_repository = Repository(session, cache, Folder, config)
+        folder = await folder_repository.select(id=folder_id)
+        if not folder:
+            raise E([LOC_PATH, "folder_id"], folder_id,
                     ERR_VALUE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
 
-        elif collection.readonly:
-            raise E([LOC_PATH, "collection_id"], collection_id,
+        elif folder.readonly:
+            raise E([LOC_PATH, "folder_id"], folder_id,
                     ERR_VALUE_READONLY, status.HTTP_422_UNPROCESSABLE_CONTENT)
 
-        # Check the file with the filename in the collection
+        # Check the file with the filename in the folder
         file_repository = Repository(session, cache, File, config)
         file = await file_repository.select(
-            filename__eq=filename, collection_id__eq=collection_id)
+            filename__eq=filename, folder_id__eq=folder_id)
 
         # Check the file with the filename in the directory
-        file_path = File.path_for_filename(
-            config, collection.name, filename)
+        file_path = File.path_for_filename(config, folder.name, filename)
         file_exists = await file_manager.isfile(file_path)
 
         # Inconsistent state: file exists but file does not
@@ -160,7 +159,7 @@ async def file_upload(
                     await file_manager.checksum(temporary_path))
 
                 file = File(
-                    current_user.id, collection.id, filename,
+                    current_user.id, folder.id, filename,
                     filesize, mimetype=mimetype, checksum=checksum)
                 await file_repository.insert(file, commit=False)
 

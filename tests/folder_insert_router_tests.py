@@ -2,13 +2,13 @@ import os
 import unittest
 from unittest.mock import AsyncMock, MagicMock, patch
 from app.error import E
-from app.hook import HOOK_AFTER_COLLECTION_INSERT
-from app.routers.collection_insert import collection_insert
-from app.schemas.collection_insert import CollectionInsertRequest
+from app.hook import HOOK_AFTER_FOLDER_INSERT
+from app.routers.folder_insert import folder_insert
+from app.schemas.folder_insert import FolderInsertRequest
 
 
-class CollectionInsertRouterTest(unittest.IsolatedAsyncioTestCase):
-    def _make_request(self, *, files_dir="/collections", fm=None):
+class FolderInsertRouterTest(unittest.IsolatedAsyncioTestCase):
+    def _make_request(self, *, files_dir="/folders", fm=None):
         cfg = MagicMock()
         cfg.FILES_DIR = files_dir
 
@@ -20,7 +20,7 @@ class CollectionInsertRouterTest(unittest.IsolatedAsyncioTestCase):
         request.state.log.debug = MagicMock()
         return request, cfg, request.app.state.file_manager
 
-    async def test_collection_insert_success(self):
+    async def test_folder_insert_success(self):
         request, cfg, fm = self._make_request()
         fm.mkdir = AsyncMock()
 
@@ -40,14 +40,14 @@ class CollectionInsertRouterTest(unittest.IsolatedAsyncioTestCase):
         hook_instance = MagicMock()
         hook_instance.call = AsyncMock()
 
-        with patch("app.routers.collection_insert.Repository",
+        with patch("app.routers.folder_insert.Repository",
                    return_value=repo) as RepositoryMock, \
-             patch("app.routers.collection_insert.Hook",
+             patch("app.routers.folder_insert.Hook",
                    return_value=hook_instance) as HookMock:
 
-            schema = CollectionInsertRequest(readonly=False, name="Inbox",
-                                             summary=None)
-            result = await collection_insert(
+            schema = FolderInsertRequest(readonly=False, name="Inbox",
+                                         summary=None)
+            result = await folder_insert(
                 request=request,
                 schema=schema,
                 session=session,
@@ -55,7 +55,7 @@ class CollectionInsertRouterTest(unittest.IsolatedAsyncioTestCase):
                 current_user=current_user,
             )
 
-        self.assertEqual(result, {"collection_id": 777})
+        self.assertEqual(result, {"folder_id": 777})
 
         RepositoryMock.assert_called_once()
 
@@ -74,12 +74,12 @@ class CollectionInsertRouterTest(unittest.IsolatedAsyncioTestCase):
         HookMock.assert_called_once()
         hook_instance.call.assert_awaited_once()
         args, _ = hook_instance.call.call_args
-        self.assertEqual(args[0], HOOK_AFTER_COLLECTION_INSERT)
+        self.assertEqual(args[0], HOOK_AFTER_FOLDER_INSERT)
         self.assertIs(args[1], inserted_entity)
 
         request.state.log.debug.assert_called()
 
-    async def test_collection_insert_conflict(self):
+    async def test_folder_insert_conflict(self):
         request, cfg, fm = self._make_request()
         fm.mkdir = AsyncMock()
 
@@ -94,15 +94,15 @@ class CollectionInsertRouterTest(unittest.IsolatedAsyncioTestCase):
         hook_instance = MagicMock()
         hook_instance.call = AsyncMock()
 
-        with patch("app.routers.collection_insert.Repository",
+        with patch("app.routers.folder_insert.Repository",
                    return_value=repo), \
-             patch("app.routers.collection_insert.Hook",
+             patch("app.routers.folder_insert.Hook",
                    return_value=hook_instance):
 
-            schema = CollectionInsertRequest(readonly=True, name="Projects",
-                                             summary="x")
+            schema = FolderInsertRequest(readonly=True, name="Projects",
+                                         summary="x")
             with self.assertRaises(E) as ctx:
-                await collection_insert(
+                await folder_insert(
                     request=request,
                     schema=schema,
                     session=session,
@@ -115,7 +115,7 @@ class CollectionInsertRouterTest(unittest.IsolatedAsyncioTestCase):
         repo.insert.assert_not_called()
         hook_instance.call.assert_not_called()
 
-    async def test_collection_insert_mkdir_failure(self):
+    async def test_folder_insert_mkdir_failure(self):
         request, cfg, fm = self._make_request()
         fm.mkdir = AsyncMock(side_effect=OSError("mkdir failed"))
 
@@ -130,15 +130,15 @@ class CollectionInsertRouterTest(unittest.IsolatedAsyncioTestCase):
         hook_instance = MagicMock()
         hook_instance.call = AsyncMock()
 
-        with patch("app.routers.collection_insert.Repository",
+        with patch("app.routers.folder_insert.Repository",
                    return_value=repo), \
-             patch("app.routers.collection_insert.Hook",
+             patch("app.routers.folder_insert.Hook",
                    return_value=hook_instance):
 
-            schema = CollectionInsertRequest(readonly=False, name="Broken",
-                                             summary=None)
+            schema = FolderInsertRequest(readonly=False, name="Broken",
+                                         summary=None)
             with self.assertRaises(OSError):
-                await collection_insert(
+                await folder_insert(
                     request=request,
                     schema=schema,
                     session=session,

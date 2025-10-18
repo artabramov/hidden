@@ -8,9 +8,9 @@ from app.validators.file_validators import name_validate
 
 class FileUpdateRequest(BaseModel):
     """
-    Request schema for updating a file. Includes the required
-    filename and collection ID, plus an optional summary. Whitespace
-    is stripped from strings; extra fields are forbidden.
+    Request schema for updating a file. Includes the required filename
+    and folder ID, plus an optional summary. Whitespace is stripped from
+    strings; extra fields are forbidden.
     """
 
     model_config = ConfigDict(
@@ -18,7 +18,7 @@ class FileUpdateRequest(BaseModel):
         extra="forbid",
     )
 
-    collection_id: int = Field(..., ge=1)
+    folder_id: int = Field(..., ge=1)
     filename: str = Field(..., min_length=1, max_length=255)
     summary: Optional[str] = Field(default=None, max_length=4096)
 

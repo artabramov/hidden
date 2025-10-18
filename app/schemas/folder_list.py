@@ -1,13 +1,13 @@
-"""Pydantic schemas for listing collections."""
+"""Pydantic schemas for listing folders."""
 
 from typing import Optional, Literal, List
 from pydantic import BaseModel, Field, ConfigDict
-from app.schemas.collection_select import CollectionSelectResponse
+from app.schemas.folder_select import FolderSelectResponse
 
 
-class CollectionListRequest(BaseModel):
+class FolderListRequest(BaseModel):
     """
-    Request schema for listing collections. Allows filtering by creator,
+    Request schema for listing folders. Allows filtering by creator,
     name (case-insensitive), read-only status, and creation/update time
     ranges. Supports pagination via offset/limit. Results can be ordered
     by id, created/updated date, creator, read-only flag, name, or
@@ -34,11 +34,11 @@ class CollectionListRequest(BaseModel):
     order: Literal["asc", "desc", "rand"] = "desc"
 
 
-class CollectionListResponse(BaseModel):
+class FolderListResponse(BaseModel):
     """
-    Response schema for listing collections. Contains the selected page
-    of collections and the total number of matches before pagination.
+    Response schema for listing folders. Contains the selected page
+    of folders and the total number of matches before pagination.
     """
 
-    collections: List[CollectionSelectResponse]
-    collections_count: int
+    folders: List[FolderSelectResponse]
+    folders_count: int

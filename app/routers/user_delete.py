@@ -73,5 +73,4 @@ async def user_delete(
     hook = Hook(request, session, cache, current_user=current_user)
     await hook.call(HOOK_AFTER_USER_DELETE, user)
 
-    request.state.log.debug("user deleted; user_id=%s;", user.id)
     return {"user_id": user.id}

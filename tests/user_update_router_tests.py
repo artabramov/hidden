@@ -15,7 +15,6 @@ def _req():
     r.app.state.config = cfg
     r.state = MagicMock()
     r.state.log = MagicMock()
-    r.state.log.debug = MagicMock()
     return r
 
 
@@ -61,8 +60,6 @@ class UserUpdateRouterTest(unittest.IsolatedAsyncioTestCase):
         HookMock.assert_called_with(request, session, cache,
                                     current_user=current_user)
         hook.call.assert_awaited_with(HOOK_AFTER_USER_UPDATE)
-
-        request.state.log.debug.assert_called()
 
     @patch("app.routers.user_update.Hook")
     @patch("app.routers.user_update.Repository")

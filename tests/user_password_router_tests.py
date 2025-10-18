@@ -17,7 +17,6 @@ def _req():
     req.state = MagicMock()
     req.state.gocryptfs_key = "test-gocryptfs-key"
     req.state.log = MagicMock()
-    req.state.log.debug = MagicMock()
     return req
 
 
@@ -63,8 +62,6 @@ class UserPasswordRouterTest(unittest.IsolatedAsyncioTestCase):
         HookMock.assert_called_with(request, session, cache,
                                     current_user=current_user)
         hook.call.assert_awaited_with(HOOK_AFTER_USER_PASSWORD)
-
-        request.state.log.debug.assert_called()
 
     @patch("app.routers.user_password.EncryptionManager")
     @patch("app.routers.user_password.Repository")

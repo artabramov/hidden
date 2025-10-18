@@ -69,5 +69,4 @@ async def user_update(
     hook = Hook(request, session, cache, current_user=current_user)
     await hook.call(HOOK_AFTER_USER_UPDATE)
 
-    request.state.log.debug("user updated; user_id=%s;", current_user.id)
     return {"user_id": current_user.id}

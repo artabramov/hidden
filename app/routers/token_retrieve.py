@@ -95,7 +95,6 @@ async def token_retrieve(
 
         # TODO: Update last login date
 
-        request.state.log.debug("token retrieved; user_id=%s;", user.id)
         return {
             "user_id": user.id,
             "user_token": user_token

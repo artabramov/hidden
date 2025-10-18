@@ -16,7 +16,6 @@ def _make_request_mock():
     req.state = MagicMock()
     req.state.gocryptfs_key = "test-gocryptfs-key"
     req.state.log = MagicMock()
-    req.state.log.debug = MagicMock()
     return req
 
 
@@ -313,4 +312,3 @@ class TokenRetrieveRouterTest(unittest.IsolatedAsyncioTestCase):
         HookMock.assert_called_with(request_mock, session_mock, cache_mock,
                                     current_user=user_mock)
         hook_mock.call.assert_awaited_with(HOOK_AFTER_TOKEN_RETRIEVE)
-        request_mock.state.log.debug.assert_called()

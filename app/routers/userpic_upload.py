@@ -114,5 +114,4 @@ async def userpic_upload(
     hook = Hook(request, session, cache, current_user=current_user)
     await hook.call(HOOK_AFTER_USERPIC_UPLOAD)
 
-    request.state.log.debug("userpic uploaded; user_id=%s;", current_user.id)
     return {"user_id": current_user.id}

@@ -14,7 +14,6 @@ def _make_request_mock():
     req.app.state = MagicMock()
     req.app.state.config = cfg
     req.state = MagicMock()
-    # .state.log.debug используется в роутере — добавим мок
     req.state.log = MagicMock()
     return req
 

@@ -14,7 +14,6 @@ def _req():
     r.app.state.config = cfg
     r.state = MagicMock()
     r.state.log = MagicMock()
-    r.state.log.debug = MagicMock()
     return r
 
 
@@ -72,7 +71,6 @@ class UserListRouterTest(unittest.IsolatedAsyncioTestCase):
         HookMock.assert_called_with(request, session, cache,
                                     current_user=current_user)
         hook.call.assert_awaited()
-        request.state.log.debug.assert_called()
 
     @patch("app.routers.user_list.Hook")
     @patch("app.routers.user_list.Repository")
@@ -104,4 +102,3 @@ class UserListRouterTest(unittest.IsolatedAsyncioTestCase):
 
         self.assertEqual(result, {"users": [], "users_count": 0})
         hook.call.assert_awaited()
-        request.state.log.debug.assert_called()

@@ -20,7 +20,6 @@ class UserpicUploadRouterTest(unittest.IsolatedAsyncioTestCase):
         request.app.state.file_manager = fm if fm is not None else MagicMock()
         request.state = MagicMock()
         request.state.log = MagicMock()
-        request.state.log.debug = MagicMock()
         return request, cfg, request.app.state.file_manager
 
     def _make_file(self, *, filename="in.png", content_type="image/png"):
@@ -103,7 +102,6 @@ class UserpicUploadRouterTest(unittest.IsolatedAsyncioTestCase):
 
         HookMock.assert_called_once()
         hook_instance.call.assert_awaited_once_with(HOOK_AFTER_USERPIC_UPLOAD)
-        request.state.log.debug.assert_called()
 
     @patch("app.routers.userpic_upload.IMAGE_MIMETYPES", {"image/png"})
     @patch("app.routers.userpic_upload.uuid.uuid4")

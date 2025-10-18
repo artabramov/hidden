@@ -82,7 +82,4 @@ async def folder_insert(
     hook = Hook(request, session, cache, current_user=current_user)
     await hook.call(HOOK_AFTER_FOLDER_INSERT, folder)
 
-    # TODO: remove redundant logging
-    request.state.log.debug(
-        "folder created; folder_id=%s;", folder.id)
     return {"folder_id": folder.id}

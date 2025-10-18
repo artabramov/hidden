@@ -61,5 +61,4 @@ async def user_select(
     hook = Hook(request, session, cache, current_user=current_user)
     await hook.call(HOOK_AFTER_USER_SELECT, user)
 
-    request.state.log.debug("user retrieved; user_id=%s;", user.id)
     return await user.to_dict()

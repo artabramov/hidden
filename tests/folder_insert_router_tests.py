@@ -17,7 +17,6 @@ class FolderInsertRouterTest(unittest.IsolatedAsyncioTestCase):
         request.app.state.config = cfg
         request.app.state.file_manager = fm if fm is not None else MagicMock()
         request.state.log = MagicMock()
-        request.state.log.debug = MagicMock()
         return request, cfg, request.app.state.file_manager
 
     async def test_folder_insert_success(self):
@@ -76,8 +75,6 @@ class FolderInsertRouterTest(unittest.IsolatedAsyncioTestCase):
         args, _ = hook_instance.call.call_args
         self.assertEqual(args[0], HOOK_AFTER_FOLDER_INSERT)
         self.assertIs(args[1], inserted_entity)
-
-        request.state.log.debug.assert_called()
 
     async def test_folder_insert_conflict(self):
         request, cfg, fm = self._make_request()

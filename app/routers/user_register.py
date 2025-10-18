@@ -103,7 +103,6 @@ async def user_register(
     hook = Hook(request, session, cache, current_user=user)
     await hook.call(HOOK_AFTER_USER_REGISTER)
 
-    request.state.log.debug("user registered; user_id=%s;", user.id)
     return {
         "user_id": user.id,
         "mfa_secret": mfa_secret,

@@ -19,7 +19,6 @@ class UserRegisterRouterTest(unittest.IsolatedAsyncioTestCase):
         req.state = MagicMock()
         req.state.gocryptfs_key = "test-gocryptfs-key"
         req.state.log = MagicMock()
-        req.state.log.debug = MagicMock()
         return req
 
     def _make_schema_mock(
@@ -165,8 +164,6 @@ class UserRegisterRouterTest(unittest.IsolatedAsyncioTestCase):
             current_user=UserMock.return_value,
         )
         hook_mock.call.assert_awaited_with(HOOK_AFTER_USER_REGISTER)
-
-        request_mock.state.log.debug.assert_called()
 
     @patch("app.routers.user_register.Hook")
     @patch("app.routers.user_register.Repository")

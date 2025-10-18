@@ -55,7 +55,6 @@ async def user_list(
     hook = Hook(request, session, cache, current_user=current_user)
     await hook.call(HOOK_AFTER_USER_LIST, users, users_count)
 
-    request.state.log.debug("user list retrieved;")
     return {
         "users": [await user.to_dict() for user in users],
         "users_count": users_count,

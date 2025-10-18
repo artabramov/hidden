@@ -87,7 +87,6 @@ async def user_login(
         hook = Hook(request, session, cache, current_user=user)
         await hook.call(HOOK_AFTER_USER_LOGIN)
 
-        request.state.log.debug("user logged in; user_id=%s;", user.id)
         return {
             "user_id": user.id,
             "password_accepted": True

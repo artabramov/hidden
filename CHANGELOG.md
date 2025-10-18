@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.2.15] - 2025-10-18
+- Major refactor: renamed collections to **folders** and documents to **files** (routers, schemas, models, hooks, and configuration were adjusted accordingly).
+- Removed redundant **logging**.
+
 ## [0.2.14] - 2025-10-18
 - Added **static HTML** hosting: the backend now serves files from **/hidden/html** (ships with a placeholder **index.html**); a custom frontend can be placed there.
 - **Enabled CORS**: responses now include headers permitting cross-origin requests from external origins.

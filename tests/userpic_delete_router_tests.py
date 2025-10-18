@@ -16,8 +16,6 @@ class UserpicDeleteRouterTests(unittest.IsolatedAsyncioTestCase):
             file_manager=fm or AsyncMock(),
             log=log or MagicMock(),
         )
-        # на всякий случай, чтобы debug() точно существовал
-        state.log.debug = getattr(state.log, "debug", MagicMock())
         app = SimpleNamespace(state=state)
         return SimpleNamespace(app=app, state=state)
 
@@ -86,6 +84,5 @@ class UserpicDeleteRouterTests(unittest.IsolatedAsyncioTestCase):
         )
         hook_inst.call.assert_awaited_once_with(HOOK_AFTER_USERPIC_DELETE)
 
-        request.state.log.debug.assert_called()
         self.assertIsNone(current_user.user_thumbnail)
         self.assertEqual(result, {"user_id": 42})

@@ -76,5 +76,4 @@ async def user_role(
     hook = Hook(request, session, cache, current_user=current_user)
     await hook.call(HOOK_AFTER_USER_ROLE, user)
 
-    request.state.log.debug("user role changed; user_id=%s;", user.id)
     return {"user_id": user.id}

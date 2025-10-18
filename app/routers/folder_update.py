@@ -141,5 +141,4 @@ async def folder_update(
     hook = Hook(request, session, cache, current_user=current_user)
     await hook.call(HOOK_AFTER_FOLDER_UPDATE, folder)
 
-    log.debug("folder updated; folder_id=%s;", folder.id)
     return {"folder_id": folder.id}

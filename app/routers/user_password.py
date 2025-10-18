@@ -83,5 +83,4 @@ async def user_password(
     hook = Hook(request, session, cache, current_user=current_user)
     await hook.call(HOOK_AFTER_USER_PASSWORD)
 
-    request.state.log.debug("password changed; user_id=%s;", current_user.id)
     return {"user_id": current_user.id}

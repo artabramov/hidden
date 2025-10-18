@@ -159,14 +159,14 @@ class User(Base):
         lazy="noload"
     )
 
-    user_documents = relationship(
-        "Document",
-        back_populates="document_user",
+    user_files = relationship(
+        "File",
+        back_populates="file_user",
         lazy="noload"
     )
 
     user_revisions = relationship(
-        "DocumentRevision",
+        "FileRevision",
         back_populates="revision_user",
         lazy="noload"
     )

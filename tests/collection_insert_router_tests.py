@@ -8,9 +8,9 @@ from app.schemas.collection_insert import CollectionInsertRequest
 
 
 class CollectionInsertRouterTest(unittest.IsolatedAsyncioTestCase):
-    def _make_request(self, *, documents_dir="/collections", fm=None):
+    def _make_request(self, *, files_dir="/collections", fm=None):
         cfg = MagicMock()
-        cfg.DOCUMENTS_DIR = documents_dir
+        cfg.FILES_DIR = files_dir
 
         request = MagicMock()
         request.app = MagicMock()
@@ -61,7 +61,7 @@ class CollectionInsertRouterTest(unittest.IsolatedAsyncioTestCase):
 
         repo.exists.assert_awaited_once_with(name__eq="Inbox")
 
-        expected_dir = os.path.join(cfg.DOCUMENTS_DIR, "Inbox")
+        expected_dir = os.path.join(cfg.FILES_DIR, "Inbox")
         fm.mkdir.assert_awaited_once_with(expected_dir)
 
         repo.insert.assert_awaited_once()

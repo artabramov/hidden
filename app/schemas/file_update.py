@@ -1,14 +1,14 @@
-"""Pydantic schemas for document update."""
+"""Pydantic schemas for file update."""
 
 from typing import Optional
 from pydantic import BaseModel, Field, field_validator, ConfigDict
-from app.validators.document_validators import summary_validate
+from app.validators.file_validators import summary_validate
 from app.validators.file_validators import name_validate
 
 
-class DocumentUpdateRequest(BaseModel):
+class FileUpdateRequest(BaseModel):
     """
-    Request schema for updating a document. Includes the required
+    Request schema for updating a file. Includes the required
     filename and collection ID, plus an optional summary. Whitespace
     is stripped from strings; extra fields are forbidden.
     """
@@ -33,11 +33,11 @@ class DocumentUpdateRequest(BaseModel):
         return summary_validate(value)
 
 
-class DocumentUpdateResponse(BaseModel):
+class FileUpdateResponse(BaseModel):
     """
-    Response schema for document update. Contains the updated
-    document ID and the latest revision number.
+    Response schema for file update. Contains the updated
+    file ID and the latest revision number.
     """
 
-    document_id: int
+    file_id: int
     latest_revision_number: int

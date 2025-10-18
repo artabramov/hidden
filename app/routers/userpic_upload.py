@@ -1,7 +1,10 @@
 """FastAPI router for uploading userpics."""
 
 import uuid
-from fastapi import APIRouter, Depends, status, File, UploadFile, Request, Path
+from fastapi import (
+    APIRouter, Depends, status, UploadFile, Request, Path,
+    File as Data
+)
 from fastapi.responses import JSONResponse
 from app.sqlite import get_session
 from app.redis import get_cache
@@ -18,13 +21,20 @@ from app.helpers.image_helper import image_resize, IMAGE_MIMETYPES
 router = APIRouter()
 
 
-@router.post("/user/{user_id}/userpic", summary="Upload userpic",
-             response_class=JSONResponse, status_code=status.HTTP_200_OK,
-             response_model=UserpicUploadResponse, tags=["Users"])
+@router.post(
+    "/user/{user_id}/userpic",
+    status_code=status.HTTP_200_OK,
+    response_class=JSONResponse,
+    response_model=UserpicUploadResponse,
+    summary="Upload userpic",
+    tags=["Users"]
+)
 async def userpic_upload(
-    request: Request, file: UploadFile = File(...),
+    request: Request,
+    data: UploadFile = Data(...),
     user_id: int = Path(..., ge=1),
-    session=Depends(get_session), cache=Depends(get_cache),
+    session=Depends(get_session),
+    cache=Depends(get_cache),
     current_user: User = Depends(auth(UserRole.reader))
 ) -> UserpicUploadResponse:
     """
@@ -71,8 +81,9 @@ async def userpic_upload(
         raise E([LOC_PATH, "user_id"], user_id,
                 ERR_VALUE_INVALID, status.HTTP_422_UNPROCESSABLE_ENTITY)
 
-    elif file.content_type not in IMAGE_MIMETYPES:
-        raise E([LOC_BODY, "file"], file.filename, ERR_FILE_MIMETYPE_INVALID,
+    elif data.content_type not in IMAGE_MIMETYPES:
+        raise E([LOC_BODY, "file"], data.filename,
+                ERR_FILE_MIMETYPE_INVALID,
                 status.HTTP_422_UNPROCESSABLE_ENTITY)
 
     if current_user.has_thumbnail:
@@ -85,7 +96,7 @@ async def userpic_upload(
     userpic_uuid = str(uuid.uuid4())
     userpic_path = UserThumbnail.path_for_uuid(config, userpic_uuid)
 
-    await file_manager.upload(file, userpic_path)
+    await file_manager.upload(data, userpic_path)
     await image_resize(
         userpic_path, config.THUMBNAILS_WIDTH,
         config.THUMBNAILS_HEIGHT, config.THUMBNAILS_QUALITY)

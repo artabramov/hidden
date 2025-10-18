@@ -5,7 +5,7 @@ from app.sqlite import get_session
 from app.redis import get_cache
 from app.models.user import User, UserRole
 from app.models.collection import Collection
-from app.models.document import Document
+from app.models.file import File
 from app.error import E, LOC_PATH, ERR_VALUE_NOT_FOUND, ERR_FILE_CONFLICT
 from app.helpers.image_helper import IMAGE_MEDIATYPE
 from app.hook import Hook, HOOK_AFTER_THUMBNAIL_RETRIEVE
@@ -16,22 +16,22 @@ router = APIRouter()
 
 
 @router.get(
-    "/collection/{collection_id}/document/{document_id}/thumbnail",
+    "/collection/{collection_id}/file/{file_id}/thumbnail",
     status_code=status.HTTP_200_OK,
     response_class=Response,
     summary="Retrieve thumbnail",
-    tags=["Documents"]
+    tags=["Files"]
 )
 async def thumbnail_retrieve(
     request: Request,
     collection_id: int = Path(..., ge=1),
-    document_id: int = Path(..., ge=1),
+    file_id: int = Path(..., ge=1),
     session=Depends(get_session),
     cache=Depends(get_cache),
     current_user: User = Depends(auth(UserRole.reader))
 ):
     """
-    Retrieve a document's thumbnail and return raw image bytes. The
+    Retrieve a file's thumbnail and return raw image bytes. The
     image is fetched from the LRU cache first; on miss, it is read from
     the filesystem, verified against the stored checksum, and cached.
 
@@ -40,7 +40,7 @@ async def thumbnail_retrieve(
 
     **Path parameters:**
     - `collection_id` (integer ≥ 1): parent collection identifier.
-    - `document_id` (integer ≥ 1): document identifier.
+    - `file_id` (integer ≥ 1): file identifier.
 
     **Response:**
     - Raw binary image.
@@ -51,7 +51,7 @@ async def thumbnail_retrieve(
     - `401` — missing, invalid, or expired token.
     - `403` — insufficient role, invalid JTI, user is inactive or
       suspended.
-    - `404` — collection or document not found, or no thumbnail set.
+    - `404` — collection or file not found, or no thumbnail set.
     - `409` — file not found on filesystem or checksum mismatch.
     - `423` — application is temporarily locked.
     - `498` — gocryptfs key is missing.
@@ -71,8 +71,7 @@ async def thumbnail_retrieve(
     lru = request.app.state.lru
 
     # NOTE: On thumbnail retrieval, keep two-step fetch to hit Redis
-    # cache; load the collection by ID first, then load the document
-    # by ID.
+    # cache; load the collection by ID first, then load the file by ID.
 
     collection_repository = Repository(session, cache, Collection, config)
     collection = await collection_repository.select(id=collection_id)
@@ -81,27 +80,27 @@ async def thumbnail_retrieve(
         raise E([LOC_PATH, "collection_id"], collection_id,
                 ERR_VALUE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
 
-    document_repository = Repository(session, cache, Document, config)
-    document = await document_repository.select(id=document_id)
+    file_repository = Repository(session, cache, File, config)
+    file = await file_repository.select(id=file_id)
 
-    if not document or document.collection_id != collection.id:
-        raise E([LOC_PATH, "document_id"], document_id,
+    if not file or file.collection_id != collection.id:
+        raise E([LOC_PATH, "file_id"], file_id,
                 ERR_VALUE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
 
-    elif not document.has_thumbnail:
-        raise E([LOC_PATH, "document_id"], document_id,
+    elif not file.has_thumbnail:
+        raise E([LOC_PATH, "file_id"], file_id,
                 ERR_VALUE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
 
     # NOTE: On thumbnail retrieval, if the file checksum is unchanged,
     # return a 304 response to skip further LRU/filesystem operations.
 
-    etag = f'"{document.document_thumbnail.checksum}"'
+    etag = f'"{file.file_thumbnail.checksum}"'
     if request.headers.get("if-none-match") == etag:
         return Response(
             status_code=status.HTTP_304_NOT_MODIFIED,
             headers={"ETag": etag})
 
-    file_path = document.document_thumbnail.path(config)
+    file_path = file.file_thumbnail.path(config)
     file_data = lru.load(file_path)
 
     if file_data is None:
@@ -109,13 +108,13 @@ async def thumbnail_retrieve(
         # Ensure the thumbnail file exists
         file_exists = await file_manager.isfile(file_path)
         if not file_exists:
-            raise E([LOC_PATH, "document_id"], document_id,
+            raise E([LOC_PATH, "file_id"], file_id,
                     ERR_FILE_CONFLICT, status.HTTP_409_CONFLICT)
 
         # Ensure the file checksum is correct
         file_checksum = await file_manager.checksum(file_path)
-        if document.document_thumbnail.checksum != file_checksum:
-            raise E([LOC_PATH, "document_id"], document_id,
+        if file.file_thumbnail.checksum != file_checksum:
+            raise E([LOC_PATH, "file_id"], file_id,
                     ERR_FILE_CONFLICT, status.HTTP_409_CONFLICT)
 
         file_data = await file_manager.read(file_path)
@@ -124,11 +123,11 @@ async def thumbnail_retrieve(
     headers = {
         "ETag": etag,
         "Content-Disposition": "inline",
-        "Content-Length": str(document.document_thumbnail.filesize),
+        "Content-Length": str(file.file_thumbnail.filesize),
     }
 
     hook = Hook(request, session, cache, current_user=current_user)
-    await hook.call(HOOK_AFTER_THUMBNAIL_RETRIEVE, document)
+    await hook.call(HOOK_AFTER_THUMBNAIL_RETRIEVE, file)
 
     return Response(
         content=file_data, media_type=IMAGE_MEDIATYPE, headers=headers)

@@ -1,5 +1,5 @@
 """
-The module defines Pydantic schemas for deleting a document tag.
+The module defines Pydantic schemas for deleting a file tag.
 """
 
 from pydantic import BaseModel
@@ -8,7 +8,7 @@ from pydantic import BaseModel
 class TagDeleteResponse(BaseModel):
     """
     Response schema for tag delete. Contains the related
-    document ID and the latest revision number.
+    file ID and the latest revision number.
     """
-    document_id: int
+    file_id: int
     latest_revision_number: int

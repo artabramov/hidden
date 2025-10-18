@@ -1,4 +1,4 @@
-"""Pydantic schemas for document detail retrieval."""
+"""Pydantic schemas for file detail retrieval."""
 
 from typing import Optional, List
 from pydantic import BaseModel
@@ -7,14 +7,13 @@ from app.schemas.collection_select import CollectionSelectResponse
 from app.schemas.revision_select import RevisionSelectResponse
 
 
-class DocumentSelectResponse(BaseModel):
+class FileSelectResponse(BaseModel):
     """
-    Response schema for document details. Includes identifiers, creator,
+    Response schema for file details. Includes identifiers, creator,
     parent collection, creation/update timestamps, flagged status,
     filename, filesize, mimetype, checksum, optional summary, latest
-    revision number, and a list of document revisions.
+    revision number, and a list of file revisions.
     """
-
     id: int
     user: UserSelectResponse
     collection: CollectionSelectResponse
@@ -27,5 +26,5 @@ class DocumentSelectResponse(BaseModel):
     checksum: str
     summary: Optional[str] = None
     latest_revision_number: int
-    document_revisions: List[RevisionSelectResponse]
-    document_tags: list = None
+    file_revisions: List[RevisionSelectResponse]
+    file_tags: list = None

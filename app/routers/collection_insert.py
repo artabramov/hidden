@@ -57,7 +57,7 @@ async def collection_insert(
     - `499` — gocryptfs key is invalid.
 
     **Side effects:**
-    - Creates a directory at `documents/<name>`.
+    - Creates a directory at `files/<name>`.
 
     **Hooks:**
     - `HOOK_AFTER_COLLECTION_INSERT`: executed after collection and
@@ -74,7 +74,7 @@ async def collection_insert(
         raise E([LOC_BODY, "name"], schema.name,
                 ERR_VALUE_EXISTS, status.HTTP_422_UNPROCESSABLE_ENTITY)
 
-    collection_path = os.path.join(config.DOCUMENTS_DIR, schema.name)
+    collection_path = os.path.join(config.FILES_DIR, schema.name)
     await file_manager.mkdir(collection_path)
 
     collection = Collection(

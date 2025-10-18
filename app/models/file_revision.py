@@ -1,4 +1,4 @@
-"""SQLAlchemy model for document revisions."""
+"""SQLAlchemy model for file revisions."""
 
 import os
 import time
@@ -9,17 +9,17 @@ from sqlalchemy.orm import relationship
 from app.sqlite import Base
 
 
-class DocumentRevision(Base):
+class FileRevision(Base):
     """
-    SQLAlchemy model for document revisions.
-    Immutable snapshots of a document.
+    SQLAlchemy model for file revisions.
+    Immutable snapshots of a file.
     """
 
-    __tablename__ = "documents_revisions"
+    __tablename__ = "files_revisions"
     __table_args__ = (
         UniqueConstraint(
-            "document_id", "revision_number",
-            name="uq_documents_revisions_document_id_revision_number"
+            "file_id", "revision_number",
+            name="uq_files_revisions_file_id_revision_number"
         ),
         {"sqlite_autoincrement": True},
     )
@@ -38,9 +38,9 @@ class DocumentRevision(Base):
         index=True,
     )
 
-    document_id = Column(
+    file_id = Column(
         Integer,
-        ForeignKey("documents.id", ondelete="CASCADE"),
+        ForeignKey("files.id", ondelete="CASCADE"),
         nullable=False,
         index=True
     )
@@ -77,7 +77,7 @@ class DocumentRevision(Base):
     )
 
     # NOTE: Join users because revisions themselves are not cached;
-    # they should be cached as part of documents and contain users.
+    # they should be cached as part of files and contain users.
     revision_user = relationship(
         "User",
         back_populates="user_revisions",
@@ -85,9 +85,9 @@ class DocumentRevision(Base):
         lazy="joined"
     )
 
-    revision_document = relationship(
-        "Document",
-        back_populates="document_revisions"
+    revision_file = relationship(
+        "File",
+        back_populates="file_revisions"
     )
 
     @classmethod
@@ -100,10 +100,10 @@ class DocumentRevision(Base):
         return self.__class__.path_for_uuid(config, self.uuid)
 
     def __init__(
-            self, user_id: int, document_id: int, revision_number: int,
+            self, user_id: int, file_id: int, revision_number: int,
             uuid: str, filesize: int, checksum: str):
         self.user_id = user_id
-        self.document_id = document_id
+        self.file_id = file_id
         self.revision_number = revision_number
         self.uuid = uuid
         self.filesize = filesize
@@ -114,7 +114,7 @@ class DocumentRevision(Base):
         return {
             "id": self.id,
             "user": await self.revision_user.to_dict(),
-            "document_id": self.document_id,
+            "file_id": self.file_id,
             "created_date": self.created_date,
             "revision_number": self.revision_number,
             "uuid": self.uuid,

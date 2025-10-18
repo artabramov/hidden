@@ -1,6 +1,6 @@
 import unittest
 import unicodedata
-from app.validators.file_validators import name_validate
+from app.validators.file_validators import name_validate, summary_validate
 
 
 class FileValidatorsTest(unittest.TestCase):
@@ -97,3 +97,19 @@ class FileValidatorsTest(unittest.TestCase):
         for s in ["file", "file_name-OK", "数据集", "файл", "notes_2025"]:
             res = name_validate(s)
             self.assertEqual(res, s)
+
+    def test_summary_none(self):
+        res = summary_validate(None)
+        self.assertIsNone(res)
+
+    def test_summary_string_empty(self):
+        res = summary_validate("")
+        self.assertIsNone(res)
+
+    def test_summary_string_whitespaces(self):
+        res = summary_validate("  ")
+        self.assertIsNone(res)
+
+    def test_summary_string_stripped(self):
+        res = summary_validate(" Hello ")
+        self.assertEqual(res, "Hello")

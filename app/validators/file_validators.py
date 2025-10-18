@@ -1,6 +1,7 @@
-"""Validators for file and directory names."""
+"""Validators for file and folder related fields."""
 
 import unicodedata
+from typing import Optional
 
 
 # Cross-platform safety: forbid Windows names so
@@ -59,3 +60,13 @@ def name_validate(name: str) -> str:
         raise ValueError("Name must not exceed 255 bytes in UTF-8")
 
     return name
+
+
+def summary_validate(summary: Optional[str]) -> Optional[str]:
+    """
+    Validates file summary by trimming whitespace and converting
+    blank strings to None. Returns the normalized file summary.
+    """
+    if summary is None:
+        return None
+    return summary.strip() or None

@@ -1,4 +1,4 @@
-"""FastAPI router for document deleting."""
+"""FastAPI router for file deleting."""
 
 from fastapi import APIRouter, Depends, status, Request, Path
 from fastapi.responses import JSONResponse
@@ -6,9 +6,9 @@ from app.sqlite import get_session
 from app.redis import get_cache
 from app.models.user import User, UserRole
 from app.models.collection import Collection
-from app.models.document import Document
-from app.schemas.document_delete import DocumentDeleteResponse
-from app.hook import Hook, HOOK_AFTER_DOCUMENT_DELETE
+from app.models.file import File
+from app.schemas.file_delete import FileDeleteResponse
+from app.hook import Hook, HOOK_AFTER_FILE_DELETE
 from app.auth import auth
 from app.repository import Repository
 from app.error import (
@@ -18,42 +18,42 @@ router = APIRouter()
 
 
 @router.delete(
-    "/collection/{collection_id}/document/{document_id}",
+    "/collection/{collection_id}/file/{file_id}",
     status_code=status.HTTP_200_OK,
     response_class=JSONResponse,
-    response_model=DocumentDeleteResponse,
-    summary="Delete document",
-    tags=["Documents"]
+    response_model=FileDeleteResponse,
+    summary="Delete file",
+    tags=["Files"]
 )
-async def document_delete(
+async def file_delete(
     request: Request,
     collection_id: int = Path(..., ge=1),
-    document_id: int = Path(..., ge=1),
+    file_id: int = Path(..., ge=1),
     session=Depends(get_session),
     cache=Depends(get_cache),
     current_user: User = Depends(auth(UserRole.admin))
-) -> DocumentDeleteResponse:
+) -> FileDeleteResponse:
     """
-    Delete a document and all associated artifacts (thumbnail,
-    revisions, head file).
+    Delete a file and all associated artifacts (thumbnail, revisions,
+    head file).
 
     **Authentication:**
     - Requires a valid bearer token with `admin` role.
 
     **Path parameters:**
     - `collection_id` (integer ≥ 1): parent collection identifier.
-    - `document_id` (integer ≥ 1): document identifier.
+    - `file_id` (integer ≥ 1): file identifier.
 
     **Response:**
-    - `DocumentDeleteResponse` with document ID and latest revision
+    - `FileDeleteResponse` with file ID and latest revision
     number.
 
     **Response codes:**
-    - `200` — document deleted successfully.
+    - `200` — file deleted successfully.
     - `401` — missing, invalid, or expired token.
     - `403` — insufficient role, invalid JTI, user is inactive or
     suspended.
-    - `404` — collection or document not found.
+    - `404` — collection or file not found.
     - `409` — conflict: thumbnail, revision or head file is missing.
     - `423` — application is temporarily locked.
     - `498` — gocryptfs key is missing.
@@ -64,7 +64,7 @@ async def document_delete(
     filesystem; purges LRU cache entries.
 
     **Hooks:**
-    - `HOOK_AFTER_DOCUMENT_DELETE` — executed after successful deletion.
+    - `HOOK_AFTER_FILE_DELETE` — executed after successful deletion.
     """
     config = request.app.state.config
     file_manager = request.app.state.file_manager
@@ -73,8 +73,8 @@ async def document_delete(
     collection_locks = request.app.state.collection_locks
     file_locks = request.app.state.file_locks
 
-    # NOTE: On document delete, keep two-step fetch to hit Redis cache;
-    # load the collection by ID first, then load the document by ID.
+    # NOTE: On file delete, keep two-step fetch to hit Redis cache;
+    # load the collection by ID first, then load the file by ID.
 
     collection_repository = Repository(session, cache, Collection, config)
     collection = await collection_repository.select(id=collection_id)
@@ -87,24 +87,24 @@ async def document_delete(
         raise E([LOC_PATH, "collection_id"], collection_id,
                 ERR_VALUE_READONLY, status.HTTP_422_UNPROCESSABLE_CONTENT)
 
-    document_repository = Repository(session, cache, Document, config)
-    document = await document_repository.select(id=document_id)
+    file_repository = Repository(session, cache, File, config)
+    file = await file_repository.select(id=file_id)
 
-    if not document or document.collection_id != collection.id:
-        raise E([LOC_PATH, "document_id"], document_id,
+    if not file or file.collection_id != collection.id:
+        raise E([LOC_PATH, "file_id"], file_id,
                 ERR_VALUE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
 
-    latest_revision_number = document.latest_revision_number
+    latest_revision_number = file.latest_revision_number
 
-    # NOTE: On document delete, acquire the collection READ lock first,
+    # NOTE: On file delete, acquire the collection READ lock first,
     # then the per-file exclusive lock.
 
     collection_lock = collection_locks[collection_id]
-    file_lock_key = (collection_id, document.filename)
+    file_lock_key = (collection_id, file.filename)
     file_lock = file_locks[file_lock_key]
     async with collection_lock.read(), file_lock:
 
-        # NOTE: On document delete the operation order is intentional:
+        # NOTE: On file delete the operation order is intentional:
         # (1) remove thumbnail, (2) remove revisions, (3) delete head.
         # The head is kept until the end to minimize the inconsistency
         # window. If filesystem operations fail, they likely fail at
@@ -112,47 +112,47 @@ async def document_delete(
         # step fails, the deletion is aborted entirely (no head removal).
 
         # Ensure the thumbnail file exists
-        if document.has_thumbnail:
-            thumbnail_path = document.document_thumbnail.path(config)
+        if file.has_thumbnail:
+            thumbnail_path = file.file_thumbnail.path(config)
             thumbnail_file_exists = await file_manager.isfile(thumbnail_path)
             if not thumbnail_file_exists:
-                raise E([LOC_PATH, "document_id"], document_id,
+                raise E([LOC_PATH, "file_id"], file_id,
                         ERR_FILE_CONFLICT, status.HTTP_409_CONFLICT)
 
             await file_manager.delete(thumbnail_path)
             lru.delete(thumbnail_path)
 
         # Ensure the revision file exists
-        if document.has_revisions:
-            for revision in document.document_revisions:
+        if file.has_revisions:
+            for revision in file.file_revisions:
                 revision_path = revision.path(config)
                 revision_file_exists = await file_manager.isfile(revision_path)
                 if not revision_file_exists:
-                    raise E([LOC_PATH, "document_id"], document_id,
+                    raise E([LOC_PATH, "file_id"], file_id,
                             ERR_FILE_CONFLICT, status.HTTP_409_CONFLICT)
 
                 await file_manager.delete(revision_path)
                 lru.delete(revision_path)
 
         # Ensure the head file exists
-        document_path = document.path(config)
-        current_file_exists = await file_manager.isfile(document_path)
+        file_path = file.path(config)
+        current_file_exists = await file_manager.isfile(file_path)
         if not current_file_exists:
-            raise E([LOC_PATH, "document_id"], document_id,
+            raise E([LOC_PATH, "file_id"], file_id,
                     ERR_FILE_CONFLICT, status.HTTP_409_CONFLICT)
 
-        await file_manager.delete(document_path)
-        lru.delete(document_path)
+        await file_manager.delete(file_path)
+        lru.delete(file_path)
 
-        # NOTE: On document delete, all related DB entities
+        # NOTE: On file delete, all related DB entities
         # are removed by SQLAlchemy using ORM relationships.
 
-        await document_repository.delete(document)
+        await file_repository.delete(file)
 
     hook = Hook(request, session, cache, current_user=current_user)
-    await hook.call(HOOK_AFTER_DOCUMENT_DELETE, document_id)
+    await hook.call(HOOK_AFTER_FILE_DELETE, file_id)
 
     return {
-        "document_id": document_id,
+        "file_id": file_id,
         "latest_revision_number": latest_revision_number,
     }

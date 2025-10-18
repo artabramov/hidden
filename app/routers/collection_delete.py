@@ -6,7 +6,7 @@ from app.sqlite import get_session
 from app.redis import get_cache
 from app.models.user import User, UserRole
 from app.models.collection import Collection
-from app.models.document import Document
+from app.models.file import File
 from app.schemas.collection_delete import CollectionDeleteResponse
 from app.repository import Repository
 from app.error import E, LOC_PATH, ERR_VALUE_NOT_FOUND
@@ -32,7 +32,7 @@ async def collection_delete(
     current_user: User = Depends(auth(UserRole.admin))
 ) -> CollectionDeleteResponse:
     """
-    Delete a collection and all its documents (including thumbnails,
+    Delete a collection and all its files (including thumbnails,
     revisions, and head files).
 
     Disk cleanup is best-effort: missing thumbnails/revisions/head
@@ -88,38 +88,38 @@ async def collection_delete(
         # TODO: Switch to batched deletion (fixed-size chunks) to reduce
         # lock time and memory usage spikes during collection removal.
 
-        document_repository = Repository(session, cache, Document, config)
-        documents = await document_repository.select_all(
+        file_repository = Repository(session, cache, File, config)
+        files = await file_repository.select_all(
             collection_id__eq=collection.id)
 
         # NOTE: On collection delete, missing thumbnails/revisions/head
         # files are ignored; deletion proceeds without conflict errors
         # (best-effort cleanup).
 
-        for document in documents:
+        for file in files:
 
             # Remove the thumbnail file; no error if absent
-            if document.has_thumbnail:
-                thumbnail_path = document.document_thumbnail.path(config)
+            if file.has_thumbnail:
+                thumbnail_path = file.file_thumbnail.path(config)
                 await file_manager.delete(thumbnail_path)
                 lru.delete(thumbnail_path)
 
             # Remove the revision files; no error if absent
-            if document.has_revisions:
-                for revision in document.document_revisions:
+            if file.has_revisions:
+                for revision in file.file_revisions:
                     revision_path = revision.path(config)
                     await file_manager.delete(revision_path)
                     lru.delete(revision_path)
 
             # Remove the head file; no error if absent
-            document_path = document.path(config)
-            await file_manager.delete(document_path)
-            lru.delete(document_path)
+            file_path = file.path(config)
+            await file_manager.delete(file_path)
+            lru.delete(file_path)
 
-            # NOTE: On document delete, all related DB entities
+            # NOTE: On file delete, all related DB entities
             # are removed by SQLAlchemy using ORM relationships.
 
-            await document_repository.delete(document)
+            await file_repository.delete(file)
 
         await collection_repository.delete(collection)
 

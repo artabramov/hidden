@@ -1,4 +1,4 @@
-"""SQLAlchemy model for document metadata."""
+"""SQLAlchemy model for file metadata."""
 
 import time
 from sqlalchemy import (
@@ -8,17 +8,17 @@ from sqlalchemy.orm import relationship
 from app.sqlite import Base
 
 
-class DocumentMeta(Base):
+class FileMeta(Base):
     """
-    SQLAlchemy model for document metadata. Stores a key-value pair
-    linked to a document; keys are unique within each document.
+    SQLAlchemy model for file metadata. Stores a key-value pair linked
+    to a file; keys are unique within each file.
     """
 
-    __tablename__ = "documents_meta"
+    __tablename__ = "files_meta"
     __table_args__ = (
         UniqueConstraint(
-            "document_id", "meta_key",
-            name="uq_documents_meta_document_id_meta_key"
+            "file_id", "meta_key",
+            name="uq_files_meta_file_id_meta_key"
         ),
         {"sqlite_autoincrement": True},
     )
@@ -30,9 +30,9 @@ class DocumentMeta(Base):
         autoincrement=True
     )
 
-    document_id = Column(
+    file_id = Column(
         Integer,
-        ForeignKey("documents.id", ondelete="CASCADE"),
+        ForeignKey("files.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
     )
@@ -62,7 +62,7 @@ class DocumentMeta(Base):
         nullable=True
     )
 
-    meta_document = relationship(
-        "Document",
-        back_populates="document_meta"
+    meta_file = relationship(
+        "File",
+        back_populates="file_meta"
     )

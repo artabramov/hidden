@@ -1,14 +1,14 @@
 import unittest
 from pydantic import ValidationError
-from app.schemas.document_list import (
-    DocumentListRequest, DocumentListResponse)
-from app.schemas.document_select import DocumentSelectResponse
+from app.schemas.file_list import (
+    FileListRequest, FileListResponse)
+from app.schemas.file_select import FileSelectResponse
 
 
-class DocumentListSchemaTest(unittest.TestCase):
+class FileListSchemaTest(unittest.TestCase):
 
     def test_request_defaults(self):
-        res = DocumentListRequest()
+        res = FileListRequest()
         self.assertIsNone(res.user_id__eq)
         self.assertIsNone(res.collection_id__eq)
         self.assertIsNone(res.created_date__ge)
@@ -26,7 +26,7 @@ class DocumentListSchemaTest(unittest.TestCase):
         self.assertEqual(res.order, "desc")
 
     def test_request_correct(self):
-        res = DocumentListRequest(
+        res = FileListRequest(
             user_id__eq=42,
             collection_id__eq=37,
             created_date__ge=0,
@@ -60,12 +60,12 @@ class DocumentListSchemaTest(unittest.TestCase):
         self.assertEqual(res.order, "asc")
 
     def test_request_user_id_eq_none(self):
-        res = DocumentListRequest(user_id__eq=None)
+        res = FileListRequest(user_id__eq=None)
         self.assertIsNone(res.user_id__eq)
 
     def test_request_user_id_eq_integer_zero(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(user_id__eq=0)
+            FileListRequest(user_id__eq=0)
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -76,7 +76,7 @@ class DocumentListSchemaTest(unittest.TestCase):
 
     def test_request_user_id_eq_integer_negative(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(user_id__eq=-42)
+            FileListRequest(user_id__eq=-42)
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -86,12 +86,12 @@ class DocumentListSchemaTest(unittest.TestCase):
         self.assertEqual(e.get("type"), "greater_than_equal")
 
     def test_request_user_id_eq_integer_positive(self):
-        res = DocumentListRequest(user_id__eq=42)
+        res = FileListRequest(user_id__eq=42)
         self.assertEqual(res.user_id__eq, 42)
 
     def test_request_user_id_eq_string_empty(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(user_id__eq="")
+            FileListRequest(user_id__eq="")
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -102,7 +102,7 @@ class DocumentListSchemaTest(unittest.TestCase):
 
     def test_request_user_id_eq_string_dummy(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(user_id__eq="dummy")
+            FileListRequest(user_id__eq="dummy")
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -112,20 +112,20 @@ class DocumentListSchemaTest(unittest.TestCase):
         self.assertEqual(e.get("type"), "int_parsing")
 
     def test_request_user_id_eq_string_coercion(self):
-        res = DocumentListRequest(user_id__eq="42")
+        res = FileListRequest(user_id__eq="42")
         self.assertEqual(res.user_id__eq, 42)
 
     def test_request_user_id_eq_string_strip(self):
-        res = DocumentListRequest(user_id__eq=" 42 ")
+        res = FileListRequest(user_id__eq=" 42 ")
         self.assertEqual(res.user_id__eq, 42)
 
     def test_request_collection_id_eq_none(self):
-        res = DocumentListRequest(collection_id__eq=None)
+        res = FileListRequest(collection_id__eq=None)
         self.assertIsNone(res.collection_id__eq)
 
     def test_request_collection_id_eq_integer_zero(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(collection_id__eq=0)
+            FileListRequest(collection_id__eq=0)
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -136,7 +136,7 @@ class DocumentListSchemaTest(unittest.TestCase):
 
     def test_request_collection_id_eq_integer_negative(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(collection_id__eq=-42)
+            FileListRequest(collection_id__eq=-42)
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -146,12 +146,12 @@ class DocumentListSchemaTest(unittest.TestCase):
         self.assertEqual(e.get("type"), "greater_than_equal")
 
     def test_request_collection_id_eq_integer_positive(self):
-        res = DocumentListRequest(collection_id__eq=42)
+        res = FileListRequest(collection_id__eq=42)
         self.assertEqual(res.collection_id__eq, 42)
 
     def test_request_collection_id_eq_string_empty(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(collection_id__eq="")
+            FileListRequest(collection_id__eq="")
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -162,7 +162,7 @@ class DocumentListSchemaTest(unittest.TestCase):
 
     def test_request_collection_id_eq_string_dummy(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(collection_id__eq="dummy")
+            FileListRequest(collection_id__eq="dummy")
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -172,24 +172,24 @@ class DocumentListSchemaTest(unittest.TestCase):
         self.assertEqual(e.get("type"), "int_parsing")
 
     def test_request_collection_id_eq_string_coercion(self):
-        res = DocumentListRequest(collection_id__eq="42")
+        res = FileListRequest(collection_id__eq="42")
         self.assertEqual(res.collection_id__eq, 42)
 
     def test_request_collection_id_eq_string_strip(self):
-        res = DocumentListRequest(collection_id__eq=" 42 ")
+        res = FileListRequest(collection_id__eq=" 42 ")
         self.assertEqual(res.collection_id__eq, 42)
 
     def test_request_created_date_ge_none(self):
-        res = DocumentListRequest(created_date__ge=None)
+        res = FileListRequest(created_date__ge=None)
         self.assertIsNone(res.created_date__ge)
 
     def test_request_created_date_ge_integer_zero(self):
-        res = DocumentListRequest(created_date__ge=0)
+        res = FileListRequest(created_date__ge=0)
         self.assertEqual(res.created_date__ge, 0)
 
     def test_request_created_date_ge_integer_negative(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(created_date__ge=-42)
+            FileListRequest(created_date__ge=-42)
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -199,12 +199,12 @@ class DocumentListSchemaTest(unittest.TestCase):
         self.assertEqual(e.get("type"), "greater_than_equal")
 
     def test_request_created_date_ge_integer_positive(self):
-        res = DocumentListRequest(created_date__ge=42)
+        res = FileListRequest(created_date__ge=42)
         self.assertEqual(res.created_date__ge, 42)
 
     def test_request_created_date_ge_string_empty(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(created_date__ge="")
+            FileListRequest(created_date__ge="")
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -215,7 +215,7 @@ class DocumentListSchemaTest(unittest.TestCase):
 
     def test_request_created_date_ge_string_dummy(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(created_date__ge="dummy")
+            FileListRequest(created_date__ge="dummy")
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -225,24 +225,24 @@ class DocumentListSchemaTest(unittest.TestCase):
         self.assertEqual(e.get("type"), "int_parsing")
 
     def test_request_created_date_ge_string_coercion(self):
-        res = DocumentListRequest(created_date__ge="42")
+        res = FileListRequest(created_date__ge="42")
         self.assertEqual(res.created_date__ge, 42)
 
     def test_request_created_date_ge_string_strip(self):
-        res = DocumentListRequest(created_date__ge=" 42 ")
+        res = FileListRequest(created_date__ge=" 42 ")
         self.assertEqual(res.created_date__ge, 42)
 
     def test_request_created_date_le_none(self):
-        res = DocumentListRequest(created_date__le=None)
+        res = FileListRequest(created_date__le=None)
         self.assertIsNone(res.created_date__le)
 
     def test_request_created_date_le_integer_zero(self):
-        res = DocumentListRequest(created_date__le=0)
+        res = FileListRequest(created_date__le=0)
         self.assertEqual(res.created_date__le, 0)
 
     def test_request_created_date_le_integer_negative(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(created_date__le=-42)
+            FileListRequest(created_date__le=-42)
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -252,12 +252,12 @@ class DocumentListSchemaTest(unittest.TestCase):
         self.assertEqual(e.get("type"), "greater_than_equal")
 
     def test_request_created_date_le_integer_positive(self):
-        res = DocumentListRequest(created_date__le=42)
+        res = FileListRequest(created_date__le=42)
         self.assertEqual(res.created_date__le, 42)
 
     def test_request_created_date_le_string_empty(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(created_date__le="")
+            FileListRequest(created_date__le="")
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -268,7 +268,7 @@ class DocumentListSchemaTest(unittest.TestCase):
 
     def test_request_created_date_le_string_dummy(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(created_date__le="dummy")
+            FileListRequest(created_date__le="dummy")
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -278,24 +278,24 @@ class DocumentListSchemaTest(unittest.TestCase):
         self.assertEqual(e.get("type"), "int_parsing")
 
     def test_request_created_date_le_string_coercion(self):
-        res = DocumentListRequest(created_date__le="42")
+        res = FileListRequest(created_date__le="42")
         self.assertEqual(res.created_date__le, 42)
 
     def test_request_created_date_le_string_strip(self):
-        res = DocumentListRequest(created_date__le=" 42 ")
+        res = FileListRequest(created_date__le=" 42 ")
         self.assertEqual(res.created_date__le, 42)
 
     def test_request_updated_date_ge_none(self):
-        res = DocumentListRequest(updated_date__ge=None)
+        res = FileListRequest(updated_date__ge=None)
         self.assertIsNone(res.updated_date__ge)
 
     def test_request_updated_date_ge_integer_zero(self):
-        res = DocumentListRequest(updated_date__ge=0)
+        res = FileListRequest(updated_date__ge=0)
         self.assertEqual(res.updated_date__ge, 0)
 
     def test_request_updated_date_ge_integer_negative(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(updated_date__ge=-42)
+            FileListRequest(updated_date__ge=-42)
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -305,12 +305,12 @@ class DocumentListSchemaTest(unittest.TestCase):
         self.assertEqual(e.get("type"), "greater_than_equal")
 
     def test_request_updated_date_ge_integer_positive(self):
-        res = DocumentListRequest(updated_date__ge=42)
+        res = FileListRequest(updated_date__ge=42)
         self.assertEqual(res.updated_date__ge, 42)
 
     def test_request_updated_date_ge_string_empty(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(updated_date__ge="")
+            FileListRequest(updated_date__ge="")
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -321,7 +321,7 @@ class DocumentListSchemaTest(unittest.TestCase):
 
     def test_request_updated_date_ge_string_dummy(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(updated_date__ge="dummy")
+            FileListRequest(updated_date__ge="dummy")
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -331,24 +331,24 @@ class DocumentListSchemaTest(unittest.TestCase):
         self.assertEqual(e.get("type"), "int_parsing")
 
     def test_request_updated_date_ge_string_coercion(self):
-        res = DocumentListRequest(updated_date__ge="42")
+        res = FileListRequest(updated_date__ge="42")
         self.assertEqual(res.updated_date__ge, 42)
 
     def test_request_updated_date_ge_string_strip(self):
-        res = DocumentListRequest(updated_date__ge=" 42 ")
+        res = FileListRequest(updated_date__ge=" 42 ")
         self.assertEqual(res.updated_date__ge, 42)
 
     def test_request_updated_date_le_none(self):
-        res = DocumentListRequest(updated_date__le=None)
+        res = FileListRequest(updated_date__le=None)
         self.assertIsNone(res.updated_date__le)
 
     def test_request_updated_date_le_integer_zero(self):
-        res = DocumentListRequest(updated_date__le=0)
+        res = FileListRequest(updated_date__le=0)
         self.assertEqual(res.updated_date__le, 0)
 
     def test_request_updated_date_le_integer_negative(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(updated_date__le=-42)
+            FileListRequest(updated_date__le=-42)
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -358,12 +358,12 @@ class DocumentListSchemaTest(unittest.TestCase):
         self.assertEqual(e.get("type"), "greater_than_equal")
 
     def test_request_updated_date_le_integer_positive(self):
-        res = DocumentListRequest(updated_date__le=42)
+        res = FileListRequest(updated_date__le=42)
         self.assertEqual(res.updated_date__le, 42)
 
     def test_request_updated_date_le_string_empty(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(updated_date__le="")
+            FileListRequest(updated_date__le="")
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -374,7 +374,7 @@ class DocumentListSchemaTest(unittest.TestCase):
 
     def test_request_updated_date_le_string_dummy(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(updated_date__le="dummy")
+            FileListRequest(updated_date__le="dummy")
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -384,36 +384,36 @@ class DocumentListSchemaTest(unittest.TestCase):
         self.assertEqual(e.get("type"), "int_parsing")
 
     def test_request_updated_date_le_string_coercion(self):
-        res = DocumentListRequest(updated_date__le="42")
+        res = FileListRequest(updated_date__le="42")
         self.assertEqual(res.updated_date__le, 42)
 
     def test_request_updated_date_le_string_strip(self):
-        res = DocumentListRequest(updated_date__le=" 42 ")
+        res = FileListRequest(updated_date__le=" 42 ")
         self.assertEqual(res.updated_date__le, 42)
 
     def test_request_flagged_eq_none(self):
-        res = DocumentListRequest(flagged__eq=None)
+        res = FileListRequest(flagged__eq=None)
         self.assertIsNone(res.flagged__eq)
 
     def test_request_flagged_eq_bool_false(self):
-        res = DocumentListRequest(flagged__eq=False)
+        res = FileListRequest(flagged__eq=False)
         self.assertFalse(res.flagged__eq)
 
     def test_request_flagged_eq_bool_true(self):
-        res = DocumentListRequest(flagged__eq=True)
+        res = FileListRequest(flagged__eq=True)
         self.assertTrue(res.flagged__eq)
 
     def test_request_flagged_eq_integer_0(self):
-        res = DocumentListRequest(flagged__eq=0)
+        res = FileListRequest(flagged__eq=0)
         self.assertFalse(res.flagged__eq)
 
     def test_request_flagged_eq_integer_1(self):
-        res = DocumentListRequest(flagged__eq=1)
+        res = FileListRequest(flagged__eq=1)
         self.assertTrue(res.flagged__eq)
 
     def test_request_flagged_eq_integer_2(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(flagged__eq=2)
+            FileListRequest(flagged__eq=2)
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -424,7 +424,7 @@ class DocumentListSchemaTest(unittest.TestCase):
 
     def test_request_flagged_eq_integer_negative(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(flagged__eq=-1)
+            FileListRequest(flagged__eq=-1)
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -435,7 +435,7 @@ class DocumentListSchemaTest(unittest.TestCase):
 
     def test_request_flagged_eq_string_empty(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(flagged__eq="")
+            FileListRequest(flagged__eq="")
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -446,7 +446,7 @@ class DocumentListSchemaTest(unittest.TestCase):
 
     def test_request_flagged_eq_string_dummy(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(flagged__eq="dummy")
+            FileListRequest(flagged__eq="dummy")
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -456,24 +456,24 @@ class DocumentListSchemaTest(unittest.TestCase):
         self.assertEqual(e.get("type"), "bool_parsing")
 
     def test_request_flagged_eq_string_false(self):
-        res = DocumentListRequest(flagged__eq="false")
+        res = FileListRequest(flagged__eq="false")
         self.assertFalse(res.flagged__eq)
 
     def test_request_flagged_eq_string_true(self):
-        res = DocumentListRequest(flagged__eq="true")
+        res = FileListRequest(flagged__eq="true")
         self.assertTrue(res.flagged__eq)
 
     def test_request_flagged_eq_string_0(self):
-        res = DocumentListRequest(flagged__eq="0")
+        res = FileListRequest(flagged__eq="0")
         self.assertFalse(res.flagged__eq)
 
     def test_request_flagged_eq_string_1(self):
-        res = DocumentListRequest(flagged__eq="1")
+        res = FileListRequest(flagged__eq="1")
         self.assertTrue(res.flagged__eq)
 
     def test_request_flagged_eq_strip(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(flagged__eq=" 1 ")
+            FileListRequest(flagged__eq=" 1 ")
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -483,32 +483,32 @@ class DocumentListSchemaTest(unittest.TestCase):
         self.assertEqual(e.get("type"), "bool_parsing")
 
     def test_request_filename_ilike_none(self):
-        res = DocumentListRequest(filename__ilike=None)
+        res = FileListRequest(filename__ilike=None)
         self.assertIsNone(res.filename__ilike)
 
     def test_request_filename_ilike_string_empty(self):
-        res = DocumentListRequest(filename__ilike="")
+        res = FileListRequest(filename__ilike="")
         self.assertEqual(res.filename__ilike, "")
 
     def test_request_filename_ilike_string_dummy(self):
-        res = DocumentListRequest(filename__ilike="dummy")
+        res = FileListRequest(filename__ilike="dummy")
         self.assertEqual(res.filename__ilike, "dummy")
 
     def test_request_filename_ilike_string_strip(self):
-        res = DocumentListRequest(filename__ilike=" dummy ")
+        res = FileListRequest(filename__ilike=" dummy ")
         self.assertEqual(res.filename__ilike, "dummy")
 
     def test_request_filesize_ge_none(self):
-        res = DocumentListRequest(filesize__ge=None)
+        res = FileListRequest(filesize__ge=None)
         self.assertIsNone(res.filesize__ge)
 
     def test_request_filesize_ge_integer_zero(self):
-        res = DocumentListRequest(filesize__ge=0)
+        res = FileListRequest(filesize__ge=0)
         self.assertEqual(res.filesize__ge, 0)
 
     def test_request_filesize_ge_integer_negative(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(filesize__ge=-42)
+            FileListRequest(filesize__ge=-42)
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -518,12 +518,12 @@ class DocumentListSchemaTest(unittest.TestCase):
         self.assertEqual(e.get("type"), "greater_than_equal")
 
     def test_request_filesize_ge_integer_positive(self):
-        res = DocumentListRequest(filesize__ge=42)
+        res = FileListRequest(filesize__ge=42)
         self.assertEqual(res.filesize__ge, 42)
 
     def test_request_filesize_ge_string_empty(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(filesize__ge="")
+            FileListRequest(filesize__ge="")
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -534,7 +534,7 @@ class DocumentListSchemaTest(unittest.TestCase):
 
     def test_request_filesize_ge_string_dummy(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(filesize__ge="dummy")
+            FileListRequest(filesize__ge="dummy")
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -544,24 +544,24 @@ class DocumentListSchemaTest(unittest.TestCase):
         self.assertEqual(e.get("type"), "int_parsing")
 
     def test_request_filesize_ge_string_coercion(self):
-        res = DocumentListRequest(filesize__ge="42")
+        res = FileListRequest(filesize__ge="42")
         self.assertEqual(res.filesize__ge, 42)
 
     def test_request_filesize_ge_string_strip(self):
-        res = DocumentListRequest(filesize__ge=" 42 ")
+        res = FileListRequest(filesize__ge=" 42 ")
         self.assertEqual(res.filesize__ge, 42)
 
     def test_request_filesize_le_none(self):
-        res = DocumentListRequest(filesize__le=None)
+        res = FileListRequest(filesize__le=None)
         self.assertIsNone(res.filesize__le)
 
     def test_request_filesize_le_integer_zero(self):
-        res = DocumentListRequest(filesize__le=0)
+        res = FileListRequest(filesize__le=0)
         self.assertEqual(res.filesize__le, 0)
 
     def test_request_filesize_le_integer_negative(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(filesize__le=-42)
+            FileListRequest(filesize__le=-42)
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -571,12 +571,12 @@ class DocumentListSchemaTest(unittest.TestCase):
         self.assertEqual(e.get("type"), "greater_than_equal")
 
     def test_request_filesize_le_integer_positive(self):
-        res = DocumentListRequest(filesize__le=42)
+        res = FileListRequest(filesize__le=42)
         self.assertEqual(res.filesize__le, 42)
 
     def test_request_filesize_le_string_empty(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(filesize__le="")
+            FileListRequest(filesize__le="")
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -587,7 +587,7 @@ class DocumentListSchemaTest(unittest.TestCase):
 
     def test_request_filesize_le_string_dummy(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(filesize__le="dummy")
+            FileListRequest(filesize__le="dummy")
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -597,32 +597,32 @@ class DocumentListSchemaTest(unittest.TestCase):
         self.assertEqual(e.get("type"), "int_parsing")
 
     def test_request_filesize_le_string_coercion(self):
-        res = DocumentListRequest(filesize__le="42")
+        res = FileListRequest(filesize__le="42")
         self.assertEqual(res.filesize__le, 42)
 
     def test_request_filesize_le_string_strip(self):
-        res = DocumentListRequest(filesize__le=" 42 ")
+        res = FileListRequest(filesize__le=" 42 ")
         self.assertEqual(res.filesize__le, 42)
 
     def test_request_mimetype_ilike_none(self):
-        res = DocumentListRequest(mimetype__ilike=None)
+        res = FileListRequest(mimetype__ilike=None)
         self.assertIsNone(res.mimetype__ilike)
 
     def test_request_mimetype_ilike_string_empty(self):
-        res = DocumentListRequest(mimetype__ilike="")
+        res = FileListRequest(mimetype__ilike="")
         self.assertEqual(res.mimetype__ilike, "")
 
     def test_request_mimetype_ilike_string_dummy(self):
-        res = DocumentListRequest(mimetype__ilike="dummy")
+        res = FileListRequest(mimetype__ilike="dummy")
         self.assertEqual(res.mimetype__ilike, "dummy")
 
     def test_request_mimetype_ilike_string_strip(self):
-        res = DocumentListRequest(mimetype__ilike=" dummy ")
+        res = FileListRequest(mimetype__ilike=" dummy ")
         self.assertEqual(res.mimetype__ilike, "dummy")
 
     def test_request_offset_none(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(offset=None)
+            FileListRequest(offset=None)
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -632,12 +632,12 @@ class DocumentListSchemaTest(unittest.TestCase):
         self.assertEqual(e.get("type"), "int_type")
 
     def test_request_offset_ge_integer_zero(self):
-        res = DocumentListRequest(offset=0)
+        res = FileListRequest(offset=0)
         self.assertEqual(res.offset, 0)
 
     def test_request_offset_integer_negative(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(offset=-42)
+            FileListRequest(offset=-42)
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -647,12 +647,12 @@ class DocumentListSchemaTest(unittest.TestCase):
         self.assertEqual(e.get("type"), "greater_than_equal")
 
     def test_request_offset_integer_positive(self):
-        res = DocumentListRequest(offset=42)
+        res = FileListRequest(offset=42)
         self.assertEqual(res.offset, 42)
 
     def test_request_offset_string_empty(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(offset="")
+            FileListRequest(offset="")
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -663,7 +663,7 @@ class DocumentListSchemaTest(unittest.TestCase):
 
     def test_request_offset_string_dummy(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(offset="dummy")
+            FileListRequest(offset="dummy")
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -673,16 +673,16 @@ class DocumentListSchemaTest(unittest.TestCase):
         self.assertEqual(e.get("type"), "int_parsing")
 
     def test_request_offset_string_coercion(self):
-        res = DocumentListRequest(offset="42")
+        res = FileListRequest(offset="42")
         self.assertEqual(res.offset, 42)
 
     def test_request_offset_string_strip(self):
-        res = DocumentListRequest(offset=" 42 ")
+        res = FileListRequest(offset=" 42 ")
         self.assertEqual(res.offset, 42)
 
     def test_request_limit_none(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(limit=None)
+            FileListRequest(limit=None)
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -693,7 +693,7 @@ class DocumentListSchemaTest(unittest.TestCase):
 
     def test_request_limit_ge_integer_0(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(limit=0)
+            FileListRequest(limit=0)
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -703,16 +703,16 @@ class DocumentListSchemaTest(unittest.TestCase):
         self.assertEqual(e.get("type"), "greater_than_equal")
 
     def test_request_limit_integer_1(self):
-        res = DocumentListRequest(limit=1)
+        res = FileListRequest(limit=1)
         self.assertEqual(res.limit, 1)
 
     def test_request_limit_integer_500(self):
-        res = DocumentListRequest(limit=500)
+        res = FileListRequest(limit=500)
         self.assertEqual(res.limit, 500)
 
     def test_request_limit_integer_501(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(limit=501)
+            FileListRequest(limit=501)
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -723,7 +723,7 @@ class DocumentListSchemaTest(unittest.TestCase):
 
     def test_request_limit_integer_negative(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(limit=-42)
+            FileListRequest(limit=-42)
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -734,7 +734,7 @@ class DocumentListSchemaTest(unittest.TestCase):
 
     def test_request_limit_string_empty(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(limit="")
+            FileListRequest(limit="")
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -745,7 +745,7 @@ class DocumentListSchemaTest(unittest.TestCase):
 
     def test_request_limit_string_dummy(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(limit="dummy")
+            FileListRequest(limit="dummy")
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -755,16 +755,16 @@ class DocumentListSchemaTest(unittest.TestCase):
         self.assertEqual(e.get("type"), "int_parsing")
 
     def test_request_limit_string_coercion(self):
-        res = DocumentListRequest(limit="42")
+        res = FileListRequest(limit="42")
         self.assertEqual(res.limit, 42)
 
     def test_request_limit_string_strip(self):
-        res = DocumentListRequest(limit=" 42 ")
+        res = FileListRequest(limit=" 42 ")
         self.assertEqual(res.limit, 42)
 
     def test_request_order_by_none(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(order_by=None)
+            FileListRequest(order_by=None)
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -780,12 +780,12 @@ class DocumentListSchemaTest(unittest.TestCase):
             "mimetype"]
 
         for value in values:
-            res = DocumentListRequest(order_by=value)
+            res = FileListRequest(order_by=value)
             self.assertEqual(res.order_by, value)
 
     def test_request_order_by_not_coercion(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(order_by=" id ")
+            FileListRequest(order_by=" id ")
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -796,7 +796,7 @@ class DocumentListSchemaTest(unittest.TestCase):
 
     def test_request_order_by_string_empty(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(order_by="")
+            FileListRequest(order_by="")
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -807,7 +807,7 @@ class DocumentListSchemaTest(unittest.TestCase):
 
     def test_request_order_by_string_dummy(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(order_by="dummy")
+            FileListRequest(order_by="dummy")
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -818,7 +818,7 @@ class DocumentListSchemaTest(unittest.TestCase):
 
     def test_request_order_none(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(order=None)
+            FileListRequest(order=None)
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -831,12 +831,12 @@ class DocumentListSchemaTest(unittest.TestCase):
         values = ["asc", "desc", "rand"]
 
         for value in values:
-            res = DocumentListRequest(order=value)
+            res = FileListRequest(order=value)
             self.assertEqual(res.order, value)
 
     def test_request_order_not_coercion(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(order=" id ")
+            FileListRequest(order=" id ")
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -847,7 +847,7 @@ class DocumentListSchemaTest(unittest.TestCase):
 
     def test_request_order_string_empty(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(order="")
+            FileListRequest(order="")
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -858,7 +858,7 @@ class DocumentListSchemaTest(unittest.TestCase):
 
     def test_request_order_string_dummy(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListRequest(order="dummy")
+            FileListRequest(order="dummy")
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
@@ -868,79 +868,79 @@ class DocumentListSchemaTest(unittest.TestCase):
         self.assertEqual(e.get("type"), "literal_error")
 
     def test_response_correct(self):
-        document_response = DocumentSelectResponse.model_construct(id=123)
-        res = DocumentListResponse(
-            documents=[document_response], documents_count=1)
-        self.assertEqual(res.documents, [document_response])
-        self.assertEqual(res.documents_count, 1)
+        file_response = FileSelectResponse.model_construct(id=123)
+        res = FileListResponse(
+            files=[file_response], files_count=1)
+        self.assertEqual(res.files, [file_response])
+        self.assertEqual(res.files_count, 1)
 
-    def test_response_documents_missing(self):
+    def test_response_files_missing(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListResponse(documents_count=1)
+            FileListResponse(files_count=1)
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
 
         e = errs[0]
-        self.assertEqual(e.get("loc"), ("documents",))
+        self.assertEqual(e.get("loc"), ("files",))
         self.assertEqual(e.get("type"), "missing")
 
-    def test_response_documents_none(self):
+    def test_response_files_none(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListResponse(documents=None, documents_count=1)
+            FileListResponse(files=None, files_count=1)
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
 
         e = errs[0]
-        self.assertEqual(e.get("loc"), ("documents",))
+        self.assertEqual(e.get("loc"), ("files",))
         self.assertEqual(e.get("type"), "list_type")
 
-    def test_response_documents_list_invalid(self):
+    def test_response_files_list_invalid(self):
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListResponse(documents=["dummy"], documents_count=1)
+            FileListResponse(files=["dummy"], files_count=1)
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
 
         e = errs[0]
-        self.assertEqual(e.get("loc"), ("documents", 0))
+        self.assertEqual(e.get("loc"), ("files", 0))
         self.assertEqual(e.get("type"), "model_type")
 
-    def test_response_documents_count_missing(self):
-        document_response = DocumentSelectResponse.model_construct(id=123)
+    def test_response_files_count_missing(self):
+        file_response = FileSelectResponse.model_construct(id=123)
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListResponse(documents=[document_response])
+            FileListResponse(files=[file_response])
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
 
         e = errs[0]
-        self.assertEqual(e.get("loc"), ("documents_count",))
+        self.assertEqual(e.get("loc"), ("files_count",))
         self.assertEqual(e.get("type"), "missing")
 
-    def test_response_documents_count_none(self):
-        document_response = DocumentSelectResponse.model_construct(id=123)
+    def test_response_files_count_none(self):
+        file_response = FileSelectResponse.model_construct(id=123)
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListResponse(
-                documents=[document_response], documents_count=None)
+            FileListResponse(
+                files=[file_response], files_count=None)
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
 
         e = errs[0]
-        self.assertEqual(e.get("loc"), ("documents_count",))
+        self.assertEqual(e.get("loc"), ("files_count",))
         self.assertEqual(e.get("type"), "int_type")
 
-    def test_response_documents_count_string(self):
-        document_response = DocumentSelectResponse.model_construct(id=123)
+    def test_response_files_count_string(self):
+        file_response = FileSelectResponse.model_construct(id=123)
         with self.assertRaises(ValidationError) as ctx:
-            DocumentListResponse(
-                documents=[document_response], documents_count="not-int")
+            FileListResponse(
+                files=[file_response], files_count="not-int")
 
         errs = ctx.exception.errors()
         self.assertEqual(len(errs), 1)
 
         e = errs[0]
-        self.assertEqual(e.get("loc"), ("documents_count",))
+        self.assertEqual(e.get("loc"), ("files_count",))
         self.assertEqual(e.get("type"), "int_parsing")

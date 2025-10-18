@@ -75,7 +75,7 @@ class Config:
     AUTH_TOTP_ATTEMPTS: int
     AUTH_SUSPENDED_TIME: int
 
-    DOCUMENTS_DIR: str
+    FILES_DIR: str
     REVISIONS_DIR: str
     TEMPORARY_DIR: str
 

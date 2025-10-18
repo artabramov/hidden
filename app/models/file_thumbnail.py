@@ -1,4 +1,4 @@
-"""SQLAlchemy model for document thumbnails."""
+"""SQLAlchemy model for file thumbnails."""
 
 import time
 from sqlalchemy import Column, Integer, BigInteger, String, ForeignKey
@@ -7,17 +7,17 @@ from app.sqlite import Base
 from app.helpers.thumbnail_mixin import ThumbnailMixin
 
 
-class DocumentThumbnail(Base, ThumbnailMixin):
+class FileThumbnail(Base, ThumbnailMixin):
     """
-    SQLAlchemy model for document thumbnails. One-to-one thumbnail
-    linked to a document; stores UUID (thumbnail file name), file
+    SQLAlchemy model for file thumbnails. One-to-one thumbnail
+    linked to a file; stores UUID (thumbnail file name), file
     size, and checksum.
     """
 
-    # NOTE: Thumbnail models are obtained only through parent documents;
-    # the document cache applies and thumbnail cache is not necessary.
+    # NOTE: Thumbnail models are obtained only through parent files;
+    # the file cache applies and thumbnail cache is not necessary.
 
-    __tablename__ = "documents_thumbnails"
+    __tablename__ = "files_thumbnails"
     __table_args__ = {"sqlite_autoincrement": True}
     _cacheable = False
 
@@ -27,9 +27,9 @@ class DocumentThumbnail(Base, ThumbnailMixin):
         autoincrement=True
     )
 
-    document_id = Column(
+    file_id = Column(
         Integer,
-        ForeignKey("documents.id", ondelete="CASCADE"),
+        ForeignKey("files.id", ondelete="CASCADE"),
         nullable=False,
         unique=True,
     )
@@ -66,15 +66,15 @@ class DocumentThumbnail(Base, ThumbnailMixin):
         nullable=False
     )
 
-    thumbnail_document = relationship(
-        "Document",
-        back_populates="document_thumbnail"
+    thumbnail_file = relationship(
+        "File",
+        back_populates="file_thumbnail"
     )
 
-    def __init__(self, document_id: int, uuid: str, filesize: int,
+    def __init__(self, file_id: int, uuid: str, filesize: int,
                  checksum: str):
-        """Initialize a document thumbnail entity."""
-        self.document_id = document_id
+        """Initialize a file thumbnail entity."""
+        self.file_id = file_id
         self.uuid = uuid
         self.filesize = filesize
         self.checksum = checksum

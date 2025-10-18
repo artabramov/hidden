@@ -1,13 +1,13 @@
-"""Pydantic schemas for listing documents."""
+"""Pydantic schemas for listing files."""
 
 from typing import Optional, Literal, List
 from pydantic import BaseModel, Field, ConfigDict
-from app.schemas.document_select import DocumentSelectResponse
+from app.schemas.file_select import FileSelectResponse
 
 
-class DocumentListRequest(BaseModel):
+class FileListRequest(BaseModel):
     """
-    Request schema for listing documents. Allows filtering by creator,
+    Request schema for listing files. Allows filtering by creator,
     collection, filename/mimetype (case-insensitive), flagged status,
     creation and update time ranges, filesize range, MIME type, tag
     value. Supports pagination via offset/limit. Results can be ordered
@@ -41,11 +41,11 @@ class DocumentListRequest(BaseModel):
     order: Literal["asc", "desc", "rand"] = "desc"
 
 
-class DocumentListResponse(BaseModel):
+class FileListResponse(BaseModel):
     """
-    Response schema for listing documents. Contains the selected page
-    of documents and the total number of matches before pagination.
+    Response schema for listing files. Contains the selected page
+    of files and the total number of matches before pagination.
     """
 
-    documents: List[DocumentSelectResponse]
-    documents_count: int
+    files: List[FileSelectResponse]
+    files_count: int

@@ -13,7 +13,7 @@ from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.user import User
 from app.models.collection import Collection
-from app.models.document import Document
+from app.models.file import File
 
 
 async def after_token_retrieve(
@@ -143,65 +143,65 @@ async def after_collection_list(
     ...
 
 
-async def after_document_upload(
+async def after_file_upload(
         request: Request, session: AsyncSession, cache: Redis,
-        current_user: User, document: Document):
-    """Executes after a document is uploaded."""
+        current_user: User, file: File):
+    """Executes after a file is uploaded."""
     ...
 
 
-async def after_document_download(
+async def after_file_download(
         request: Request, session: AsyncSession, cache: Redis,
-        current_user: User, document: Document, revision_number: int):
-    """Executes after a document is downloaded."""
+        current_user: User, file: File, revision_number: int):
+    """Executes after a file is downloaded."""
     ...
 
 
-async def after_document_select(
+async def after_file_select(
         request: Request, session: AsyncSession, cache: Redis,
-        current_user: User, document: Document):
-    """Executes after a document is retrieved."""
+        current_user: User, file: File):
+    """Executes after a file is retrieved."""
     ...
 
 
-async def after_document_update(
+async def after_file_update(
         request: Request, session: AsyncSession, cache: Redis,
-        current_user: User, document: Document):
-    """Executes after a document is updated."""
+        current_user: User, file: File):
+    """Executes after a file is updated."""
     ...
 
 
-async def after_document_delete(
+async def after_file_delete(
         request: Request, session: AsyncSession, cache: Redis,
-        current_user: User, document_id: int):
-    """Executes after a document is deleted."""
+        current_user: User, file_id: int):
+    """Executes after a file is deleted."""
     ...
 
 
-async def after_document_list(
+async def after_file_list(
         request: Request, session: AsyncSession, cache: Redis,
-        current_user: User, documents: List[Document], documents_count: int):
-    """Executes after a document list is retrieved."""
+        current_user: User, files: List[File], files_count: int):
+    """Executes after a file list is retrieved."""
     ...
 
 
 async def after_thumbnail_retrieve(
         request: Request, session: AsyncSession, cache: Redis,
-        current_user: User, document: Document):
-    """Executes after a document thumbnail is retrieved."""
+        current_user: User, file: File):
+    """Executes after a file thumbnail is retrieved."""
     ...
 
 
 async def after_tag_insert(
         request: Request, session: AsyncSession, cache: Redis,
-        current_user: User, document: Document, tag_value: str):
-    """Executes after a document tag is added."""
+        current_user: User, file: File, tag_value: str):
+    """Executes after a file tag is added."""
     ...
 
 
 async def after_tag_delete(
         request: Request, session: AsyncSession, cache: Redis,
-        current_user: User, document: Document, tag_value: str):
+        current_user: User, file: File, tag_value: str):
     """Executes after a tag is deleted."""
     ...
 

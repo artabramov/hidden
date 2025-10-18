@@ -1,7 +1,6 @@
 import unittest
 from unittest.mock import AsyncMock, MagicMock, patch, call
-from app.routers.collection_delete import (
-    collection_delete, Collection, Document)
+from app.routers.collection_delete import collection_delete, Collection, File
 from app.hook import HOOK_AFTER_COLLECTION_DELETE
 from app.error import E
 from app.config import get_config
@@ -36,39 +35,39 @@ class CollectionDeleteRouterTest(unittest.IsolatedAsyncioTestCase):
             id=42, path=MagicMock(return_value="collection-path"))
         collection_repository.select.return_value = collection_mock
 
-        document_37 = AsyncMock(
+        file_37 = AsyncMock(
             id=37,
             has_thumbnail=True,
-            document_thumbnail=MagicMock(
+            file_thumbnail=MagicMock(
                 path=MagicMock(return_value="thumb37")),
             path=MagicMock(return_value="path37"),
             has_revisions=True,
-            document_revisions=[
+            file_revisions=[
                 MagicMock(path=MagicMock(return_value="rev37-1")),
                 MagicMock(path=MagicMock(return_value="rev37-1"))
             ]
         )
 
-        document_38 = AsyncMock(
+        file_38 = AsyncMock(
             id=38,
             has_thumbnail=True,
-            document_thumbnail=MagicMock(
+            file_thumbnail=MagicMock(
                 path=MagicMock(return_value="thumb38")),
             path=MagicMock(return_value="path38"),
             has_revisions=True,
-            document_revisions=[
+            file_revisions=[
                 MagicMock(path=MagicMock(return_value="rev38-1")),
                 MagicMock(path=MagicMock(return_value="rev38-1"))
             ]
         )
 
-        document_repository = AsyncMock()
-        document_repository.select_all.return_value = [
-            document_37, document_38]
+        file_repository = AsyncMock()
+        file_repository.select_all.return_value = [
+            file_37, file_38]
 
         RepositoryMock.side_effect = [
             collection_repository,
-            document_repository
+            file_repository
         ]
 
         hook = AsyncMock()
@@ -84,11 +83,11 @@ class CollectionDeleteRouterTest(unittest.IsolatedAsyncioTestCase):
 
         self.assertListEqual(RepositoryMock.call_args_list, [
             call(session, cache, Collection, request.app.state.config),
-            call(session, cache, Document, request.app.state.config),
+            call(session, cache, File, request.app.state.config),
         ])
 
         collection_repository.select.assert_awaited_with(id=42)
-        document_repository.select_all.assert_awaited_with(
+        file_repository.select_all.assert_awaited_with(
             collection_id__eq=42)
 
         collection_locks_mock.__getitem__.assert_called_once_with(42)
@@ -103,8 +102,8 @@ class CollectionDeleteRouterTest(unittest.IsolatedAsyncioTestCase):
             call("thumb38"), call("rev38-1"), call("rev38-1"), call("path38"),
         ], any_order=True)
 
-        document_repository.delete.assert_has_awaits([
-            call(document_37), call(document_38)
+        file_repository.delete.assert_has_awaits([
+            call(file_37), call(file_38)
         ], any_order=True)
 
         collection_repository.delete.assert_awaited_with(collection_mock)

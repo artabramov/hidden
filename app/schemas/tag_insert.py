@@ -1,4 +1,4 @@
-"""Pydantic schemas for document tag insertion."""
+"""Pydantic schemas for file tag insertion."""
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 from app.validators.tag_validators import value_validate
@@ -6,7 +6,7 @@ from app.validators.tag_validators import value_validate
 
 class TagInsertRequest(BaseModel):
     """
-    Request schema for creating a new document tag. The tag value
+    Request schema for creating a new file tag. The tag value
     is validated and cleaned before being processed.
     """
     model_config = ConfigDict(
@@ -25,7 +25,7 @@ class TagInsertRequest(BaseModel):
 class TagInsertResponse(BaseModel):
     """
     Response schema for tag insert. Contains the related
-    document ID and the latest revision number.
+    file ID and the latest revision number.
     """
-    document_id: int
+    file_id: int
     latest_revision_number: int

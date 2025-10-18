@@ -1,4 +1,4 @@
-"""SQLAlchemy model for documents."""
+"""SQLAlchemy model for files."""
 
 import time
 import os
@@ -7,19 +7,19 @@ from sqlalchemy import (
     Column, BigInteger, String, Boolean, Integer, ForeignKey, UniqueConstraint)
 from sqlalchemy.orm import relationship
 from app.sqlite import Base
-from app.models.document_meta import DocumentMeta  # noqa: F401
-from app.models.document_tag import DocumentTag  # noqa: F401
-from app.models.document_thumbnail import DocumentThumbnail  # noqa: F401
-from app.models.document_revision import DocumentRevision  # noqa: F401
+from app.models.file_meta import FileMeta  # noqa: F401
+from app.models.file_tag import FileTag  # noqa: F401
+from app.models.file_thumbnail import FileThumbnail  # noqa: F401
+from app.models.file_revision import FileRevision  # noqa: F401
 
 
-class Document(Base):
+class File(Base):
 
-    __tablename__ = "documents"
+    __tablename__ = "files"
     __table_args__ = (
         UniqueConstraint(
             "collection_id", "filename",
-            name="uq_documents_collection_id_filename"
+            name="uq_files_collection_id_filename"
         ),
         {"sqlite_autoincrement": True},
     )
@@ -100,45 +100,45 @@ class Document(Base):
         default=0
     )
 
-    document_user = relationship(
+    file_user = relationship(
         "User",
-        back_populates="user_documents",
+        back_populates="user_files",
         lazy="joined"
     )
 
-    document_collection = relationship(
+    file_collection = relationship(
         "Collection",
-        back_populates="collection_documents",
+        back_populates="collection_files",
         lazy="joined"
     )
 
-    document_meta = relationship(
-        "DocumentMeta",
-        back_populates="meta_document",
+    file_meta = relationship(
+        "FileMeta",
+        back_populates="meta_file",
         cascade="all, delete-orphan",
         lazy="selectin",
         passive_deletes=True
     )
 
-    document_tags = relationship(
-        "DocumentTag",
-        back_populates="tag_document",
+    file_tags = relationship(
+        "FileTag",
+        back_populates="tag_file",
         cascade="all, delete-orphan",
         lazy="selectin",
         passive_deletes=True
     )
 
-    document_thumbnail = relationship(
-        "DocumentThumbnail",
-        back_populates="thumbnail_document",
+    file_thumbnail = relationship(
+        "FileThumbnail",
+        back_populates="thumbnail_file",
         cascade="all, delete-orphan",
         uselist=False,
         lazy="joined"
     )
 
-    document_revisions = relationship(
-        "DocumentRevision",
-        back_populates="revision_document",
+    file_revisions = relationship(
+        "FileRevision",
+        back_populates="revision_file",
         cascade="all, delete-orphan",
         lazy="selectin",
         passive_deletes=True
@@ -161,29 +161,29 @@ class Document(Base):
 
     @property
     def has_thumbnail(self) -> bool:
-        return self.document_thumbnail is not None
+        return self.file_thumbnail is not None
 
     @property
     def has_revisions(self) -> bool:
-        return len(self.document_revisions) > 0
+        return len(self.file_revisions) > 0
 
     @classmethod
     def path_for_filename(cls, config: Any, collection_name: str,
                           filename: str) -> str:
-        """Return absolute path to the document file by parameters."""
-        return os.path.join(config.DOCUMENTS_DIR, collection_name, filename)
+        """Return absolute path to the file file by parameters."""
+        return os.path.join(config.FILES_DIR, collection_name, filename)
 
     def path(self, config: Any) -> str:
-        """Return absolute path to the document file by config."""
+        """Return absolute path to the file file by config."""
         return self.__class__.path_for_filename(
-            config, self.document_collection.name, self.filename)
+            config, self.file_collection.name, self.filename)
 
     async def to_dict(self) -> dict:
-        """Returns a dictionary representation of the document."""
+        """Returns a dictionary representation of the file."""
         return {
             "id": self.id,
-            "user": await self.document_user.to_dict(),
-            "collection": await self.document_collection.to_dict(),
+            "user": await self.file_user.to_dict(),
+            "collection": await self.file_collection.to_dict(),
             "created_date": self.created_date,
             "updated_date": self.updated_date,
             "flagged": self.flagged,
@@ -193,9 +193,9 @@ class Document(Base):
             "checksum": self.checksum,
             "summary": self.summary,
             "latest_revision_number": self.latest_revision_number,
-            "document_revisions": [
+            "file_revisions": [
                 await revision.to_dict() for revision
-                in self.document_revisions
+                in self.file_revisions
             ],
-            "document_tags": [t.value for t in self.document_tags],
+            "file_tags": [t.value for t in self.file_tags],
         }

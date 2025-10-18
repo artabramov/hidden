@@ -3,7 +3,7 @@ import unittest
 from unittest.mock import AsyncMock
 from types import SimpleNamespace
 from app.models.collection import Collection
-from app.models.document import Document  # noqa: F401
+from app.models.file import File  # noqa: F401
 
 
 class CollectionModelTest(unittest.IsolatedAsyncioTestCase):
@@ -25,7 +25,7 @@ class CollectionModelTest(unittest.IsolatedAsyncioTestCase):
         self.assertIsNone(collection.updated_date)
         self.assertIsNone(collection.collection_user)
         self.assertListEqual(collection.collection_meta, [])
-        self.assertListEqual(collection.collection_documents, [])
+        self.assertListEqual(collection.collection_files, [])
 
         self.assertTrue(collection._cacheable)
         self.assertEqual(collection.__tablename__, "collections")
@@ -50,13 +50,13 @@ class CollectionModelTest(unittest.IsolatedAsyncioTestCase):
         })
 
     def test_path_for_dir(self):
-        config = SimpleNamespace(DOCUMENTS_DIR="/tmp/data")
+        config = SimpleNamespace(FILES_DIR="/tmp/data")
         name = "dummies"
-        expected = os.path.join(config.DOCUMENTS_DIR, name)
+        expected = os.path.join(config.FILES_DIR, name)
         self.assertEqual(Collection.path_for_dir(config, name), expected)
 
     def test_path(self):
-        config = SimpleNamespace(DOCUMENTS_DIR="/tmp/data")
+        config = SimpleNamespace(FILES_DIR="/tmp/data")
         collection = Collection(user_id=1, readonly=False, name="dummies")
-        expected = os.path.join(config.DOCUMENTS_DIR, "dummies")
+        expected = os.path.join(config.FILES_DIR, "dummies")
         self.assertEqual(collection.path(config), expected)

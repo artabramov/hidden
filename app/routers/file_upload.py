@@ -2,20 +2,22 @@
 
 import os
 import uuid
-from fastapi import APIRouter, UploadFile, Request, Depends, Path, File, status
+from fastapi import (
+    APIRouter, UploadFile, Request, Depends, Path, status, File as Data
+)
 from fastapi.responses import JSONResponse
 from app.sqlite import get_session
 from app.redis import get_cache
 from app.models.user import User, UserRole
-from app.models.document import Document
-from app.models.document_revision import DocumentRevision
-from app.models.document_thumbnail import DocumentThumbnail
+from app.models.file import File
+from app.models.file_revision import FileRevision
+from app.models.file_thumbnail import FileThumbnail
 from app.models.collection import Collection
-from app.schemas.document_upload import DocumentUploadResponse
+from app.schemas.file_upload import FileUploadResponse
 from app.helpers.image_helper import image_resize, IMAGE_MIMETYPES
 from app.validators.file_validators import name_validate
 from app.repository import Repository
-from app.hook import Hook, HOOK_AFTER_DOCUMENT_UPLOAD
+from app.hook import Hook, HOOK_AFTER_FILE_UPLOAD
 from app.auth import auth
 from app.error import (
     E, LOC_PATH, LOC_BODY, ERR_VALUE_NOT_FOUND, ERR_FILE_MIMETYPE_INVALID,
@@ -25,23 +27,23 @@ router = APIRouter()
 
 
 @router.post(
-    "/collection/{collection_id}/document",
+    "/collection/{collection_id}/file",
     status_code=status.HTTP_201_CREATED,
     response_class=JSONResponse,
-    response_model=DocumentUploadResponse,
+    response_model=FileUploadResponse,
     summary="Upload file",
-    tags=["Documents"]
+    tags=["Files"]
 )
-async def document_upload(
+async def file_upload(
     request: Request,
     collection_id: int = Path(..., ge=1),
-    file: UploadFile = File(...),
+    data: UploadFile = Data(...),
     session=Depends(get_session),
     cache=Depends(get_cache),
     current_user: User = Depends(auth(UserRole.writer))
-) -> DocumentUploadResponse:
+) -> FileUploadResponse:
     """
-    Uploads a file into the target collection. If no document with that
+    Uploads a file into the target collection. If no file with that
     name exists, a new one is created; if it does, the current head file
     is snapshotted as a new immutable revision and the upload becomes
     the new head. File metadata (size, MIME type, checksum) is computed
@@ -62,8 +64,8 @@ async def document_upload(
     - Requires a valid bearer token with `writer` role or higher.
 
     **Validation schemas:**
-    - `DocumentUploadResponse` — contains the newly created (or updated)
-    document ID and the latest revision number.
+    - `FileUploadResponse` — contains the newly created (or updated)
+    file ID and the latest revision number.
 
     **Path parameters:**
     - `collection_id` (integer ≥ 1) — target collection identifier.
@@ -72,22 +74,21 @@ async def document_upload(
     - `file` — the file to upload (`multipart/form-data`).
 
     **Response codes:**
-    - `201` — file successfully uploaded; document created or replaced
+    - `201` — file successfully uploaded; file created or replaced
     (revision recorded when replaced); thumbnail generated or skipped.
     - `401` — missing, invalid, or expired token.
     - `403` — insufficient role to perform the operation, invalid JTI,
     user is inactive or suspended.
     - `404` — collection not found.
-    - `409` — conflict on DB/FS mismatch for the file (document present
-    but file missing, or vice versa; MIME type changed for an existing
-    file).
+    - `409` — conflict on DB/FS mismatch for the file (file present but
+    file missing, or vice versa; MIME type changed for an existing file).
     - `422` — invalid file name.
     - `423` — application is temporarily locked.
     - `498` — gocryptfs key is missing.
     - `499` — gocryptfs key is invalid.
 
     **Hooks:**
-    - `HOOK_AFTER_DOCUMENT_UPLOAD`: executed after a successful upload.
+    - `HOOK_AFTER_FILE_UPLOAD`: executed after a successful upload.
     """
     config = request.app.state.config
     file_manager = request.app.state.file_manager
@@ -104,9 +105,9 @@ async def document_upload(
     thumbnail_path = None
 
     try:
-        filename = name_validate(file.filename)
+        filename = name_validate(data.filename)
     except ValueError:
-        raise E([LOC_BODY, "file"], file.filename, ERR_VALUE_INVALID,
+        raise E([LOC_BODY, "file"], data.filename, ERR_VALUE_INVALID,
                 status.HTTP_422_UNPROCESSABLE_ENTITY)
 
     # NOTE: On file upload, acquire the collection READ lock first,
@@ -128,29 +129,29 @@ async def document_upload(
             raise E([LOC_PATH, "collection_id"], collection_id,
                     ERR_VALUE_READONLY, status.HTTP_422_UNPROCESSABLE_CONTENT)
 
-        # Check the document with the filename in the collection
-        document_repository = Repository(session, cache, Document, config)
-        document = await document_repository.select(
+        # Check the file with the filename in the collection
+        file_repository = Repository(session, cache, File, config)
+        file = await file_repository.select(
             filename__eq=filename, collection_id__eq=collection_id)
 
         # Check the file with the filename in the directory
-        file_path = Document.path_for_filename(
+        file_path = File.path_for_filename(
             config, collection.name, filename)
         file_exists = await file_manager.isfile(file_path)
 
-        # Inconsistent state: document exists but file does not
-        if document and not file_exists:
-            raise E([LOC_BODY, "file"], file.filename,
+        # Inconsistent state: file exists but file does not
+        if file and not file_exists:
+            raise E([LOC_BODY, "file"], data.filename,
                     ERR_FILE_CONFLICT, status.HTTP_409_CONFLICT)
 
-        # Inconsistent state: file exists but document does not
-        elif not document and file_exists:
-            raise E([LOC_BODY, "file"], file.filename,
+        # Inconsistent state: file exists but file does not
+        elif not file and file_exists:
+            raise E([LOC_BODY, "file"], data.filename,
                     ERR_FILE_CONFLICT, status.HTTP_409_CONFLICT)
 
-        # Create a new document
-        elif not document and not file_exists:
-            await file_manager.upload(file, temporary_path)
+        # Create a new file
+        elif not file and not file_exists:
+            await file_manager.upload(data, temporary_path)
 
             try:
                 filesize, mimetype, checksum = (
@@ -158,15 +159,15 @@ async def document_upload(
                     await file_manager.mimetype(temporary_path),
                     await file_manager.checksum(temporary_path))
 
-                document = Document(
+                file = File(
                     current_user.id, collection.id, filename,
                     filesize, mimetype=mimetype, checksum=checksum)
-                await document_repository.insert(document, commit=False)
+                await file_repository.insert(file, commit=False)
 
                 await file_manager.rename(temporary_path, file_path)
                 file_renamed = True
 
-                await document_repository.commit()
+                await file_repository.commit()
                 lru.delete(file_path)
 
             except Exception:
@@ -176,16 +177,16 @@ async def document_upload(
                     await file_manager.delete(temporary_path)
                 raise
 
-        # Update existing document and create revision
-        elif document and file_exists:
+        # Update existing file and create revision
+        elif file and file_exists:
             revision_path = None
-            await file_manager.upload(file, temporary_path)
+            await file_manager.upload(data, temporary_path)
 
             # MIME type of an existing file must not be changed
             file_mimetype = await file_manager.mimetype(temporary_path)
-            if document.mimetype != file_mimetype:
+            if file.mimetype != file_mimetype:
                 await file_manager.delete(temporary_path)
-                raise E([LOC_BODY, "file"], file.filename,
+                raise E([LOC_BODY, "file"], data.filename,
                         ERR_FILE_MIMETYPE_INVALID, status.HTTP_409_CONFLICT)
 
             # Check the file checksum
@@ -199,10 +200,10 @@ async def document_upload(
             # head (checksum), return successful response; skip DB/FS
             # changes, revision unchanged.
 
-            if document.checksum != file_checksum:
+            if file.checksum != file_checksum:
                 # Copy outdated file to revision
                 revision_uuid = str(uuid.uuid4())
-                revision_path = DocumentRevision.path_for_uuid(
+                revision_path = FileRevision.path_for_uuid(
                     config, revision_uuid)
 
                 try:
@@ -212,39 +213,39 @@ async def document_upload(
                     raise
 
                 # Outdated thumbnail will be removed after commit
-                if document.has_thumbnail:
-                    thumbnail_path = document.document_thumbnail.path(config)
+                if file.has_thumbnail:
+                    thumbnail_path = file.file_thumbnail.path(config)
 
                 revision_repository = Repository(
-                    session, cache, DocumentRevision, config)
+                    session, cache, FileRevision, config)
 
-                latest_revision_number = document.latest_revision_number + 1
+                latest_revision_number = file.latest_revision_number + 1
 
                 try:
                     # Create a new revision
-                    revision = DocumentRevision(
-                        current_user.id, document.id, latest_revision_number,
-                        revision_uuid, document.filesize, document.checksum)
+                    revision = FileRevision(
+                        current_user.id, file.id, latest_revision_number,
+                        revision_uuid, file.filesize, file.checksum)
                     await revision_repository.insert(revision, commit=False)
 
-                    # Update the document itself
-                    document.latest_revision_number = latest_revision_number
-                    document.document_thumbnail = None
-                    document.checksum = file_checksum
-                    document.filesize = await file_manager.filesize(
+                    # Update the file itself
+                    file.latest_revision_number = latest_revision_number
+                    file.file_thumbnail = None
+                    file.checksum = file_checksum
+                    file.filesize = await file_manager.filesize(
                         temporary_path)
-                    await document_repository.update(document, commit=False)
+                    await file_repository.update(file, commit=False)
 
                     # Atomic replacement of the file and commit
                     await file_manager.rename(temporary_path, file_path)
                     file_replaced = True
 
-                    await document_repository.commit()
+                    await file_repository.commit()
                     lru.delete(file_path)
 
                 # Rollback if something goes wrong
                 except Exception:
-                    await document_repository.rollback()
+                    await file_repository.rollback()
 
                     try:
                         if file_replaced:
@@ -276,9 +277,9 @@ async def document_upload(
 
         # Create a new thumbnail
         if ((file_renamed or file_replaced) and
-                document.mimetype in IMAGE_MIMETYPES):
+                file.mimetype in IMAGE_MIMETYPES):
             thumbnail_uuid = str(uuid.uuid4())
-            thumbnail_path = DocumentThumbnail.path_for_uuid(
+            thumbnail_path = FileThumbnail.path_for_uuid(
                 config, thumbnail_uuid)
 
             try:
@@ -288,14 +289,14 @@ async def document_upload(
                     config.THUMBNAILS_HEIGHT, config.THUMBNAILS_QUALITY)
 
                 thumbnail_repository = Repository(
-                    session, cache, DocumentThumbnail, config)
+                    session, cache, FileThumbnail, config)
 
                 thumbnail_filesize, thumbnail_checksum = (
                     await file_manager.filesize(thumbnail_path),
                     await file_manager.checksum(thumbnail_path))
 
-                thumbnail = DocumentThumbnail(
-                    document.id, thumbnail_uuid, thumbnail_filesize,
+                thumbnail = FileThumbnail(
+                    file.id, thumbnail_uuid, thumbnail_filesize,
                     thumbnail_checksum)
 
                 await thumbnail_repository.insert(thumbnail)
@@ -304,9 +305,9 @@ async def document_upload(
                 await file_manager.delete(thumbnail_path)
 
     hook = Hook(request, session, cache, current_user=current_user)
-    await hook.call(HOOK_AFTER_DOCUMENT_UPLOAD, document)
+    await hook.call(HOOK_AFTER_FILE_UPLOAD, file)
 
     return {
-        "document_id": document.id,
-        "latest_revision_number": document.latest_revision_number,
+        "file_id": file.id,
+        "latest_revision_number": file.latest_revision_number,
     }

@@ -13,7 +13,7 @@ class RevisionSelectSchemaTest(unittest.TestCase):
         res = RevisionSelectResponse(
             id=42,
             user=self._user_stub(),
-            document_id=37,
+            file_id=37,
             created_date=100,
             revision_number=1,
             uuid="8e8fc24abf80",
@@ -22,7 +22,7 @@ class RevisionSelectSchemaTest(unittest.TestCase):
         )
         self.assertEqual(res.id, 42)
         self.assertEqual(res.user, self._user_stub())
-        self.assertEqual(res.document_id, 37)
+        self.assertEqual(res.file_id, 37)
         self.assertEqual(res.created_date, 100)
         self.assertEqual(res.revision_number, 1)
         self.assertEqual(res.uuid, "8e8fc24abf80")
@@ -33,7 +33,7 @@ class RevisionSelectSchemaTest(unittest.TestCase):
         with self.assertRaises(ValidationError) as ctx:
             RevisionSelectResponse(
                 user=self._user_stub(),
-                document_id=37,
+                file_id=37,
                 created_date=100,
                 revision_number=1,
                 uuid="8e8fc24abf80",
@@ -53,7 +53,7 @@ class RevisionSelectSchemaTest(unittest.TestCase):
             RevisionSelectResponse(
                 id=None,
                 user=self._user_stub(),
-                document_id=37,
+                file_id=37,
                 created_date=100,
                 revision_number=1,
                 uuid="8e8fc24abf80",
@@ -73,7 +73,7 @@ class RevisionSelectSchemaTest(unittest.TestCase):
             RevisionSelectResponse(
                 id="not-int",
                 user=self._user_stub(),
-                document_id=37,
+                file_id=37,
                 created_date=100,
                 revision_number=1,
                 uuid="8e8fc24abf80",
@@ -92,7 +92,7 @@ class RevisionSelectSchemaTest(unittest.TestCase):
         res = RevisionSelectResponse(
             id="42",
             user=self._user_stub(),
-            document_id=37,
+            file_id=37,
             created_date=100,
             revision_number=1,
             uuid="8e8fc24abf80",
@@ -101,7 +101,7 @@ class RevisionSelectSchemaTest(unittest.TestCase):
         )
         self.assertEqual(res.id, 42)
 
-    def test_response_document_id_missing(self):
+    def test_response_file_id_missing(self):
         with self.assertRaises(ValidationError) as ctx:
             RevisionSelectResponse(
                 id=42,
@@ -117,15 +117,15 @@ class RevisionSelectSchemaTest(unittest.TestCase):
         self.assertEqual(len(errs), 1)
 
         e = errs[0]
-        self.assertEqual(e.get("loc"), ("document_id",))
+        self.assertEqual(e.get("loc"), ("file_id",))
         self.assertEqual(e.get("type"), "missing")
 
-    def test_response_document_id_none(self):
+    def test_response_file_id_none(self):
         with self.assertRaises(ValidationError) as ctx:
             RevisionSelectResponse(
                 id=42,
                 user=self._user_stub(),
-                document_id=None,
+                file_id=None,
                 created_date=100,
                 revision_number=1,
                 uuid="8e8fc24abf80",
@@ -137,15 +137,15 @@ class RevisionSelectSchemaTest(unittest.TestCase):
         self.assertEqual(len(errs), 1)
 
         e = errs[0]
-        self.assertEqual(e.get("loc"), ("document_id",))
+        self.assertEqual(e.get("loc"), ("file_id",))
         self.assertEqual(e.get("type"), "int_type")
 
-    def test_response_document_id_string(self):
+    def test_response_file_id_string(self):
         with self.assertRaises(ValidationError) as ctx:
             RevisionSelectResponse(
                 id=42,
                 user=self._user_stub(),
-                document_id="not-int",
+                file_id="not-int",
                 created_date=100,
                 revision_number=1,
                 uuid="8e8fc24abf80",
@@ -157,28 +157,28 @@ class RevisionSelectSchemaTest(unittest.TestCase):
         self.assertEqual(len(errs), 1)
 
         e = errs[0]
-        self.assertEqual(e.get("loc"), ("document_id",))
+        self.assertEqual(e.get("loc"), ("file_id",))
         self.assertEqual(e.get("type"), "int_parsing")
 
-    def test_response_document_id_coercion(self):
+    def test_response_file_id_coercion(self):
         res = RevisionSelectResponse(
             id=42,
             user=self._user_stub(),
-            document_id="37",
+            file_id="37",
             created_date=100,
             revision_number=1,
             uuid="8e8fc24abf80",
             filesize=123,
             checksum="3f6cdcb77bbd",
         )
-        self.assertEqual(res.document_id, 37)
+        self.assertEqual(res.file_id, 37)
 
     def test_response_timestamp_missing(self):
         with self.assertRaises(ValidationError) as ctx:
             RevisionSelectResponse(
                 id=42,
                 user=self._user_stub(),
-                document_id=37,
+                file_id=37,
                 revision_number=1,
                 uuid="8e8fc24abf80",
                 filesize=123,
@@ -196,7 +196,7 @@ class RevisionSelectSchemaTest(unittest.TestCase):
             RevisionSelectResponse(
                 id=42,
                 user=self._user_stub(),
-                document_id=37,
+                file_id=37,
                 created_date=None,
                 revision_number=1,
                 uuid="8e8fc24abf80",
@@ -215,7 +215,7 @@ class RevisionSelectSchemaTest(unittest.TestCase):
             RevisionSelectResponse(
                 id=42,
                 user=self._user_stub(),
-                document_id=37,
+                file_id=37,
                 created_date="not-int",
                 revision_number=1,
                 uuid="8e8fc24abf80",
@@ -233,7 +233,7 @@ class RevisionSelectSchemaTest(unittest.TestCase):
         res = RevisionSelectResponse(
             id=42,
             user=self._user_stub(),
-            document_id=37,
+            file_id=37,
             created_date="100",
             revision_number=1,
             uuid="8e8fc24abf80",
@@ -247,7 +247,7 @@ class RevisionSelectSchemaTest(unittest.TestCase):
             RevisionSelectResponse(
                 id=42,
                 user=self._user_stub(),
-                document_id=37,
+                file_id=37,
                 created_date=100,
                 uuid="8e8fc24abf80",
                 filesize=123,
@@ -266,7 +266,7 @@ class RevisionSelectSchemaTest(unittest.TestCase):
             RevisionSelectResponse(
                 id=42,
                 user=self._user_stub(),
-                document_id=37,
+                file_id=37,
                 created_date=100,
                 revision_number=None,
                 uuid="8e8fc24abf80",
@@ -286,7 +286,7 @@ class RevisionSelectSchemaTest(unittest.TestCase):
             RevisionSelectResponse(
                 id=42,
                 user=self._user_stub(),
-                document_id=37,
+                file_id=37,
                 created_date=100,
                 revision_number="not-int",
                 uuid="8e8fc24abf80",
@@ -305,7 +305,7 @@ class RevisionSelectSchemaTest(unittest.TestCase):
         res = RevisionSelectResponse(
             id=42,
             user=self._user_stub(),
-            document_id=37,
+            file_id=37,
             created_date=100,
             revision_number="1",
             uuid="8e8fc24abf80",
@@ -319,7 +319,7 @@ class RevisionSelectSchemaTest(unittest.TestCase):
             RevisionSelectResponse(
                 id=42,
                 user=self._user_stub(),
-                document_id=37,
+                file_id=37,
                 created_date=100,
                 revision_number=1,
                 filesize=123,
@@ -338,7 +338,7 @@ class RevisionSelectSchemaTest(unittest.TestCase):
             RevisionSelectResponse(
                 id=42,
                 user=self._user_stub(),
-                document_id=37,
+                file_id=37,
                 created_date=100,
                 revision_number=1,
                 uuid=None,
@@ -358,7 +358,7 @@ class RevisionSelectSchemaTest(unittest.TestCase):
             RevisionSelectResponse(
                 id=42,
                 user=self._user_stub(),
-                document_id=37,
+                file_id=37,
                 created_date=100,
                 revision_number=1,
                 uuid=12,
@@ -378,7 +378,7 @@ class RevisionSelectSchemaTest(unittest.TestCase):
             RevisionSelectResponse(
                 id=42,
                 user=self._user_stub(),
-                document_id=37,
+                file_id=37,
                 created_date=100,
                 revision_number=1,
                 uuid="8e8fc24abf80",
@@ -397,7 +397,7 @@ class RevisionSelectSchemaTest(unittest.TestCase):
             RevisionSelectResponse(
                 id=42,
                 user=self._user_stub(),
-                document_id=37,
+                file_id=37,
                 created_date=100,
                 revision_number=1,
                 uuid="8e8fc24abf80",
@@ -417,7 +417,7 @@ class RevisionSelectSchemaTest(unittest.TestCase):
             RevisionSelectResponse(
                 id=42,
                 user=self._user_stub(),
-                document_id=37,
+                file_id=37,
                 created_date=100,
                 revision_number=1,
                 uuid="8e8fc24abf80",
@@ -436,7 +436,7 @@ class RevisionSelectSchemaTest(unittest.TestCase):
         res = RevisionSelectResponse(
             id=42,
             user=self._user_stub(),
-            document_id=37,
+            file_id=37,
             created_date=100,
             revision_number=1,
             uuid="8e8fc24abf80",
@@ -450,7 +450,7 @@ class RevisionSelectSchemaTest(unittest.TestCase):
             RevisionSelectResponse(
                 id=42,
                 user=self._user_stub(),
-                document_id=37,
+                file_id=37,
                 created_date=100,
                 revision_number=1,
                 uuid="8e8fc24abf80",
@@ -469,7 +469,7 @@ class RevisionSelectSchemaTest(unittest.TestCase):
             RevisionSelectResponse(
                 id=42,
                 user=self._user_stub(),
-                document_id=37,
+                file_id=37,
                 created_date=100,
                 revision_number=1,
                 uuid="8e8fc24abf80",
@@ -489,7 +489,7 @@ class RevisionSelectSchemaTest(unittest.TestCase):
             RevisionSelectResponse(
                 id=42,
                 user=self._user_stub(),
-                document_id=37,
+                file_id=37,
                 created_date=100,
                 revision_number=1,
                 uuid="8e8fc24abf80",

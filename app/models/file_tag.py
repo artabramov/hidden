@@ -1,4 +1,4 @@
-"""SQLAlchemy model for document tags."""
+"""SQLAlchemy model for file tags."""
 
 import time
 from sqlalchemy import (
@@ -8,17 +8,17 @@ from sqlalchemy.orm import relationship
 from app.sqlite import Base
 
 
-class DocumentTag(Base):
+class FileTag(Base):
     """
-    SQLAlchemy model for document tags. Stores a tag value linked
-    to a document; values are unique within each document.
+    SQLAlchemy model for file tags. Stores a tag value linked
+    to a file; values are unique within each file.
     """
 
-    __tablename__ = "documents_tags"
+    __tablename__ = "files_tags"
     __table_args__ = (
         UniqueConstraint(
-            "document_id", "value",
-            name="uq_documents_tags_document_id_value"
+            "file_id", "value",
+            name="uq_files_tags_file_id_value"
         ),
         {"sqlite_autoincrement": True},
     )
@@ -30,9 +30,9 @@ class DocumentTag(Base):
         autoincrement=True
     )
 
-    document_id = Column(
+    file_id = Column(
         Integer,
-        ForeignKey("documents.id", ondelete="CASCADE"),
+        ForeignKey("files.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
     )
@@ -50,11 +50,11 @@ class DocumentTag(Base):
         index=True
     )
 
-    tag_document = relationship(
-        "Document",
-        back_populates="document_tags"
+    tag_file = relationship(
+        "File",
+        back_populates="file_tags"
     )
 
-    def __init__(self, document_id: int, value: str):
-        self.document_id = document_id
+    def __init__(self, file_id: int, value: str):
+        self.file_id = file_id
         self.value = value

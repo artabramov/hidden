@@ -76,9 +76,9 @@ class Collection(Base):
         lazy="joined"
     )
 
-    collection_documents = relationship(
-        "Document",
-        back_populates="document_collection",
+    collection_files = relationship(
+        "File",
+        back_populates="file_collection",
         lazy="noload"
     )
 
@@ -92,7 +92,7 @@ class Collection(Base):
     @classmethod
     def path_for_dir(cls, config: Any, collection_name: str) -> str:
         """Return absolute path to the collection by parameters."""
-        return os.path.join(config.DOCUMENTS_DIR, collection_name)
+        return os.path.join(config.FILES_DIR, collection_name)
 
     def path(self, config: Any) -> str:
         """Return absolute path to the collection by config."""

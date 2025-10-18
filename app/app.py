@@ -69,12 +69,12 @@ from app.routers import (
     collection_update,
     collection_delete,
     collection_list,
-    document_upload,
-    document_download,
-    document_select,
-    document_update,
-    document_delete,
-    document_list,
+    file_upload,
+    file_download,
+    file_select,
+    file_update,
+    file_delete,
+    file_list,
     thumbnail_retrieve,
     tag_insert,
     tag_delete,
@@ -200,12 +200,12 @@ app.include_router(collection_select.router)
 app.include_router(collection_update.router)
 app.include_router(collection_delete.router)
 app.include_router(collection_list.router)
-app.include_router(document_upload.router)
-app.include_router(document_download.router)
-app.include_router(document_select.router)
-app.include_router(document_update.router)
-app.include_router(document_delete.router)
-app.include_router(document_list.router)
+app.include_router(file_upload.router)
+app.include_router(file_download.router)
+app.include_router(file_select.router)
+app.include_router(file_update.router)
+app.include_router(file_delete.router)
+app.include_router(file_list.router)
 app.include_router(thumbnail_retrieve.router)
 app.include_router(tag_insert.router)
 app.include_router(tag_delete.router)

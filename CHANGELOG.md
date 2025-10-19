@@ -1,7 +1,7 @@
 # Changelog
 
 ## [0.2.16] - 2025-10-19
-- Updated module docstrings; Sphinx Markdown documentation is now bundled under **app/docs/md**.
+- Updated module docstrings; Sphinx Markdown documentation is now bundled under **docs/md**.
 - Updated **security scan** and regenerated **SECURITY_SCAN.md**.
 
 ## [0.2.15] - 2025-10-18

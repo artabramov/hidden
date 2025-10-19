@@ -1,13 +1,13 @@
 # Hidden — REST over gocryptfs
 
-A small, fast, async, self-hosted, security-minded file-storage service built with `FastAPI`, `SQLAlchemy`, `SQLite`, and `Redis`. Internally, all data is stored in a `gocryptfs`-encrypted directory (cipher) and protected by a detachable secret key (gocryptfs passphrase). Externally, a clean `REST API` provides filesystem-like operations (upload, move, rename) and organizes files into collections. Supports file metadata and thumbnails. Versioning is built in — past file states are available as revisions. Deletion uses `shred` to securely erase files and all their revisions. A microkernel design allows hook-based `add-ons` to extend functionality without modifying the core. Out of the box, the app runs entirely inside a `Docker` container.
+A small, fast, async, self-hosted, security-minded file-storage service built with `FastAPI`, `SQLAlchemy`, `SQLite`, and `Redis`. Internally, all data is stored in a `gocryptfs`-encrypted directory (cipher) and protected by a detachable secret key (gocryptfs passphrase). Externally, a clean `REST API` provides filesystem-like operations (upload, move, rename) and organizes files into folders (flat structure). Supports file metadata and thumbnails. Versioning is built in — past file states are available as revisions. Deletion uses `shred` to securely erase files and all their revisions. A microkernel design allows hook-based `add-ons` to extend functionality without modifying the core. Out of the box, the app runs entirely inside a `Docker` container.
 
 Source data can be imported through the API using any external tool. The encrypted data is not locked to the app — it’s exposed as a Docker volume and can be mounted directly with gocryptfs when the secret key is available.
 
 Enforces multi-user access with role-based permissions (`RBAC`) and multi-factor authentication (`MFA`).
 
 [![release](https://img.shields.io/github/v/tag/artabramov/hidden?sort=semver&label=release&color=2f81f7)](https://github.com/artabramov/hidden/blob/master/CHANGELOG.md)
-[![security scan](https://img.shields.io/badge/security%20scan-2025--10--11-2f81f7)](https://github.com/artabramov/hidden/blob/master/SECURITY_SCAN.md)
+[![security scan](https://img.shields.io/badge/security%20scan-2025--10--19-2f81f7)](https://github.com/artabramov/hidden/blob/master/SECURITY_SCAN.md)
 ![test coverage](https://img.shields.io/badge/test%20coverage-83%25-2f81f7)
 [![license](https://img.shields.io/badge/license-Non--Commercial-2f81f7)](https://github.com/artabramov/hidden/blob/master/LICENSE)
 
@@ -16,7 +16,7 @@ If you like it, star it ⭐ — it helps discoverability. Thank you!
 ## References
 
 - Official website: [joinhidden.com](https://joinhidden.com)
-- Documentation: [DOCUMENTATION.md](https://github.com/artabramov/hidden/blob/master/DOCUMENTATION.md)
+- Documentation: [docs/md](https://github.com/artabramov/hidden/blob/master/docs/md/index.md)
 - Telegram announcements: [t.me/hiddenupdates](https://t.me/hiddenupdates)
 
 ## Quick start
@@ -26,19 +26,11 @@ The app is delivered as a Docker image. Start it with a single command:
 make install
 ```
 
-On first launch, a random secret key is generated (used as the gocryptfs passphrase) and stored in a file in the `hidden-secrets` Docker volume, from which it can be extracted. Encrypted data is stored in the `hidden-data` Docker volume (plaintext is not exposed outside the container). After installation, the following URL is available:
+During installation, a random secret key is generated and stored in the `secret.key` file. After installation, the following URL is available:
 
 http://localhost/docs
 
 ![Swagger](img/swagger.png)
-
-## Terminology
-
-The app adopts terminology from MongoDB — collections and documents.
-
-**Collections** — a way to organize files. Each collection maps to its own directory within gocryptfs. The structure is flat — nesting collections is not supported.
-
-**Documents** — wrappers for files. Each document contains the file itself along with its revisions, thumbnails, and metadata.
 
 ## Threat model
 
@@ -88,8 +80,49 @@ The project’s codebase is open and available to inspect. Under the hood, it’
 - **shred** — secure file erasure
 - **unittest** — unit test runner
 - **flake8** — linting
-- **behave** — BDD tests (not included)
 - **Sphinx** — documentation generator
+- **behave** — BDD tests (not included)
+
+## Architecture overview
+
+The app runs using virtualization inside a Docker container and can be deployed anywhere Docker (or a compatible OCI runtime) is available. All data operations go exclusively through the public REST API. Three volumes are exposed:
+
+1. **hidden-secrets** — stores the master secret key (gocryptfs passphrase). It is generated randomly during installation and is required for every operation.
+2. **hidden-data** — the encrypted payload (gocryptfs cipher directory). Can be used for data migration, backups, or emergency recovery outside the application (the secret key is required in all cases).
+3. **hidden-logs** — application logs (typically used only for development).
+
+The application is divided into several layers, each responsible for a specific aspect of the system: 
+
+1. **Routing** — the single entry point to data via the Public API. Includes FastAPI routers, Pydantic validation schemas, and authentication/authorization.
+2. **Business Logic** — business rules and high-level logic organized per router, with hooks exposed for add-ons.
+3. **Extensible Core** — configuration, repository layer, file locking, and logging; manages add-on loading and enforces the presence of the master secret key.
+4. **Data Access Layer** — four managers for low-level operations: database, cache, filesystem, and encrypted storage.
+5. **Storage Layer** — the gocryptfs cipher directory for physical storage of files, revisions, and thumbnails; Redis and an LRU cache speed up database and filesystem operations.
+
+```
+       External                           Docker Container
+┌────────────────────┐       ┌───────────────────────────────────────┐
+│     Public API     │───────│                Routing                │
+└────────────────────┘       └───────────────────────────────────────┘
+                                                 │
+                             ┌───────────────────────────────────────┐
+                             │             Business Logic            │
+                             └───────────────────────────────────────┘
+                                                 │
+                             ┌────────────────────────┬──────────────┐
+                             │          Core          │    Addons    │
+                             └────────────────────────┴──────────────┘
+        Volumes                                  │
+┌────────────────────┐       ┌───────────────────────────────────────┐
+│     Secret Key     │- - - -│              Data Access              │
+└────────────────────┘       └───────────────────────────────────────┘
+                                          │                   │
+┌────────────────────┐       ┌───────────────────────┐ ┌─────────────┐
+│   Encrypted Data   │- - - -│   Protected Storage   │ │    Cache    │
+└────────────────────┘       └───────────────────────┘ └─────────────┘
+```
+
+The core follows a microkernel pattern: on execution, each router invokes a named hook. Add-ons intercept these hooks to extend behavior without modifying the core. Any number of add-ons can be enabled, multiple handlers may process the same hook in sequence, and add-ons are toggled via the `.env` configuration.
 
 ## Security
 
@@ -99,24 +132,3 @@ The project is **regularly scanned for potential vulnerabilities**, and dependen
 - **Bandit** — performs static analysis of Python source for security issues.
 
 If you discover a vulnerability, **please do not open a public issue**. Report it privately via GitHub’s "Report a vulnerability" (Security Advisories) or contact the maintainer directly. Include steps to reproduce and a clear impact assessment.
-
-## Architecture overview
-
-The app runs using virtualization inside a Docker container and can be deployed in any environment that supports it. All data operations go through the public REST API. Three volumes are exposed outside the container: one for the secrets, one for encrypted data, and one for logs (typically used for development).
-
-The core follows a microkernel pattern: on execution, each router invokes a named hook. Add-ons intercept these hooks to extend behavior without modifying the core. Any number of add-ons can be enabled, multiple handlers may process the same hook in sequence, and add-ons are toggled via the `.env` configuration.
-
-```
-       External                           Docker Container
-┌────────────────────┐       ┌────────────────────────┬──────────────┐
-│     Public API     │───────│          Core          │    Addons    │
-└────────────────────┘       └────────────────────────┴──────────────┘
-                                                 │
-┌────────────────────┐       ┌───────────────────────────────────────┐
-│     Secret Key     │- - - -│              Data Access              │
-└────────────────────┘       └───────────────────────────────────────┘
-                                          │                   │
-┌────────────────────┐       ┌───────────────────────┐ ┌─────────────┐
-│   Encrypted Data   │- - - -│   Protected Storage   │ │    Cache    │
-└────────────────────┘       └───────────────────────┘ └─────────────┘
-```

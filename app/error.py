@@ -17,9 +17,9 @@ LOC_QUERY = "query"
 LOC_BODY = "body"
 
 # 401
-ERR_TOKEN_MISSING = "token_missing"  # nosec: B105
-ERR_TOKEN_INVALID = "token_invalid"  # nosec: B105
-ERR_TOKEN_EXPIRED = "token_expired"  # nosec: B105
+ERR_TOKEN_MISSING = "token_missing"  # nosec B105
+ERR_TOKEN_INVALID = "token_invalid"  # nosec B105
+ERR_TOKEN_EXPIRED = "token_expired"  # nosec B105
 
 # 403/422
 ERR_USER_NOT_FOUND = "user_not_found"

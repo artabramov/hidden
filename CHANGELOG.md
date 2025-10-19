@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.2.16] - 2025-10-19
+- Updated module docstrings; Sphinx Markdown documentation is now bundled under **app/docs/md**.
+- Updated **security scan** and regenerated **SECURITY_SCAN.md**.
+
 ## [0.2.15] - 2025-10-18
 - Major refactor: renamed collections to **folders** and documents to **files** (routers, schemas, models, hooks, and configuration were adjusted accordingly).
 - Removed redundant **logging**.

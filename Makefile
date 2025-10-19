@@ -15,12 +15,14 @@ scan:
 	@docker exec hidden sh -c 'bandit -r /hidden --exclude /hidden/tests >> /hidden/SECURITY_SCAN.md || true'
 	@echo "SECURITY_SCAN.md is updated"
 
-apidoc:
+documentation:
 	@docker exec hidden sh -c 'pip3 install -U --no-cache-dir sphinx sphinx-markdown-builder'
 	@echo "Generating API stubs..."
 	@docker exec hidden sh -c 'mkdir -p /hidden/docs/api && sphinx-apidoc -o /hidden/docs/api /hidden/app /hidden/app/tests'
 	@echo "Building Markdown..."
-	@docker exec hidden sh -c 'rm -rf /hidden/docs/_build/markdown && mkdir -p /hidden/docs/_build/markdown'
-	@docker exec hidden sh -c 'sphinx-build -b markdown /hidden/docs /hidden/docs/_build/markdown'
-	@echo "Docs ready at docs/_build/markdown"
-
+	@docker exec hidden sh -c 'rm -rf /hidden/docs/_build/md && mkdir -p /hidden/docs/_build/md'
+	@docker exec hidden sh -c 'sphinx-build -b markdown /hidden/docs /hidden/docs/_build/md'
+	@echo "Copying to app/docs/md..."
+	@docker exec hidden sh -c 'rm -rf /hidden/docs/md && mkdir -p /hidden/docs/md'
+	@docker exec hidden sh -c 'cp -r /hidden/docs/_build/md/* /hidden/docs/md/'
+	@echo "Docs ready at /hidden/docs/md"

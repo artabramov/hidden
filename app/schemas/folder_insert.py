@@ -12,7 +12,6 @@ class FolderInsertRequest(BaseModel):
     flag, folder name, and an optional summary. Whitespace is
     stripped from strings; extra fields are forbidden.
     """
-
     model_config = ConfigDict(
         str_strip_whitespace=True,
         extra="forbid",
@@ -38,5 +37,4 @@ class FolderInsertResponse(BaseModel):
     Response schema for folder insertion. Contains the created
     folder ID.
     """
-
     folder_id: int

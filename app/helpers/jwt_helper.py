@@ -1,6 +1,9 @@
 """
-Helpers for JSON Web Tokens (JWT): generate a JTI, build a user payload,
-and encode/decode JWTs via PyJWT.
+Utilities for working with JSON Web Tokens: generates stable,
+collision-resistant token identifiers, assembles signed claim sets
+for authenticated users (including issued-at and optional expiry),
+produces compact encoded tokens, and verifies and parses incoming
+tokens with signature and standard claim validation.
 """
 
 import time

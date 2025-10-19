@@ -1,4 +1,12 @@
-"""Validators for user-related fields."""
+"""
+Validators for user input in authentication and profiles: lowercases
+and restricts usernames to letters, digits, and underscores; enforces
+passwords with mixed case, digits, and punctuation while forbidding
+spaces; trims and lowercases roles without asserting membership; accepts
+digit-only TOTP codes; and normalizes summaries by stripping whitespace
+and collapsing blanks to null.
+"""
+
 
 import re
 from typing import Optional

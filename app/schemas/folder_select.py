@@ -12,7 +12,6 @@ class FolderSelectResponse(BaseModel):
     UTC); read-only flag; folder name; optional summary; and
     creator details.
     """
-
     id: int
     created_date: int
     updated_date: int

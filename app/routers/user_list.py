@@ -1,3 +1,5 @@
+"""FastAPI router for user listing."""
+
 from fastapi import APIRouter, Depends, status, Request
 from fastapi.responses import JSONResponse
 from app.sqlite import get_session

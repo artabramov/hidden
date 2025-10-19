@@ -12,7 +12,6 @@ class UserRoleRequest(BaseModel):
     status. Whitespace is stripped from strings. Extra fields are
     forbidden.
     """
-
     model_config = ConfigDict(
         str_strip_whitespace=True,
         extra="forbid",
@@ -31,5 +30,4 @@ class UserRoleResponse(BaseModel):
     """
     Response schema for user role update. Contains the user ID.
     """
-
     user_id: int

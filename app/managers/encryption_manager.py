@@ -1,7 +1,16 @@
 """
-Asynchronous-friendly encryption utilities wrapped in a manager class.
-Provides AES-GCM with HKDF-based or raw-key setup.
+Manager that centralizes symmetric encryption and message authentication.
+It takes a secret at construction, derives an AEAD key with HKDF (or
+uses the raw secret), configures AES-GCM with associated data, and
+exposes helpers to encrypt/decrypt byte strings while emitting a
+deterministic nonce-prefixed payload. String helpers wrap the binary
+result in Base64, with integer and boolean conveniences layered on top.
+A separate HMAC-SHA-512 routine is provided for non-reversible lookup
+keys. The API avoids global state, is safe to call from asynchronous
+paths, and keeps cryptographic details encapsulated behind a small,
+consistent surface.
 """
+
 
 import os
 import base64

@@ -11,8 +11,7 @@ from app.sqlite import Base
 
 class FileRevision(Base):
     """
-    SQLAlchemy model for file revisions.
-    Immutable snapshots of a file.
+    SQLAlchemy model for file revisions. Immutable snapshots of a file.
     """
 
     __tablename__ = "files_revisions"

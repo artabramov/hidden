@@ -1,10 +1,10 @@
 """
-Example addon module for handling event hook functions triggered by
-corresponding events within the app. Each function is associated with
-a specific event and is designed to be executed when that event occurs.
-Functions may include additional logic such as event logging, updating
-the database, managing the cache, performing file or network operations,
-interacting with third-party apps, and other actions.
+Example addon for handling hook functions triggered by corresponding
+events within the app. Each function is associated with a specific event
+and is designed to be executed when that event occurs. Functions may
+include additional logic such as event logging, updating the database,
+managing the cache, performing file or network operations, interacting
+with third-party apps, and other actions.
 """
 
 from typing import List

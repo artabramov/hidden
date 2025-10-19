@@ -7,5 +7,4 @@ class UserDeleteResponse(BaseModel):
     """
     Response schema for user deletion. Contains the deleted user ID.
     """
-
     user_id: int

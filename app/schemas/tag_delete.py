@@ -1,6 +1,4 @@
-"""
-The module defines Pydantic schemas for deleting a file tag.
-"""
+"""Pydantic schemas for tag deletion."""
 
 from pydantic import BaseModel
 

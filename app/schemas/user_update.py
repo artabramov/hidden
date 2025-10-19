@@ -11,7 +11,6 @@ class UserUpdateRequest(BaseModel):
     name; summary is optional. Whitespace is stripped from strings;
     extra fields are forbidden.
     """
-
     model_config = ConfigDict(
         str_strip_whitespace=True,
         extra="forbid",
@@ -31,5 +30,4 @@ class UserUpdateResponse(BaseModel):
     """
     Response schema for user update. Contains the updated user ID.
     """
-
     user_id: int

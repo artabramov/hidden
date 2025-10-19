@@ -13,7 +13,6 @@ class UserRegisterRequest(BaseModel):
     of username, password, names, and optional profile summary.
     Extra fields are forbidden.
     """
-
     model_config = ConfigDict(
         str_strip_whitespace=True,
         extra="forbid",
@@ -46,6 +45,5 @@ class UserRegisterResponse(BaseModel):
     Response schema for user registration response including assigned
     user ID and MFA secret string.
     """
-
     user_id: int
     mfa_secret: str

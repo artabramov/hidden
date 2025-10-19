@@ -1,3 +1,5 @@
+"""FastAPI router for retrieving telemetry."""
+
 import time
 from fastapi import Request, APIRouter, Depends, status
 from fastapi.responses import JSONResponse

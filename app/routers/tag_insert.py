@@ -1,3 +1,5 @@
+"""FastAPI router for adding file tags."""
+
 from fastapi import APIRouter, Request, Depends, status, Path
 from fastapi.responses import JSONResponse
 from app.sqlite import get_session

@@ -14,7 +14,6 @@ class FolderListRequest(BaseModel):
     filesize, in ascending, descending, or random order. Extra fields
     are forbidden.
     """
-
     model_config = ConfigDict(
         str_strip_whitespace=True,
     )
@@ -39,6 +38,5 @@ class FolderListResponse(BaseModel):
     Response schema for listing folders. Contains the selected page
     of folders and the total number of matches before pagination.
     """
-
     folders: List[FolderSelectResponse]
     folders_count: int

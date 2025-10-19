@@ -1,4 +1,11 @@
-"""Asyncio reader–writer lock with writer preference."""
+"""
+Async reader-writer synchronization primitive with writer preference for
+asyncio-based code. Allows concurrent shared access for multiple readers
+while ensuring writers acquire exclusive access and preventing new
+readers from entering when a writer is active or queued. Designed to be
+cancellation-safe, non-reentrant, and process-local, exposing context
+managers for explicit read and write critical sections.
+"""
 
 import asyncio
 from contextlib import asynccontextmanager

@@ -1,4 +1,13 @@
-"""Validators for file and folder related fields."""
+"""
+Cross-platform validators for names and summaries used in a file storage
+context. The name checker normalizes Unicode, trims whitespace, rejects
+special path components, filters out control and portability-breaking
+characters, forbids trailing dots and platform-reserved basenames, and
+enforces a 255-byte UTF-8 limit to match common filesystem constraints.
+The summary helper applies a minimal normalization pass that strips
+surrounding whitespace and converts empty strings to null, ensuring
+consistent optional metadata handling.
+"""
 
 import unicodedata
 from typing import Optional

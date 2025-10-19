@@ -1,4 +1,12 @@
-"""Helper for image operations."""
+"""
+Utilities for deterministic image processing. Provides an asynchronous
+resize routine that runs in a worker thread, normalizes orientation from
+embedded metadata, converts to an appropriate color mode, center-crops
+to match the requested aspect ratio, resamples with a high-quality
+filter, and overwrites the original file using an optimized progressive
+encoding. It also centralizes the set of accepted input formats and the
+preferred media type for downstream validation and content negotiation.
+"""
 
 import asyncio
 from PIL import Image, ImageOps

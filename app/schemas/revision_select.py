@@ -11,7 +11,6 @@ class RevisionSelectResponse(BaseModel):
     UTC); revision number; UUID (revision file name); its file size;
     and content checksum.
     """
-
     id: int
     user: UserSelectResponse
     file_id: int

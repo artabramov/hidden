@@ -1,4 +1,10 @@
-"""Validator for tag value."""
+"""
+Validator for free-form tag values that enforces a canonical,
+search-friendly representation. Input is Unicode-normalized,
+whitespace is trimmed, and case is folded to achieve consistent
+comparisons across locales. Blank or purely whitespace input is
+rejected to prevent meaningless records.
+"""
 
 import unicodedata
 

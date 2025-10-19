@@ -1,3 +1,5 @@
+"""FastAPI router for deleting file tags."""
+
 from fastapi import APIRouter, Request, Depends, Path, status
 from fastapi.responses import JSONResponse
 from app.sqlite import get_session

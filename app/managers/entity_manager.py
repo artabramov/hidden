@@ -1,8 +1,15 @@
 """
-Asynchronous data-access manager for ORM entities using an async session.
-Provides CRUD, filtered queries with ordering/pagination, bulk deletes,
-and simple aggregates without blocking.
+Asynchronous data-access manager that wraps an ORM session with a
+small, consistent interface for common patterns: existence checks,
+single-record fetches, list retrieval with keyword-style filters,
+ordering and pagination, textual statements, batched deletions, and
+simple aggregates such as counts and sums. Queries are constructed from
+field/operator pairs, support membership and pattern matching, and can
+emit subqueries for use in higher-level filters. The API keeps
+transaction control explicit with flush/commit/rollback helpers and
+avoids blocking by leveraging the underlying async engine.
 """
+
 
 from typing import Union, Type, List, Optional
 from sqlalchemy import select, text, asc, desc

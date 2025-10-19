@@ -13,7 +13,6 @@ class TokenRetrieveRequest(BaseModel):
     if omitted, the token is issued without an exp claim (non-expiring).
     Extra fields are forbidden.
     """
-
     model_config = ConfigDict(
         str_strip_whitespace=True,
         extra="forbid",
@@ -34,6 +33,5 @@ class TokenRetrieveResponse(BaseModel):
     Response schema for token retrieval. Returns the user ID and
     a signed JWT access token for authenticated requests.
     """
-
     user_id: int
     user_token: str

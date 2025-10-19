@@ -15,7 +15,6 @@ class FileListRequest(BaseModel):
     filesize, or mimetype, in ascending, descending, or random order.
     Extra fields are forbidden.
     """
-
     model_config = ConfigDict(
         str_strip_whitespace=True,
     )
@@ -46,6 +45,5 @@ class FileListResponse(BaseModel):
     Response schema for listing files. Contains the selected page
     of files and the total number of matches before pagination.
     """
-
     files: List[FileSelectResponse]
     files_count: int

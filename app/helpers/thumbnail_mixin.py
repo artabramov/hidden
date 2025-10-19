@@ -1,3 +1,12 @@
+"""
+Lightweight mixin for deriving absolute filesystem locations of
+thumbnail artifacts from a UUID and an application configuration.
+It provides a class utility to compute the path for an arbitrary
+identifier and an instance-level convenience that delegates to the
+same logic. The helpers are deterministic, side-effect free, and
+keep storage layout concerns decoupled from the model.
+"""
+
 import os
 from typing import Any
 

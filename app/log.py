@@ -1,4 +1,10 @@
-"""Initializes a global app logger."""
+"""
+Initializes application logging with a concurrent-safe rotating file
+handler. Applies formatter and level from the app, attaches the handler
+only once, disables propagation to prevent duplicate output, stores the
+logger on app state, and returns the ready-to-use instance.
+"""
+
 
 import logging
 from concurrent_log_handler import ConcurrentRotatingFileHandler

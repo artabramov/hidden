@@ -10,7 +10,6 @@ class UserPasswordRequest(BaseModel):
     password and a new password. Whitespace is stripped from strings;
     extra fields are forbidden.
     """
-
     model_config = ConfigDict(
         str_strip_whitespace=True,
         extra="forbid",
@@ -29,5 +28,4 @@ class UserPasswordResponse(BaseModel):
     """
     Response schema for password change. Contains the user ID.
     """
-
     user_id: int

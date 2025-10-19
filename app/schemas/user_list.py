@@ -15,7 +15,6 @@ class UserListRequest(BaseModel):
     last_login_date, role, active, username, first_name, last_name,
     or full_name in ascending, descending, or random order.
     """
-
     model_config = ConfigDict(
         str_strip_whitespace=True
     )
@@ -43,6 +42,5 @@ class UserListResponse(BaseModel):
     Response schema for listing users. Contains the selected page
     of users and the total number of matches before pagination.
     """
-
     users: List[UserSelectResponse]
     users_count: int

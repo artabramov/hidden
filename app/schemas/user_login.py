@@ -10,7 +10,6 @@ class UserLoginRequest(BaseModel):
     lowercased (Latin letters, digits, underscore). Extra fields
     are forbidden.
     """
-
     model_config = ConfigDict(
         str_strip_whitespace=True,
         extra="forbid",
@@ -26,6 +25,5 @@ class UserLoginResponse(BaseModel):
     indicating that the password step was accepted and the flow may
     proceed to MFA.
     """
-
     user_id: int
     password_accepted: bool

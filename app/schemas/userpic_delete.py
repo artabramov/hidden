@@ -7,5 +7,4 @@ class UserpicDeleteResponse(BaseModel):
     """
     Response schema for userpic deletion. Contains the user ID.
     """
-
     user_id: int

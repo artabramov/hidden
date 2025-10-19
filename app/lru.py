@@ -1,3 +1,11 @@
+"""
+Byte-oriented LRU cache keyed by strings. Enforces a global capacity
+with an optional per-item cap, promotes entries on access, and evicts
+the least-recently used until within budget. Supports insert/update,
+fetch with recency bump, removal, and full clear, and exposes live
+size and item count properties.
+"""
+
 from collections import OrderedDict
 from typing import Optional
 

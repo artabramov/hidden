@@ -12,7 +12,6 @@ class FileUpdateRequest(BaseModel):
     and folder ID, plus an optional summary. Whitespace is stripped from
     strings; extra fields are forbidden.
     """
-
     model_config = ConfigDict(
         str_strip_whitespace=True,
         extra="forbid",
@@ -38,6 +37,5 @@ class FileUpdateResponse(BaseModel):
     Response schema for file update. Contains the updated
     file ID and the latest revision number.
     """
-
     file_id: int
     latest_revision_number: int

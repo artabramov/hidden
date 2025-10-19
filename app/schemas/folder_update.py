@@ -12,7 +12,6 @@ class FolderUpdateRequest(BaseModel):
     flag, folder name, and an optional summary. Whitespace is
     stripped from strings; extra fields are forbidden.
     """
-
     model_config = ConfigDict(
         str_strip_whitespace=True,
         extra="forbid",
@@ -37,5 +36,4 @@ class FolderUpdateResponse(BaseModel):
     """
     Response schema for folder update. Contains the updated folder ID.
     """
-
     folder_id: int

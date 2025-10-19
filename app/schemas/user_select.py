@@ -10,7 +10,6 @@ class UserSelectResponse(BaseModel):
     and last-login timestamps, role, active status, username, first/last
     name, optional summary, and thumbnail presence flag.
     """
-
     id: int
     created_date: int
     last_login_date: int

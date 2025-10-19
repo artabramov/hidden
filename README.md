@@ -16,7 +16,7 @@ If you like it, star it ⭐ — it helps discoverability. Thank you!
 ## References
 
 - Official website: [joinhidden.com](https://joinhidden.com)
-- Documentation: [docs/md](https://github.com/artabramov/hidden/blob/master/docs/md/index.md)
+- Documentation: [DOCUMENTATION.md](https://github.com/artabramov/hidden/blob/master/DOCUMENTATION.md)
 - Telegram announcements: [t.me/hiddenupdates](https://t.me/hiddenupdates)
 
 ## Quick start

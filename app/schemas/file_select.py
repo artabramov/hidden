@@ -26,5 +26,6 @@ class FileSelectResponse(BaseModel):
     checksum: str
     summary: Optional[str] = None
     latest_revision_number: int
+    has_thumbnail: bool
     file_revisions: List[RevisionSelectResponse]
     file_tags: list = None

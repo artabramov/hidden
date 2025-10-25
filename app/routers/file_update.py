@@ -5,8 +5,8 @@ from fastapi.responses import JSONResponse
 from app.sqlite import get_session
 from app.redis import get_cache
 from app.models.user import User, UserRole
-from app.models.folder import Folder
 from app.models.file import File
+from app.models.folder import Folder
 from app.schemas.file_update import (
     FileUpdateRequest, FileUpdateResponse)
 from app.validators.file_validators import name_validate
@@ -21,7 +21,7 @@ router = APIRouter()
 
 
 @router.put(
-    "/folder/{folder_id}/file/{file_id}",
+    "/file/{file_id}",
     status_code=status.HTTP_200_OK,
     response_class=JSONResponse,
     response_model=FileUpdateResponse,
@@ -31,19 +31,18 @@ router = APIRouter()
 async def file_update(
     request: Request,
     schema: FileUpdateRequest,
-    folder_id: int = Path(..., ge=1),
     file_id: int = Path(..., ge=1),
     session=Depends(get_session),
     cache=Depends(get_cache),
     current_user: User = Depends(auth(UserRole.editor))
 ) -> FileUpdateResponse:
     """
-    Updates a file by renaming its head file within the current folder,
-    moving the head file to a different folder (keeping its name),
-    and/or changing the file summary. Disk changes are performed with
-    an atomic rename; the file row is staged (no-commit), the file is
-    renamed or moved on disk, and then the transaction is committed to
-    keep database and filesystem in sync.
+    Updates a file by renaming its head file, moving the head file to
+    a different folder (keeping its name), and/or changing the file
+    summary. Disk changes are performed with an atomic rename; the file
+    row is staged (no-commit), the file is renamed or moved on disk, and
+    then the transaction is committed to keep database and filesystem in
+    sync.
 
     Concurrency is controlled with per-path locks. For rename/move, two
     locks are acquired in a deterministic order to prevent deadlocks.
@@ -63,7 +62,6 @@ async def file_update(
     `latest_revision_number`.
 
     **Path parameters:**
-    - `folder_id` (integer ≥ 1) — current folder identifier.
     - `file_id` (integer ≥ 1) — file identifier.
 
     **Request body:**
@@ -75,7 +73,7 @@ async def file_update(
     - `401` — missing, invalid, or expired token.
     - `403` — insufficient role, invalid JTI, user is inactive or
     suspended.
-    - `404` — folder or file not found.
+    - `404` — file not found.
     - `409` — conflict: name already exists in DB/FS or DB/FS mismatch
     (file present but file missing, or vice versa).
     - `422` — invalid file name.
@@ -93,26 +91,16 @@ async def file_update(
     folder_locks = request.app.state.folder_locks
     file_locks = request.app.state.file_locks
 
-    # NOTE: On file update, keep two-step fetch to hit Redis cache;
-    # load the folder by ID first, then load the file by ID.
-
-    folder_repository = Repository(session, cache, Folder, config)
-    folder = await folder_repository.select(id=folder_id)
-
-    if not folder:
-        raise E([LOC_PATH, "folder_id"], folder_id,
-                ERR_VALUE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
-
-    elif folder.readonly:
-        raise E([LOC_PATH, "folder_id"], folder_id,
-                ERR_VALUE_READONLY, status.HTTP_422_UNPROCESSABLE_CONTENT)
-
     file_repository = Repository(session, cache, File, config)
     file = await file_repository.select(id=file_id)
 
-    if not file or file.folder_id != folder.id:
+    if not file:
         raise E([LOC_PATH, "file_id"], file_id,
                 ERR_VALUE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
+
+    elif file.file_folder.readonly:
+        raise E([LOC_PATH, "file_id"], file.folder_id,
+                ERR_VALUE_READONLY, status.HTTP_422_UNPROCESSABLE_CONTENT)
 
     file.summary = schema.summary
     file_updated = False
@@ -134,10 +122,10 @@ async def file_update(
         # NOTE: On file rename, acquire the folder READ lock first,
         # then the per-file exclusive lock.
 
-        folder_lock = folder_locks[folder_id]
+        folder_lock = folder_locks[file.folder_id]
 
-        first_lock_key = (folder_id, file.filename)
-        second_lock_key = (folder_id, filename)
+        first_lock_key = (file.folder_id, file.filename)
+        second_lock_key = (file.folder_id, filename)
 
         first_lock_key, second_lock_key = sorted((
             first_lock_key, second_lock_key))
@@ -149,7 +137,8 @@ async def file_update(
 
             # Check the file with the filename in the folder
             filename_exists = await file_repository.select(
-                id__ne=file.id, filename__eq=filename, folder_id__eq=folder.id)
+                id__ne=file.id, filename__eq=filename,
+                folder_id__eq=file.folder_id)
             if filename_exists:
                 raise E([LOC_BODY, "file"], filename,
                         ERR_FILE_CONFLICT, status.HTTP_409_CONFLICT)
@@ -163,7 +152,7 @@ async def file_update(
 
             # Check the file with the new filename in the directory
             updated_file_path = File.path_for_filename(
-                config, folder.name, filename)
+                config, file.file_folder.name, filename)
             updated_file_exists = await file_manager.isfile(updated_file_path)
             if updated_file_exists:
                 raise E([LOC_BODY, "file"], filename,
@@ -185,10 +174,10 @@ async def file_update(
 
     # Move the file if folder changes
     if file.folder_id != schema.folder_id:
+        folder_repository = Repository(session, cache, Folder, config)
 
         # Does the target folder exist?
-        target_folder = await folder_repository.select(
-            id=schema.folder_id)
+        target_folder = await folder_repository.select(id=schema.folder_id)
         if not target_folder:
             raise E([LOC_BODY, "folder_id"], schema.folder_id,
                     ERR_VALUE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
@@ -201,7 +190,7 @@ async def file_update(
         folder_lock_b = folder_locks[cid_b]
 
         async with folder_lock_a.read(), folder_lock_b.read():
-            first_lock_key = (folder_id, file.filename)
+            first_lock_key = (file.folder_id, file.filename)
             second_lock_key = (schema.folder_id, file.filename)
 
             first_lock_key, second_lock_key = sorted((

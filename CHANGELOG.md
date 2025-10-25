@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.3.0] - 2025-10-25
+- Removed the **/folder/{folder_id}** segment from all file-operation endpoints except file upload.
+- Added **has_thumbnail** attribute to the **file** model to indicate whether a thumbnail exists.
+
 ## [0.2.16] - 2025-10-19
 - Updated module docstrings; bundled Sphinx-generated Markdown documentation in **DOCUMENTATION.md**.
 - Updated **security scan** and regenerated **SECURITY_SCAN.md**.

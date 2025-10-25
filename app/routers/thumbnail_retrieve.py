@@ -4,7 +4,6 @@ from fastapi import APIRouter, Depends, status, Response, Request, Path
 from app.sqlite import get_session
 from app.redis import get_cache
 from app.models.user import User, UserRole
-from app.models.folder import Folder
 from app.models.file import File
 from app.error import E, LOC_PATH, ERR_VALUE_NOT_FOUND, ERR_FILE_CONFLICT
 from app.helpers.image_helper import IMAGE_MEDIATYPE
@@ -16,7 +15,7 @@ router = APIRouter()
 
 
 @router.get(
-    "/folder/{folder_id}/file/{file_id}/thumbnail",
+    "/file/{file_id}/thumbnail",
     status_code=status.HTTP_200_OK,
     response_class=Response,
     summary="Retrieve thumbnail",
@@ -24,7 +23,6 @@ router = APIRouter()
 )
 async def thumbnail_retrieve(
     request: Request,
-    folder_id: int = Path(..., ge=1),
     file_id: int = Path(..., ge=1),
     session=Depends(get_session),
     cache=Depends(get_cache),
@@ -39,7 +37,6 @@ async def thumbnail_retrieve(
     - Requires a valid bearer token with `reader` role or higher.
 
     **Path parameters:**
-    - `folder_id` (integer ≥ 1): parent folder identifier.
     - `file_id` (integer ≥ 1): file identifier.
 
     **Response:**
@@ -51,7 +48,7 @@ async def thumbnail_retrieve(
     - `401` — missing, invalid, or expired token.
     - `403` — insufficient role, invalid JTI, user is inactive or
       suspended.
-    - `404` — folder or file not found, or no thumbnail set.
+    - `404` — file not found, or no thumbnail set.
     - `409` — file not found on filesystem or checksum mismatch.
     - `423` — application is temporarily locked.
     - `498` — gocryptfs key is missing.
@@ -70,20 +67,10 @@ async def thumbnail_retrieve(
     file_manager = request.app.state.file_manager
     lru = request.app.state.lru
 
-    # NOTE: On thumbnail retrieval, keep two-step fetch to hit Redis
-    # cache; load the folder by ID first, then load the file by ID.
-
-    folder_repository = Repository(session, cache, Folder, config)
-    folder = await folder_repository.select(id=folder_id)
-
-    if not folder:
-        raise E([LOC_PATH, "folder_id"], folder_id,
-                ERR_VALUE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
-
     file_repository = Repository(session, cache, File, config)
     file = await file_repository.select(id=file_id)
 
-    if not file or file.folder_id != folder.id:
+    if not file:
         raise E([LOC_PATH, "file_id"], file_id,
                 ERR_VALUE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
 

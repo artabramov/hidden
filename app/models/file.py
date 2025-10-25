@@ -193,6 +193,7 @@ class File(Base):
             "checksum": self.checksum,
             "summary": self.summary,
             "latest_revision_number": self.latest_revision_number,
+            "has_thumbnail": self.has_thumbnail,
             "file_revisions": [
                 await revision.to_dict() for revision
                 in self.file_revisions

@@ -83,6 +83,7 @@ class FileModelTest(unittest.IsolatedAsyncioTestCase):
             "checksum": checksum,
             "summary": summary,
             "latest_revision_number": latest_revision_number,
+            "has_thumbnail": False,
             "file_revisions": [],
             "file_tags": [],
         })

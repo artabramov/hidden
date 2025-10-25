@@ -5,7 +5,6 @@ from fastapi.responses import JSONResponse
 from app.sqlite import get_session
 from app.redis import get_cache
 from app.models.user import User, UserRole
-from app.models.folder import Folder
 from app.models.file import File
 from app.schemas.file_delete import FileDeleteResponse
 from app.hook import Hook, HOOK_AFTER_FILE_DELETE
@@ -18,7 +17,7 @@ router = APIRouter()
 
 
 @router.delete(
-    "/folder/{folder_id}/file/{file_id}",
+    "/file/{file_id}",
     status_code=status.HTTP_200_OK,
     response_class=JSONResponse,
     response_model=FileDeleteResponse,
@@ -27,7 +26,6 @@ router = APIRouter()
 )
 async def file_delete(
     request: Request,
-    folder_id: int = Path(..., ge=1),
     file_id: int = Path(..., ge=1),
     session=Depends(get_session),
     cache=Depends(get_cache),
@@ -41,7 +39,6 @@ async def file_delete(
     - Requires a valid bearer token with `admin` role.
 
     **Path parameters:**
-    - `folder_id` (integer ≥ 1): parent folder identifier.
     - `file_id` (integer ≥ 1): file identifier.
 
     **Response:**
@@ -53,7 +50,7 @@ async def file_delete(
     - `401` — missing, invalid, or expired token.
     - `403` — insufficient role, invalid JTI, user is inactive or
     suspended.
-    - `404` — folder or file not found.
+    - `404` — file not found.
     - `409` — conflict: thumbnail, revision or head file is missing.
     - `423` — application is temporarily locked.
     - `498` — gocryptfs key is missing.
@@ -73,34 +70,24 @@ async def file_delete(
     folder_locks = request.app.state.folder_locks
     file_locks = request.app.state.file_locks
 
-    # NOTE: On file delete, keep two-step fetch to hit Redis cache;
-    # load the folder by ID first, then load the file by ID.
-
-    folder_repository = Repository(session, cache, Folder, config)
-    folder = await folder_repository.select(id=folder_id)
-
-    if not folder:
-        raise E([LOC_PATH, "folder_id"], folder_id,
-                ERR_VALUE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
-
-    elif folder.readonly:
-        raise E([LOC_PATH, "folder_id"], folder_id,
-                ERR_VALUE_READONLY, status.HTTP_422_UNPROCESSABLE_CONTENT)
-
     file_repository = Repository(session, cache, File, config)
     file = await file_repository.select(id=file_id)
 
-    if not file or file.folder_id != folder.id:
+    if not file:
         raise E([LOC_PATH, "file_id"], file_id,
                 ERR_VALUE_NOT_FOUND, status.HTTP_404_NOT_FOUND)
+
+    elif file.file_folder.readonly:
+        raise E([LOC_PATH, "file_id"], file.folder_id,
+                ERR_VALUE_READONLY, status.HTTP_422_UNPROCESSABLE_CONTENT)
 
     latest_revision_number = file.latest_revision_number
 
     # NOTE: On file delete, acquire the folder READ lock first,
     # then the per-file exclusive lock.
 
-    folder_lock = folder_locks[folder_id]
-    file_lock_key = (folder_id, file.filename)
+    folder_lock = folder_locks[file.folder_id]
+    file_lock_key = (file.folder_id, file.filename)
     file_lock = file_locks[file_lock_key]
     async with folder_lock.read(), file_lock:
 

@@ -1,0 +1,2 @@
+# hidden
+Encrypted file storage

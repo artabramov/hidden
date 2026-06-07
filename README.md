@@ -1,4 +1,4 @@
-# Hidden — encrypted file storage
+# Hidden — self-hosted encrypted file storage
 
 Hidden is a self-hosted encrypted file storage application focused on
 data ownership, privacy, and operational independence. It targets

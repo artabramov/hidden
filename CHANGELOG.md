@@ -1,5 +1,8 @@
 # Changelog
 
+Follow the project's Telegram channel for real-time development updates, release announcements, security advisories, and upcoming events:
+[t.me/hiddenupdates](https://t.me/hiddenupdates)
+
 ## [0.5.11] - 2026-06-07
 - Fixed **database corruption on gocryptfs**: SQLite WAL journal mode is incompatible with FUSE-based encrypted filesystems; the shared-memory index file write cycle is not atomic through block-level encryption, causing deterministic corruption. Switched to DELETE journal mode and FULL synchronous level to eliminate the root cause.
 - Fixed **database corruption on storage unmount**: SQLAlchemy connections are now disposed before gocryptfs unmount to prevent partially flushed SQLite writes through FUSE.

@@ -515,5 +515,4 @@ code (see A03/A06/A08).
 
 ## Reporting Security Issues
 
-Security issues should be reported privately to the author:
-[linkedin.com/in/art-abramov](https://www.linkedin.com/in/art-abramov/)
+Security issues should be reported privately to the author.

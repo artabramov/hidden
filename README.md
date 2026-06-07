@@ -36,7 +36,7 @@ modifying the core application code.
 
 Feedback on architecture, security assumptions, and design trade-offs is
 welcome:
-[linkedin.com/in/art-abramov](https://www.linkedin.com/in/art-abramov/)
+[linkedin.com/in/artabramov](https://www.linkedin.com/in/artabramov/)
 
 ![version](https://img.shields.io/badge/version-0.5.11-2f81f7)
 ![test coverage](https://img.shields.io/badge/test%20coverage-99.9%25-2f81f7)

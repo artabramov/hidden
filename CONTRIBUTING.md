@@ -20,4 +20,4 @@ and must be considered before making changes.
 
 Bug reports, feature suggestions, security feedback, architecture
 reviews, and design critique are welcome:
-[linkedin.com/in/art-abramov](https://www.linkedin.com/in/art-abramov/)
+[linkedin.com/in/artabramov](https://www.linkedin.com/in/artabramov/)

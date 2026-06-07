@@ -1,0 +1,36 @@
+---
+description: "Hidden — read llms.txt before substantive work; update after critical app changes"
+alwaysApply: true
+---
+
+# Hidden — LLM context (`llms.txt`)
+
+## 1. Before substantive work
+
+Read **[`llms.txt`](../../llms.txt)** at the workspace root **before**
+substantive work (features, refactors, fixes that touch behavior or
+architecture). Use it for:
+
+- ADR / `NOTE (ADR-XX)` contracts and invariants.
+- Runtime and security assumptions.
+- Layout, commands, test patterns, and hotspots.
+
+If `llms.txt` and the code disagree, **the code and ADR comments are the source
+of truth**; then consider updating `llms.txt` as in section 2.
+
+## 2. After critical app changes
+
+After **critical** changes under **`app/`** (not tests-only, not docs-only),
+**update `llms.txt`** when a future session must know, for example:
+
+- New or removed ADR-level behavior (`NOTE (ADR-XX)`), transaction or audit
+  semantics, middleware order, hooks, auth or storage flows.
+- Changed operational model (startup, mounts, watchdog, worker model, TLS).
+- New or renamed required config / env that affects deployment.
+- New high-risk modules or materially changed hotspots.
+
+Skip `llms.txt` updates for cosmetic edits, typos, or narrow bugfixes that **do
+not** change contracts.
+
+Keep `llms.txt` **concise**: deltas for LLM and human onboarding, not a copy of
+README or SECURITY.

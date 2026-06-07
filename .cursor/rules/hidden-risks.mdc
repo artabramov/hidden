@@ -1,0 +1,36 @@
+---
+description: "Hidden — document known limits and risks explicitly, never gloss over"
+alwaysApply: true
+---
+
+# Hidden — Risks and limitations
+
+## 1. No implicit risks
+
+Any **known** limits, trade-offs, implementation gaps, and **risks** (security,
+edge-case correctness, performance, trust model, maintainability) must not
+stay implicit: not “obvious”, not only in the author’s head, not a single vague
+line buried in code.
+
+## 2. Where to document
+
+Be **clear** for the operator and the next reader (including LLM sessions):
+what is constrained, under what conditions, and what mitigations or external
+actions apply.
+
+Suitable places (non-exhaustive):
+
+- **[`SECURITY.md`](../../SECURITY.md)** — threats or deliberate defense gaps
+  in the spirit of the OWASP-style sections.
+- **`NOTE (ADR-XX)`** and, when needed, **[`ADR.md`](../../ADR.md)** —
+  architectural or contractual trade-offs.
+- **`llms.txt`** — limitations a future session must know for a module.
+- API docstrings and response schemas — behavior that would surprise a client.
+- **The chat reply** — security weakening or new risk surfaces (see **Hidden —
+  Security**, section 4).
+
+## 3. Keep docs in sync
+
+If a change **surfaces** a new risk or **increases** an existing one, update the
+explicit description. If a risk **goes away**, tighten or remove wording so
+docs stay accurate.

@@ -1,0 +1,51 @@
+---
+description: "Hidden — unit tests: unittest, mirrored layout, mocks only, no I/O"
+alwaysApply: true
+---
+
+# Hidden — Unit tests
+
+## 1. Framework
+
+Use the **standard library `unittest`** for unit tests. Do not rely on
+pytest-only features as the default harness.
+
+## 2. One module per source file
+
+For each module under **`app/`** that you test, add **exactly one** test module
+named `test_<name>.py`, where `<name>` is the **source file stem**.
+
+Examples:
+
+- `app/services/user_login.py` → `tests/services/test_user_login.py`
+- `app/repositories/file.py` → `tests/repositories/test_file.py`
+
+## 3. Mirror `app/`
+
+The **`tests/`** tree must **mirror `app/`** (same subdirectories and
+`test_<stem>.py` naming). Do not put unrelated tests at the repo root unless the
+project already does so for a documented reason.
+
+## 4. No side effects
+
+**No exceptions.** Unit tests must not perform or trigger real I/O or external
+behavior. **Mock and patch** anything that would touch the outside world.
+
+Forbidden (non-exhaustive):
+
+- Real **filesystem** use (open, read, write, mkdir, temp paths on disk,
+  `tempfile` as real paths, etc.).
+- Real **network** or remote services.
+- Real **database** or SQL driver (no engine, connection, or session against a
+  real DB file or server). **Always** mock sessions, engines, and repositories
+  at the boundary.
+- **Subprocesses**, **threads** that hit real resources, or **sleep** tied to
+  real time when it affects outcomes (use mocks or fakes).
+- Leaving **mutable global state** changed: patch `os.environ` and similar only
+  in controlled scopes and **restore** in `tearDown` or equivalent.
+
+Tests must be **deterministic**: same inputs → same outcomes; no dependence on
+host paths, clocks, network, or ambient machine state.
+
+Scenarios that truly need real disk or a real DB **do not** belong under these
+unit-test rules — no carve-outs here. Put them elsewhere.

@@ -1,0 +1,58 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Run app",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "uvicorn",
+            "args": [
+                "app.main:app",
+                "--host", "0.0.0.0",
+                "--port", "5000",
+                "--reload"
+            ],
+            "envFile": "/etc/hidden/.env",
+            "jinja": true,
+            "justMyCode": true
+        },
+        {
+            "name": "Run linter",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "flake8",
+            "args": [
+                "app",
+                "tests"
+            ],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Run tests",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "coverage",
+            "args": [
+                "run",
+                "-m",
+                "unittest",
+                "discover",
+                "-s",
+                "tests",
+                "-v"
+            ],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Coverage",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "coverage",
+            "args": [
+                "report",
+                "-m"
+            ],
+            "console": "integratedTerminal"
+        }
+    ]
+}

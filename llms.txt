@@ -1,0 +1,179 @@
+# Hidden
+
+> Self-hosted encrypted file storage backend built with FastAPI + gocryptfs.
+
+Hidden exposes a REST API over an encrypted userspace filesystem. The decrypted mountpoint is internal to the container; encrypted data and secrets are persisted in separate Docker volumes.
+
+## Read First
+
+- [README.md](./README.md) — runtime model, install/run, stack, ops notes
+- [ADR.md](./ADR.md) — ADR index (search for `NOTE (ADR-XX)` in code)
+- [SECURITY.md](./SECURITY.md) — OWASP-based self-assessment and threat assumptions
+- [CHANGELOG.md](./CHANGELOG.md) — release changes
+
+## ADR Contract (Non-Negotiable)
+
+Treat `NOTE (ADR-XX)` comments in source as part of the application contract.
+If code and docs conflict, code-level ADR comments are source of truth.
+
+Key invariants currently enforced in code:
+
+- Runtime and deployment
+  - App is container-first (`Makefile`, `entrypoint.sh`).
+  - TLS termination is external (`app/main.py`).
+  - Volumetric DDoS / connection floods are mitigated outside the app (`app/main.py`).
+  - Single Uvicorn worker is intentional (`entrypoint.sh`).
+  - Watchdog runs as a background sleep-loop and is independent of app locks (`entrypoint.sh`, `app/runtime/watchdog.py`); interval controlled by `GOCRYPTFS_WATCHDOG_INTERVAL_SECONDS`.
+- Storage and consistency
+  - SQLite is the DB backend (`app/db/engine.py`).
+  - DB is source of truth, filesystem is projection (`app/models/file.py`).
+  - Folder deletion is explicitly non-atomic (`app/services/folder_delete.py`).
+  - File writes target POSIX durability semantics (`app/repositories/file.py`).
+- Transactions
+  - Service layer owns transaction boundaries (`app/audit.py` note).
+  - Lower-level components can be used autonomously, but core flow commits in services (`app/audit.py` note).
+  - `write_audit()` expects a prepared `ORMRepository` instance (`app/audit.py`).
+  - Cipherdir create/mount/unmount, cipherdir master-password change, and lockdown enable/disable do **not** use `write_audit()` or an app DB session; `hooks.emit(event)` omits the session so hooks receive `session=None` (`app/audit.py`, `app/hooks.py` notes).
+- Security and auth model
+  - Master-password online brute-force: policy + failed-decrypt cost dominate; short in-process interval is auxiliary (`app/security/cipherdir.py`); `is_master_password_attempt_throttled()` returns True when still inside the spacing window (services map to 429); False registers the attempt and allows verification.
+  - Auth is two-step (password -> TOTP); step 1 returns `mfa_session_uuid` for step 2 (`app/services/user_login.py`). Step 2 is `POST .../auth/token` + TOTP (`app/services/user_token_issue.py`) or `POST .../auth/totp` + recovery code (`app/services/user_totp_recover.py`) — no JWT; recovery rotates TOTP and issues a new stored JTI (prior access tokens no longer match).
+  - Timing-based username enumeration is explicitly not mitigated (`app/services/user_login.py`).
+  - First registered user becomes admin, flow is serialized and throttled (`app/services/user_register.py`); successful registration returns `totp_secret` and a one-time `recovery_code` (server stores only `recovery_code_hash`).
+  - Sensitive data must not be logged (`app/log.py`).
+- Middleware and context
+  - Middleware order is intentionally fixed (`app/main.py`).
+  - Request context is per-task, reset before/after request, optional external `X-Request-ID` accepted (`app/context.py`, `app/middleware/request_context.py`).
+- Hooks/extensions trust model
+  - Extensions are trusted in-process code.
+  - Hooks run post-commit and manage their own transactions (`app/hooks.py`).
+
+## Runtime Model
+
+- Encrypted storage: `gocryptfs` cipherdir + internal decrypted mountpoint.
+- Metadata DB: SQLite file inside encrypted mountpoint. Journal mode MUST be DELETE (not WAL): WAL creates a `.shm` shared-memory index whose read-modify-write cycle through gocryptfs block encryption is not atomic; combined with aiosqlite's background thread this causes deterministic database corruption. Synchronous mode MUST be FULL (not NORMAL): NORMAL skips fsync and gocryptfs buffers writes, leading to data loss on container stop. Both defaults are set in `.env.example`; the ADR note in `app/db/engine.py` explains the constraint.
+- Migrations: Alembic upgrades after mount, followed by `PRAGMA integrity_check` (`app/db/migrations.py`); mount is aborted if the check fails.
+- Secret separation: encrypted passphrase and keys in dedicated secrets volume.
+- Control plane endpoints (`/init/*`) use master-password verification logic.
+- `GET /init/health` exposes `is_first_admin_created` from a flag file on the secrets volume (`FIRST_ADMIN_CREATED_FLAG_PATH`), readable without cipherdir mount; set on first admin registration commit.
+- `is_master_password_attempt_throttled()` in `app/security/cipherdir.py` — True means reject (429); False means proceed and timestamp recorded. Used at the start of master-password services except `create_cipherdir` (mount, unmount, password change, lockdown enable/disable).
+
+## Domain Surface
+
+- Cipherdir lifecycle: create, mount, unmount, change master password.
+- Lockdown mode: enable/disable global restricted runtime state.
+- Auth/users: register, login, token issue/invalidate, TOTP recovery via recovery code (`user_totp_recover`), password/role/profile updates, recovery code rotation (`user_recovery_code_rotate`, JWT + verified existing `recovery_code` in body; new code server-generated, returned once, JTI rotated).
+- Files/folders: CRUD-like operations, transforms, tags, comments, revisions, thumbnails; successful **file download** writes audit then commits before hooks (`app/services/file_download.py`). **Thumbnails** are served from the in-memory LRU cache on repeated requests; cache is invalidated on upload, delete, rotate, and flip. List files: **`GET /files`** with optional **`folder_id__eq`** (omit for cross-folder / global listing); list folders: **`GET /folders`** with optional **`parent_id__eq`** (paths under `API_PREFIX`). `FolderSelectResponse` (used by `GET /folder/{id}` and inside `GET /folders`) exposes per-folder `children_count` and `files_count`, sourced from the denormalized counters on `Folder` (same column names). Frontends use `children_count > 0` as the lazy-expandable hint for tree views, avoiding a separate request per node. Note: `FolderListResponse.folders_count` is a different field — it is the total number of folders matching the listing query (not a per-folder counter).
+- Variables: namespaced key-value operations.
+- Audit/health/metrics endpoints.
+
+## Project Layout
+
+- `app/main.py` — app wiring (middleware, handlers, routers, lifespan)
+- `app/config.py` — settings + derived paths + parsed lists
+- `app/cache/lru.py` — process-local LRU thumbnail cache; lazy-init; eviction by byte size; cleared on cipherdir unmount; `LRU_CACHE_MAX_BYTES` controls limit (default 50 MB, 0 = disabled). Hooks are not emitted on cache hits. Swap-leakage risk documented in SECURITY.md A04.
+- `app/services/` — business logic + orchestration + commits
+- `app/repositories/` — DB/file abstractions
+- `app/security/` — hashing, JWT, encryption, TOTP, recovery code generation
+- `app/runtime/` — gocryptfs, watchdog, passphrase utilities
+- `app/middleware/` — request context/logging/availability/security headers/CORS
+- `app/models/`, `app/schemas/`, `app/validators/`, `app/paths/`
+- `extensions/` — trusted plugin modules
+- `tests/` — unittest suite
+
+## Test and Dev Notes
+
+- Test framework: stdlib `unittest`.
+- Typical full run:
+  - `python -m unittest discover -v -s tests -p "test_*.py"`
+- Service-focused run:
+  - `python -m unittest discover -v -s tests/services -p "test_*.py"`
+- CORS config is CSV-based:
+  - env: `CORS_ALLOW_ORIGINS`
+  - derived: `Config.CORS_ALLOW_ORIGINS_LIST`
+
+## Canonical Commands
+
+- Container install/run:
+  - `make install`
+  - `make install PORT=8080`
+- Local app run:
+  - `uvicorn app.main:app --host 0.0.0.0 --port 5000 --reload`
+- Lint:
+  - `flake8 app tests`
+- Tests:
+  - Full: `python -m unittest discover -v -s tests -p "test_*.py"`
+  - Services only: `python -m unittest discover -v -s tests/services -p "test_*.py"`
+  - Single module: `python -m unittest -v tests/services/test_<name>.py`
+- Coverage:
+  - `coverage run -m unittest discover -s tests -v`
+  - `coverage report -m`
+- Security audit:
+  - `make audit` (currently runs Trivy image scan)
+
+## Post-Change Workflows
+
+- If `app/services/*` changed:
+  - Run paired service tests: `tests/services/test_<same_name>.py`
+  - Run paired router tests if route exists: `tests/routers/test_<same_name>.py`
+  - If transactions/audit/hooks changed: also run `tests/test_audit.py` and `tests/test_hooks.py`
+- If `app/middleware/*` changed:
+  - Run `tests/middleware/test_<same_name>.py`
+  - Run `tests/test_main.py` to validate app wiring assumptions
+- If `app/security/*` or auth flow changed:
+  - Run `tests/security/*`, `tests/dependencies/test_auth.py`
+  - Run `tests/services/test_user_login.py`, `tests/services/test_user_token_issue.py`, `tests/services/test_user_totp_recover.py`, `tests/services/test_user_recovery_code_rotate.py`
+- If `app/config.py` changed:
+  - Run `tests/test_config.py`
+  - Run `tests/test_main.py`
+  - Run any module tests that import app at module import time
+
+## Hotspots (High Regression Risk)
+
+- `app/services/file_upload.py`
+- `app/services/cipherdir_mount.py`
+- `app/services/cipherdir_password_change.py`
+- `app/dependencies/auth.py`
+- `app/runtime/watchdog.py`
+- `app/hooks.py`
+- `app/main.py`
+- `app/repositories/orm.py`
+
+When touching these files, run targeted tests first, then full suite.
+
+## Test Footguns
+
+- Discovery relies on `test_*.py` naming; mismatches make tests disappear from discovery.
+- Some tests depend on env being prepared before importing `app.*`; preserve import order patterns.
+- `get_config()` is cached (`lru_cache`); clear cache in tests when mutating environment (`get_config.cache_clear()`).
+- Avoid real I/O in unit tests; mock filesystem/network/db/process interactions.
+- VS Code unittest adapter can get stale state; if discovery is unexpectedly canceled, clear/refresh/reload IDE test state.
+
+## Anti-Patterns to Avoid
+
+- Do not move transaction ownership out of service layer.
+- Do not emit hooks before main operation commit.
+- Do not add filesystem mutations outside lock boundaries.
+- Do not add broad `except Exception` unless rollback/consistency requires it and behavior is tested.
+- Do not log secrets or sensitive token/password materials.
+
+## Done Checklist (Before Finalizing Changes)
+
+- Success path and key failure paths are covered by tests.
+- Lock semantics and transaction boundaries remain intact.
+- Audit write path still participates in service transaction as intended.
+- Hook emission still occurs post-commit.
+- Targeted tests pass for touched modules.
+- Relevant broader suite passes (`services`, `security`, or full `tests` depending on change scope).
+
+## LLM Editing Guidance
+
+- Preserve ADR behavior unless explicitly asked to change contract.
+- When touching service flows, verify:
+  - lock usage semantics,
+  - audit write path,
+  - commit/rollback boundaries,
+  - hook emission placement (post-commit).
+- For security-sensitive changes, inspect:
+  - auth dependencies and JTI invalidation,
+  - master-password paths in `/init/*` and throttling (`is_master_password_attempt_throttled`),
+  - logging for sensitive data exposure.

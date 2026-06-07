@@ -1,0 +1,8 @@
+[flake8]
+max-line-length = 79
+exclude =
+    .git,
+    __pycache__,
+    alembic/versions
+per-file-ignores =
+    __init__.py:F401

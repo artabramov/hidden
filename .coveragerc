@@ -1,0 +1,12 @@
+[run]
+branch = True
+source = app
+
+[report]
+precision = 1
+show_missing = True
+skip_covered = False
+omit =
+    */tests/*
+    */__init__.py
+    */alembic/versions/*

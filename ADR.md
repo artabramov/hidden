@@ -1,0 +1,73 @@
+# ADR Registry
+
+This file indexes architecture decisions referenced in code through `NOTE (ADR-XX)` comments. The source of truth is the code. Use global search across the project for details.
+
+- ADR-01: Naming and code style conventions.
+- ADR-02: Application runs inside a Docker container.
+- ADR-03: Cipherdir and secrets are stored in Docker volumes.
+- ADR-04: gocryptfs is used for filesystem-level encryption.
+- ADR-05: gocryptfs passphrase is stored encrypted.
+- ADR-06: Passphrase is provided via a temporary file in tmpfs.
+- ADR-07: Cipherdir initialization is a one-time operation.
+- ADR-08: Watchdog performs lazy unmount with a grace period.
+- ADR-09: Watchdog runs as a background sleep-loop.
+- ADR-10: SQLite is used as the database backend.
+- ADR-11: Dispose connections before gocryptfs unmount.
+- ADR-12: Application runs with a single Uvicorn worker.
+- ADR-13: TLS termination is handled by the external gateway.
+- ADR-14: Network-layer attack mitigation is externalized.
+- ADR-15: Master-password checks use entropy and crypto cost.
+- ADR-16: Master-password attempt throttling is per-process.
+- ADR-17: Configuration is not initialized at module import time.
+- ADR-18: Request context is a per-task key-value store.
+- ADR-19: Request context is reset before and after request.
+- ADR-20: X-Request-ID is accepted for request correlation.
+- ADR-21: Commit ownership and transaction boundaries.
+- ADR-22: Commit behavior of lower-level components.
+- ADR-23: Validation errors are defined as shared types.
+- ADR-24: Audit data is append-only.
+- ADR-25: Logging and audit are correlated using request UUID.
+- ADR-26: Logging is structured across three levels.
+- ADR-27: Sensitive data is not logged.
+- ADR-28: Service logging contract is canonical.
+- ADR-29: Middleware order is intentionally fixed.
+- ADR-30: Hooks and extensions trust model.
+- ADR-31: Hooks executed after the main operation is committed.
+- ADR-32: Hooks manage their own transactions.
+- ADR-33: Errors are split into resource and field-level types.
+- ADR-34: Secondary Pydantic schemas avoid duplicating validation.
+- ADR-35: The "first user becomes admin" flow is serialized.
+- ADR-36: Registration throttling limits successful creations.
+- ADR-37: Authentication is implemented as a two-step flow.
+- ADR-38: Timing-based username enumeration is not mitigated.
+- ADR-39: Admins manage roles with self-update protection.
+- ADR-40: Updating password to the same value is allowed.
+- ADR-41: Password change invalidates all tokens.
+- ADR-42: The application uses three global lock domains.
+- ADR-43: Database is source of truth; filesystem is projection.
+- ADR-44: Filesystem locks use hierarchical semantics.
+- ADR-45: Filesystem path constraints are enforced.
+- ADR-46: File writes follow POSIX durability semantics.
+- ADR-47: File mutations under overlapping WRITE lock.
+- ADR-48: File upload cleanup is best-effort.
+- ADR-49: Files cannot be uploaded to root.
+- ADR-50: File created_by/updated_by identify actors, not owners.
+- ADR-51: File stores current state; revision stores history.
+- ADR-52: File copy is intentionally not supported.
+- ADR-53: File updated_at reflects all modifications.
+- ADR-54: File/folder logic uses explicit parent chain.
+- ADR-55: Revision created_by identifies creator, not owner.
+- ADR-56: Shared download links are intentionally unsupported.
+- ADR-57: Thumbnails are derived artifacts stored by storage keys.
+- ADR-58: LRU cache holds decrypted bytes in process memory.
+- ADR-59: Folder name uniqueness includes root.
+- ADR-60: Folder deletion is service-layer controlled.
+- ADR-61: Folder write protection is an additional restriction.
+- ADR-62: Folder child counters are denormalized direct counters.
+- ADR-63: Folder move/copy operations are not supported.
+- ADR-64: Folder deletion is not an atomic operation.
+- ADR-65: Only the creator can modify a file comment.
+- ADR-66: Variable table stores application key-value data.
+- ADR-67: Variable keys are namespaced.
+- ADR-68: Extensions avoid module-level imports of app models.
+- ADR-69: Low-level services without audit rows.

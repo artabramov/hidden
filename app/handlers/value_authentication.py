@@ -1,0 +1,21 @@
+# app/handlers/value_authentication.py
+# SPDX-License-Identifier: SSPL-1.0
+
+from fastapi import Request, status
+from fastapi.responses import JSONResponse
+
+from app.errors import PydanticError
+
+
+async def value_authentication_handler(
+    request: Request,
+    exc: PydanticError,
+) -> JSONResponse:
+    """
+    Handle authentication errors by returning a 422 response with a
+    Pydantic-like error detail payload.
+    """
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        content={"detail": exc.detail},
+    )

@@ -1,38 +1,41 @@
 # Hidden — self-hosted encrypted file storage
 
 Hidden is a self-hosted encrypted file storage application focused on
-data ownership, privacy, and operational independence. It targets
-personal use and co-located teams that prefer to manage sensitive
-information within their own infrastructure rather than relying
-exclusively on third-party storage providers.
+data ownership, privacy, and operational independence. It follows a
+local-first approach and targets personal use and co-located teams that
+prefer to manage sensitive information within their own infrastructure
+rather than relying exclusively on third-party storage providers. No
+telemetry, analytics, or third-party cloud services are required for
+normal operation.
 
-The application is delivered as a `Docker` image and can run anywhere
-Docker is supported. Built with `gocryptfs` and `FastAPI`, it exposes
-a `REST API` for file operations (upload, move, rename, edit, tag,
-comment, download, delete) over an encrypted userspace filesystem.
+Built with `gocryptfs` and `FastAPI`, it extends `gocryptfs` with
+multi-user access, role-based permissions, file versioning, and auditing.
+All functionality is available through a `REST API`, including storage
+management, authentication, user administration, and file operations.
 File operations follow `POSIX` semantics with atomic guarantees where
 applicable.
 
-Two volumes are used: `cipherdir` (encrypted data storage) and `secrets`.
+The application is delivered as a `Docker` image and can run in any
+environment with Docker support. It uses two volumes: `cipherdir`
+(encrypted data storage) and `secrets` (encrypted passphrase and
+internal application secrets).
+
 The cipherdir is unlocked using a `gocryptfs passphrase` stored in the
 secrets volume. The passphrase itself is encrypted and requires a
-`master password` for each use. Removing the encrypted passphrase
-triggers an automatic unmount of the decrypted view. Without the
-passphrase and master password, data remains inaccessible.
+`master password` for each use.
 
-The encrypted storage remains accessible without the application itself.
-In emergency scenarios, the `cipherdir` can be mounted directly with
-`gocryptfs` using the decrypted passphrase. The complete application
-instance, including all data, metadata, users, and cryptographic
-material, can also be restored from the two volumes and the master
-password.
+If the encrypted passphrase becomes unavailable, the decrypted view is
+automatically unmounted. Without the passphrase and master password,
+data remains inaccessible.
 
-The application supports multi-user access with role-based permissions
-(`RBAC`) and TOTP-based multi-factor authentication (`MFA`).
+In emergency recovery scenarios, the `cipherdir` can be mounted directly
+with `gocryptfs` using the decrypted passphrase. The entire application
+state, including all data, metadata, users, and cryptographic material,
+can also be restored from the two volumes and the master password.
 
-The application follows a modular architecture with a hook-based
-extension mechanism, allowing functionality to be extended without
-modifying the core application code.
+Functionality can be extended through a modular architecture and a
+hook-based extension mechanism without modifying the core application
+code.
 
 Feedback on architecture, security assumptions, and design trade-offs is
 welcome:
@@ -75,26 +78,9 @@ Open in browser:
 http://localhost:8080/docs
 ```
 
-The container exposes two persistent volumes (application-managed data only):
+The built-in Swagger UI:
 
-- **hidden-cipherdir** — encrypted data storage
-- **hidden-secrets** — storage for the encrypted passphrase and internal keys
-
-The storage model is based on three independent components:
-
-- **Master password** — decrypts encrypted passphrase
-- **Encrypted passphrase** — unlocks cipherdir when decrypted
-- **gocryptfs cipherdir** — stores encrypted data
-
-The decrypted passphrase can be revealed with:
-
-```sh
-make passphrase
-```
-
-If the correct master password is provided, the decrypted passphrase is
-displayed in the current terminal session. The passphrase can be used to
-mount the encrypted storage directly with `gocryptfs`.
+![Swagger UI](img/swagger-ui.png)
 
 
 ## Key features
@@ -311,6 +297,22 @@ without exposing unencrypted file contents. Example tools:
 It is also recommended to back up the `hidden-secrets` volume separately
 from the `hidden-cipherdir` volume. **The master password must not be
 stored together with them.**
+
+
+## Emergency recovery
+
+The decrypted passphrase can be revealed with:
+
+```sh
+make passphrase
+```
+
+If the correct master password is provided, the decrypted passphrase
+is displayed in the terminal and can be used to mount the encrypted
+storage directly with `gocryptfs`.
+
+**The decrypted passphrase should be treated as a sensitive secret.**
+It provides direct access to the corresponding encrypted storage.
 
 
 ## Application updates

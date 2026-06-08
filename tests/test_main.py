@@ -159,7 +159,7 @@ class TestMainApp(IsolatedAsyncioTestCase):
         self.assertNotEqual(_methods_on_path("/docs"), set())
 
     def test_app_title_version_and_swagger_options(self) -> None:
-        self.assertEqual(app.title, "Hidden — REST over gocryptfs")
+        self.assertEqual(app.title, "Hidden — encrypted file storage")
         self.assertEqual(app.version, version_module.__version__)
         params = app.swagger_ui_parameters
         self.assertTrue(params.get("persistAuthorization"))

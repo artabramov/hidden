@@ -111,7 +111,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="Hidden — REST over gocryptfs",
+    title="Hidden — encrypted file storage",
     version=__version__,
     lifespan=lifespan,
     openapi_tags=TAGS_METADATA,

@@ -1,5 +1,5 @@
 # app/cache/lru.py
-# SPDX-License-Identifier: SSPL-1.0
+# SPDX-License-Identifier: GPL-3.0-only
 
 from collections import OrderedDict
 from functools import lru_cache

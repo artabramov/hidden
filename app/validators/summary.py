@@ -1,5 +1,5 @@
 # app/validators/summary.py
-# SPDX-License-Identifier: SSPL-1.0
+# SPDX-License-Identifier: GPL-3.0-only
 
 def normalize_summary(value: str | None) -> str | None:
     if value == "":

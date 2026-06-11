@@ -1,5 +1,5 @@
 # app/handlers/too_many_requests.py
-# SPDX-License-Identifier: SSPL-1.0
+# SPDX-License-Identifier: GPL-3.0-only
 
 from fastapi import Request, status
 from fastapi.responses import JSONResponse

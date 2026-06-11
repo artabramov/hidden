@@ -1,5 +1,5 @@
 # app/paths/variable_namespace.py
-# SPDX-License-Identifier: SSPL-1.0
+# SPDX-License-Identifier: GPL-3.0-only
 
 from fastapi import HTTPException, Path, status
 from pydantic import ValidationError

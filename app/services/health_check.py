@@ -1,5 +1,5 @@
 # app/services/health_check.py
-# SPDX-License-Identifier: SSPL-1.0
+# SPDX-License-Identifier: GPL-3.0-only
 
 import time
 from datetime import datetime

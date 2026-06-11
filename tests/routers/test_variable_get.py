@@ -1,5 +1,5 @@
 # tests/routers/test_variable_get.py
-# SPDX-License-Identifier: SSPL-1.0
+# SPDX-License-Identifier: GPL-3.0-only
 
 import unittest
 from unittest.mock import AsyncMock, MagicMock, patch

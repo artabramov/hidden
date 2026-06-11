@@ -1,5 +1,5 @@
 # tests/paths/test_variable_key.py
-# SPDX-License-Identifier: SSPL-1.0
+# SPDX-License-Identifier: GPL-3.0-only
 
 import unittest
 

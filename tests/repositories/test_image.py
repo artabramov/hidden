@@ -1,5 +1,5 @@
 # tests/repositories/test_image.py
-# SPDX-License-Identifier: SSPL-1.0
+# SPDX-License-Identifier: GPL-3.0-only
 
 from io import BytesIO
 import unittest

@@ -1,5 +1,5 @@
 # app/errors.py
-# SPDX-License-Identifier: SSPL-1.0
+# SPDX-License-Identifier: GPL-3.0-only
 
 # TODO: Review broad exception handling and narrow exception types where
 # appropriate (encryption/decryption, master password handling, mount

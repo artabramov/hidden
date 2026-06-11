@@ -1,5 +1,5 @@
 # app/dependencies/session.py
-# SPDX-License-Identifier: SSPL-1.0
+# SPDX-License-Identifier: GPL-3.0-only
 
 from collections.abc import AsyncGenerator
 

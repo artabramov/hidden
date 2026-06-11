@@ -1,5 +1,5 @@
 # app/services/cipherdir_mount.py
-# SPDX-License-Identifier: SSPL-1.0
+# SPDX-License-Identifier: GPL-3.0-only
 
 import logging
 

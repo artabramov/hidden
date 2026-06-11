@@ -1,5 +1,5 @@
 # tests/models/test_file_thumbnail.py
-# SPDX-License-Identifier: SSPL-1.0
+# SPDX-License-Identifier: GPL-3.0-only
 
 import unittest
 from unittest.mock import MagicMock, patch

@@ -1,5 +1,5 @@
 # app/schemas/user_token_invalidate.py
-# SPDX-License-Identifier: SSPL-1.0
+# SPDX-License-Identifier: GPL-3.0-only
 
 USER_TOKEN_INVALIDATE_ERRORS = {
     401: {

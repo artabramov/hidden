@@ -1,5 +1,5 @@
 # app/schames/file_thumbnail_retrieve.py
-# SPDX-License-Identifier: SSPL-1.0
+# SPDX-License-Identifier: GPL-3.0-only
 
 FILE_THUMBNAIL_RETRIEVE_ERRORS = {
     401: {

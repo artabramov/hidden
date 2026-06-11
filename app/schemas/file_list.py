@@ -1,5 +1,5 @@
 # app/schemas/file_list.py
-# SPDX-License-Identifier: SSPL-1.0
+# SPDX-License-Identifier: GPL-3.0-only
 
 from types import SimpleNamespace
 from typing import Literal

@@ -1,5 +1,5 @@
 # app/models/folder.py
-# SPDX-License-Identifier: SSPL-1.0
+# SPDX-License-Identifier: GPL-3.0-only
 
 import os
 import time

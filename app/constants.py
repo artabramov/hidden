@@ -1,5 +1,5 @@
 # app/constants.py
-# SPDX-License-Identifier: SSPL-1.0
+# SPDX-License-Identifier: GPL-3.0-only
 
 # NOTE (ADR-01): Naming and code style conventions.
 # 1. File names use `<resource>_<action>` to group related logic by

@@ -1,5 +1,5 @@
 # app/schemas/comment_create.py
-# SPDX-License-Identifier: SSPL-1.0
+# SPDX-License-Identifier: GPL-3.0-only
 
 from pydantic import BaseModel, ConfigDict, Field
 

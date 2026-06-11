@@ -1,5 +1,5 @@
 # app/validators/validation_errors.py
-# SPDX-License-Identifier: SSPL-1.0
+# SPDX-License-Identifier: GPL-3.0-only
 
 # NOTE (ADR-23): Validation errors are defined as shared types.
 # This ensures consistent 422 responses across validators.

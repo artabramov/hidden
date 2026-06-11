@@ -1,5 +1,5 @@
 # app/schemas/metrics_retrieve.py
-# SPDX-License-Identifier: SSPL-1.0
+# SPDX-License-Identifier: GPL-3.0-only
 
 METRICS_RETRIEVE_ERRORS = {
     401: {

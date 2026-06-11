@@ -1,5 +1,5 @@
 # app/security/cipherdir.py
-# SPDX-License-Identifier: SSPL-1.0
+# SPDX-License-Identifier: GPL-3.0-only
 
 # NOTE (ADR-15): Master-password checks use entropy and crypto cost.
 # 1. Scope is online guessing against endpoints that verify the master

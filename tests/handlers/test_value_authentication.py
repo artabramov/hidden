@@ -1,5 +1,5 @@
 # tests/handlers/test_value_authentication.py
-# SPDX-License-Identifier: SSPL-1.0
+# SPDX-License-Identifier: GPL-3.0-only
 
 import json
 import unittest

@@ -1,5 +1,5 @@
 # app/routers/health_check.py
-# SPDX-License-Identifier: SSPL-1.0
+# SPDX-License-Identifier: GPL-3.0-only
 
 from fastapi import APIRouter, status
 from fastapi.responses import JSONResponse

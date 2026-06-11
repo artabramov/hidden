@@ -44,7 +44,7 @@ welcome:
 ![version](https://img.shields.io/badge/version-0.5.11-2f81f7)
 ![test coverage](https://img.shields.io/badge/test%20coverage-99.9%25-2f81f7)
 ![security audit](https://img.shields.io/badge/security%20audit-2026--06--07-2f81f7)
-[![license](https://img.shields.io/badge/license-SSPL--1.0-2f81f7)](./LICENSE)
+[![license](https://img.shields.io/badge/license-GPL--3.0-2f81f7)](./LICENSE)
 
 If you like it, star it ⭐ — it helps discoverability. Thank you!
 
@@ -374,13 +374,13 @@ changes are planned.
 
 ## License
 
-This project is licensed under the **Server Side Public License,
-version 1** (`SSPL-1.0`).
+This project is licensed under the **GNU General Public License v3.0**
+(`GPL-3.0`).
 
 You may use, modify, and distribute this software in accordance with
-the terms of the SSPL. If you provide the software as a service, you
-must make the complete corresponding source code of the service
-available, as required by the license.
+the terms of the GPL. Any distributed modified version of the software
+must also be licensed under GPL-3.0 and accompanied by the
+corresponding source code.
 
 See [LICENSE](./LICENSE) for full license text.
 

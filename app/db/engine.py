@@ -1,5 +1,5 @@
 # app/db/engine.py
-# SPDX-License-Identifier: SSPL-1.0
+# SPDX-License-Identifier: GPL-3.0-only
 
 from sqlalchemy import event
 from sqlalchemy.ext.asyncio import (

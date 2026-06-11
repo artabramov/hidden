@@ -1,5 +1,5 @@
 # app/events.py
-# SPDX-License-Identifier: SSPL-1.0
+# SPDX-License-Identifier: GPL-3.0-only
 
 
 # NOTE (ADR-25): Logging and audit are correlated using request UUID.

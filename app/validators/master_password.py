@@ -1,5 +1,5 @@
 # app/validators/master_password.py
-# SPDX-License-Identifier: SSPL-1.0
+# SPDX-License-Identifier: GPL-3.0-only
 
 from pydantic_core import PydanticCustomError
 

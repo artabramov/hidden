@@ -1,5 +1,5 @@
 # app/schemas/variable_list.py
-# SPDX-License-Identifier: SSPL-1.0
+# SPDX-License-Identifier: GPL-3.0-only
 
 
 VARIABLE_LIST_ERRORS = {

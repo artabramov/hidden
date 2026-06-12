@@ -4,6 +4,7 @@ Follow the project's Telegram channel for real-time development updates, release
 [t.me/hiddenupdates](https://t.me/hiddenupdates)
 
 ## [0.5.12] - 2026-06-13
+- Updated **PyJWT** from **2.12.1** to **2.13.0** to address security vulnerabilities reported by dependency auditing tools.
 - Replaced the project license with **GPL-3.0** (SPDX-License-Identifier: GPL-3.0-only), updated license headers across the codebase, and transitioned the project to a fully open-source model.
 - Revised **project documentation** and updated comments for better readability and consistency.
 

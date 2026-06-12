@@ -43,7 +43,7 @@ welcome:
 
 ![version](https://img.shields.io/badge/version-0.5.12-2f81f7)
 ![test coverage](https://img.shields.io/badge/test%20coverage-99.9%25-2f81f7)
-![security audit](https://img.shields.io/badge/security%20audit-2026--06--07-2f81f7)
+![security audit](https://img.shields.io/badge/security%20audit-2026--06--12-2f81f7)
 [![license](https://img.shields.io/badge/license-GPL--3.0-2f81f7)](./LICENSE)
 
 If you like it, star it ⭐ — it helps discoverability. Thank you!
@@ -276,7 +276,7 @@ cryptographic overhead introduced by `gocryptfs`):
  Files and                            File        Application
  thumbnails                           revisions   metadata
  │                                    │           │
-░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒░░░
 ```
 
 As a result, the size of the `hidden-cipherdir` volume may exceed the

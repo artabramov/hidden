@@ -3,7 +3,7 @@
 Follow the project's Telegram channel for real-time development updates, release announcements, security advisories, and upcoming events:
 [t.me/hiddenupdates](https://t.me/hiddenupdates)
 
-## [0.5.12] - 2026-06-14
+## [0.5.12] - 2026-06-13
 - Replaced the project license with **GPL-3.0** (SPDX-License-Identifier: GPL-3.0-only), updated license headers across the codebase, and transitioned the project to a fully open-source model.
 - Revised **project documentation** and updated comments for better readability and consistency.
 

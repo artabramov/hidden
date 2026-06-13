@@ -1,4 +1,4 @@
-.PHONY: install audit passphrase
+.PHONY: install develop audit passphrase
 
 PORT ?= 80
 
@@ -42,9 +42,6 @@ develop:
 	find /root/.ssh -name '*.pub' -type f -exec chmod 644 {} \; \
 	"
 
-passphrase:
-	docker exec -it hidden python3 -m app.runtime.passphrase
-
 audit:
 	docker exec hidden python3 -m pip install --quiet bandit pip-audit
 	docker exec hidden python3 -m pip_audit -r requirements.txt
@@ -52,3 +49,6 @@ audit:
 
 	docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
 		aquasec/trivy image --scanners vuln --severity HIGH,CRITICAL hidden
+
+passphrase:
+	docker exec -it hidden python3 -m app.runtime.passphrase

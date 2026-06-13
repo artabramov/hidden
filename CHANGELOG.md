@@ -3,6 +3,9 @@
 Follow the project's Telegram channel for real-time development updates, release announcements, security advisories, and upcoming events:
 [t.me/hiddenupdates](https://t.me/hiddenupdates)
 
+## [0.5.13] - 2026-06-14
+- Added the `develop` **Makefile target** and marked it as phony; development-only Git and OpenSSH client tooling is now installed on demand.
+
 ## [0.5.12] - 2026-06-13
 - Updated **PyJWT** from **2.12.1** to **2.13.0** to address security vulnerabilities reported by dependency auditing tools.
 - Replaced the project license with **GPL-3.0** (SPDX-License-Identifier: GPL-3.0-only), updated license headers across the codebase, and transitioned the project to a fully open-source model.

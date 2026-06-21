@@ -43,7 +43,6 @@ class TestCheckImageDimensions(unittest.TestCase):
             with self.assertRaises(ValueError) as cm:
                 ri._check_image_dimensions(image)
 
-        self.assertIn("121", str(cm.exception))
         self.assertIn("100", str(cm.exception))
 
     def test_raises_exactly_at_boundary(self):

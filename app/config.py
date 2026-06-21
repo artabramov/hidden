@@ -45,6 +45,7 @@ class Config(BaseSettings):
     AUTH_TOKEN_TTL_SECONDS: int
     AUTH_ALLOW_PERMANENT_TOKENS: bool = False
     LRU_CACHE_MAX_BYTES: int = 0
+    IMAGE_MAX_PIXELS: int = 52428800
     CORS_ALLOW_ORIGINS: str = ""
     CORS_MAX_AGE_SECONDS: int = 0
     ENABLED_EXTENSIONS: str = ""

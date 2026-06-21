@@ -22,6 +22,7 @@ def build_default_config_values() -> dict[str, object]:
         "UVICORN_PORT": 80,
         "API_PREFIX": "/api/v1",
         "AUTH_TOKEN_TTL_SECONDS": 86400,
+        "IMAGE_MAX_PIXELS": 52428800,
         "CORS_ALLOW_ORIGINS": "http://localhost:3000,http://127.0.0.1:3000",
         "CORS_MAX_AGE_SECONDS": 86400,
         "ENABLED_EXTENSIONS": "",

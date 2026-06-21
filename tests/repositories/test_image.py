@@ -11,8 +11,127 @@ from PIL import Image
 from app.repositories import image as ri
 from app.repositories.image import ImageRotationAngle
 
+from tests.helpers import set_minimal_app_config_env
+
+set_minimal_app_config_env()
+
+
+def _cfg(max_pixels: int) -> MagicMock:
+    cfg = MagicMock()
+    cfg.IMAGE_MAX_PIXELS = max_pixels
+    return cfg
+
+
+class TestCheckImageDimensions(unittest.TestCase):
+
+    def test_passes_when_pixel_count_is_within_limit(self):
+        image = _image("PNG", size=(10, 10))  # 100 px
+
+        with patch(
+            "app.repositories.image.get_config",
+            return_value=_cfg(100)
+        ):
+            ri._check_image_dimensions(image)  # must not raise
+
+    def test_raises_when_pixel_count_exceeds_limit(self):
+        image = _image("PNG", size=(11, 11))  # 121 px
+
+        with patch(
+            "app.repositories.image.get_config",
+            return_value=_cfg(100)
+        ):
+            with self.assertRaises(ValueError) as cm:
+                ri._check_image_dimensions(image)
+
+        self.assertIn("121", str(cm.exception))
+        self.assertIn("100", str(cm.exception))
+
+    def test_raises_exactly_at_boundary(self):
+        image = _image("PNG", size=(11, 10))  # 110 px > 100
+
+        with patch(
+            "app.repositories.image.get_config",
+            return_value=_cfg(100)
+        ):
+            with self.assertRaises(ValueError):
+                ri._check_image_dimensions(image)
+
+    def test_passes_exactly_at_limit(self):
+        image = _image("PNG", size=(10, 10))  # 100 px == 100
+
+        with patch(
+            "app.repositories.image.get_config",
+            return_value=_cfg(100)
+        ):
+            ri._check_image_dimensions(image)  # must not raise
+
+    def test_rotate_sync_raises_on_oversized_image(self):
+        image = _image("PNG", size=(11, 11))  # 121 px > 100
+
+        with (
+            patch("app.repositories.image.Image.open",
+                  return_value=_image_context(image)),
+            patch("app.repositories.image.get_config", return_value=_cfg(100)),
+            patch("app.repositories.image.ImageOps.exif_transpose") as exif,
+        ):
+            with self.assertRaises(ValueError):
+                ri._rotate_sync("/src/bomb.png", 90)
+
+        exif.assert_not_called()
+
+    def test_flip_sync_raises_on_oversized_image(self):
+        image = _image("PNG", size=(11, 11))
+
+        with (
+            patch("app.repositories.image.Image.open",
+                  return_value=_image_context(image)),
+            patch("app.repositories.image.get_config", return_value=_cfg(100)),
+            patch("app.repositories.image.ImageOps.exif_transpose") as exif,
+        ):
+            with self.assertRaises(ValueError):
+                ri._flip_sync("/src/bomb.png", "horizontal")
+
+        exif.assert_not_called()
+
+    def test_create_thumbnail_sync_raises_on_oversized_image(self):
+        image = _image("PNG", size=(11, 11))
+
+        with (
+            patch("app.repositories.image.Image.open",
+                  return_value=_image_context(image)),
+            patch("app.repositories.image.get_config", return_value=_cfg(100)),
+            patch("app.repositories.image.ImageOps.exif_transpose") as exif,
+        ):
+            with self.assertRaises(ValueError):
+                ri._create_thumbnail_sync("/src/bomb.png", (64, 64))
+
+        exif.assert_not_called()
+
+    def test_get_image_size_sync_raises_on_oversized_image(self):
+        image = _image("PNG", size=(11, 11))
+
+        with (
+            patch("app.repositories.image.Image.open",
+                  return_value=_image_context(image)),
+            patch("app.repositories.image.get_config", return_value=_cfg(100)),
+            patch("app.repositories.image.ImageOps.exif_transpose") as exif,
+        ):
+            with self.assertRaises(ValueError):
+                ri._get_image_size_sync("/src/bomb.png")
+
+        exif.assert_not_called()
+
 
 class TestImageRepository(unittest.IsolatedAsyncioTestCase):
+
+    def setUp(self):
+        patcher = patch(
+            "app.repositories.image.get_config",
+            return_value=_cfg(52428800),
+        )
+        patcher.start()
+        self.addCleanup(patcher.stop)
+
     async def test_create_thumbnail_writes_generated_bytes(self):
         async def fake_to_thread(fn, /, *args, **kwargs):
             self.assertIs(fn, ri._create_thumbnail_sync)

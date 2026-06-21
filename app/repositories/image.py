@@ -7,6 +7,7 @@ from typing import Literal
 
 from PIL import Image, ImageOps
 
+from app.config import get_config
 from app.constants import FILE_THUMBNAIL_SIZE
 from app.repositories import file as file_repository
 
@@ -65,12 +66,29 @@ async def flip(
     await file_repository.write(destination, data)
 
 
+def _check_image_dimensions(image: Image.Image) -> None:
+    """
+    Raise ValueError if the image pixel count exceeds the configured
+    maximum. Must be called after Image.open() but before any
+    pixel-consuming operation such as exif_transpose or image.load(),
+    because Image.open() is lazy and reads only the header — so .size
+    is available without decoding any pixel data.
+    """
+    max_pixels = get_config().IMAGE_MAX_PIXELS
+    width, height = image.size
+    if width * height > max_pixels:
+        raise ValueError(
+            f"image exceeds the maximum allowed pixel count of {max_pixels}"
+        )
+
+
 def _get_image_size_sync(source: str) -> tuple[int, int]:
     """
     Synchronous image size reader. Opens the image, applies EXIF
     normalization, and returns the resulting width and height.
     """
     with Image.open(source) as image:
+        _check_image_dimensions(image)
         image = ImageOps.exif_transpose(image)
         return image.size
 
@@ -90,6 +108,7 @@ def _create_thumbnail_sync(
         if image_format is None:
             raise ValueError("Unsupported image format")
 
+        _check_image_dimensions(image)
         image = ImageOps.exif_transpose(image)
         image.thumbnail(size, Image.Resampling.LANCZOS)
         return _serialize(image, image_format)
@@ -102,6 +121,7 @@ def _rotate_sync(source: str, angle: ImageRotationAngle) -> bytes:
         if image_format is None:
             raise ValueError("Unsupported image format")
 
+        _check_image_dimensions(image)
         image = ImageOps.exif_transpose(image)
 
         if angle == 90:
@@ -140,6 +160,7 @@ def _flip_sync(
         if image_format is None:
             raise ValueError("Unsupported image format")
 
+        _check_image_dimensions(image)
         image = ImageOps.exif_transpose(image)
         image = image.transpose(transpose)
         return _serialize(image, image_format)

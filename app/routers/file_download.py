@@ -14,10 +14,6 @@ from app.services.file_download import download_file
 router = APIRouter(tags=["Files"])
 
 
-# TODO: Signed sharing links — anonymous, time-limited, scoped access
-# to a file for users without an account.
-
-
 @router.get(
     "/file/{file_id}/revision/{revision_number}",
     response_class=FileResponse,

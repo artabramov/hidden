@@ -3,6 +3,9 @@
 Follow the project's Telegram channel for real-time development updates, release announcements, security advisories, and upcoming events:
 [t.me/hiddenupdates](https://t.me/hiddenupdates)
 
+## [0.5.14] - 2026-06-21
+- Added **decompression bomb protection** for image processing: all image manipulation operations (rotate, flip, thumbnail) now check the pixel count against the new `IMAGE_MAX_PIXELS` configuration value (default: **50 MP**) immediately after opening the image header and before decoding any pixel data. Images exceeding the limit are rejected.
+
 ## [0.5.13] - 2026-06-14
 - Added the `develop` **Makefile target** and marked it as phony; development-only Git and OpenSSH client tooling is now installed on demand.
 

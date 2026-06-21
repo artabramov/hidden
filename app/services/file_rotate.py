@@ -41,9 +41,6 @@ from app.schemas.file_rotate import FileRotateRequest
 log = logging.getLogger(__name__)
 
 
-# TODO: Protect against decompression bombs by validating image
-# dimensions and pixel count before processing.
-
 async def rotate_file(
     session: AsyncSession,
     user: User,

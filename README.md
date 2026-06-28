@@ -45,9 +45,9 @@ For project updates, release announcements, security advisories, and
 other news, follow the Telegram channel:
 [t.me/hiddenupdates](https://t.me/hiddenupdates)
 
-![version](https://img.shields.io/badge/version-0.5.14-2f81f7)
+![version](https://img.shields.io/badge/version-0.5.15-2f81f7)
 ![test coverage](https://img.shields.io/badge/test%20coverage-99.9%25-2f81f7)
-![security audit](https://img.shields.io/badge/security%20audit-2026--06--21-2f81f7)
+![security audit](https://img.shields.io/badge/security%20audit-2026--06--28-2f81f7)
 [![license](https://img.shields.io/badge/license-GPL--3.0-2f81f7)](./LICENSE)
 
 If you like it, star it ⭐ — it helps discoverability. Thank you!

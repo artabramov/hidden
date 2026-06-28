@@ -11,7 +11,7 @@ psutil==7.2.2
 python-magic==0.4.27
 pydantic-settings==2.13.1
 PyJWT[crypto]==2.13.0
-python-multipart==0.0.27
+python-multipart==0.0.31
 pyotp==2.9.0
 SQLAlchemy==2.0.48
 uvicorn[standard]==0.30.6

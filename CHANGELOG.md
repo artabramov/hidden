@@ -3,6 +3,9 @@
 Follow the project's Telegram channel for real-time development updates, release announcements, security advisories, and upcoming events:
 [t.me/hiddenupdates](https://t.me/hiddenupdates)
 
+## [0.5.16] - 2026-07-05
+- Updated **pydantic-settings** from **2.13.1** to **2.14.2** to address security vulnerabilities reported by dependency auditing tools.
+
 ## [0.5.15] - 2026-06-28
 - Updated **python-multipart** from **0.0.27** to **0.0.31** to address security vulnerabilities reported by dependency auditing tools.
 

@@ -270,24 +270,6 @@ security controls such as reverse proxies and network filtering.
   consistency guarantees and lead to data corruption.
 
 
-## Cipherdir layout
-
-The `hidden-cipherdir` volume stores user content, revision history,
-application metadata, and thumbnails (along with a small amount of
-cryptographic overhead introduced by `gocryptfs`):
-
-```sh
- Files and                            File        Application
- thumbnails                           revisions   metadata
- │                                    │           │
-▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒░░░
-```
-
-As a result, the size of the `hidden-cipherdir` volume may exceed the
-size of the current file set, particularly in deployments that retain
-large numbers of file revisions.
-
-
 ## Backup recommendations
 
 Regular backups of the `hidden-cipherdir` volume are recommended. The

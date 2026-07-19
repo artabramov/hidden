@@ -5,6 +5,7 @@ Follow the project's Telegram channel for real-time development updates, release
 
 ## [0.5.17] - 2026-07-19
 - Updated **pillow** from **12.2.0** to **12.3.0** to address security vulnerabilities reported by dependency auditing tools.
+- Made small documentation improvements.
 
 ## [0.5.16] - 2026-07-05
 - Updated **pydantic-settings** from **2.13.1** to **2.14.2** to address security vulnerabilities reported by dependency auditing tools.

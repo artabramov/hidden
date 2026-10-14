@@ -19,7 +19,8 @@ mkdir -p \
 (
   while true; do
     sleep "$WATCHDOG_INTERVAL_SECONDS"
-    cd "$INSTALL_SOURCE_CODE" && python3 -m app.runtime.watchdog
+    cd "$INSTALL_SOURCE_CODE" && python3 -m app.runtime.watchdog \
+      || echo "msg=watchdog_run_failed exit_code=$?" >&2
   done
 ) >> /proc/1/fd/1 2>> /proc/1/fd/2 &
 

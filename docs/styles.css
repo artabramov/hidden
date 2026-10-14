@@ -1,0 +1,71 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.container, .row {
+  width: 100%;
+  max-width: 100%;
+}
+
+img {
+  max-width: 100%;
+}
+
+mark {
+  background-color: rgb(207, 226, 255) !important;
+}
+
+.display-1 {
+  user-select: none;
+}
+
+.display-1, .display-5 {
+  font-family: Tahoma !important;
+  font-weight: bold !important;
+}
+
+.hidden {
+  color: #000000;
+  transition: color 0.5s ease-in-out;
+}
+
+.hidden:hover {
+  cursor: crosshair;
+  color: #ffffff;
+  transition: color 0s ease-in-out;
+}
+
+.mt-12 {
+  margin-top: 10rem;
+}
+
+.mb-6 {
+  margin-bottom: 4rem;
+}
+
+.mb-7 {
+  margin-bottom: 5rem;
+}
+
+.mb-8 {
+  margin-bottom: 6rem;
+}
+
+.mb-9 {
+  margin-bottom: 7rrem;
+}
+
+.mb-10 {
+  margin-bottom: 8rem;
+}
+
+.mb-11 {
+  margin-bottom: 9rem;
+}
+
+.mb-12 {
+  margin-bottom: 10rem;
+}

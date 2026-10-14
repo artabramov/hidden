@@ -1,6 +1,9 @@
-.PHONY: install develop audit passphrase
+.PHONY: install develop
 
-PORT ?= 80
+-include .env
+
+FORCE ?= 0
+VOLUME_SECRETS ?= /mnt/hidden-secrets
 
 # NOTE (ADR-02): Application runs inside a Docker container.
 # 1. Packages all dependencies and runtime environment, ensuring
@@ -10,7 +13,7 @@ PORT ?= 80
 # 3. Keeps the decrypted filesystem mountpoint internal to the container
 #    by default, limiting direct host access.
 
-# NOTE (ADR-03): Cipherdir and secrets are stored in Docker volumes.
+# NOTE (ADR-07): Cipherdir and secrets are stored in Docker volumes.
 # 1. The secrets volume allows the encrypted passphrase to be removed
 #    at runtime; its absence is detected by the watchdog, which triggers
 #    automatic unmount of the gocryptfs mountpoint.
@@ -19,6 +22,14 @@ PORT ?= 80
 #    without the application.
 
 install:
+	@if [ "$(FORCE)" != "1" ]; then \
+		if ! mountpoint -q "$(VOLUME_SECRETS)" 2>/dev/null; then \
+			echo "error: VOLUME_SECRETS is missing or not a mountpoint." >&2; \
+			echo "Connect removable media at that path, then retry." >&2; \
+			echo "To skip this check: make install FORCE=1" >&2; \
+			exit 1; \
+		fi; \
+	fi
 	docker build -t hidden .
 	docker run -dit \
 	--init \
@@ -26,9 +37,11 @@ install:
 	--cap-add SYS_ADMIN \
 	--device /dev/fuse \
 	--security-opt apparmor:unconfined \
-	-p $(PORT):80 \
-	-v hidden-cipherdir:/var/lib/hidden/cipherdir \
-	-v hidden-secrets:/media/secrets \
+	-p $(UVICORN_PORT):$(UVICORN_PORT) \
+	-p $(VERSITY_PORT):$(VERSITY_PORT) \
+	-p $(VERSITY_WEBGUI_PORT):$(VERSITY_WEBGUI_PORT) \
+	-v hidden-cipherdir:$(INSTALL_CIPHERDIR) \
+	-v $(VOLUME_SECRETS):$(INSTALL_SECRETS) \
 	--name hidden \
 	hidden
 
@@ -41,14 +54,3 @@ develop:
 	find /root/.ssh -type f -exec chmod 600 {} \; && \
 	find /root/.ssh -name '*.pub' -type f -exec chmod 644 {} \; \
 	"
-
-audit:
-	docker exec hidden python3 -m pip install --quiet bandit pip-audit
-	docker exec hidden python3 -m pip_audit -r requirements.txt
-	docker exec hidden python3 -m bandit -r app -x tests -lll
-
-	docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
-		aquasec/trivy image --scanners vuln --severity HIGH,CRITICAL hidden
-
-passphrase:
-	docker exec -it hidden python3 -m app.runtime.passphrase

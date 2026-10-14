@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hidden</title>
+    <link href="styles.css" rel="stylesheet">
+    <link rel="icon" href="favicon.ico">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  </head>
+  <body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <div class="container-fluid d-flex justify-content-center mt-5 pt-5 mb-6">
+      <img src="img/hidden.png" class="img-fluid" style="width: 100%; max-width: 32em;" loading="lazy">
+    </div>
+
+    <div class="container display-1 text-center mb-2">
+      <span class="hidden">H</span><span class="hidden">i</span><span class="hidden">d</span><span class="hidden">d</span><span class="hidden">e</span><span class="hidden">n</span>
+      <span class="hidden">S</span><span class="hidden">3</span>
+    </div>
+
+    <div class="d-flex justify-content-center mb-5">
+      <div class="fs-4 text-center" style="max-width: 24em;">
+        Encrypted self-hosted S3-compatible object storage
+        for sensitive data on privately managed infrastructure.
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-center mb-3">
+      <div class="text-center" style="max-width: 38em;">
+        The project is distributed as a Docker container and can be
+        deployed in any compatible environment. It is freely available
+        under the Apache 2.0 license.
+      </div>
+    </div>
+
+    <div class="text-center mb-12">
+      <div class="d-inline-block mx-3 align-top" style="max-width: 260px;">
+        <a href="https://github.com/artabramov/hidden" target="_blank" class="btn btn-lg btn-secondary w-100">
+          GitHub
+        </a>
+        <div class="small text-muted mt-2">
+          Explore the source code, read the docs, and follow project
+          development.
+        </div>
+      </div>
+      
+      <div class="d-inline-block mx-3 align-top" style="max-width: 260px;">
+        <a href="https://hub.docker.com/repository/docker/artabramov/hidden/general" target="_blank" class="btn btn-lg btn-primary w-100">
+          Docker Hub <i class="bi bi-arrow-right"></i>
+        </a>
+        <div class="small text-muted mt-2">
+          Pull the ready-to-use Docker image and deploy it on your own
+          infrastructure.
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center mb-2">
+      <div class="display-5">
+        Okay, what is it?
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-center mb-5">
+      <div class="fs-4 text-center" style="max-width: 18em;">
+        It's a secure box for your private data.
+        Protecting it is what it's all about.
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-center mb-12">
+      <div style="max-width: 28em;">
+        <div class="mb-3">
+          The fundamental principle of the app is to protect data at rest.
+        </div>
+        <div class="mb-3">
+          Operating on top of an encrypted filesystem, the internal data
+          storage is designed to withstand unauthorized access to the
+          underlying filesystem, as well as hardware loss or theft.
+        </div>
+        <div class="mb-3">
+          Even if encrypted data is obtained from disk, <b>the original
+          contents cannot be recovered without the secret and master
+          password</b>.
+      </div>
+      </div>
+    </div>
+
+    <div class="text-center mb-2">
+      <div class="display-5">
+        The underlying architecture
+      </div>
+    </div>
+    
+    <div class="d-flex justify-content-center mb-5">
+      <div class="fs-4 text-center" style="max-width: 33em;">
+        Data stays encrypted on external volumes. The container hides
+        the decrypted mountpoint and exposes storage and management
+        interfaces.
+      </div>
+    </div>
+
+    <div class="container-fluid d-flex justify-content-center mb-12">
+      <img src="img/schema.png" class="img-fluid" style="width: 100%; max-width: 58em;" loading="lazy">
+    </div>
+
+    <div class="text-center mb-2">
+      <div class="display-5">
+        The mechanics of protection
+      </div>
+    </div>
+    
+    <div class="d-flex justify-content-center mb-5">
+      <div class="fs-4 text-center" style="max-width: 32em;">
+        Data remains encrypted at rest and is accessible only while
+        the storage is mounted. When no longer needed, the storage
+        is unmounted again.
+      </div>
+    </div>
+
+    <div class="container mb-12">
+      <div class="row justify-content-center">
+        <div class="col-12 col-sm-6 col-md-3 text-start mb-5 mt-3">
+          <i class="bi bi-key fs-1"></i>
+          <div class="fs-4 fw-bold lh-sm mb-2">
+            Detachable<br>
+            secret
+          </div>
+          <div>
+            The secret is stored encrypted on a separate volume,
+            which can be located on removable media or a remote host.
+            Without it, the storage is unmounted.
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-3 text-start mb-5 mt-3">
+          <i class="bi bi-input-cursor fs-1"></i>
+          <div class="fs-4 fw-bold lh-sm mb-2">
+            Master<br>
+            password
+          </div>
+          <div>
+            The master password protects the secret and is never
+            stored by the app. Its validity is verified each time by
+            attempting to decrypt the secret.
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-3 text-start bg-dark text-light rounded px-4 py-3 mb-5">
+          <i class="bi bi-lock fs-1"></i>
+          <div class="fs-4 fw-bold lh-sm mb-2">
+            Auto<br>
+            unmount
+          </div>
+          <div>
+            The storage supports manual unmounting and automatically
+            unmounts if the secret becomes unavailable or the app
+            restarts.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center mb-2">
+      <div class="display-5">
+        The technologies behind the app
+      </div>
+    </div>
+    
+    <div class="d-flex justify-content-center mb-5">
+      <div class="fs-4 text-center" style="max-width: 36em;">
+        The app is based on three open-source technologies that provide
+        S3 object storage, transparent filesystem encryption, and secure
+        lifecycle management.
+      </div>
+    </div>
+
+    <div class="container mb-12">
+      <div class="row justify-content-center">
+        <div class="col-12 col-sm-6 col-md-3 text-start mb-5 me-3">
+          <div class="mx-4">
+            <img src="img/versity.png" class="w-100">
+          </div>
+          <div class="mt-2">
+            The S3 API manages objects that are mapped to files
+            through the underlying filesystem backend.
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-3 text-start mb-5 me-3">
+          <div class="mx-4">
+            <img src="img/gocryptfs.png" class="w-100">
+          </div>
+          <div class="mt-2">
+            The POSIX backend operates inside a mounted FUSE
+            filesystem, where all data is transparently encrypted.
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-3 text-start mb-5 me-3">
+          <div class="mx-4">
+            <img src="img/fastapi.png" class="w-100">
+          </div>
+          <div class="mt-2">
+            The REST API controls the encrypted filesystem lifecycle,
+            including initialization, mounting, and unmounting.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center mb-2">
+      <div class="display-5">
+        Data without vendor lock-in
+      </div>
+    </div>
+    
+    <div class="d-flex justify-content-center mb-5">
+      <div class="fs-4 text-center" style="max-width: 26em;">
+        All data is stored across two volumes, allowing the storage
+        to be restored or mounted independently using gocryptfs.
+      </div>
+    </div>
+
+    <div class="container mb-12">
+      <div class="row justify-content-center">
+        <div class="col-12 col-sm-6 col-md-3 text-start mb-5 mt-3">
+          <i class="bi bi-sd-card fs-1"></i>
+          <div class="fs-4 fw-bold lh-sm mb-2">
+            Secrets<br>
+            volume
+          </div>
+          <div>
+            The secrets volume stores the encrypted secret and other
+            security-related data. The secret cannot be decrypted
+            without the master password. This volume should be kept
+            separate from the encrypted storage and connected only
+            when needed.
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-3 text-start mb-5 mt-3">
+          <i class="bi bi-database fs-1"></i>
+          <div class="fs-4 fw-bold lh-sm mb-2">
+            Cipherdir<br>
+            volume
+          </div>
+          <div>
+            The cipherdir volume contains encrypted data and can be
+            safely backed up. In an emergency, <b>it can be mounted
+            directly with gocryptfs, without the app</b>, providing
+            access to files through a standard POSIX filesystem.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center mb-2">
+      <div class="display-5">
+        Control, access, and management
+      </div>
+    </div>
+    
+    <div class="d-flex justify-content-center mb-5">
+      <div class="fs-4 text-center" style="max-width: 40em;">
+        The app exposes three interfaces for working with storage, from
+        automated integrations and command-line operations to everyday
+        management through a web browser.
+      </div>
+    </div>
+
+    <div class="container mb-12">
+      <div class="row justify-content-center">
+        <div class="col-12 col-sm-6 col-md-3 mx-4 text-start">
+          <div class="mb-3">
+            <img src="img/restapi.png" class="img-fluid rounded" style="box-shadow: 0 0 8px rgba(0,0,0,.2); border-radius: .5rem; width: 100%;" loading="lazy">
+          </div>
+          <div class="fs-4 fw-bold lh-sm">
+            REST API
+          </div>
+          <div>
+            Manage encrypted storage through a REST API, including
+            initialization, mounting, unmounting, and health checks.
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-3 mx-4 text-start">
+          <div class="mb-3">
+            <img src="img/s3api.png" class="img-fluid rounded" style="box-shadow: 0 0 8px rgba(0,0,0,.2); border-radius: .5rem; width: 100%;" loading="lazy">
+          </div>
+          <div class="fs-4 fw-bold lh-sm">
+            S3 API
+          </div>
+          <div class="mt-2">
+            Access buckets and objects using standard S3-compatible
+            clients, with support for multipart uploads and versioning.
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-3 mx-4 text-start">
+          <div class="mb-3">
+            <img src="img/webgui.png" class="img-fluid rounded" style="box-shadow: 0 0 8px rgba(0,0,0,.2); border-radius: .5rem; width: 100%;" loading="lazy">
+          </div>
+          <div class="fs-4 fw-bold lh-sm">
+            WebGUI
+          </div>
+          <div class="mt-2">
+            Manage buckets, objects, and user permissions through a
+            browser-based interface without using command-line tools.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center mb-2">
+      <div class="display-5">
+        Typical usage scenarios
+      </div>
+    </div>
+    
+    <div class="d-flex justify-content-center mb-5">
+      <div class="fs-4 text-center" style="max-width: 32em;">
+        Designed for sensitive data that requires independent encryption,
+        controlled access, and storage on privately managed infrastructure.
+      </div>
+    </div>
+
+    <div class="container mb-12">
+      <div class="row justify-content-center">
+        <div class="col-12 col-sm-6 col-md-2 text-start mb-5">
+          <div class="fs-4 fw-bold lh-sm">
+            Private<br/>
+            vault
+          </div>
+          <div class="mt-2">
+            Keep personal and confidential files encrypted, with full
+            control over where data is stored and who can access it.
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-2 text-start mb-5">
+          <div class="fs-4 fw-bold lh-sm">
+            Application<br/>
+            backend
+          </div>
+          <div class="mt-2">
+            Provide S3-compatible object storage for applications and
+            services without relying on external cloud providers.
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-2 text-start mb-5">
+          <div class="fs-4 fw-bold lh-sm">
+            Air-gapped<br/>
+            environments
+          </div>
+          <div class="mt-2">
+            Deploy encrypted storage in isolated or restricted networks
+            where external connectivity is unavailable or prohibited.
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-2 text-start mb-5">
+          <div class="fs-4 fw-bold lh-sm">
+            Backups<br/>
+            and archives
+          </div>
+          <div class="mt-2">
+            Store backups, documents, and long-term archives with
+            encryption at rest and controlled access to sensitive data.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-dark text-light pt-3 pb-5 px-5">
+      <div class="container mt-5">
+        <div class="row justify-content-center">
+
+          <div class="col-auto text-start mb-4 me-3">
+            <div class="fs-4 fw-bold">
+              Quick links
+            </div>
+            <div class="mt-2">
+              <a href="https://github.com/artabramov/hidden" target="_blank" class="link-light text-decoration-none">
+                GitHub
+              </a> <span class="text-secondary">— Source code and documentation.</span>
+              <br>
+              <a href="https://hub.docker.com/repository/docker/artabramov/hidden/general" class="link-light text-decoration-none">
+                Docker Hub
+              </a> <span class="text-secondary">— Pre-built container image.</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </body>
+</html>

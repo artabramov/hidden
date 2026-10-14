@@ -1,15 +1,11 @@
 # app/security/encryption.py
-# SPDX-License-Identifier: GPL-3.0-only
+# SPDX-License-Identifier: Apache-2.0
 
 import os
 import struct
-from functools import lru_cache
 
-from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 from cryptography.hazmat.primitives.kdf.scrypt import Scrypt
-
-from app.config import get_config
 
 _MAGIC = b"HENC"
 _VERSION: int = 1
@@ -24,6 +20,10 @@ _SCRYPT_P: int = 1
 
 
 def _derive_key(password: bytes, salt: bytes) -> bytes:
+    """
+    Derive a fixed-length encryption key from the provided
+    password and salt using scrypt.
+    """
     kdf = Scrypt(
         salt=salt,
         length=_KEY_LEN,
@@ -35,7 +35,11 @@ def _derive_key(password: bytes, salt: bytes) -> bytes:
 
 
 def encrypt_passphrase(plaintext: bytes, password: bytes) -> bytes:
-    """Encrypt plaintext with password; return an opaque blob."""
+    """
+    Encrypt a non-empty passphrase with a password using an
+    scrypt-derived key and AES-GCM, returning a versioned binary
+    blob containing the salt and nonce.
+    """
     if not plaintext:
         raise ValueError("plaintext must not be empty")
     if not password:
@@ -55,7 +59,11 @@ def encrypt_passphrase(plaintext: bytes, password: bytes) -> bytes:
 
 
 def decrypt_passphrase(ciphertext: bytes, password: bytes) -> bytes:
-    """Decrypt a blob produced by encrypt function."""
+    """
+    Validate and decrypt a versioned passphrase blob using the
+    provided password, rejecting invalid, unsupported, corrupted,
+    or undecryptable data.
+    """
     if not ciphertext:
         raise ValueError("ciphertext must not be empty")
     if not password:
@@ -78,21 +86,3 @@ def decrypt_passphrase(ciphertext: bytes, password: bytes) -> bytes:
         raise ValueError(
             "invalid password or corrupted data",
         ) from None
-
-
-def generate_fernet_key() -> str:
-    return Fernet.generate_key().decode()
-
-
-@lru_cache(maxsize=1)
-def get_fernet() -> Fernet:
-    config = get_config()
-    return Fernet(config.FERNET_KEY.encode())
-
-
-def encrypt_string(value: str) -> str:
-    return get_fernet().encrypt(value.encode()).decode()
-
-
-def decrypt_string(value: str) -> str:
-    return get_fernet().decrypt(value.encode()).decode()

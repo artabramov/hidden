@@ -15,44 +15,6 @@
             "envFile": "/etc/hidden/.env",
             "jinja": true,
             "justMyCode": true
-        },
-        {
-            "name": "Run linter",
-            "type": "debugpy",
-            "request": "launch",
-            "module": "flake8",
-            "args": [
-                "app",
-                "tests"
-            ],
-            "console": "integratedTerminal"
-        },
-        {
-            "name": "Run tests",
-            "type": "debugpy",
-            "request": "launch",
-            "module": "coverage",
-            "args": [
-                "run",
-                "-m",
-                "unittest",
-                "discover",
-                "-s",
-                "tests",
-                "-v"
-            ],
-            "console": "integratedTerminal"
-        },
-        {
-            "name": "Coverage",
-            "type": "debugpy",
-            "request": "launch",
-            "module": "coverage",
-            "args": [
-                "report",
-                "-m"
-            ],
-            "console": "integratedTerminal"
         }
     ]
 }

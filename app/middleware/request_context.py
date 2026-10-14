@@ -1,5 +1,5 @@
 # app/middleware/request_context.py
-# SPDX-License-Identifier: GPL-3.0-only
+# SPDX-License-Identifier: Apache-2.0
 
 import re
 import time
@@ -9,9 +9,6 @@ from fastapi import Request
 
 from app.context import reset_context, set_context_var
 
-# NOTE (ADR-20): X-Request-ID is accepted for request correlation.
-# If not provided, a value is generated and returned in the response.
-
 _REQUEST_UUID_MAX_LENGTH = 64
 _REQUEST_UUID_RE = re.compile(
     rf"^[A-Za-z0-9_-]{{1,{_REQUEST_UUID_MAX_LENGTH}}}$",
@@ -20,8 +17,8 @@ _REQUEST_UUID_RE = re.compile(
 
 def resolve_request_uuid(header_value: str | None) -> str:
     """
-    Return a valid request correlation id. Uses the provided header
-    value when it is valid, otherwise generates a new random identifier.
+    Return the provided request identifier when it is valid, otherwise
+    generate a new random identifier.
     """
     if header_value is None:
         return uuid.uuid4().hex
@@ -36,15 +33,11 @@ def resolve_request_uuid(header_value: str | None) -> str:
     return value
 
 
-# NOTE (ADR-19): Request context is reset before and after request.
-# This guarantees isolation between concurrent requests and prevents
-# leakage of context data across execution boundaries.
-
 async def request_context_middleware(request: Request, call_next):
     """
-    Populate request-scoped context for the duration of the request.
-    Initializes context variables (request_uuid, request_start_time)
-    and ensures cleanup after request processing.
+    Initialize request-scoped context with a request identifier and
+    start time, add the identifier to the response headers, and reset
+    the context after request processing.
     """
     reset_context()
 

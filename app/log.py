@@ -1,5 +1,5 @@
 # app/log.py
-# SPDX-License-Identifier: GPL-3.0-only
+# SPDX-License-Identifier: Apache-2.0
 
 import logging
 import sys
@@ -7,40 +7,17 @@ import sys
 from app.config import get_config
 from app.context import get_context_var
 
-# NOTE (ADR-26): Logging is structured across three levels.
-# 1. Request-level (middleware): request start, request completion,
-#    and unexpected errors are logged in middleware. Each request is
-#    assigned a request UUID and includes method, URL, status code, and
-#    elapsed time.
-# 2. Authentication (dependency auth): authentication and authorization
-#    outcomes are logged in the auth dependency. Logs capture reasons for
-#    access denial and, on success, associate request UUID with user ID.
-# 3. Domain-level (services): services log expected, domain-level
-#    outcomes using canonical events. Logs are minimal and do not
-#    duplicate request-level or auth-level context.
-
-# NOTE (ADR-27): Sensitive data is not logged.
-# Additional identifiers are included in logs only when diagnostically
-# useful. Input data, output data, and any sensitive values are not
-# written to logs. Logs contain only minimal technical context required
-# for diagnostics.
-
-# NOTE (ADR-28): Service logging contract is canonical.
-# Service logs use canonical event values. Inline event strings are not
-# used. Event values are concise, stable identifiers of service-level
-# outcomes.
-
 
 class RequestContextFilter(logging.Filter):
     """
-    Inject request-scoped context values into log records.
-    Adds fields expected by the log format (e.g. request_uuid).
+    Enrich log records with request-scoped context values
+    used by the configured log format.
     """
 
     def filter(self, record: logging.LogRecord) -> bool:
         """
-        Populate the log record with values from the current context.
-        Always returns True to allow the record to be processed.
+        Populate the log record with the current request identifier
+        and allow the record to be processed.
         """
         record.request_uuid = get_context_var("request_uuid", "-")
         return True
@@ -48,9 +25,9 @@ class RequestContextFilter(logging.Filter):
 
 def init_logging() -> None:
     """
-    Initialize root logger with configured level, format and handlers.
-    Replaces existing handlers and attaches a stream handler with
-    request context enrichment.
+    Configure the root logger with the configured log level and format,
+    replacing existing handlers with a standard output handler enriched
+    with request context.
     """
     config = get_config()
 

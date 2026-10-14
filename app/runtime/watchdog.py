@@ -1,87 +1,56 @@
 # app/runtime/watchdog.py
-# SPDX-License-Identifier: GPL-3.0-only
+# SPDX-License-Identifier: Apache-2.0
 
 import asyncio
 import logging
 from pathlib import Path
 
 from app.config import get_config
-from app.constants import (
-    LOCKDOWN_MODE_ENABLED_FLAG_PATH,
-    WATCHDOG_GRACEFUL_UNMOUNT_SECONDS,
-    WATCHDOG_HEARTBEAT_PATH,
-)
+from app.constants import WATCHDOG_HEARTBEAT_PATH
 from app.log import init_logging
-from app.repositories.file import isdir, isfile, ismount, touch
-from app.runtime.gocryptfs import unmount_gocryptfs
+from app.io import isdir, isfile, ismount
+from app.runtime.cipherdir import cipherdir_unmount
+from app.runtime.versity import versity_stop
 
-logger = logging.getLogger(__name__)
-
-# NOTE (ADR-08): Watchdog performs lazy unmount with a grace period.
-# Before unmount, lockdown mode is enabled to block new requests and
-# allow in-flight requests to complete within a short grace period.
-# The mountpoint is detached using the -z flag, preventing new access
-# while existing file descriptors may continue to operate. Requests
-# exceeding the grace period may fail with HTTP 500. Full handling of
-# storage failures within request execution is intentionally avoided
-# to keep runtime logic simple and predictable.
+log = logging.getLogger(__name__)
 
 
 async def run_watchdog() -> None:
     """
-    If the mountpoint is mounted, the watchdog triggers an emergency
-    unmount when critical conditions are violated (missing secrets,
-    missing passphrase, or application not running). Before unmount,
-    lockdown mode is enabled and a short grace period may be applied
-    to allow in-flight requests to complete.
+    Run the watchdog to monitor the encrypted storage state. If the
+    mountpoint is mounted, the watchdog triggers an emergency unmount
+    when critical conditions are violated (missing secrets, missing
+    passphrase, or application not running). If the mountpoint is not
+    mounted, the watchdog ensures that VersityGW is stopped.
     """
     config = get_config()
     Path(WATCHDOG_HEARTBEAT_PATH).touch()
 
-    if not await ismount(config.GOCRYPTFS_MOUNTPOINT):
+    if not await ismount(config.INSTALL_MOUNTPOINT):
+        await versity_stop()
         return
 
-    if not await isdir(config.INSTALL_SECRETS_DIR):
-        logger.warning("secrets not found, unmount started")
-        await _lockdown_and_unmount(soft_drain=True)
-        logger.info("secrets not found, mountpoint unmounted")
+    if not await isdir(config.INSTALL_SECRETS):
+        log.warning("msg=watchdog_secrets_missing")
+        await _emergency_unmount(config.INSTALL_MOUNTPOINT)
         return
 
-    if not await isfile(config.GOCRYPTFS_PASSPHRASE_ENCRYPTED_PATH):
-        logger.warning("passphrase not found, unmount started")
-        await _lockdown_and_unmount(soft_drain=True)
-        logger.info("passphrase not found, mountpoint unmounted")
+    if not await isfile(config.GOCRYPTFS_PASSPHRASE_PATH):
+        log.warning("msg=watchdog_passphrase_missing")
+        await _emergency_unmount(config.INSTALL_MOUNTPOINT)
         return
 
     if not _is_application_running():
-        logger.warning("application not running, unmount started")
-        await _lockdown_and_unmount(soft_drain=False)
-        logger.info("application not running, mountpoint unmounted")
-
-
-async def _lockdown_and_unmount(soft_drain: bool = True) -> None:
-    """
-    Enable lockdown mode and perform a lazy unmount of the mountpoint.
-    Optionally waits for a short grace period to allow in-flight
-    requests to complete before unmounting.
-    """
-    config = get_config()
-
-    try:
-        await touch(LOCKDOWN_MODE_ENABLED_FLAG_PATH)
-    except OSError:
-        logger.warning("failed to enable lockdown mode before unmount")
-
-    if soft_drain:
-        await asyncio.sleep(WATCHDOG_GRACEFUL_UNMOUNT_SECONDS)
-
-    await unmount_gocryptfs(config.GOCRYPTFS_MOUNTPOINT)
+        log.warning("msg=watchdog_application_missing")
+        await _emergency_unmount(config.INSTALL_MOUNTPOINT)
+        return
 
 
 def _is_application_running() -> bool:
     """
-    Return whether a process matching the expected Uvicorn application
-    command line is present in /proc.
+    Return whether the expected Uvicorn application process is running
+    by scanning process command lines in /proc for both Uvicorn and
+    app.main:app.
     """
     proc_path = Path("/proc")
 
@@ -106,6 +75,21 @@ def _is_application_running() -> bool:
             return True
 
     return False
+
+
+async def _emergency_unmount(mountpoint: str) -> None:
+    """
+    Stop VersityGW and unmount the encrypted filesystem. If VersityGW
+    cannot be stopped, continue with the unmount to ensure that the
+    decrypted filesystem is not left mounted.
+    """
+    try:
+        await versity_stop()
+    except Exception:
+        pass
+
+    await cipherdir_unmount(mountpoint)
+    log.info("msg=watchdog_unmount_completed")
 
 
 if __name__ == "__main__":

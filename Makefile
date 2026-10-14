@@ -36,6 +36,8 @@ install:
 		fi; \
 	fi
 
+	@sudo mkdir -p "$(VOLUME_SECRETS_ROOT)"
+	@sudo mkdir -p "$(VOLUME_SECRETS)"
 	@sudo mountpoint -q "$(VOLUME_SECRETS_ROOT)" || sudo mount --bind "$(VOLUME_SECRETS_ROOT)" "$(VOLUME_SECRETS_ROOT)"
 	@sudo mount --make-shared "$(VOLUME_SECRETS_ROOT)"
 

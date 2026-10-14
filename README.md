@@ -40,11 +40,16 @@ If you like it, star it ⭐ — it helps discoverability. Thank you!
 
 ## Quick start
 
-Mount remote storage or create a local directory for the secrets volume:
+Mount remote storage or removable media at `/mnt/hidden/secrets`, or use
+a local directory in a trusted environment:
 
 ```sh
-sudo mkdir -p /mnt/hidden-secrets
+sudo mkdir -p /mnt/hidden/secrets
 ```
+
+The parent directory `/mnt/hidden` is attached to the container with
+`rslave` mount propagation, so unmounting the secrets volume on the host
+is visible inside the container. Keep that directory dedicated to Hidden.
 
 Build and run the container:
 

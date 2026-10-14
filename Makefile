@@ -3,7 +3,9 @@
 -include .env
 
 FORCE ?= 0
-VOLUME_SECRETS ?= /mnt/hidden-secrets
+
+VOLUME_SECRETS_ROOT := $(patsubst %/,%,$(dir $(VOLUME_SECRETS)))
+INSTALL_SECRETS_ROOT := $(patsubst %/,%,$(dir $(INSTALL_SECRETS)))
 
 # NOTE (ADR-02): Application runs inside a Docker container.
 # 1. Packages all dependencies and runtime environment, ensuring
@@ -20,6 +22,9 @@ VOLUME_SECRETS ?= /mnt/hidden-secrets
 # 2. The cipherdir volume keeps encrypted data portable, enabling backup,
 #    migration between instances, and emergency recovery using gocryptfs
 #    without the application.
+# 3. The parent of the secrets volume is bind-mounted with rslave
+#    propagation, so unmounting the media on the host is visible
+#    inside the container.
 
 install:
 	@if [ "$(FORCE)" != "1" ]; then \
@@ -41,7 +46,7 @@ install:
 	-p $(VERSITY_PORT):$(VERSITY_PORT) \
 	-p $(VERSITY_WEBGUI_PORT):$(VERSITY_WEBGUI_PORT) \
 	-v hidden-cipherdir:$(INSTALL_CIPHERDIR) \
-	-v $(VOLUME_SECRETS):$(INSTALL_SECRETS) \
+	--mount type=bind,source=$(VOLUME_SECRETS_ROOT),target=$(INSTALL_SECRETS_ROOT),bind-propagation=rslave \
 	--name hidden \
 	hidden
 

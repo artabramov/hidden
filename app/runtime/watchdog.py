@@ -3,12 +3,13 @@
 
 import asyncio
 import logging
+import os
 from pathlib import Path
 
 from app.config import get_config
 from app.constants import WATCHDOG_HEARTBEAT_PATH
 from app.log import init_logging
-from app.io import isdir, isfile, ismount
+from app.io import isdir, ismount
 from app.runtime.cipherdir import cipherdir_unmount
 from app.runtime.versity import versity_stop
 
@@ -19,9 +20,10 @@ async def run_watchdog() -> None:
     """
     Run the watchdog to monitor the encrypted storage state. If the
     mountpoint is mounted, the watchdog triggers an emergency unmount
-    when critical conditions are violated (missing secrets, missing
-    passphrase, or application not running). If the mountpoint is not
-    mounted, the watchdog ensures that VersityGW is stopped.
+    when critical conditions are violated (missing secrets, a missing
+    or empty passphrase, or the application not running). If the
+    mountpoint is not mounted, the watchdog ensures that VersityGW
+    is stopped.
     """
     config = get_config()
     Path(WATCHDOG_HEARTBEAT_PATH).touch()
@@ -35,7 +37,15 @@ async def run_watchdog() -> None:
         await _emergency_unmount(config.INSTALL_MOUNTPOINT)
         return
 
-    if not await isfile(config.GOCRYPTFS_PASSPHRASE_PATH):
+    try:
+        passphrase_available = (
+            os.path.isfile(config.GOCRYPTFS_PASSPHRASE_PATH)
+            and os.path.getsize(config.GOCRYPTFS_PASSPHRASE_PATH) > 0
+        )
+    except OSError:
+        passphrase_available = False
+
+    if not passphrase_available:
         log.warning("msg=watchdog_passphrase_missing")
         await _emergency_unmount(config.INSTALL_MOUNTPOINT)
         return

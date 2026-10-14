@@ -10,4 +10,4 @@ search across the project for details.
 - ADR-04: gocryptfs passphrase is protected by master password.
 - ADR-05: gocryptfs passphrase is provided through tmpfs.
 - ADR-06: Cipherdir initialization is a one-time operation.
-- ADR-07: Cipherdir and secrets are stored in Docker volumes.
+- ADR-07: Cipherdir uses a Docker volume; secrets use a bind mount.

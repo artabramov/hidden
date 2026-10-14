@@ -15,7 +15,7 @@ INSTALL_SECRETS_ROOT := $(patsubst %/,%,$(dir $(INSTALL_SECRETS)))
 # 3. Keeps the decrypted filesystem mountpoint internal to the container
 #    by default, limiting direct host access.
 
-# NOTE (ADR-07): Cipherdir and secrets are stored in Docker volumes.
+# NOTE (ADR-07): Cipherdir uses a Docker volume; secrets use a bind mount.
 # 1. The secrets volume allows the encrypted passphrase to be removed
 #    at runtime; its absence is detected by the watchdog, which triggers
 #    automatic unmount of the gocryptfs mountpoint.
@@ -35,7 +35,12 @@ install:
 			exit 1; \
 		fi; \
 	fi
+
+	@sudo mountpoint -q "$(VOLUME_SECRETS_ROOT)" || sudo mount --bind "$(VOLUME_SECRETS_ROOT)" "$(VOLUME_SECRETS_ROOT)"
+	@sudo mount --make-shared "$(VOLUME_SECRETS_ROOT)"
+
 	docker build -t hidden .
+
 	docker run -dit \
 	--init \
 	--restart unless-stopped \

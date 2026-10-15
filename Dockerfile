@@ -23,11 +23,15 @@ RUN apt-get update \
  && apt-get install -y --no-install-recommends gocryptfs fuse3 \
  && rm -rf /var/lib/apt/lists/*
 
+# SHA-256 of versitygw_1.8.0_linux_amd64.deb from the GitHub release.
+ARG VERSITYGW_SHA256=75fbd1d2f6b640e5d7cb7ac596286de02972ece0ca7dae2c74f66ade914fcc9f
+
 RUN apt-get update \
  && apt-get install -y --no-install-recommends ca-certificates curl \
  && curl -fsSL \
       https://github.com/versity/versitygw/releases/download/v1.8.0/versitygw_1.8.0_linux_amd64.deb \
       -o /tmp/versitygw.deb \
+ && echo "${VERSITYGW_SHA256}  /tmp/versitygw.deb" | sha256sum -c - \
  && apt-get install -y --no-install-recommends /tmp/versitygw.deb \
  && rm -f /tmp/versitygw.deb \
  && rm -rf /var/lib/apt/lists/*

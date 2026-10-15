@@ -117,6 +117,10 @@ async def cipherdir_mount(
             pass
 
 
+# TODO: Review lazy unmount security. Open file descriptors may
+# remain accessible after unmount if VersityGW fails to terminate.
+# Ensure decrypted data becomes inaccessible in this scenario.
+
 async def cipherdir_unmount(mountpoint: str) -> None:
     """
     Unmount a gocryptfs mountpoint using fusermount3. The command is

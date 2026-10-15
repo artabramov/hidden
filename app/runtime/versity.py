@@ -106,7 +106,7 @@ async def versity_start(
             data_path,
             env=env,
             stdout=asyncio.subprocess.DEVNULL,
-            stderr=asyncio.subprocess.PIPE,
+            stderr=None,
         )
     except Exception:
         log.exception("msg=versity_start_failed")
@@ -117,16 +117,9 @@ async def versity_start(
 
     while loop.time() < deadline:
         if process.returncode is not None:
-            stderr = await process.stderr.read()
-            error = stderr.decode(
-                encoding="utf-8",
-                errors="replace",
-            ).strip() or "unknown error"
-
             log.error(
-                "msg=versity_start_failed returncode=%s error=%s",
+                "msg=versity_start_failed returncode=%s",
                 process.returncode,
-                error,
             )
             raise InternalServerError
 
@@ -136,16 +129,9 @@ async def versity_start(
         await asyncio.sleep(config.VERSITY_POLL_INTERVAL_SECONDS)
 
     if process.returncode is not None:
-        stderr = await process.stderr.read()
-        error = stderr.decode(
-            encoding="utf-8",
-            errors="replace",
-        ).strip() or "unknown error"
-
         log.error(
-            "msg=versity_start_failed returncode=%s error=%s",
+            "msg=versity_start_failed returncode=%s",
             process.returncode,
-            error,
         )
         raise InternalServerError
 

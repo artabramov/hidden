@@ -4,9 +4,9 @@
 import logging
 
 from app.config import get_config
-from app.errors import UnauthorizedError
+from app.errors import ServiceUnavailableError, UnauthorizedError
 from app.locks import lock_manager
-from app.io import read
+from app.io import ismount, read
 from app.runtime.cipherdir import cipherdir_unmount
 from app.runtime.versity import versity_stop
 from app.security.encryption import decrypt_passphrase
@@ -24,6 +24,10 @@ async def gocryptfs_unmount(
     config = get_config()
 
     async with lock_manager.lock():
+        if not await ismount(config.INSTALL_MOUNTPOINT):
+            log.warning("msg=mountpoint_not_found")
+            raise ServiceUnavailableError
+
         passphrase_encrypted = await read(config.GOCRYPTFS_PASSPHRASE_PATH)
 
         try:

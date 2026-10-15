@@ -4,9 +4,9 @@
 import logging
 
 from app.config import get_config
-from app.errors import UnauthorizedError
+from app.errors import BadGatewayError, UnauthorizedError
 from app.locks import lock_manager
-from app.io import isdir, mkdir, read
+from app.io import isdir, ismount, mkdir, read
 from app.runtime.cipherdir import cipherdir_mount, cipherdir_unmount
 from app.runtime.versity import versity_start, versity_stop
 from app.security.encryption import decrypt_passphrase
@@ -26,6 +26,10 @@ async def gocryptfs_mount(master_password: str) -> None:
     config = get_config()
 
     async with lock_manager.lock():
+        if await ismount(config.INSTALL_MOUNTPOINT):
+            log.warning("msg=mountpoint_exists")
+            raise BadGatewayError
+
         passphrase_encrypted = await read(config.GOCRYPTFS_PASSPHRASE_PATH)
 
         try:

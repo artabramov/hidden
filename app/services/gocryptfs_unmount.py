@@ -1,6 +1,7 @@
 # app/services/gocryptfs_unmount.py
 # SPDX-License-Identifier: Apache-2.0
 
+import asyncio
 import logging
 
 from app.config import get_config
@@ -31,7 +32,8 @@ async def gocryptfs_unmount(
         passphrase_encrypted = await read(config.GOCRYPTFS_PASSPHRASE_PATH)
 
         try:
-            decrypt_passphrase(
+            await asyncio.to_thread(
+                decrypt_passphrase,
                 passphrase_encrypted,
                 master_password.encode("utf-8"),
             )

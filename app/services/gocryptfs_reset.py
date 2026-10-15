@@ -1,6 +1,7 @@
 # app/services/gocryptfs_reset.py
 # SPDX-License-Identifier: Apache-2.0
 
+import asyncio
 import logging
 import os
 
@@ -27,7 +28,8 @@ async def gocryptfs_reset(master_password: str) -> None:
         passphrase_encrypted = await read(config.GOCRYPTFS_PASSPHRASE_PATH)
 
         try:
-            decrypt_passphrase(
+            await asyncio.to_thread(
+                decrypt_passphrase,
                 passphrase_encrypted,
                 master_password.encode("utf-8"),
             )

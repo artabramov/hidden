@@ -1,6 +1,7 @@
 # app/services/gocryptfs_rotate.py
 # SPDX-License-Identifier: Apache-2.0
 
+import asyncio
 import logging
 
 from app.config import get_config
@@ -27,7 +28,8 @@ async def gocryptfs_rotate(
         passphrase_encrypted = await read(config.GOCRYPTFS_PASSPHRASE_PATH)
 
         try:
-            passphrase = decrypt_passphrase(
+            passphrase = await asyncio.to_thread(
+                decrypt_passphrase,
                 passphrase_encrypted,
                 current_master_password.encode("utf-8"),
             )

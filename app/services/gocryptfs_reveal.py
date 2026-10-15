@@ -1,6 +1,7 @@
 # app/services/gocryptfs_reveal.py
 # SPDX-License-Identifier: Apache-2.0
 
+import asyncio
 import logging
 
 from app.config import get_config
@@ -23,7 +24,8 @@ async def gocryptfs_reveal(master_password: str) -> tuple[str, str, str]:
         passphrase_encrypted = await read(config.GOCRYPTFS_PASSPHRASE_PATH)
 
         try:
-            passphrase = decrypt_passphrase(
+            passphrase = await asyncio.to_thread(
+                decrypt_passphrase,
                 passphrase_encrypted,
                 master_password.encode("utf-8"),
             )

@@ -1,6 +1,7 @@
 # app/services/gocryptfs_mount.py
 # SPDX-License-Identifier: Apache-2.0
 
+import asyncio
 import logging
 
 from app.config import get_config
@@ -33,7 +34,8 @@ async def gocryptfs_mount(master_password: str) -> None:
         passphrase_encrypted = await read(config.GOCRYPTFS_PASSPHRASE_PATH)
 
         try:
-            passphrase_bytes = decrypt_passphrase(
+            passphrase_bytes = await asyncio.to_thread(
+                decrypt_passphrase,
                 passphrase_encrypted,
                 master_password.encode("utf-8"),
             )

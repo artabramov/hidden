@@ -174,6 +174,11 @@ container may be able to access the decrypted filesystem directly.
 anywhere. If lost, the encrypted passphrase cannot be unlocked and the
 storage cannot be recovered.
 
+- **Unsecured network access.** The application does not encrypt network
+traffic. `TLS` must be configured at the infrastructure level. Without
+it, an attacker with access to the trusted network may intercept
+sensitive information transmitted over the network.
+
 ## License
 
 This project is licensed under the **Apache License 2.0**

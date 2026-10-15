@@ -36,7 +36,7 @@ install:
 		exit 1; \
 	fi
 
-	@sudo mountpoint -q "$(VOLUME_SECRETS_ROOT)" || sudo mount --bind "$(VOLUME_SECRETS_ROOT)" "$(VOLUME_SECRETS_ROOT)"
+	@sudo mountpoint -q "$(VOLUME_SECRETS_ROOT)" || sudo mount --rbind "$(VOLUME_SECRETS_ROOT)" "$(VOLUME_SECRETS_ROOT)"
 	@sudo mount --make-shared "$(VOLUME_SECRETS_ROOT)"
 
 	docker build -t hidden .

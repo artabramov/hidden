@@ -9,7 +9,7 @@ from pathlib import Path
 from app.config import get_config
 from app.constants import WATCHDOG_HEARTBEAT_PATH
 from app.log import init_logging
-from app.io import isdir, ismount
+from app.io import ismount
 from app.runtime.cipherdir import cipherdir_unmount
 from app.runtime.versity import versity_stop
 
@@ -19,22 +19,15 @@ log = logging.getLogger(__name__)
 async def run_watchdog() -> None:
     """
     Run the watchdog to monitor the encrypted storage state. If the
-    mountpoint is mounted, the watchdog triggers an emergency unmount
-    when critical conditions are violated (missing secrets, a missing
-    or empty passphrase, or the application not running). If the
-    mountpoint is not mounted, the watchdog ensures that VersityGW
-    is stopped.
+    mountpoint is mounted, trigger an emergency unmount when the
+    passphrase is missing or empty, or the application is not running.
+    If the mountpoint is not mounted, ensure that VersityGW is stopped.
     """
     config = get_config()
     Path(WATCHDOG_HEARTBEAT_PATH).touch()
 
     if not await ismount(config.INSTALL_MOUNTPOINT):
         await versity_stop()
-        return
-
-    if not await isdir(config.INSTALL_SECRETS):
-        log.warning("msg=watchdog_secrets_missing")
-        await _emergency_unmount(config.INSTALL_MOUNTPOINT)
         return
 
     try:

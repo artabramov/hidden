@@ -16,28 +16,26 @@ INSTALL_SECRETS_ROOT := $(patsubst %/,%,$(dir $(INSTALL_SECRETS)))
 #    by default, limiting direct host access.
 
 # NOTE (ADR-07): Cipherdir uses a Docker volume; secrets use a bind mount.
-# 1. The secrets volume allows the encrypted passphrase to be removed
+# 1. The secrets location allows the encrypted passphrase to be removed
 #    at runtime; its absence is detected by the watchdog, which triggers
 #    automatic unmount of the gocryptfs mountpoint.
 # 2. The cipherdir volume keeps encrypted data portable, enabling backup,
 #    migration between instances, and emergency recovery using gocryptfs
 #    without the application.
-# 3. The parent of the secrets volume is bind-mounted with rslave
+# 3. The parent directory /mnt/hidden is bind-mounted with rslave
 #    propagation, so unmounting the media on the host is visible
 #    inside the container.
 
 install:
-	@if [ "$(FORCE)" != "1" ]; then \
-		if ! mountpoint -q "$(VOLUME_SECRETS)" 2>/dev/null; then \
-			echo "error: VOLUME_SECRETS is missing or not a mountpoint." >&2; \
-			echo "Connect removable media at that path, then retry." >&2; \
-			echo "To skip this check: make install FORCE=1" >&2; \
-			exit 1; \
-		fi; \
+	@if [ "$(FORCE)" = "1" ]; then \
+		sudo mkdir -p "$(VOLUME_SECRETS)"; \
+	elif ! mountpoint -q "$(VOLUME_SECRETS)" 2>/dev/null; then \
+		echo "error: VOLUME_SECRETS is missing or not a mountpoint." >&2; \
+		echo "Connect removable media at that path, then retry." >&2; \
+		echo "To skip this check: make install FORCE=1" >&2; \
+		exit 1; \
 	fi
 
-	@sudo mkdir -p "$(VOLUME_SECRETS_ROOT)"
-	@sudo mkdir -p "$(VOLUME_SECRETS)"
 	@sudo mountpoint -q "$(VOLUME_SECRETS_ROOT)" || sudo mount --bind "$(VOLUME_SECRETS_ROOT)" "$(VOLUME_SECRETS_ROOT)"
 	@sudo mount --make-shared "$(VOLUME_SECRETS_ROOT)"
 

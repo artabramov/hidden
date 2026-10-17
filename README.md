@@ -40,14 +40,16 @@ If you like it, star it ⭐ — it helps discoverability. Thank you!
 
 ## Quick start
 
-Mount remote storage or removable media at `/mnt/hidden/secrets`, then
-build and run the container:
+Mount remote storage or removable media at `/mnt/hidden/secrets` to
+store the application secrets, then build and run the container:
 
 ```sh
 make install
 ```
 
-Or, use a local directory in a trusted environment:
+Or, use force mode in a trusted environment (the `/mnt/hidden/secrets`
+path will be created automatically as a local directory on the host
+filesystem):
 
 ```sh
 make install FORCE=1

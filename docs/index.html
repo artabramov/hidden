@@ -28,34 +28,26 @@
       </div>
     </div>
 
-    <div class="d-flex justify-content-center mb-3">
-      <div class="text-center" style="max-width: 38em;">
-        The project is distributed as a Docker container and can be
-        deployed in any compatible environment. It is freely available
-        under the Apache 2.0 license.
-      </div>
-    </div>
-
-    <div class="text-center mb-12">
-      <div class="d-inline-block mx-3 align-top" style="max-width: 260px;">
-        <a href="https://github.com/artabramov/hidden" target="_blank" class="btn btn-lg btn-secondary w-100">
-          GitHub
-        </a>
-        <div class="small text-muted mt-2">
-          Explore the source code, read the docs, and follow project
-          development.
-        </div>
-      </div>
-      
-      <div class="d-inline-block mx-3 align-top" style="max-width: 260px;">
+    <div class="text-center mb-2">
+      <div class="d-inline-block mx-3 align-top" style="max-width: 250px;">
         <a href="https://hub.docker.com/repository/docker/artabramov/hidden/general" target="_blank" class="btn btn-lg btn-primary w-100">
           Docker Hub <i class="bi bi-arrow-right"></i>
         </a>
         <div class="small text-muted mt-2">
-          Pull the ready-to-use Docker image and deploy it on your own
-          infrastructure.
+          Get the ready-to-use Docker image,
+          or explore the source code on
+          <a href="https://github.com/artabramov/hidden" class="text-decoration-none">
+            GitHub
+          </a>.
         </div>
       </div>
+    </div>
+
+    <div class="text-center mb-12">
+      <img
+        src="https://img.shields.io/docker/pulls/artabramov/hidden?color=2f81f7"
+        alt="Docker Pulls"
+      >
     </div>
 
     <div class="text-center mb-2">
@@ -72,7 +64,7 @@
     </div>
 
     <div class="d-flex justify-content-center mb-12">
-      <div style="max-width: 28em;">
+      <div style="max-width: 32em;">
         <div class="mb-3">
           The fundamental principle of the app is to protect data at rest.
         </div>
@@ -86,6 +78,62 @@
           contents cannot be recovered without the secret and master
           password</b>.
       </div>
+      </div>
+    </div>
+
+    <div class="bg-dark text-light pt-5 pb-3 mb-12">
+      <div class="container">
+        <div class="row justify-content-center">
+
+          <div class="col-12 col-sm-6 col-md-2 mb-5">
+            <div class="fs-4 fw-bold lh-sm mb-2">
+              Private<br>
+              by design
+            </div>
+            <div>
+              Your data stays on infrastructure you control, without
+              relying on external cloud providers or sharing storage
+              with third parties.
+            </div>
+          </div>
+
+          <div class="col-12 col-sm-6 col-md-2 mb-5">
+            <div class="fs-4 fw-bold lh-sm mb-2">
+              Encrypted<br>
+              by default
+            </div>
+            <div>
+              All files and filenames are transparently encrypted,
+              protecting your data against unauthorized access to
+              the underlying storage.
+            </div>
+          </div>
+
+          <div class="col-12 col-sm-6 col-md-2 mb-5">
+            <div class="fs-4 fw-bold lh-sm mb-2">
+              Lock<br>
+              on danger
+            </div>
+            <div>
+              The app automatically stops storage access and unmounts
+              the decrypted filesystem when the secret becomes
+              unavailable or the container restarts.
+            </div>
+          </div>
+
+          <div class="col-12 col-sm-6 col-md-2 mb-5">
+            <div class="fs-4 fw-bold lh-sm mb-2">
+              Unlock<br>
+              when safe
+            </div>
+            <div>
+              Once the secret is available again, you can remount the
+              encrypted storage and restore access by entering your
+              master password.
+            </div>
+          </div>
+
+        </div>
       </div>
     </div>
 
@@ -159,6 +207,43 @@
             The storage supports manual unmounting and automatically
             unmounts if the secret becomes unavailable or the app
             restarts.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center mb-2">
+      <div class="display-5">
+        No background transmissions
+      </div>
+    </div>
+    
+    <div class="d-flex justify-content-center mb-5">
+      <div class="fs-4 text-center" style="max-width: 32em;">
+        The app keeps your data on your trusted infrastructure, without AI integrations, telemetry, or unexpected outbound communication.
+      </div>
+    </div>
+
+    <div class="container mb-12">
+      <div class="row justify-content-center">
+        <div class="col-12 col-sm-6 col-md-3 text-start mb-5 mt-3">
+          <i class="bi bi-eye-slash fs-1"></i>
+          <div class="fs-4 fw-bold lh-sm mb-2">
+            No AI<br>
+            access
+          </div>
+          <div>
+            There are no AI integrations or connections to related platforms. Your files are never shared with remote AI services for analysis or processing.
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-3 text-start mb-5 mt-3">
+          <i class="bi bi-cloud-slash fs-1"></i>
+          <div class="fs-4 fw-bold lh-sm mb-2">
+            No silent<br>
+            reporting
+          </div>
+          <div>
+            No telemetry, usage statistics, or diagnostics are shared with the project maintainers. The app does not silently transmit any operational information.
           </div>
         </div>
       </div>

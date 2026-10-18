@@ -11,6 +11,7 @@
   </head>
   <body>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script data-goatcounter="https://artabramov.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 
     <div class="container-fluid d-flex justify-content-center mt-5 pt-5 mb-6">
       <img src="img/hidden.png" class="img-fluid" style="width: 100%; max-width: 32em;" loading="lazy">
@@ -119,16 +120,29 @@
           </div>
         </div>
         <div class="row justify-content-center">
-          <div class="col-12 col-sm-6 col-md-4">
+          <div class="col-12 col-sm-6 col-md-4 mb-3 pb-3 border-bottom border-secondary">
             Access to encrypted objects generally depends on the
             S3 service or compatible decryption mechanisms.
           </div>
-          <div class="col-12 col-sm-6 col-md-4">
+          <div class="col-12 col-sm-6 col-md-4 mb-3 pb-3 border-bottom border-secondary">
             The encrypted filesystem can be mounted directly with
             gocryptfs, allowing access to stored files without the
             S3 gateway.
           </div>
         </div>
+
+        <div class="row justify-content-center">
+          <div class="col-12 col-sm-6 col-md-4">
+            The physical storage layout depends on the S3 implementation
+            and may not preserve the original directory structure.
+          </div>
+          <div class="col-12 col-sm-6 col-md-4">
+            Objects are stored as regular files in a POSIX filesystem,
+            preserving the directory structure beneath the encrypted
+            layer.
+          </div>
+        </div>
+
       </div>
     </div>
 

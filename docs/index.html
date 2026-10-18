@@ -21,10 +21,21 @@
       <span class="hidden">S</span><span class="hidden">3</span>
     </div>
 
-    <div class="d-flex justify-content-center mb-5">
+    <div class="d-flex justify-content-center mb-4">
       <div class="fs-4 text-center" style="max-width: 24em;">
         Encrypted self-hosted S3-compatible object storage
         for sensitive data on privately managed infrastructure.
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-center mb-4">
+      <div style="max-width: 36em;">
+        <div class="mb-3">
+          The storage is designed to resist unauthorized filesystem access, including hardware loss or theft.
+          Even if encrypted data is obtained from disk, <b>the original
+          contents cannot be recovered without the secret and master
+          password</b>.
+      </div>
       </div>
     </div>
 
@@ -50,89 +61,73 @@
       >
     </div>
 
-    <div class="text-center mb-2">
-      <div class="display-5">
-        Okay, what is it?
-      </div>
-    </div>
-
-    <div class="d-flex justify-content-center mb-5">
-      <div class="fs-4 text-center" style="max-width: 18em;">
-        It's a secure box for your private data.
-        Protecting it is what it's all about.
-      </div>
-    </div>
-
-    <div class="d-flex justify-content-center mb-12">
-      <div style="max-width: 32em;">
-        <div class="mb-3">
-          The fundamental principle of the app is to protect data at rest.
+    <div class="bg-dark text-light pt-4 pb-5 mb-12">
+      <div class="text-center mb-2 mt-5">
+        <div class="display-5">
+          S3 versus beyond S3
         </div>
-        <div class="mb-3">
-          Operating on top of an encrypted filesystem, the internal data
-          storage is designed to withstand unauthorized access to the
-          underlying filesystem, as well as hardware loss or theft.
+      </div>
+      <div class="d-flex justify-content-center mb-5">
+        <div class="fs-4 text-center" style="max-width: 23em;">
+          Encryption is not just about how data is protected,
+          but where protection begins and what it covers.
         </div>
-        <div class="mb-3">
-          Even if encrypted data is obtained from disk, <b>the original
-          contents cannot be recovered without the secret and master
-          password</b>.
       </div>
-      </div>
-    </div>
-
-    <div class="bg-dark text-light pt-5 pb-3 mb-12">
-      <div class="container">
+      <div class="container pb-5">
         <div class="row justify-content-center">
-
-          <div class="col-12 col-sm-6 col-md-2 mb-5">
-            <div class="fs-4 fw-bold lh-sm mb-2">
-              Private<br>
-              by design
-            </div>
-            <div>
-              Your data stays on infrastructure you control, without
-              relying on external cloud providers or sharing storage
-              with third parties.
+          <div class="col-12 col-sm-6 col-md-4 text-start mb-4">
+            <div class="fs-4 fw-bold lh-sm">
+              Standard S3 encryption
             </div>
           </div>
-
-          <div class="col-12 col-sm-6 col-md-2 mb-5">
-            <div class="fs-4 fw-bold lh-sm mb-2">
-              Encrypted<br>
-              by default
-            </div>
-            <div>
-              All files and filenames are transparently encrypted,
-              protecting your data against unauthorized access to
-              the underlying storage.
+          <div class="col-12 col-sm-6 col-md-4 text-start mb-4">
+            <div class="fs-4 fw-bold lh-sm">
+              Hidden S3 encryption
             </div>
           </div>
-
-          <div class="col-12 col-sm-6 col-md-2 mb-5">
-            <div class="fs-4 fw-bold lh-sm mb-2">
-              Lock<br>
-              on danger
-            </div>
-            <div>
-              The app automatically stops storage access and unmounts
-              the decrypted filesystem when the secret becomes
-              unavailable or the container restarts.
-            </div>
+        </div>
+        <div class="row justify-content-center">
+          <div class="col-12 col-sm-6 col-md-4 mb-3 pb-3 border-bottom">
+            Encryption is performed by the S3 service as objects are
+            written to storage.
           </div>
-
-          <div class="col-12 col-sm-6 col-md-2 mb-5">
-            <div class="fs-4 fw-bold lh-sm mb-2">
-              Unlock<br>
-              when safe
-            </div>
-            <div>
-              Once the secret is available again, you can remount the
-              encrypted storage and restore access by entering your
-              master password.
-            </div>
+          <div class="col-12 col-sm-6 col-md-4 mb-3 pb-3 border-bottom">
+            Encryption is performed below the S3 service as files are
+            written to the underlying filesystem.
           </div>
-
+        </div>
+        <div class="row justify-content-center">
+          <div class="col-12 col-sm-6 col-md-4 mb-3 pb-3 border-bottom">
+            Object contents are encrypted, while filenames, metadata,
+            IAM data, and internal service data may require separate
+            protection.
+          </div>
+          <div class="col-12 col-sm-6 col-md-4 mb-3 pb-3 border-bottom">
+            Object contents, filenames, metadata stored in files,
+            IAM data, and internal service data are protected by the
+            same encrypted filesystem.
+          </div>
+        </div>
+        <div class="row justify-content-center">
+          <div class="col-12 col-sm-6 col-md-4 mb-3 pb-3 border-bottom">
+            Encryption and key management depend on the capabilities and
+            configuration of the S3 service.
+          </div>
+          <div class="col-12 col-sm-6 col-md-4 mb-3 pb-3 border-bottom">
+            Encryption and key management operate independently of the
+            S3 service through gocryptfs.
+          </div>
+        </div>
+        <div class="row justify-content-center">
+          <div class="col-12 col-sm-6 col-md-4">
+            Access to encrypted objects generally depends on the
+            S3 service or compatible decryption mechanisms.
+          </div>
+          <div class="col-12 col-sm-6 col-md-4">
+            The encrypted filesystem can be mounted directly with
+            gocryptfs, allowing access to stored files without the
+            S3 gateway.
+          </div>
         </div>
       </div>
     </div>

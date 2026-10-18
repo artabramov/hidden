@@ -15,6 +15,22 @@
             "envFile": "/etc/hidden/.env",
             "jinja": true,
             "justMyCode": true
-        }
+        },
+        {
+            "name": "Run tests",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "coverage",
+            "args": [
+                "run",
+                "-m",
+                "unittest",
+                "discover",
+                "-s",
+                "tests",
+                "-v"
+            ],
+            "console": "integratedTerminal"
+        },
     ]
 }

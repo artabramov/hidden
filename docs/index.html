@@ -87,33 +87,33 @@
           </div>
         </div>
         <div class="row justify-content-center">
-          <div class="col-12 col-sm-6 col-md-4 mb-3 pb-3 border-bottom">
+          <div class="col-12 col-sm-6 col-md-4 mb-3 pb-3 border-bottom border-secondary">
             Encryption is performed by the S3 service as objects are
             written to storage.
           </div>
-          <div class="col-12 col-sm-6 col-md-4 mb-3 pb-3 border-bottom">
+          <div class="col-12 col-sm-6 col-md-4 mb-3 pb-3 border-bottom border-secondary">
             Encryption is performed below the S3 service as files are
             written to the underlying filesystem.
           </div>
         </div>
         <div class="row justify-content-center">
-          <div class="col-12 col-sm-6 col-md-4 mb-3 pb-3 border-bottom">
+          <div class="col-12 col-sm-6 col-md-4 mb-3 pb-3 border-bottom border-secondary">
             Object contents are encrypted, while filenames, metadata,
             IAM data, and internal service data may require separate
             protection.
           </div>
-          <div class="col-12 col-sm-6 col-md-4 mb-3 pb-3 border-bottom">
+          <div class="col-12 col-sm-6 col-md-4 mb-3 pb-3 border-bottom border-secondary">
             Object contents, filenames, metadata stored in files,
             IAM data, and internal service data are protected by the
             same encrypted filesystem.
           </div>
         </div>
         <div class="row justify-content-center">
-          <div class="col-12 col-sm-6 col-md-4 mb-3 pb-3 border-bottom">
+          <div class="col-12 col-sm-6 col-md-4 mb-3 pb-3 border-bottom border-secondary">
             Encryption and key management depend on the capabilities and
             configuration of the S3 service.
           </div>
-          <div class="col-12 col-sm-6 col-md-4 mb-3 pb-3 border-bottom">
+          <div class="col-12 col-sm-6 col-md-4 mb-3 pb-3 border-bottom border-secondary">
             Encryption and key management operate independently of the
             S3 service through gocryptfs.
           </div>

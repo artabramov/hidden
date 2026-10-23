@@ -18,6 +18,19 @@ from app.security.randoms import generate_random_string
 
 log = logging.getLogger(__name__)
 
+# NOTE (ADR-08): S3 credentials are encrypted with gocryptfs passphrase.
+# 1. VersityGW root access and secret keys are stored on the secrets
+#    volume encrypted with the gocryptfs passphrase, using the same
+#    scrypt and AES-GCM scheme. Possession of the secrets volume does
+#    not expose them without the master password.
+# 2. The passphrase is chosen over the master password because it stays
+#    the same on master password rotation. Rotation rewrites a single
+#    file, so a failure cannot leave the passphrase and the credentials
+#    encrypted with different master passwords.
+# 3. Accepted trade-off: the decrypted passphrase also decrypts the
+#    credentials. This adds no exposure, as the passphrase already
+#    grants full access to the stored data.
+
 
 async def is_versity_created(
     access_key_path: str,

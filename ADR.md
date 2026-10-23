@@ -11,3 +11,4 @@ search across the project for details.
 - ADR-05: gocryptfs passphrase is provided through tmpfs.
 - ADR-06: Cipherdir initialization is a one-time operation.
 - ADR-07: Cipherdir uses a Docker volume; secrets use a bind mount.
+- ADR-08: S3 credentials are encrypted with gocryptfs passphrase.

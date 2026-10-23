@@ -28,9 +28,33 @@
                 "discover",
                 "-s",
                 "tests",
+                "-t",
+                ".",
                 "-v"
             ],
             "console": "integratedTerminal"
         },
+        {
+            "name": "Coverage",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "coverage",
+            "args": [
+                "report",
+                "-m"
+            ],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Run linter",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "flake8",
+            "args": [
+                "app",
+                "tests"
+            ],
+            "console": "integratedTerminal"
+        }
     ]
 }

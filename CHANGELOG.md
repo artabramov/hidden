@@ -1,6 +1,7 @@
 # Changelog
 
 ## [0.6.1] - 2026-10-18
+- Added **VS Code** launch configurations for viewing test **coverage** and running **flake8**.
 - Updated and expanded the **GitHub Pages** documentation.
 - Added **CONTRIBUTING.md** to clarify the project's contribution policy.
 

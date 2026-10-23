@@ -17,10 +17,10 @@ GOCRYPTFS_PASSPHRASE_FILENAME = "gocryptfs_passphrase.enc"
 WATCHDOG_HEARTBEAT_PATH = "/tmp/gocryptfs-watchdog.touch"
 
 VERSITY_ACCESS_KEY_LENGTH = 20
-VERSITY_ACCESS_KEY_FILENAME = "versity_access.key"
+VERSITY_ACCESS_KEY_FILENAME = "versity_access_key.enc"
 
 VERSITY_SECRET_KEY_LENGTH = 40
-VERSITY_SECRET_KEY_FILENAME = "versity_secret.key"
+VERSITY_SECRET_KEY_FILENAME = "versity_secret_key.enc"
 
 VERSITY_DATA_DIRNAME = "data"
 VERSITY_IAM_DIRNAME = "iam"

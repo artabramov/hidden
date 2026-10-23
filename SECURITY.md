@@ -1,9 +1,9 @@
 # Security (OWASP Top 10: 2025)
 
 This document maps the current implementation of Hidden S3 to the
-`OWASP Top 10` (2025) categories. It is an informal self-assessment based
-on the reviewed application code, container build, and deployment scripts
-and does not constitute a full security audit.
+`OWASP Top 10` (2025) categories. It is an informal self-assessment
+based on the reviewed application code, container build, and deployment
+scripts and does not constitute a full security audit.
 
 OWASP Top 10 (2025): [owasp.org/Top10/2025/](https://owasp.org/Top10/2025/)
 
@@ -14,26 +14,27 @@ Hidden S3 is intended as a **self-hosted**, **single-tenant** storage
 appliance: the operator controls the host, container, volumes, network,
 TLS, and who may reach the exposed ports. The container provides three
 interfaces: the `FastAPI` management API (port `8081`), the `VersityGW`
-S3 API (port `9000`), and the `VersityGW` WebGUI (port `8080`). Many risks
-that dominate public multi-tenant SaaS (e.g. cross-customer isolation,
-abuse of shared infrastructure at scale) are **out of scope** or
-**materially reduced** here because trust boundaries are drawn around the
-operator’s environment rather than anonymous Internet users.
+S3 API (port `9000`), and the `VersityGW` WebGUI (port `8080`). Many
+risks that dominate public multi-tenant SaaS (e.g. cross-customer
+isolation, abuse of shared infrastructure at scale) are **out of scope**
+or **materially reduced** here because trust boundaries are drawn around
+the operator’s environment rather than anonymous Internet users.
 
 The primary protected asset is **data at rest** in two volumes: the
 `cipherdir` with encrypted S3 objects and IAM state, and the `secrets`
-volume with the encrypted `gocryptfs` passphrase. Physical access to
-either volume, or to both, must not expose plaintext without the
-`master password`. While the storage is mounted, decrypted data exists
-inside the container, and its protection relies on the runtime
-environment and on the S3 access controls of `VersityGW`.
+volume with the encrypted `gocryptfs` passphrase and encrypted `VersityGW`
+root credentials. Physical access to either volume, or to both, must not
+expose plaintext without the `master password`. While the storage is
+mounted, decrypted data exists inside the container, and its protection
+relies on the runtime environment and on the S3 access controls of
+`VersityGW`.
 
 **Operator responsibilities** (not enforced by the app alone): network
 exposure of ports `8081`, `9000`, and `8080`, TLS at the gateway,
-volumetric DDoS and edge-layer flooding, rate limits and access rules for
-the management API, physical handling of the removable `secrets` media,
-backups of the `cipherdir`, host and Docker hardening, and management of
-`VersityGW` IAM users and bucket policies (see A01/A02/A06).
+volumetric DDoS and edge-layer flooding, rate limits and access rules
+for the management API, physical handling of the removable `secrets`
+media, backups of the `cipherdir`, host and Docker hardening, and
+management of `VersityGW` IAM users and bucket policies (see A01/A02/A06).
 
 
 ## A01: Broken Access Control
@@ -41,9 +42,9 @@ backups of the `cipherdir`, host and Docker hardening, and management of
 1. The management API has no user accounts, sessions, or tokens.
    Operations on the encrypted storage (`mount`, `unmount`, `reveal`,
    `rotate`, `reset`) are authorized solely by the `master password`.
-   Each check is performed indirectly by attempting to decrypt the stored
-   encrypted passphrase; a successful decryption confirms that the
-   provided master password is valid.
+   Each check is performed indirectly by attempting to decrypt the
+   stored encrypted passphrase; a successful decryption confirms that
+   the provided master password is valid.
 
 2. The master password is defined during initialization and is not
    persisted. It is provided in the request body for each operation and
@@ -126,36 +127,30 @@ backups of the `cipherdir`, host and Docker hardening, and management of
    assumes a controlled runtime environment and does not include
    external secret management.
 
-6. The `make develop` target installs Git and OpenSSH client tooling into
-   the running container and copies the operator’s `~/.ssh` directory
-   into it. Private keys then reside in the same container that holds
-   the decrypted filesystem while the storage is mounted. This target is
-   intended for development hosts only.
-
-7. The backend runs as a single worker process. The in-process lock that
+6. The backend runs as a single worker process. The in-process lock that
    serializes storage operations relies on this constraint; running
    several workers would break that guarantee.
 
-8. Sensitive data is separated at the storage level. Encrypted S3 data
+7. Sensitive data is separated at the storage level. Encrypted S3 data
    and IAM state reside in the `cipherdir` Docker volume, while the
-   encrypted passphrase and `VersityGW` credentials reside in the
-   bind-mounted `secrets` volume (ADR-07). This separation allows the
-   `secrets` volume to be kept on removable media or a remote host.
+   encrypted passphrase and the encrypted `VersityGW` credentials reside
+   in the bind-mounted `secrets` volume (ADR-07). This separation allows
+   the `secrets` volume to be kept on removable media or a remote host.
 
-9. **CORS** for the management API is driven by `CORS_ALLOW_ORIGINS`.
+8. **CORS** for the management API is driven by `CORS_ALLOW_ORIGINS`.
    An empty value yields an empty allow-list. Listed origins receive
    credentialed access, and `allow_methods` and `allow_headers` are broad
    by design. The default `.env` lists local development origins, which
    operators should replace for production. CORS for the WebGUI is
    configured separately through `VERSITY_WEBGUI_CORS_ALLOW_ORIGIN`.
 
-10. **HTTP security headers** added by the management API include
-    `X-Content-Type-Options`, `X-Frame-Options`, and `Referrer-Policy`.
-    There is no `Content-Security-Policy` on API JSON responses (`/docs`
-    is served by the framework). These headers do not apply to the
-    `VersityGW` S3 API and WebGUI.
+9. **HTTP security headers** added by the management API include
+   `X-Content-Type-Options`, `X-Frame-Options`, and `Referrer-Policy`.
+   There is no `Content-Security-Policy` on API JSON responses (`/docs`
+   is served by the framework). These headers do not apply to the
+   `VersityGW` S3 API and WebGUI.
 
-11. `.dockerignore` excludes only Python bytecode, so the image includes
+10. `.dockerignore` excludes only Python bytecode, so the image includes
     the whole build context, such as `.git`, tests, and local tooling
     configuration.
 
@@ -335,8 +330,9 @@ backups of the `cipherdir`, host and Docker hardening, and management of
    password. There is no MFA, session, or token model.
 
 2. Verification is performed by decrypting the stored passphrase with a
-   key derived through `scrypt`. A wrong password and corrupted data both
-   produce the same `401` response with an empty body.
+   key derived through `scrypt`. A wrong password and a corrupted
+   passphrase file both produce the same `401` response with an empty
+   body.
 
 3. Password composition rules apply only when the master password is set
    during initialization or changed through rotation. Authentication
@@ -357,8 +353,9 @@ backups of the `cipherdir`, host and Docker hardening, and management of
 
 ## A08: Software or Data Integrity Failures
 
-1. The encrypted passphrase is protected by `AES-GCM` authentication.
-   Any modification is detected during decryption and rejected.
+1. The encrypted passphrase and the encrypted `VersityGW` credentials
+   are protected by `AES-GCM` authentication. Any modification is
+   detected during decryption and rejected.
 
 2. `gocryptfs` authenticates encrypted file contents, so tampering with
    data blocks in the `cipherdir` is detected on read. Deletion of whole
@@ -427,9 +424,10 @@ backups of the `cipherdir`, host and Docker hardening, and management of
    `gocryptfs` configuration files, and the `VersityGW` credentials
    created during the attempt (ADR-06).
 
-4. If `VersityGW` fails to start after the `cipherdir` is mounted, the
-   service stops `VersityGW` and unmounts the storage before returning
-   the error.
+4. If any step fails after the `cipherdir` is mounted, including
+   decryption of the `VersityGW` credentials or the `VersityGW` start,
+   the service stops `VersityGW` and unmounts the storage before
+   returning the error.
 
 5. `VersityGW` is stopped with `SIGTERM` and, after
    `VERSITY_STOP_TIMEOUT_SECONDS`, with `SIGKILL`. A start failure or

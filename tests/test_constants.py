@@ -24,12 +24,12 @@ class TestConstants(unittest.TestCase):
         self.assertEqual(constants.VERSITY_ACCESS_KEY_LENGTH, 20)
         self.assertEqual(
             constants.VERSITY_ACCESS_KEY_FILENAME,
-            "versity_access.key",
+            "versity_access_key.enc",
         )
         self.assertEqual(constants.VERSITY_SECRET_KEY_LENGTH, 40)
         self.assertEqual(
             constants.VERSITY_SECRET_KEY_FILENAME,
-            "versity_secret.key",
+            "versity_secret_key.enc",
         )
         self.assertEqual(constants.VERSITY_DATA_DIRNAME, "data")
         self.assertEqual(constants.VERSITY_IAM_DIRNAME, "iam")

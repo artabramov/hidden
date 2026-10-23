@@ -51,11 +51,11 @@ class TestConfig(unittest.TestCase):
         )
         self.assertEqual(
             config.VERSITY_ACCESS_KEY_PATH,
-            "/secrets/versity_access.key",
+            "/secrets/versity_access_key.enc",
         )
         self.assertEqual(
             config.VERSITY_SECRET_KEY_PATH,
-            "/secrets/versity_secret.key",
+            "/secrets/versity_secret_key.enc",
         )
         self.assertEqual(config.VERSITY_DATA_PATH, "/mount/data")
         self.assertEqual(config.VERSITY_IAM_PATH, "/mount/iam")

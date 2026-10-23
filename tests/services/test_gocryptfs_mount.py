@@ -49,14 +49,12 @@ class TestGocryptfsMount(unittest.IsolatedAsyncioTestCase):
             ) as ismount,
             patch(
                 "app.services.gocryptfs_mount.read",
-                new=AsyncMock(
-                    side_effect=[
-                        b"encrypted",
-                        b"access-key",
-                        b"secret-key",
-                    ],
-                ),
+                new=AsyncMock(return_value=b"encrypted"),
             ) as read,
+            patch(
+                "app.services.gocryptfs_mount.versity_read",
+                new=AsyncMock(return_value=("access-key", "secret-key")),
+            ) as versity_read,
             patch(
                 "app.services.gocryptfs_mount.decrypt_passphrase",
                 return_value=_PASSPHRASE.encode("utf-8"),
@@ -90,6 +88,7 @@ class TestGocryptfsMount(unittest.IsolatedAsyncioTestCase):
             yield SimpleNamespace(
                 ismount=ismount,
                 read=read,
+                versity_read=versity_read,
                 decrypt=decrypt,
                 isdir=isdir,
                 mkdir=mkdir,
@@ -137,13 +136,11 @@ class TestGocryptfsMount(unittest.IsolatedAsyncioTestCase):
 
         self._assert_started(mocks)
         mocks.mkdir.assert_not_awaited()
-        self.assertEqual(
-            [item.args[0] for item in mocks.read.await_args_list],
-            [
-                "/secrets/passphrase",
-                "/secrets/access",
-                "/secrets/secret",
-            ],
+        mocks.read.assert_awaited_once_with("/secrets/passphrase")
+        mocks.versity_read.assert_awaited_once_with(
+            "/secrets/access",
+            "/secrets/secret",
+            _PASSPHRASE,
         )
 
     async def test_creates_missing_directories(self):
@@ -254,6 +251,16 @@ class TestGocryptfsMount(unittest.IsolatedAsyncioTestCase):
             ],
         )
         mocks.log.warning.assert_not_called()
+
+    async def test_rolls_back_when_credentials_cannot_be_decrypted(self):
+        with self._patched() as mocks:
+            mocks.versity_read.side_effect = ValueError("corrupted")
+            with self.assertRaises(ValueError):
+                await gocryptfs_mount(_PASSWORD)
+
+        mocks.versity_start.assert_not_awaited()
+        mocks.versity_stop.assert_awaited_once_with()
+        mocks.cipherdir_unmount.assert_awaited_once_with("/mount")
 
     async def test_rolls_back_when_data_directory_creation_fails(self):
         with self._patched() as mocks:

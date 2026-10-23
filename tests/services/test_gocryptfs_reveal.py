@@ -35,44 +35,47 @@ class TestGocryptfsReveal(unittest.IsolatedAsyncioTestCase):
             ),
             patch(
                 "app.services.gocryptfs_reveal.read",
-                new=AsyncMock(
-                    side_effect=[
-                        b"encrypted",
-                        b"access-key",
-                        b"secret-key",
-                    ],
-                ),
+                new=AsyncMock(return_value=b"encrypted"),
             ) as read,
             patch(
                 "app.services.gocryptfs_reveal.decrypt_passphrase",
                 return_value=_PASSPHRASE.encode("utf-8"),
             ) as decrypt,
+            patch(
+                "app.services.gocryptfs_reveal.versity_read",
+                new=AsyncMock(return_value=("ключ", "secret-key")),
+            ) as versity_read,
             patch("app.services.gocryptfs_reveal.log") as log,
         ):
-            yield SimpleNamespace(read=read, decrypt=decrypt, log=log)
+            yield SimpleNamespace(
+                read=read,
+                decrypt=decrypt,
+                versity_read=versity_read,
+                log=log,
+            )
 
     async def test_returns_decrypted_secrets(self):
-        reads = {
-            "/secrets/passphrase": b"encrypted",
-            "/secrets/access": "ключ".encode("utf-8"),
-            "/secrets/secret": b"secret-key",
-        }
-
-        async def read_secret(path):
+        async def read_credentials(access_path, secret_path, passphrase):
             self.assertTrue(lock_manager._lock.locked())
-            return reads[path]
+            return "ключ", "secret-key"
 
         with self._patched() as mocks:
-            mocks.read.side_effect = read_secret
+            mocks.versity_read.side_effect = read_credentials
             result = await gocryptfs_reveal(_PASSWORD)
 
         self.assertEqual(
             result,
             (_PASSPHRASE, "ключ", "secret-key"),
         )
+        mocks.read.assert_awaited_once_with("/secrets/passphrase")
         mocks.decrypt.assert_called_once_with(
             b"encrypted",
             _PASSWORD.encode("utf-8"),
+        )
+        mocks.versity_read.assert_awaited_once_with(
+            "/secrets/access",
+            "/secrets/secret",
+            _PASSPHRASE,
         )
 
     async def test_rejects_invalid_password(self):
@@ -82,7 +85,7 @@ class TestGocryptfsReveal(unittest.IsolatedAsyncioTestCase):
                 await gocryptfs_reveal(_PASSWORD)
 
         mocks.log.warning.assert_called_once_with("msg=passphrase_invalid")
-        self.assertEqual(mocks.read.await_count, 1)
+        mocks.versity_read.assert_not_awaited()
 
     async def test_propagates_unexpected_decrypt_error(self):
         with self._patched() as mocks:
@@ -91,4 +94,12 @@ class TestGocryptfsReveal(unittest.IsolatedAsyncioTestCase):
                 await gocryptfs_reveal(_PASSWORD)
 
         mocks.log.warning.assert_not_called()
-        self.assertEqual(mocks.read.await_count, 1)
+        mocks.versity_read.assert_not_awaited()
+
+    async def test_propagates_credential_decrypt_error(self):
+        with self._patched() as mocks:
+            mocks.versity_read.side_effect = ValueError("corrupted")
+            with self.assertRaises(ValueError):
+                await gocryptfs_reveal(_PASSWORD)
+
+        mocks.log.warning.assert_not_called()

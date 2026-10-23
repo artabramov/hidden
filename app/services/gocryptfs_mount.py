@@ -9,7 +9,7 @@ from app.errors import BadGatewayError, UnauthorizedError
 from app.locks import lock_manager
 from app.io import isdir, ismount, mkdir, read
 from app.runtime.cipherdir import cipherdir_mount, cipherdir_unmount
-from app.runtime.versity import versity_start, versity_stop
+from app.runtime.versity import versity_read, versity_start, versity_stop
 from app.security.encryption import decrypt_passphrase
 
 log = logging.getLogger(__name__)
@@ -60,13 +60,11 @@ async def gocryptfs_mount(master_password: str) -> None:
             if not await isdir(config.VERSITY_IAM_PATH):
                 await mkdir(config.VERSITY_IAM_PATH)
 
-            access_key = (
-                await read(config.VERSITY_ACCESS_KEY_PATH)
-            ).decode("utf-8")
-
-            secret_key = (
-                await read(config.VERSITY_SECRET_KEY_PATH)
-            ).decode("utf-8")
+            access_key, secret_key = await versity_read(
+                config.VERSITY_ACCESS_KEY_PATH,
+                config.VERSITY_SECRET_KEY_PATH,
+                passphrase_bytes.decode("utf-8"),
+            )
 
             await versity_start(
                 config.VERSITY_HOST,

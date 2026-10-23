@@ -85,6 +85,7 @@ async def gocryptfs_init(master_password: str) -> tuple[str, str]:
             access_key, secret_key = await versity_create(
                 config.VERSITY_ACCESS_KEY_PATH,
                 config.VERSITY_SECRET_KEY_PATH,
+                passphrase,
             )
 
         except Exception:

@@ -220,10 +220,12 @@ backups of the `cipherdir`, host and Docker hardening, and management of
    passwords.
 
 6. The `VersityGW` root access key and secret key (20 and 40 random
-   characters) are stored in **plaintext** files on the `secrets` volume.
-   Possession of the `secrets` volume therefore grants S3 root
-   credentials, which are usable whenever the storage is mounted and the
-   S3 port is reachable.
+   characters) are stored on the `secrets` volume encrypted with the
+   `gocryptfs` passphrase using the same scheme. Possession of the
+   `secrets` volume does not expose S3 root credentials without the
+   master password. Master password rotation leaves the credential
+   files unchanged, because the passphrase that protects them stays the
+   same.
 
 7. The passphrase is provided to `gocryptfs` through a temporary file in
    `tmpfs` (`/dev/shm`) with owner-only permissions and passed with

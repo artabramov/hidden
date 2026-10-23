@@ -120,6 +120,7 @@ class TestGocryptfsInit(unittest.IsolatedAsyncioTestCase):
         mocks.versity_create.assert_awaited_once_with(
             "/secrets/access",
             "/secrets/secret",
+            _PASSPHRASE,
         )
         mocks.delete.assert_not_awaited()
         mocks.log.warning.assert_not_called()

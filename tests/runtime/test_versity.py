@@ -18,6 +18,7 @@ from app.runtime.versity import (
     is_versity_created,
     is_versity_running,
     versity_create,
+    versity_read,
     versity_start,
     versity_stop,
 )
@@ -150,8 +151,9 @@ class TestIsVersityCreated(unittest.IsolatedAsyncioTestCase):
 
 
 class TestVersityCreate(unittest.IsolatedAsyncioTestCase):
-    async def test_stores_generated_credentials(self):
+    async def test_stores_encrypted_credentials(self):
         generate = MagicMock(side_effect=["access-key", "secret-key"])
+        encrypt = MagicMock(side_effect=[b"enc-access", b"enc-secret"])
         write = AsyncMock()
 
         with (
@@ -159,11 +161,13 @@ class TestVersityCreate(unittest.IsolatedAsyncioTestCase):
                 "app.runtime.versity.generate_random_string",
                 new=generate,
             ),
+            patch("app.runtime.versity.encrypt_passphrase", new=encrypt),
             patch("app.runtime.versity.write", new=write),
         ):
             result = await versity_create(
                 "/secrets/access",
                 "/secrets/secret",
+                "пароль",
             )
 
         self.assertEqual(result, ("access-key", "secret-key"))
@@ -175,10 +179,17 @@ class TestVersityCreate(unittest.IsolatedAsyncioTestCase):
             ],
         )
         self.assertEqual(
+            encrypt.call_args_list,
+            [
+                call(b"access-key", "пароль".encode("utf-8")),
+                call(b"secret-key", "пароль".encode("utf-8")),
+            ],
+        )
+        self.assertEqual(
             write.await_args_list,
             [
-                call("/secrets/access", b"access-key"),
-                call("/secrets/secret", b"secret-key"),
+                call("/secrets/access", b"enc-access"),
+                call("/secrets/secret", b"enc-secret"),
             ],
         )
 
@@ -190,12 +201,90 @@ class TestVersityCreate(unittest.IsolatedAsyncioTestCase):
                 "app.runtime.versity.generate_random_string",
                 side_effect=["access-key", "secret-key"],
             ),
+            patch(
+                "app.runtime.versity.encrypt_passphrase",
+                side_effect=[b"enc-access", b"enc-secret"],
+            ),
             patch("app.runtime.versity.write", new=write),
         ):
             with self.assertRaises(OSError):
-                await versity_create("/secrets/access", "/secrets/secret")
+                await versity_create(
+                    "/secrets/access",
+                    "/secrets/secret",
+                    "passphrase",
+                )
 
-        write.assert_awaited_once_with("/secrets/access", b"access-key")
+        write.assert_awaited_once_with("/secrets/access", b"enc-access")
+
+    async def test_stored_credentials_round_trip(self):
+        stored = {}
+
+        async def write(path, data):
+            stored[path] = data
+
+        async def read(path):
+            return stored[path]
+
+        with (
+            patch("app.runtime.versity.write", new=write),
+            patch("app.runtime.versity.read", new=read),
+        ):
+            created = await versity_create(
+                "/secrets/access",
+                "/secrets/secret",
+                "passphrase",
+            )
+            restored = await versity_read(
+                "/secrets/access",
+                "/secrets/secret",
+                "passphrase",
+            )
+
+        self.assertEqual(restored, created)
+        self.assertNotIn(created[0].encode("utf-8"), stored["/secrets/access"])
+        self.assertNotIn(created[1].encode("utf-8"), stored["/secrets/secret"])
+
+
+class TestVersityRead(unittest.IsolatedAsyncioTestCase):
+    async def test_decrypts_stored_credentials(self):
+        read = AsyncMock(side_effect=[b"enc-access", b"enc-secret"])
+        decrypt = MagicMock(side_effect=[b"access-key", "ключ".encode()])
+
+        with (
+            patch("app.runtime.versity.read", new=read),
+            patch("app.runtime.versity.decrypt_passphrase", new=decrypt),
+        ):
+            result = await versity_read(
+                "/secrets/access",
+                "/secrets/secret",
+                "пароль",
+            )
+
+        self.assertEqual(result, ("access-key", "ключ"))
+        self.assertEqual(
+            read.await_args_list,
+            [call("/secrets/access"), call("/secrets/secret")],
+        )
+        self.assertEqual(
+            decrypt.call_args_list,
+            [
+                call(b"enc-access", "пароль".encode("utf-8")),
+                call(b"enc-secret", "пароль".encode("utf-8")),
+            ],
+        )
+
+    async def test_propagates_decrypt_failure(self):
+        read = AsyncMock(side_effect=[b"plain-access", b"plain-secret"])
+
+        with patch("app.runtime.versity.read", new=read):
+            with self.assertRaises(ValueError):
+                await versity_read(
+                    "/secrets/access",
+                    "/secrets/secret",
+                    "passphrase",
+                )
+
+        read.assert_awaited_once_with("/secrets/access")
 
 
 class TestVersityStart(unittest.IsolatedAsyncioTestCase):

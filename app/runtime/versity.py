@@ -13,6 +13,7 @@ from app.constants import (
 )
 from app.errors import InternalServerError
 from app.io import isfile, read, write
+from app.security.encryption import decrypt_passphrase, encrypt_passphrase
 from app.security.randoms import generate_random_string
 
 log = logging.getLogger(__name__)
@@ -45,25 +46,59 @@ async def is_versity_created(
 async def versity_create(
     access_key_path: str,
     secret_key_path: str,
+    passphrase: str,
 ) -> tuple[str, str]:
     """
-    Generate random VersityGW root credentials, store them in the
-    specified credential files, and return the generated values.
+    Generate random VersityGW root credentials, encrypt them with the
+    gocryptfs passphrase, store them in the specified credential files,
+    and return the generated values.
     """
     access_key = generate_random_string(VERSITY_ACCESS_KEY_LENGTH)
     secret_key = generate_random_string(VERSITY_SECRET_KEY_LENGTH)
+    passphrase_bytes = passphrase.encode("utf-8")
 
-    await write(
-        access_key_path,
+    access_key_encrypted = await asyncio.to_thread(
+        encrypt_passphrase,
         access_key.encode("utf-8"),
+        passphrase_bytes,
     )
 
-    await write(
-        secret_key_path,
+    secret_key_encrypted = await asyncio.to_thread(
+        encrypt_passphrase,
         secret_key.encode("utf-8"),
+        passphrase_bytes,
     )
+
+    await write(access_key_path, access_key_encrypted)
+    await write(secret_key_path, secret_key_encrypted)
 
     return access_key, secret_key
+
+
+async def versity_read(
+    access_key_path: str,
+    secret_key_path: str,
+    passphrase: str,
+) -> tuple[str, str]:
+    """
+    Read the stored VersityGW root credentials and decrypt them with
+    the gocryptfs passphrase.
+    """
+    passphrase_bytes = passphrase.encode("utf-8")
+
+    access_key = await asyncio.to_thread(
+        decrypt_passphrase,
+        await read(access_key_path),
+        passphrase_bytes,
+    )
+
+    secret_key = await asyncio.to_thread(
+        decrypt_passphrase,
+        await read(secret_key_path),
+        passphrase_bytes,
+    )
+
+    return access_key.decode("utf-8"), secret_key.decode("utf-8")
 
 
 async def versity_start(

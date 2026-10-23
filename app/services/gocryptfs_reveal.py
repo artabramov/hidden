@@ -8,6 +8,7 @@ from app.config import get_config
 from app.errors import UnauthorizedError
 from app.locks import lock_manager
 from app.io import read
+from app.runtime.versity import versity_read
 from app.security.encryption import decrypt_passphrase
 
 log = logging.getLogger(__name__)
@@ -34,13 +35,11 @@ async def gocryptfs_reveal(master_password: str) -> tuple[str, str, str]:
             log.warning("msg=passphrase_invalid")
             raise UnauthorizedError
 
-        versity_access_key = (
-            await read(config.VERSITY_ACCESS_KEY_PATH)
-        ).decode("utf-8")
-
-        versity_secret_key = (
-            await read(config.VERSITY_SECRET_KEY_PATH)
-        ).decode("utf-8")
+        versity_access_key, versity_secret_key = await versity_read(
+            config.VERSITY_ACCESS_KEY_PATH,
+            config.VERSITY_SECRET_KEY_PATH,
+            passphrase.decode("utf-8"),
+        )
 
         return (
             passphrase.decode("utf-8"),

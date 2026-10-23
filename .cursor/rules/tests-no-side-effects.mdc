@@ -1,0 +1,23 @@
+---
+description: Tests must not change the filesystem
+globs: tests/**/*.py
+alwaysApply: false
+---
+
+# Tests must not touch the filesystem
+
+Every test under `tests/` must run without creating, modifying, or deleting files or directories. This includes the project tree, `/tmp`, `/dev/shm`, cipherdir, secrets, and mountpoints.
+
+- Do not call `open` for writing, `mkdir`, `unlink`, `rename`, `Path.write_*`, `Path.touch`, `tempfile`, or `shutil`.
+- Do not invoke commands or services that write to disk (`gocryptfs`, `fusermount`, VersityGW, the real app entrypoint).
+- Patch filesystem helpers (`app.io`, `pathlib`, `os`) and pass fake paths. Assert on those mocks.
+- A test may read only what the process already has in memory. If a behavior needs a file, fake the bytes or the return value.
+
+```python
+# Bad: creates a real file
+path = Path("/tmp/passphrase")
+path.write_bytes(b"secret")
+
+# Good: the code under test receives the bytes from a mock
+read.return_value = b"secret"
+```

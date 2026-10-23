@@ -1,0 +1,20 @@
+[run]
+source = app
+omit =
+    tests/*
+    */__init__.py
+    */site-packages/*
+    */debugpy/*
+    */pydevd/*
+    */_pydevd_bundle/*
+    */_pydev_bundle/*
+
+[report]
+omit =
+    tests/*
+    */__init__.py
+    */site-packages/*
+    */debugpy/*
+    */pydevd/*
+    */_pydevd_bundle/*
+    */_pydev_bundle/*

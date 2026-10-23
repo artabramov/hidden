@@ -4,6 +4,7 @@
 - Added **VS Code** launch configurations for viewing test **coverage** and running **flake8**.
 - Updated and expanded the **GitHub Pages** documentation.
 - Added **CONTRIBUTING.md** to clarify the project's contribution policy.
+- Added **Cursor rules** for writing unit tests.
 
 ## [0.6.0] - 2026-10-18
 - **Rewrote the application from scratch**, replacing the built-in file repository with S3-compatible storage and resetting the codebase.

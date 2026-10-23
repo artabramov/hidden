@@ -8,6 +8,37 @@ scripts and does not constitute a full security audit.
 OWASP Top 10 (2025): [owasp.org/Top10/2025/](https://owasp.org/Top10/2025/)
 
 
+## Known security limitations
+
+Hidden S3 protects stored data primarily while the encrypted filesystem
+is locked. It is intended for trusted, privately managed infrastructure,
+not direct exposure of its management API to the public Internet.
+
+- **No built-in TLS.** The management API, S3 API, and WebGUI use HTTP.
+  The operator must secure network transport and restrict access.
+- **No protection against a compromised running system.** While storage
+  is unlocked, sufficiently privileged host or container processes can
+  access decrypted files and credentials.
+- **No limit on password attempts.** The management API does not impose
+  rate limits, delays, or lockouts. Network access must be controlled.
+- **Automatic locking is not instantaneous.** The watchdog checks
+  periodically. Stopping VersityGW or unmounting gocryptfs can fail;
+  lazy unmount can leave open files accessible to surviving processes.
+- **In-progress writes can be interrupted.** Container shutdown and
+  emergency unmount do not guarantee completion of active S3 requests.
+- **Loss of recovery secrets can make data inaccessible.** Keep secure
+  backups of the master password or recovered gocryptfs passphrase,
+  according to your recovery policy.
+- **Encryption does not prevent deletion or rollback.** Someone with
+  write access to encrypted storage can delete files or restore older
+  encrypted copies without knowing the password.
+- **Reset is destructive.** It deletes stored data and secrets. Cleanup
+  and recovery after interrupted operations are not transactional.
+
+These are current implementation limitations, not guarantees that every
+listed failure will occur. Details follow.
+
+
 ## Threat model
 
 Hidden S3 is intended as a **self-hosted**, **single-tenant** storage
@@ -23,11 +54,12 @@ the operator’s environment rather than anonymous Internet users.
 The primary protected asset is **data at rest** in two volumes: the
 `cipherdir` with encrypted S3 objects and IAM state, and the `secrets`
 volume with the encrypted `gocryptfs` passphrase and encrypted `VersityGW`
-root credentials. Physical access to either volume, or to both, must not
-expose plaintext without the `master password`. While the storage is
-mounted, decrypted data exists inside the container, and its protection
-relies on the runtime environment and on the S3 access controls of
-`VersityGW`.
+root credentials. Access to the encrypted volumes alone is intended not
+to expose plaintext without the required decryption secrets; this does
+not cover compromise of the running host, memory, or previously revealed
+keys. While the storage is mounted, decrypted data exists inside the
+container, and its protection relies on the runtime environment and
+on the S3 access controls of `VersityGW`.
 
 **Operator responsibilities** (not enforced by the app alone): network
 exposure of ports `8081`, `9000`, and `8080`, TLS at the gateway,
@@ -50,17 +82,20 @@ management of `VersityGW` IAM users and bucket policies (see A01/A02/A06).
    persisted. It is provided in the request body for each operation and
    used only transiently in memory during verification.
 
-3. **`POST /gocryptfs/init`** is unauthenticated by design. It is accepted
-   only while the `cipherdir` is not initialized, the storage is not
-   mounted, and no encrypted passphrase or `VersityGW` credentials exist.
+3. **`POST /gocryptfs/init`** is unauthenticated by design. It is
+   accepted only while the `cipherdir` is not initialized, the storage
+   is not mounted, no encrypted passphrase exists, and the credential
+   check does not find **both** non-empty `VersityGW` credential files.
+   A missing, empty, or unreadable credential file can cause that check
+   to return false even if another credential file remains.
    Until initialization is complete, anyone who can reach port `8081` can
    initialize the storage with their own master password and receive the
    `VersityGW` root credentials. Operators should initialize the storage
    immediately after installation, before exposing the port.
 
 4. Route preconditions are enforced through a central
-   `require_gocryptfs()` dependency, attached to routes and evaluated by
-   the framework before the handler logic is executed. Per route, it
+   `require_gocryptfs()` dependency, attached to routes and evaluated
+   by the framework before the handler logic is executed. Per route, it
    requires, forbids, or ignores the presence of the `cipherdir`, the
    mountpoint, and the encrypted passphrase, and returns `503` or `502`
    when the storage state does not match.
@@ -70,9 +105,11 @@ management of `VersityGW` IAM users and bucket policies (see A01/A02/A06).
    who presents the master password. This is an intentional recovery
    path; the response must be treated as a live root secret.
 
-6. **`POST /gocryptfs/reset`** irreversibly deletes the contents of the
-   `cipherdir` and all stored secrets after a single master password
-   check. There is no additional confirmation step.
+6. **`POST /gocryptfs/reset`** attempts to irreversibly delete the
+   contents of the `cipherdir` and stored secrets after a single master
+   password check. There is no additional confirmation step. It uses
+   lazy unmount before deletion when storage is mounted; cleanup is not
+   transactional and does not verify that all prior file users exited.
 
 7. Access to buckets and objects is controlled by `VersityGW` and its
    IAM. The application creates the root credentials during
@@ -286,19 +323,22 @@ management of `VersityGW` IAM users and bucket policies (see A01/A02/A06).
    unavailable.
 
 2. The watchdog runs as a separate process every
-   `WATCHDOG_INTERVAL_SECONDS` (60 by default). Removal of the media is
-   detected only on the next run, so decrypted data may remain
-   accessible for up to one interval.
+   `WATCHDOG_INTERVAL_SECONDS` (60 by default). Loss of the passphrase
+   may remain undetected until the next check. Stopping `VersityGW` and
+   unmounting the filesystem take additional time and can fail. There
+   is no guaranteed maximum time until decrypted data becomes
+   inaccessible.
 
 3. The watchdog checks only that the encrypted passphrase file exists and
    is not empty, and that the application process is running. It does
    not verify the content of the passphrase file.
 
-4. Emergency unmount stops `VersityGW` and then performs a lazy unmount
-   (`fusermount3 -uz`). Errors from stopping `VersityGW` are ignored so
-   that the unmount still runs. If `VersityGW` survives, open file
-   descriptors may keep decrypted files accessible after the lazy
-   unmount (tracked as a TODO in the code).
+4. Emergency unmount **attempts** to stop `VersityGW` and then performs
+   a lazy unmount (`fusermount3 -uz`) regardless of the stop result.
+   The stop exception is silently ignored by this caller. Lazy unmount
+   detaches the mountpoint but does not guarantee immediate loss of
+   access through already open file descriptors. A surviving process
+   may retain access to decrypted data (tracked as a TODO in the code).
 
 5. The watchdog is not synchronized with the management API. Storage
    operations in the API are serialized by an in-process lock, while the
@@ -379,23 +419,26 @@ management of `VersityGW` IAM users and bucket policies (see A01/A02/A06).
 
 ## A09: Security Logging and Alerting Failures
 
-1. The application writes structured `key=value` log messages to the
-   container standard output. Each request is logged with method, URL,
-   client address, status code, and elapsed time.
+1. The application writes `key=value` log messages to the container
+   standard output. Request-start logs include method, full URL, and
+   client address; completion logs include status code and elapsed time.
 
 2. Each request is associated with a unique identifier. A client-supplied
    **`X-Request-ID`** is accepted only when it matches a bounded length
    and allowed character set; otherwise a new identifier is generated.
    The identifier is returned in the response headers.
 
-3. Logging explicitly avoids sensitive data exposure. Request bodies,
-   master passwords, passphrases, and S3 credentials are not written to
-   logs. Error output of `gocryptfs` and `fusermount3` is logged when a
-   command fails.
+3. The application does not intentionally log request bodies, master
+   passwords, passphrases, or S3 credentials. **However, it logs the
+   full request URL, including its query string.** Secrets supplied in
+   URL parameters can therefore enter container logs. Command error
+   output from `gocryptfs` and `fusermount3` is also logged on failure.
+   Do not place secrets in URLs; restrict access to logs.
 
-4. Security-relevant events, such as an invalid master password, a
-   conflicting storage state, a watchdog emergency unmount, or a failed
-   watchdog run, are logged as warnings or errors.
+4. Many security-relevant events, such as an invalid master password,
+   conflicting storage state, or watchdog emergency unmount, are logged
+   as warnings or errors. Not every cleanup failure is logged: several
+   `versity_stop()` exceptions are silently suppressed by callers.
 
 5. There is no audit log, centralized storage, or integration with
    monitoring platforms. Logs are retained by the container runtime.
@@ -419,31 +462,39 @@ management of `VersityGW` IAM users and bucket policies (see A01/A02/A06).
 2. Storage operations are serialized by a process-wide lock. Under the
    lock, `mount` and `unmount` re-check the mount state before acting.
 
-3. Initialization is not transactional. If any step fails, the service
-   performs best-effort cleanup of the encrypted passphrase, the
-   `gocryptfs` configuration files, and the `VersityGW` credentials
-   created during the attempt (ADR-06).
+3. Initialization is not transactional. On failure, the service
+   attempts to delete the encrypted passphrase, `gocryptfs` configuration
+   files, and both `VersityGW` credential files. Cleanup is not limited
+   to files demonstrably created by the current attempt. Because the
+   credential precheck requires both non-empty files, a partially
+   initialized state can lead to an existing credential file being
+   overwritten or deleted during a later failed initialization.
+   Interrupted initialization may require manual recovery (ADR-06).
 
-4. If any step fails after the `cipherdir` is mounted, including
-   decryption of the `VersityGW` credentials or the `VersityGW` start,
-   the service stops `VersityGW` and unmounts the storage before
-   returning the error.
+4. If a step fails after `cipherdir_mount()` returns successfully,
+   including credential decryption or `VersityGW` startup, the service
+   **attempts** to stop `VersityGW` and unmount the storage. Either
+   cleanup action can fail; successful rollback is not guaranteed.
 
-5. `VersityGW` is stopped with `SIGTERM` and, after
-   `VERSITY_STOP_TIMEOUT_SECONDS`, with `SIGKILL`. A start failure or
-   timeout is reported as an internal error. Stop failures are logged,
-   and the calling operation proceeds with the unmount (see item 7).
+5. `versity_stop()` attempts `SIGTERM` and, after
+   `VERSITY_STOP_TIMEOUT_SECONDS`, `SIGKILL` if the process is still
+   running. Startup failures are reported as internal errors. The
+   `mount`, `unmount`, `reset`, and emergency-unmount callers suppress
+   exceptions from `versity_stop()` without logging those exceptions
+   themselves, and still attempt to unmount where applicable.
 
 6. A failed watchdog run is logged, and the next run starts on schedule,
    so a single error does not stop monitoring.
 
-7. Some cleanup paths deliberately ignore errors so that the critical
-   step (for example, unmount) still runs. This may obscure the original
-   failure cause in certain scenarios.
+7. Some cleanup paths deliberately suppress errors so that an unmount
+   attempt still runs. This is intentional for rapid access shutdown,
+   but can hide a failed stop and does not guarantee successful unmount.
 
 8. On container stop, the application does not run an explicit shutdown
-   sequence. `VersityGW` and `gocryptfs` terminate together with the
-   container, and the decrypted mount disappears with its namespace.
+   sequence for `VersityGW` and `gocryptfs`. Container termination can
+   interrupt active S3 requests and leave incomplete operations. The
+   container's mount namespace is removed when its processes exit;
+   this is not a guarantee of graceful write completion.
 
 9. Service availability is explicitly controlled by the storage state.
    Operations on an uninitialized, unmounted, or conflicting storage fail

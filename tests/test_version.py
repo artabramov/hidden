@@ -8,4 +8,4 @@ from app.version import __version__
 
 class TestVersion(unittest.TestCase):
     def test_reports_current_version(self):
-        self.assertEqual(__version__, "0.6.0")
+        self.assertEqual(__version__, "0.6.1")

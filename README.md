@@ -27,7 +27,7 @@ For emergency recovery, the `cipherdir` can be mounted directly with
 `gocryptfs` using the decrypted passphrase. The data is not locked into
 the application and can be accessed or exported independently.
 
-![version](https://img.shields.io/badge/version-0.6.0-2f81f7)
+![version](https://img.shields.io/badge/version-0.6.1-2f81f7)
 ![test coverage](https://img.shields.io/badge/test%20coverage-100%25-2f81f7)
 [![license](https://img.shields.io/badge/license-Apache--2.0-2f81f7)](./LICENSE)
 

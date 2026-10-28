@@ -85,34 +85,42 @@ volume becomes unavailable, or the storage itself becomes inaccessible,
 it automatically unmounts the decrypted filesystem and stops the S3
 gateway.
 
-```text
-        Container                          External
-        Internals                          Interfaces
+```mermaid
+flowchart LR
+    subgraph EXT["External interfaces"]
+        direction TB
+        REST["<b>REST API</b><br/>8081"]
+        S3["<b>S3 API</b><br/>9000"]
+        GUI["<b>WebGUI</b><br/>8080"]
+    end
 
-┌─────────────────────────┐
-│ VersityGW               │------- S3 API and WebGUI provide
-│ (S3, IAM, WebGUI)       │        storage and IAM access
-└─────────────────────────┘
-             │
-┌─────────────────────────┐
-│ FastAPI application     │─────── OpenAPI provides gocryptfs
-│ (REST API)              │        lifecycle management
-└─────────────────────────┘
-             │
-┌─────────────────────────┐
-│ Decrypted data and IAM  │
-│ (gocryptfs mountpoint)  │                External
-└─────────────────────────┘                Volumes
-             │
-┌─────────────────────────┐       ┏━━━━━━━━━━━━━━━━━━━━━━━━━┓
-│ Watchdog                │-------┃ Detachable secrets      ┃
-│ (mount supervisor)      │       ┃ (gocryptfs passphrase)  ┃
-└─────────────────────────┘       ┗━━━━━━━━━━━━━━━━━━━━━━━━━┛
-             │
-┌─────────────────────────┐       ┏━━━━━━━━━━━━━━━━━━━━━━━━━┓
-│ FUSE layer              │-------┃ Encrypted storage       ┃
-│ (gocryptfs engine)      │       ┃ (gocryptfs cipherdir)   ┃
-└─────────────────────────┘       ┗━━━━━━━━━━━━━━━━━━━━━━━━━┛
+    subgraph INT["Container internals"]
+        direction TB
+        H["<b>Hidden S3</b><br/>Mounts the encrypted filesystem, runs the S3 gateway, and automatically stops services and unmounts storage when required."]
+    end
+
+    subgraph VOL["External volumes"]
+        direction TB
+        SECRET["<b>Encrypted secret</b><br/>/mnt/hidden/secrets"]
+        STORAGE["<b>Encrypted storage</b></br>hidden-cipherdir"]
+    end
+
+    H --> REST
+    H --> S3
+    H --> GUI
+
+    H --- SECRET
+    H --- STORAGE
+
+    classDef blue fill:#07539c,color:#fff,stroke:#07539c,stroke-width:2px;
+    classDef interface fill:#fff,color:#000,stroke:none;
+
+    class H,SECRET,STORAGE blue;
+    class REST,S3,GUI interface;
+
+    style EXT fill:none,stroke:#888,stroke-dasharray:5 5
+    style INT fill:none,stroke:#888,stroke-dasharray:5 5
+    style VOL fill:none,stroke:#888,stroke-dasharray:5 5
 ```
 
 ## Use cases
@@ -191,5 +199,3 @@ You may use, modify, and distribute this software in accordance with
 the terms of the Apache License 2.0.
 
 See [LICENSE](./LICENSE) for the full license text.
-
-Copyright (c) 2026 Artem Abramov

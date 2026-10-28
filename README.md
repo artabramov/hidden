@@ -101,7 +101,7 @@ flowchart LR
 
     subgraph VOL["External volumes"]
         direction TB
-        SECRET["<b>Encrypted secret</b><br/><small>/mnt/hidden/secrets</small>"]
+        SECRET["<b>Encrypted secret</b><br/><small>/mnt/hidden</small>"]
         STORAGE["<b>Encrypted storage</b></br><small>hidden-cipherdir</small>"]
     end
 

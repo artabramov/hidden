@@ -89,20 +89,20 @@ gateway.
 flowchart LR
     subgraph EXT["External interfaces"]
         direction TB
-        REST["<b>REST API</b><br/>8081"]
-        S3["<b>S3 API</b><br/>9000"]
-        GUI["<b>WebGUI</b><br/>8080"]
+        REST["<b>REST API</b><br/><small>8081</small>"]
+        S3["<b>S3 API</b><br/><small>9000</small>"]
+        GUI["<b>WebGUI</b><br/><small>8080</small>"]
     end
 
     subgraph INT["Container internals"]
         direction TB
-        H["<b>Hidden S3</b><br/>Mounts the encrypted filesystem, runs the S3 gateway, and automatically stops services and unmounts storage when required."]
+        H["<b>Hidden S3</b><br/><small>Mounts the encrypted filesystem, runs the S3 gateway, and automatically stops services and unmounts storage when required.</small>"]
     end
 
     subgraph VOL["External volumes"]
         direction TB
-        SECRET["<b>Encrypted secret</b><br/>/mnt/hidden/secrets"]
-        STORAGE["<b>Encrypted storage</b></br>hidden-cipherdir"]
+        SECRET["<b>Encrypted secret</b><br/><small>/mnt/hidden/secrets</small>"]
+        STORAGE["<b>Encrypted storage</b></br><small>hidden-cipherdir</small>"]
     end
 
     H --> REST

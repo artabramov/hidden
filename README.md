@@ -96,7 +96,7 @@ flowchart LR
 
     subgraph INT["Container internals"]
         direction TB
-        H["<b>Hidden S3</b><br/><small>Mounts the encrypted filesystem, runs the S3 gateway, and automatically stops services and unmounts storage when required.</small>"]
+        H["<b>Hidden S3</b><br/><small>Mounts encrypted storage, runs the S3 gateway, and safely shuts down and unmounts when required.</small>"]
     end
 
     subgraph VOL["External volumes"]

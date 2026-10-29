@@ -87,11 +87,10 @@ gateway.
 
 ```mermaid
 flowchart LR
-    subgraph EXT["External interfaces"]
+    subgraph VOL["External volumes"]
         direction TB
-        REST["<b>REST API</b><br/><small>8081</small>"]
-        S3["<b>S3 API</b><br/><small>9000</small>"]
-        GUI["<b>WebGUI</b><br/><small>8080</small>"]
+        SECRET["<b>Encrypted secret</b><br/><small>/mnt/hidden</small>"]
+        STORAGE["<b>Encrypted storage</b><br/><small>hidden-cipherdir</small>"]
     end
 
     subgraph INT["Container internals"]
@@ -99,18 +98,19 @@ flowchart LR
         H["<b>Hidden S3</b><br/>Mounts encrypted storage,<br/>runs the S3 gateway, and<br/>automatically shuts down<br/>and unmounts when required."]
     end
 
-    subgraph VOL["External volumes"]
+    subgraph EXT["External interfaces"]
         direction TB
-        SECRET["<b>Encrypted secret</b><br/><small>/mnt/hidden</small>"]
-        STORAGE["<b>Encrypted storage</b></br><small>hidden-cipherdir</small>"]
+        REST["<b>REST API</b><br/><small>:8081</small>"]
+        S3["<b>S3 API</b><br/><small>:9000</small>"]
+        GUI["<b>WebGUI</b><br/><small>:8080</small>"]
     end
+
+    SECRET --> H
+    STORAGE --> H
 
     H --> REST
     H --> S3
     H --> GUI
-
-    H --- SECRET
-    H --- STORAGE
 
     classDef blue fill:#07539c,color:#fff,stroke:#07539c,stroke-width:2px;
     classDef interface fill:#fff,color:#000,stroke:none;

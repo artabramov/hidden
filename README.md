@@ -74,16 +74,10 @@ S3 data and IAM state reside within the encrypted filesystem. Decrypted
 data is available only while the filesystem is mounted and is accessible
 externally only through the S3 API.
 
-Initialization, mounting, unmounting, and other operations on the
+Initialization, mounting, manual unmounting, and other operations on the
 encrypted storage require both the `secrets` volume to be available and
 the `master password` to be provided. If either is unavailable, the
 storage remains protected.
-
-As an additional protection layer, a `watchdog` monitors critical
-runtime conditions. If the application process fails, the `secrets`
-volume becomes unavailable, or the storage itself becomes inaccessible,
-it automatically unmounts the decrypted filesystem and stops the S3
-gateway.
 
 ```mermaid
 flowchart LR
@@ -122,6 +116,35 @@ flowchart LR
     style INT fill:none,stroke:#888,stroke-dasharray:5 5
     style VOL fill:none,stroke:#888,stroke-dasharray:5 5
 ```
+
+When an object is uploaded through the S3 API, `VersityGW` writes it to
+the mounted filesystem using standard POSIX operations. These operations
+pass through `FUSE` to `gocryptfs`, which transparently encrypts file
+contents and filenames before storing them on the underlying filesystem.
+Downloads follow the same path in reverse, with data decrypted on the fly.
+
+```mermaid
+sequenceDiagram
+    participant Client as S3 Client
+    participant GW as VersityGW
+    participant FS as FUSE
+    participant GC as gocryptfs
+    participant Disk as Filesystem
+
+    Client->>GW: PUT Object
+    GW->>FS: POSIX write()
+    FS->>GC: FUSE write request
+    Note over GC: Encrypt file contents<br/>and filenames
+    GC->>Disk: Write encrypted data
+
+    Note over Client,Disk: Downloads follow the reverse path with transparent decryption
+```
+
+As an additional protection layer, a `watchdog` monitors critical
+runtime conditions. If the application process fails, the `secrets`
+volume becomes unavailable, or the storage itself becomes inaccessible,
+it automatically unmounts the decrypted filesystem and stops the S3
+gateway.
 
 ## Use cases
 

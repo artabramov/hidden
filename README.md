@@ -89,8 +89,8 @@ gateway.
 flowchart LR
     subgraph VOL["External volumes"]
         direction TB
-        SECRET["<b>Encrypted secret</b><br/><small>/mnt/hidden</small>"]
         STORAGE["<b>Encrypted storage</b><br/><small>hidden-cipherdir</small>"]
+        SECRET["<b>Encrypted secret</b><br/><small>/mnt/hidden</small>"]
     end
 
     subgraph INT["Container internals"]
@@ -105,8 +105,8 @@ flowchart LR
         GUI["<b>WebGUI</b><br/><small>:8080</small>"]
     end
 
-    SECRET --> H
     STORAGE --> H
+    SECRET --> H
 
     H --> REST
     H --> S3

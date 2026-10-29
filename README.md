@@ -146,24 +146,6 @@ volume becomes unavailable, or the storage itself becomes inaccessible,
 it automatically unmounts the decrypted filesystem and stops the S3
 gateway.
 
-## Use cases
-
-The project is designed for scenarios where data must remain protected
-independently of the storage service and underlying infrastructure.
-Typical use cases include:
-
-- **Private storage** — storage for sensitive data where encryption and
-access to decrypted contents remain under the owner's control.
-
-- **Internal storage** — S3-compatible storage for applications, services,
-and teams running on privately managed infrastructure.
-
-- **Isolated environments** — local S3 storage for disconnected,
-restricted, or otherwise self-contained infrastructure.
-
-- **Backup and archival storage** — encrypted S3 storage for backups,
-snapshots, exports, and long-term data retention.
-
 ## What is protected
 
 The protection model covers physical access to stored data, storage

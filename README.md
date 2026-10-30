@@ -39,6 +39,13 @@ If you like it, star it ⭐ — it helps discoverability. Thank you!
 - S3-compatible gateway: [VersityGW](https://github.com/versity/versitygw)
 - Architectural decisions: [ADR.md](./ADR.md)
 
+## Requirements
+
+- Linux host with Docker and FUSE support.
+- Docker permissions required for FUSE mounts.
+- Shared mount propagation for external secrets storage.
+- GNU Make for installation using the provided Makefile.
+
 ## Quick start
 
 Mount remote storage or removable media at `/mnt/hidden/secrets` to
@@ -72,7 +79,7 @@ That's it — use your preferred S3-compatible client or the WebGUI.
 
 S3 data and IAM state reside within the encrypted filesystem. Decrypted
 data is available only while the filesystem is mounted and is accessible
-externally only through the S3 API.
+externally only through the S3 gateway.
 
 Initialization, mounting, manual unmounting, and other operations on the
 encrypted storage require both the `secrets` volume to be available and
@@ -197,10 +204,7 @@ sensitive information transmitted over the network.
 
 ## License
 
-This project is licensed under the **Apache License 2.0**
-(`Apache-2.0`).
+This project is licensed under the **Apache License 2.0**, allowing use,
+modification, and distribution in accordance with its terms.
 
-You may use, modify, and distribute this software in accordance with
-the terms of the Apache License 2.0.
-
-See [LICENSE](./LICENSE) for the full license text.
+See [LICENSE](./LICENSE) for details.

@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.6.2] - 2026-10-31
+- Stopped tracking the **.coverage** report and added it to **.gitignore**.
+
 ## [0.6.1] - 2026-10-24
 - Added encryption for the **S3 access and secret keys** to protect stored credentials at rest.
 - Added **VS Code** launch configurations for viewing test **coverage** and running **flake8**.

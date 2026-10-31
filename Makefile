@@ -1,4 +1,4 @@
-.PHONY: install develop
+.PHONY: install stop uninstall
 
 -include .env
 
@@ -41,6 +41,8 @@ install:
 
 	docker build -t hidden .
 
+	@docker rm -f hidden >/dev/null 2>&1 || true
+
 	docker run -dit \
 	--init \
 	--restart unless-stopped \
@@ -54,3 +56,9 @@ install:
 	--mount type=bind,source=$(VOLUME_SECRETS_ROOT),target=$(INSTALL_SECRETS_ROOT),bind-propagation=rslave \
 	--name hidden \
 	hidden
+
+stop:
+	docker stop hidden
+
+uninstall:
+	docker rm -f hidden

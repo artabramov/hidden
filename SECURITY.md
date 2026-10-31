@@ -187,9 +187,10 @@ management of `VersityGW` IAM users and bucket policies (see A01/A02/A06).
    is served by the framework). These headers do not apply to the
    `VersityGW` S3 API and WebGUI.
 
-10. `.dockerignore` excludes only Python bytecode, so the image includes
-    the whole build context, such as `.git`, tests, and local tooling
-    configuration.
+10. `.dockerignore` keeps the image context to the application source,
+    the bundled `.env`, `requirements.txt`, and `entrypoint.sh`. Git
+    metadata, tests, documentation, and local tooling are not copied
+    into the image.
 
 
 ## A03: Software Supply Chain Failures

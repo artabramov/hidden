@@ -2,6 +2,7 @@
 
 ## [0.6.2] - 2026-10-31
 - Stopped tracking the **.coverage** report and added it to **.gitignore**.
+- Tightened **.dockerignore** so the image excludes Git metadata, tests, documentation, and local tooling.
 
 ## [0.6.1] - 2026-10-24
 - Added encryption for the **S3 access and secret keys** to protect stored credentials at rest.

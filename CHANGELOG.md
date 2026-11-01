@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.6.3] - 2026-11-01
+- Renamed the stored S3 key files to **versity_access_key.enc** and **versity_secret_key.enc**.
+- Removed the **Cursor rules** for unit tests.
+
 ## [0.6.2] - 2026-10-31
 - Stopped tracking the **.coverage** report and added it to **.gitignore**.
 - Tightened **.dockerignore** so the image excludes Git metadata, tests, documentation, and local tooling.

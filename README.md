@@ -202,7 +202,7 @@ enabled for the S3 API and WebGUI with a certificate and private key.
 The management API still needs TLS at the infrastructure level. Without
 TLS, network traffic is not protected in transit.
 
-### How to enable TLS for S3 and WebGUI
+## How to enable TLS for S3 and WebGUI
 
 To enable TLS for both the S3 API and WebGUI, place a PEM certificate
 and private key in the project before running `make install`:

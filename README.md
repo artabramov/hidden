@@ -197,10 +197,41 @@ container may be able to access the decrypted filesystem directly.
 anywhere. If lost, the encrypted passphrase cannot be unlocked and the
 storage cannot be recovered.
 
-- **Unsecured network access.** The application does not encrypt network
-traffic. `TLS` must be configured at the infrastructure level. Without
-it, an attacker with access to the trusted network may intercept
-sensitive information transmitted over the network.
+- **Unsecured network access.** TLS is disabled by default. It can be
+enabled for the S3 API and WebGUI with a certificate and private key.
+The management API still needs TLS at the infrastructure level. Without
+TLS, network traffic is not protected in transit.
+
+### How to enable TLS for S3 and WebGUI
+
+To enable TLS for both the S3 API and WebGUI, place a PEM certificate
+and private key in the project before running `make install`:
+
+```sh
+cp /path/to/fullchain.pem ./cert.pem
+cp /path/to/private-key.pem ./key.pem
+```
+
+Configure their paths and the WebGUI URLs in `.env` (leave `localhost`
+when opening the WebGUI at `https://localhost:8080`; otherwise use the
+certificate hostname in both URLs and open the WebGUI at that hostname):
+
+```dotenv
+VGW_CERT=/opt/hidden/cert.pem
+VGW_KEY=/opt/hidden/key.pem
+VERSITY_WEBGUI_GATEWAY=https://localhost:9000
+VERSITY_WEBGUI_CORS_ALLOW_ORIGIN=https://localhost:8080
+```
+
+Then build and run the container:
+
+```sh
+make install
+```
+
+Because the private key is copied into the Docker image, keep the image
+and build context private. For shared images, terminate TLS externally
+or mount the certificate and key at runtime instead.
 
 ## License
 

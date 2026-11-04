@@ -14,8 +14,10 @@ Hidden S3 protects stored data primarily while the encrypted filesystem
 is locked. It is intended for trusted, privately managed infrastructure,
 not direct exposure of its management API to the public Internet.
 
-- **No built-in TLS.** The management API, S3 API, and WebGUI use HTTP.
-  The operator must secure network transport and restrict access.
+- **TLS is disabled by default.** `VersityGW` can provide TLS for the S3
+  API and WebGUI when a certificate and key are supplied. The management
+  API has no built-in TLS. The operator must configure transport
+  security and restrict access.
 - **No protection against a compromised running system.** While storage
   is unlocked, sufficiently privileged host or container processes can
   access decrypted files and credentials.
@@ -62,7 +64,7 @@ container, and its protection relies on the runtime environment and
 on the S3 access controls of `VersityGW`.
 
 **Operator responsibilities** (not enforced by the app alone): network
-exposure of ports `8081`, `9000`, and `8080`, TLS at the gateway,
+exposure of ports `8081`, `9000`, and `8080`, TLS configuration,
 volumetric DDoS and edge-layer flooding, rate limits and access rules
 for the management API, physical handling of the removable `secrets`
 media, backups of the `cipherdir`, host and Docker hardening, and
@@ -127,14 +129,18 @@ management of `VersityGW` IAM users and bucket policies (see A01/A02/A06).
 
 ## A02: Security Misconfiguration
 
-1. TLS termination is handled outside of the container. The management
-   API, the S3 API, and the WebGUI all listen over plain HTTP, the
-   default configuration binds them to `0.0.0.0`, and `make install`
-   publishes ports `8081`, `9000`, and `8080` on all host interfaces.
-   The master password, the revealed passphrase, and S3 credentials
-   cross the network in cleartext unless a TLS gateway or a private
-   network is placed in front of the container. Direct access from
-   untrusted networks is considered an insecure deployment.
+1. TLS is disabled by default, the services bind to `0.0.0.0`, and
+   `make install` publishes ports `8081`, `9000`, and `8080` on all host
+   interfaces. `VersityGW` supports native TLS for the S3 API and
+   WebGUI through `VGW_CERT` and `VGW_KEY`; both endpoints use the same
+   certificate pair unless configured separately. The certificate and
+   key can be copied into the image at build time as documented in
+   `README.md`, which makes the private key available to anyone with
+   access to the image. The management API has no built-in TLS and
+   requires external termination. Without TLS or a private network,
+   the master password, revealed passphrase, and S3 credentials cross
+   the network in cleartext. Direct access from untrusted networks is
+   considered an insecure deployment.
 
 2. The API schema and documentation endpoints (`/docs`, `/openapi.json`)
    are always accessible, and Swagger UI has "try it out" enabled. This
@@ -283,9 +289,9 @@ management of `VersityGW` IAM users and bucket policies (see A01/A02/A06).
     swap; operators on sensitive deployments should disable swap or use
     OS-level encrypted swap.
 
-11. Transport-level security (TLS) is not handled by the application
-    itself and must be provided by the deployment environment.
-    Unencrypted transport is considered insecure.
+11. `VersityGW` can provide TLS for the S3 API and WebGUI when both a
+    certificate and private key are configured. The management API
+    still relies on the deployment environment for TLS termination.
 
 12. **Emergency recovery** is possible without the application: the
     passphrase returned by `/gocryptfs/reveal` can be used to mount the

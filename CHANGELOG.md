@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.6.4] - 2026-11-07
+- Documented optional native **TLS** for the S3 API and WebGUI.
+
 ## [0.6.3] - 2026-11-01
 - Renamed the stored S3 key files to **versity_access_key.enc** and **versity_secret_key.enc**.
 - Removed the **Cursor rules** for unit tests.

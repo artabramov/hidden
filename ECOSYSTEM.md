@@ -12,7 +12,7 @@ Contributions to this list are welcome. See [CONTRIBUTING.md](./CONTRIBUTING.md)
 ## Table of contents
 
 - [Backup, recovery & synchronization](#backup-recovery--synchronization) `21`
-- [Storage clients & tools](#storage-clients--tools) `20`
+- [Storage clients & tools](#storage-clients--tools) `21`
 - [Security & testing](#security--testing) `5`
 - [Proxies & gateways](#proxies--gateways) `6`
 - [Development & integrations](#development--integrations) `23`
@@ -76,6 +76,7 @@ S3 browsers, command-line tools, file management, object transfers, and bucket a
 | [paololazzari/s3-fuzzy-viewer](https://github.com/paololazzari/s3-fuzzy-viewer) `Apache-2.0` | tmux based cli tool for searching s3 objects using fuzzy search |
 | [juntaki/bucketsync](https://github.com/juntaki/bucketsync) `MIT` | S3 backed FUSE Filesystem written in Go with dedup and encryption |
 | [half-6/cloud-storage-client](https://github.com/half-6/cloud-storage-client) `MIT` | Cloud Storage Desktop Application |
+| [marmos91/cubbit-ds3-drive](https://github.com/marmos91/cubbit-ds3-drive) `GPL-3.0` | Cubbit DS3 Drive - macOS File Provider client for S3-compatible storage |
 
 [↑ Back to top](#table-of-contents)
 

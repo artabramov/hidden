@@ -38,6 +38,7 @@ If you like it, star it ⭐ — it helps discoverability. Thank you!
 - Encrypted filesystem: [gocryptfs](https://github.com/rfjakob/gocryptfs)
 - S3-compatible gateway: [VersityGW](https://github.com/versity/versitygw)
 - Architectural decisions: [ADR.md](./ADR.md)
+- Compatible software: [ECOSYSTEM.md](./ECOSYSTEM.md)
 
 ## Requirements
 

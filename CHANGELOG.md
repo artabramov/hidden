@@ -4,6 +4,7 @@
 - Upgraded **apt** packages and **pip** during the image build.
 - Documented the **security audit** in the **README.md**.
 - Added **HOWTO.md**, a collection of how-to guides.
+- Documented mounting the cipherdir directly with **gocryptfs** in **HOWTO.md**.
 
 ## [0.7.2] - 2026-11-07
 - Extended the **audit** target to install **pip-audit** in the running container and scan the dependencies.

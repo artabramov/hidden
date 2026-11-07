@@ -1,6 +1,7 @@
 # How-to guides
 
 - [How to enable TLS for S3 and WebGUI](#how-to-enable-tls-for-s3-and-webgui)
+- [How to mount cipherdir directly with gocryptfs](#how-to-mount-cipherdir-directly-with-gocryptfs)
 
 ## How to enable TLS for S3 and WebGUI
 
@@ -32,3 +33,41 @@ make install
 Because the private key is copied into the Docker image, keep the image
 and build context private. For shared images, terminate TLS externally
 or mount the certificate and key at runtime instead.
+
+## How to mount cipherdir directly with gocryptfs
+
+Hidden S3 stores S3 objects as regular POSIX files and directories in an
+encrypted `gocryptfs` filesystem, which can be mounted independently of
+the application.
+
+Retrieve the `gocryptfs` passphrase using `POST /api/v1/gocryptfs/reveal`
+in the [management API](http://localhost:8081/docs).
+
+Stop the container:
+
+```sh
+docker stop hidden
+```
+
+Locate the encrypted volume:
+
+```sh
+docker volume inspect hidden-cipherdir
+```
+
+Create a mountpoint and mount the filesystem using the volume's
+`Mountpoint` path:
+
+```sh
+sudo mkdir -p /mnt/recovered
+sudo gocryptfs /var/lib/docker/volumes/hidden-cipherdir/_data /mnt/recovered
+```
+
+Enter the retrieved passphrase when prompted. The decrypted files are
+now accessible at `/mnt/recovered`.
+
+Unmount when finished:
+
+```sh
+sudo fusermount3 -u /mnt/recovered
+```

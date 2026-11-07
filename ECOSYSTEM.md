@@ -14,7 +14,7 @@ Contributions to this list are welcome. See [CONTRIBUTING.md](./CONTRIBUTING.md)
 - [Backup, recovery & synchronization](#backup-recovery--synchronization) `22`
 - [Storage clients & tools](#storage-clients--tools) `21`
 - [Security & testing](#security--testing) `5`
-- [Proxies & gateways](#proxies--gateways) `6`
+- [Proxies & gateways](#proxies--gateways) `7`
 - [Development & integrations](#development--integrations) `23`
 - [Automation & deployment](#automation--deployment) `6`
 - [Data processing & monitoring](#data-processing--monitoring) `5`
@@ -107,6 +107,7 @@ S3-compatible gateways, reverse proxies, authentication, and caching.
 | [fsouza/s3-upload-proxy](https://github.com/fsouza/s3-upload-proxy) `BSD-2-Clause` | Tool for proxying HTTP uploads to S3 and Elemental MediaStore, designed for video live streaming |
 | [i5heu/bonito-cache](https://github.com/i5heu/bonito-cache) `AGPL-3.0` | Just hook it in front of your public S3 bucket and enjoy reduction in bandwidth costs from your bucket |
 | [emmekappa/sftp-to-s3](https://github.com/emmekappa/sftp-to-s3) `Apache-2.0` | Docker image which provides an SFTP access mounting a specified S3 bucket |
+| [nedix/s3-nfs-container](https://github.com/nedix/s3-nfs-container) `MIT` | Mount an S3 bucket as an NFS filesystem to use it as a Docker or Docker Compose volume |
 
 [↑ Back to top](#table-of-contents)
 

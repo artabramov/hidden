@@ -66,3 +66,6 @@ uninstall:
 audit:
 	docker exec hidden pip install bandit
 	docker exec hidden bandit -r /opt/hidden/app
+
+	docker exec hidden pip install semgrep
+	docker exec hidden semgrep scan --config p/python --config p/security-audit /opt/hidden/app

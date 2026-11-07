@@ -41,7 +41,7 @@ encrypted `gocryptfs` filesystem, which can be mounted independently of
 the application.
 
 Retrieve the `gocryptfs` passphrase using `POST /api/v1/gocryptfs/reveal`
-in the [management API](http://localhost:8081/docs).
+in the [http://localhost:8081/docs](http://localhost:8081/docs).
 
 Stop the container:
 

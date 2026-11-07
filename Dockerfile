@@ -20,6 +20,7 @@ WORKDIR /opt/hidden
 #    observable, while file contents and plaintext names are encrypted.
 
 RUN apt-get update \
+ && apt-get upgrade -y \
  && apt-get install -y --no-install-recommends gocryptfs fuse3 \
  && rm -rf /var/lib/apt/lists/*
 
@@ -37,6 +38,7 @@ RUN apt-get update \
  && rm -rf /var/lib/apt/lists/*
 
 COPY . .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN python -m pip install --no-cache-dir --upgrade pip \
+ && python -m pip install --no-cache-dir -r requirements.txt
 
 ENTRYPOINT ["./entrypoint.sh"]

@@ -34,21 +34,21 @@ the application and can be accessed or exported independently.
 
 If you like it, star it ⭐ — it helps discoverability. Thank you!
 
-## References
+## Documentation
 
-- Encrypted filesystem: [gocryptfs](https://github.com/rfjakob/gocryptfs)
-- S3-compatible gateway: [VersityGW](https://github.com/versity/versitygw)
 - Architectural decisions: [ADR.md](./ADR.md)
+- OWASP self-assessment: [SECURITY.md](./SECURITY.md)
+- How-to guides: [HOWTO.md](./HOWTO.md)
 - Compatible software: [ECOSYSTEM.md](./ECOSYSTEM.md)
 
-## Requirements
+## Quick start
+
+Before installation, ensure the host meets the following requirements:
 
 - Linux host with Docker and FUSE support.
 - Docker permissions required for FUSE mounts.
 - Shared mount propagation for external secrets storage.
 - GNU Make for installation using the provided Makefile.
-
-## Quick start
 
 Mount remote storage or removable media at `/mnt/hidden/secrets` to
 store the application secrets, then build and run the container:
@@ -202,7 +202,7 @@ storage cannot be recovered.
 - **Unsecured network access.** TLS is disabled by default. It can be
 enabled for the S3 API and WebGUI with a certificate and private key.
 The management API still needs TLS at the infrastructure level. Without
-TLS, network traffic is not protected in transit.
+TLS, network traffic may be intercepted.
 
 ## Security audit
 
@@ -220,36 +220,13 @@ make audit
 
 The audit tools are installed inside the container when invoked.
 
-## How to enable TLS for S3 and WebGUI
+## See also
 
-To enable TLS for both the S3 API and WebGUI, place a PEM certificate
-and private key in the project before running `make install`:
+The project relies on the following core components:
 
-```sh
-cp /path/to/fullchain.pem ./cert.pem
-cp /path/to/private-key.pem ./key.pem
-```
-
-Configure their paths and the WebGUI URLs in `.env` (leave `localhost`
-when opening the WebGUI at `https://localhost:8080`; otherwise use the
-certificate hostname in both URLs and open the WebGUI at that hostname):
-
-```dotenv
-VGW_CERT=/opt/hidden/cert.pem
-VGW_KEY=/opt/hidden/key.pem
-VERSITY_WEBGUI_GATEWAY=https://localhost:9000
-VERSITY_WEBGUI_CORS_ALLOW_ORIGIN=https://localhost:8080
-```
-
-Then build and run the container:
-
-```sh
-make install
-```
-
-Because the private key is copied into the Docker image, keep the image
-and build context private. For shared images, terminate TLS externally
-or mount the certificate and key at runtime instead.
+- Userspace filesystem: [FUSE](https://www.kernel.org/doc/html/next/filesystems/fuse.html)
+- Encrypted filesystem: [gocryptfs](https://github.com/rfjakob/gocryptfs)
+- S3-compatible gateway: [VersityGW](https://github.com/versity/versitygw)
 
 ## License
 

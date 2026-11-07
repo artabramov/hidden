@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.7.0] - 2026-11-08
+## [0.7.0] - 2026-11-07
 - Added the **audit** target to install **Bandit** in the running container and scan the application.
 - Marked false-positive **Bandit** findings with **nosec** comments.
 

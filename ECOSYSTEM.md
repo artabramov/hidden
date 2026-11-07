@@ -11,7 +11,7 @@ Contributions to this list are welcome. See [CONTRIBUTING.md](./CONTRIBUTING.md)
 
 ## Table of contents
 
-- [Backup, recovery & synchronization](#backup-recovery--synchronization) `21`
+- [Backup, recovery & synchronization](#backup-recovery--synchronization) `22`
 - [Storage clients & tools](#storage-clients--tools) `21`
 - [Security & testing](#security--testing) `5`
 - [Proxies & gateways](#proxies--gateways) `6`
@@ -47,6 +47,7 @@ Backup, data recovery, archiving, and file synchronization.
 | [oguzhan-yilmaz/argocd-backup-s3](https://github.com/oguzhan-yilmaz/argocd-backup-s3) `Apache-2.0` | Kubernetes CronJob to backup ArgoCD with "argocd admin export" cmd and upload to S3 compatible storage |
 | [timothystewart6/mongo-to-s3](https://github.com/timothystewart6/mongo-to-s3) | Backup mongodb databases to an s3 bucket |
 | [oliverfarrell/ubuntu-amazon-s3-backup](https://github.com/oliverfarrell/ubuntu-amazon-s3-backup) | A process for backing up folders and databases on a Ubuntu server |
+| [javierarce/icloud-to-s3](https://github.com/javierarce/icloud-to-s3) `GPL-3.0` | Move photos from a shared iCloud album to an S3 bucket |
 
 [↑ Back to top](#table-of-contents)
 

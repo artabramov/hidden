@@ -1,16 +1,4 @@
+**/.ssh
 *.pyc
 __pycache__
-.git
-.cursor
-.vscode
 .coverage
-.coverage.*
-.coveragerc
-.gitignore
-.dockerignore
-Dockerfile
-Makefile
-LICENSE
-*.md
-tests
-docs

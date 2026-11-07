@@ -204,6 +204,22 @@ enabled for the S3 API and WebGUI with a certificate and private key.
 The management API still needs TLS at the infrastructure level. Without
 TLS, network traffic is not protected in transit.
 
+## Security audit
+
+The project uses three security analysis tools:
+
+- **Bandit** — scans Python source code for potential security issues.
+- **Semgrep** — performs static analysis using Python and security audit rules.
+- **pip-audit** — checks Python dependencies for known vulnerabilities.
+
+Run all checks against the running container:
+
+```sh
+make audit
+```
+
+The audit tools are installed inside the container when invoked.
+
 ## How to enable TLS for S3 and WebGUI
 
 To enable TLS for both the S3 API and WebGUI, place a PEM certificate

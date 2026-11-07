@@ -2,6 +2,7 @@
 
 ## [0.7.3] - 2026-11-08
 - Upgraded **apt** packages and **pip** during the image build.
+- Documented the **security audit** in the **README.md**.
 
 ## [0.7.2] - 2026-11-07
 - Extended the **audit** target to install **pip-audit** in the running container and scan the dependencies.

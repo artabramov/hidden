@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.7.2] - 2026-11-07
+- Extended the **audit** target to install **pip-audit** in the running container and scan the dependencies.
+
 ## [0.7.1] - 2026-11-07
 - Extended the **audit** target to install **Semgrep** in the running container and scan the application.
 

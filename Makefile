@@ -69,3 +69,6 @@ audit:
 
 	docker exec hidden pip install semgrep
 	docker exec hidden semgrep scan --config p/python --config p/security-audit /opt/hidden/app
+
+	docker exec hidden pip install pip-audit
+	docker exec hidden pip-audit -r /opt/hidden/requirements.txt

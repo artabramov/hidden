@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.7.0] - 2026-11-08
+- Added the **audit** target to install **Bandit** in the running container and scan the application.
+- Marked false-positive **Bandit** findings with **nosec** comments.
+
 ## [0.6.4] - 2026-11-07
 - Documented optional native **TLS** for the S3 API and WebGUI.
 - Added **ECOSYSTEM.md**, a curated list of open-source projects supporting S3-compatible object storage.

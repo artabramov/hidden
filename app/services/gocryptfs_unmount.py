@@ -45,6 +45,6 @@ async def gocryptfs_unmount(
         try:
             await versity_stop()
         except Exception:
-            pass
+            pass  # nosec B110
 
         await cipherdir_unmount(mountpoint=config.INSTALL_MOUNTPOINT)

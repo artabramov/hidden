@@ -12,15 +12,15 @@
 HIDDEN_TITLE = "Hidden S3 — encrypted self-hosted S3 storage"
 
 GOCRYPTFS_PASSPHRASE_LENGTH = 80
-GOCRYPTFS_PASSPHRASE_FILENAME = "gocryptfs_passphrase.enc"
+GOCRYPTFS_PASSPHRASE_FILENAME = "gocryptfs_passphrase.enc"  # nosec B105
 
-WATCHDOG_HEARTBEAT_PATH = "/tmp/gocryptfs-watchdog.touch"
+WATCHDOG_HEARTBEAT_PATH = "/tmp/gocryptfs-watchdog.touch"  # nosec B108
 
 VERSITY_ACCESS_KEY_LENGTH = 20
 VERSITY_ACCESS_KEY_FILENAME = "versity_access_key.enc"
 
 VERSITY_SECRET_KEY_LENGTH = 40
-VERSITY_SECRET_KEY_FILENAME = "versity_secret_key.enc"
+VERSITY_SECRET_KEY_FILENAME = "versity_secret_key.enc"  # nosec B105
 
 VERSITY_DATA_DIRNAME = "data"
 VERSITY_IAM_DIRNAME = "iam"

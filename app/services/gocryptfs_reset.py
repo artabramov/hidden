@@ -41,7 +41,7 @@ async def gocryptfs_reset(master_password: str) -> None:
         try:
             await versity_stop()
         except Exception:
-            pass
+            pass  # nosec B110
 
         if await ismount(config.INSTALL_MOUNTPOINT):
             await cipherdir_unmount(

@@ -11,14 +11,14 @@ the stored passphrase and do not re-check password composition.
 """
 
 MASTER_PASSWORD_AUTH_DESCRIPTION = (
-    "Master password used for authentication. Composition is not "
-    "validated; correctness is verified by decrypting the stored "
-    "passphrase."
+    "Master password used for authentication. Composition is "  # nosec B105
+    "not validated; correctness is verified by decrypting the "
+    "stored passphrase."
 )
 
 MASTER_PASSWORD_SET_DESCRIPTION = (
-    "Master password to store. Must be 16-1024 characters and include "
-    "a lowercase letter, an uppercase letter, and a digit."
+    "Master password to store. Must be 16-1024 characters and "  # nosec B105
+    "include a lowercase letter, an uppercase letter, and a digit."
 )
 
 

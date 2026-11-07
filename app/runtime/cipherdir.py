@@ -11,7 +11,7 @@ from app.io import isdir, isfile, read
 
 log = logging.getLogger(__name__)
 
-_PASSFILE_DIR = "/dev/shm"
+_PASSFILE_DIR = "/dev/shm"  # nosec B108
 
 
 async def is_cipherdir_created(cipherdir: str) -> bool:

@@ -1,4 +1,4 @@
-.PHONY: install stop uninstall
+.PHONY: install stop uninstall audit
 
 -include .env
 
@@ -62,3 +62,7 @@ stop:
 
 uninstall:
 	docker rm -f hidden
+
+audit:
+	docker exec hidden pip install bandit
+	docker exec hidden bandit -r /opt/hidden/app
